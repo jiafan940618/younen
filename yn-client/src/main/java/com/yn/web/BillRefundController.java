@@ -18,7 +18,7 @@ import com.yn.vo.BillRefundVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/billRefund")
+@RequestMapping("/client/billRefund")
 public class BillRefundController {
     @Autowired
     BillRefundService billRefundService;

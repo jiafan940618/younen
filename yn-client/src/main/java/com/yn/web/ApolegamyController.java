@@ -22,7 +22,7 @@ import com.yn.vo.ApolegamyVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/apolegamy")
+@RequestMapping("/client/apolegamy")
 public class ApolegamyController {
     @Autowired
     ApolegamyService apolegamyService;
@@ -37,13 +37,6 @@ public class ApolegamyController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody ApolegamyVo apolegamyVo) {
-        if (apolegamyVo.getId() == null) {
-        	List<String> validate = ValidatorUtil.validate(apolegamyVo);
-    		if (validate!=null&&validate.size()>0) {
-    			return  ResultDataVoUtil.error(777, StringUtils.join(validate, ","));
-    		}
-		}
-        
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         apolegamyService.save(apolegamy);

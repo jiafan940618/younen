@@ -21,7 +21,7 @@ import com.yn.vo.SystemConfigVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/systemConfig")
+@RequestMapping("/client/systemConfig")
 public class SystemConfigController {
     @Autowired
     SystemConfigService systemConfigService;

@@ -27,7 +27,7 @@ import com.yn.vo.SubsidyVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/subsidy")
+@RequestMapping("/client/subsidy")
 public class SubsidyController {
     @Autowired
     SubsidyService subsidyService;
@@ -48,29 +48,8 @@ public class SubsidyController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody SubsidyVo subsidyVo) {
-        if (subsidyVo.getId() == null) {
-        	List<String> validate = ValidatorUtil.validate(subsidyVo);
-    		if (validate!=null&&validate.size()>0) {
-    			return ResultDataVoUtil.error(777, StringUtils.join(validate, ","));
-    		}
-		}
-        
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
-        
-    	Subsidy subsidyR = new Subsidy();
-		subsidyR.setCityId(subsidy.getCityId());
-		subsidyR.setType(subsidy.getType());
-		Subsidy findOne = subsidyService.findOne(subsidyR);
-		if (findOne != null) {
-			subsidy.setId(findOne.getId());
-		}
-		
-		Province province = provinceDao.findOne(subsidy.getProvinceId());
-		City city = cityDao.findOne(subsidy.getCityId());
-		subsidy.setProvinceText(province.getProvinceText());
-		subsidy.setCityText(city.getCityText());
-		
         subsidyService.save(subsidy);
         return ResultDataVoUtil.success(subsidy);
     }

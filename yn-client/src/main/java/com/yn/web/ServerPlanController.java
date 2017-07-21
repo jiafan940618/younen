@@ -18,7 +18,7 @@ import com.yn.vo.ServerPlanVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/serverPlan")
+@RequestMapping("/client/serverPlan")
 public class ServerPlanController {
     @Autowired
     ServerPlanService serverPlanService;

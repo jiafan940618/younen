@@ -22,7 +22,7 @@ import com.yn.vo.TemStationVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/temStation")
+@RequestMapping("/client/temStation")
 public class TemStationController {
     @Autowired
     TemStationService temStationService;

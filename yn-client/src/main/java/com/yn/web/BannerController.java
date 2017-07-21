@@ -18,7 +18,7 @@ import com.yn.vo.BannerVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/banner")
+@RequestMapping("/client/banner")
 public class BannerController {
     @Autowired
     BannerService bannerService;

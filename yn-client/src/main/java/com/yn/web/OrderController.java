@@ -24,7 +24,7 @@ import com.yn.vo.OrderVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/order")
+@RequestMapping("/client/order")
 public class OrderController {
     @Autowired
     OrderService orderService;
@@ -75,39 +75,4 @@ public class OrderController {
         Page<Order> findAll = orderService.findAll(order, pageable);
         return ResultDataVoUtil.success(findAll);
     }
-    
-    /**
-     * 账目明细
-     * @return
-     */
-    @RequestMapping(value = "/detailAccounts", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object detailAccounts(Long serverId) {
-        Order orderR = new Order();
-        orderR.setServerId(serverId);
-        List<Order> findAll = orderService.findAll(orderR);
-        
-        OrderDetailAccounts oda = new OrderDetailAccounts();
-        oda.setOrderNum(findAll.size());
-        
-        for (Order order : findAll) {
-        	Double totalPrice = order.getTotalPrice();
-        	oda.setPriceTol(oda.getPriceTol() + totalPrice);
-        	if (order.getStatus() == 0) {
-        		oda.setApplyingPriceTol(oda.getApplyingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 1) {
-				oda.setBuildingPriceTol(oda.getBuildingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 2) {
-				oda.setGridConnectedingPriceTol(oda.getGridConnectedingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 3) {
-				oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
-			}
-        	oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());
-        	oda.setApolegamyPriceTol(oda.getApolegamyPriceTol() + order.getApolegamyPrice());
-        	oda.setHadPayPriceTol(oda.getHadPayPriceTol() + order.getHadPayPrice());
-		}
-        
-        return ResultDataVoUtil.success(oda);
-    }
-    
 }

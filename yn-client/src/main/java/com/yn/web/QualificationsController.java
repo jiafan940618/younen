@@ -18,7 +18,7 @@ import com.yn.vo.QualificationsVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/qualifications")
+@RequestMapping("/client/qualifications")
 public class QualificationsController {
     @Autowired
     QualificationsService qualificationsService;

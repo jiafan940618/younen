@@ -26,7 +26,7 @@ import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/billOrder")
+@RequestMapping("/client/billOrder")
 public class BillOrderController {
     @Autowired
     BillOrderService billOrderService;
@@ -76,44 +76,5 @@ public class BillOrderController {
         BeanCopy.copyProperties(billOrderVo, billOrder);
         Page<BillOrder> findAll = billOrderService.findAll(billOrder, orderStatus, pageable);
         return ResultDataVoUtil.success(findAll);
-    }
-
-    /**
-     * 手动录入订单的交易
-     * @param orderId
-     * @param money
-     * @return
-     */
-    @RequestMapping(value = "/manualInput", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object manualInput(@RequestParam(value="orderId",required=true)Long orderId, @RequestParam(value="money",required=true)Double money) {
-        User user = SessionCache.instance().checkUserIsLogin();
-        
-        Order order = orderService.findOne(orderId);
-        Double totalPrice = order.getTotalPrice();
-        Double hadPayPrice = order.getHadPayPrice();
-        Double shouldPayPrice = totalPrice - hadPayPrice;
-        
-        if (hadPayPrice.doubleValue() == totalPrice.doubleValue()) {
-        	return ResultDataVoUtil.error(777, "该订单已经支付完，不用继续录入");
-		} else if ((hadPayPrice + money) > totalPrice) {
-            return ResultDataVoUtil.error(777, "该订单的总价是"+ totalPrice +"元，已经支付了" + hadPayPrice + "元， 此次录入的金额不可以超过" + shouldPayPrice + "元");
-		}
-        
-        BillOrder billOrder = new BillOrder();
-        billOrder.setOrderId(orderId);
-        billOrder.setPayWay(0);
-        billOrder.setMoney(money);
-        billOrder.setRemark("手动录入");
-        billOrder.setStatus(0);
-        billOrder.setUserId(order.getUserId());
-        billOrder.setDutyUserId(user.getId());
-        billOrder.setTradeNo(StringUtil.getRandomTradeNo());
-        billOrderDao.save(billOrder);
-        
-        order.setHadPayPrice(order.getHadPayPrice() + money);
-        orderDao.save(order);
-        
-        return ResultDataVoUtil.success();
     }
 }

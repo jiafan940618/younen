@@ -18,7 +18,7 @@ import com.yn.vo.BankCardVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/bankCard")
+@RequestMapping("/client/bankCard")
 public class BankCardController {
     @Autowired
     BankCardService bankCardService;

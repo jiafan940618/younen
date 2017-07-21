@@ -22,7 +22,7 @@ import com.yn.vo.AmmeterVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/ammeter")
+@RequestMapping("/client/ammeter")
 public class AmmeterController {
     @Autowired
     AmmeterService ammeterService;
@@ -41,30 +41,7 @@ public class AmmeterController {
     public Object save(@RequestBody AmmeterVo ammeterVo) {
         Ammeter ammeter = new Ammeter();
         BeanCopy.copyProperties(ammeterVo, ammeter);
-        
-        String dAddr = ammeter.getdAddr().toString();
-        if (dAddr.substring(0, 1).equals("1")) {
-        	ammeter.setType(1);
-		} else if (dAddr.substring(0, 1).equals("2")) {
-			ammeter.setType(2);
-		}
-        
-        if (ammeter.getStationId() == null) {
-			return ResultDataVoUtil.error(777, "请选择电站");
-		}
-        
-        Ammeter ammeterR = new Ammeter();
-		ammeterR.setcAddr(ammeter.getcAddr());
-		ammeterR.setdAddr(ammeter.getdAddr());
-		Ammeter findOne = ammeterDao.findOne(Example.of(ammeterR));
-        
-		if (findOne != null) {
-			if (ammeter.getId() == null) {
-				ammeter.setId(findOne.getId());
-			}
-		}
         ammeterService.save(ammeter);
-
         return ResultDataVoUtil.success(ammeter);
     }
 
@@ -92,31 +69,4 @@ public class AmmeterController {
         Page<Ammeter> findAll = ammeterService.findAll(ammeter, pageable);
         return ResultDataVoUtil.success(findAll);
     }
-    
-    /**
-     * 解绑电站
-     */
-    @RequestMapping(value = "/relieveStation", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object relieveStation(Long ammeterId) {
-        Ammeter findOne = ammeterDao.findOne(ammeterId);
-        if (findOne == null) {
-			return ResultDataVoUtil.error(777, "电表不存在");
-		}
-        findOne.setStationId(null);
-        ammeterDao.save(findOne);
-        
-        return ResultDataVoUtil.success(findOne);
-    }
-    
-    /**
-     * 设备地址
-     */
-    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object findDAddr(Long stationId, Integer type) {
-        List<Long> findDAddr = ammeterDao.findDAddr(stationId, type);
-        return ResultDataVoUtil.success(findDAddr);
-    }
-    
 }

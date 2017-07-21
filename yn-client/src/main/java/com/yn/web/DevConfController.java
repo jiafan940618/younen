@@ -18,7 +18,7 @@ import com.yn.vo.DevConfVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/devConf")
+@RequestMapping("/client/devConf")
 public class DevConfController {
     @Autowired
     DevConfService devConfService;

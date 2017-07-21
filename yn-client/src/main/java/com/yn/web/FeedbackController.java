@@ -20,7 +20,7 @@ import com.yn.vo.FeedbackVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/feedback")
+@RequestMapping("/client/feedback")
 public class FeedbackController {
     @Autowired
     FeedbackService feedbackService;
@@ -35,10 +35,8 @@ public class FeedbackController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody FeedbackVo feedbackVo) {
-        User user = SessionCache.instance().checkUserIsLogin();
         Feedback feedback = new Feedback();
         BeanCopy.copyProperties(feedbackVo, feedback);
-        feedback.setUserId(user.getId());
         feedbackService.save(feedback);
         return ResultDataVoUtil.success(feedback);
     }

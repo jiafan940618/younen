@@ -18,7 +18,7 @@ import com.yn.vo.BillWithdrawalsVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/billWithdrawals")
+@RequestMapping("/client/billWithdrawals")
 public class BillWithdrawalsController {
     @Autowired
     BillWithdrawalsService billWithdrawalsService;

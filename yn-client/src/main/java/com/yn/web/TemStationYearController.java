@@ -18,7 +18,7 @@ import com.yn.vo.TemStationYearVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/temStationYear")
+@RequestMapping("/client/temStationYear")
 public class TemStationYearController {
     @Autowired
     TemStationYearService temStationYearService;

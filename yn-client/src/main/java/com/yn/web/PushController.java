@@ -22,7 +22,7 @@ import com.yn.vo.PushVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/push")
+@RequestMapping("/client/push")
 public class PushController {
 	@Autowired
 	PushService pushService;
@@ -41,20 +41,7 @@ public class PushController {
 	public Object save(@RequestBody PushVo pushVo) {
 		Push push = new Push();
 		BeanCopy.copyProperties(pushVo, push);
-
-		// 推送给所有人
-		if (push.getType().intValue() == 1) {
-			List<User> findAll = userService.findAll(new User());
-			for (User user : findAll) {
-				Push pushR = new Push();
-				BeanCopy.copyProperties(push, pushR);
-				pushR.setUserId(user.getId());
-				pushService.save(pushR);
-			}
-		} else {
-			pushService.save(push);
-		}
-
+		pushService.save(push);
 		return ResultDataVoUtil.success(push);
 	}
 

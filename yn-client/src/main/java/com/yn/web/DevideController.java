@@ -18,7 +18,7 @@ import com.yn.vo.DevideVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/devide")
+@RequestMapping("/client/devide")
 public class DevideController {
     @Autowired
     DevideService devideService;

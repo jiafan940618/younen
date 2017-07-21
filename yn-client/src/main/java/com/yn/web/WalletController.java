@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ import com.yn.utils.ResultData;
 import com.yn.vo.WalletVo;
 
 @RestController
-@RequestMapping("/server/wallet")
+@RequestMapping("/client/wallet")
 public class WalletController {
     @Autowired
     WalletService walletService;
@@ -35,41 +36,34 @@ public class WalletController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody WalletVo walletVo) {
-        ResultData<Wallet> resultData = new ResultData<>();
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         walletService.save(wallet);
-        resultData.setData(wallet);
-        return resultData;
+        return ResultDataVoUtil.success(wallet);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
-        ResultData<Wallet> resultData = new ResultData<>();
         walletService.delete(id);
-        return resultData;
+        return ResultDataVoUtil.success();
     }
 
     @ResponseBody
     @RequestMapping(value = "/findOne", method = {RequestMethod.POST})
     public Object findOne(WalletVo walletVo) {
-        ResultData<Wallet> resultData = new ResultData<>();
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         Wallet findOne = walletService.findOne(wallet);
-        resultData.setData(findOne);
-        return resultData;
+        return ResultDataVoUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object findAll(WalletVo walletVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        ResultData<Page<Wallet>> resultData = new ResultData<>();
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         Page<Wallet> findAll = walletService.findAll(wallet, pageable);
-        resultData.setData(findAll);
-        return resultData;
+        return ResultDataVoUtil.success(findAll);
     }
 }

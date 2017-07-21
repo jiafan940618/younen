@@ -24,7 +24,7 @@ import com.yn.utils.MD5Util;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @Controller
-@RequestMapping(value = "/server/userLogin")
+@RequestMapping(value = "/client/userLogin")
 public class UserLoginController {
     @Resource
     private UserService userService;

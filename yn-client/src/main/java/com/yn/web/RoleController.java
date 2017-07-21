@@ -30,7 +30,7 @@ import com.yn.vo.re.ResultDataVoUtil;
 
 
 @RestController
-@RequestMapping("/server/role")
+@RequestMapping("/client/role")
 public class RoleController {
     @Autowired
     RoleService roleService;
@@ -79,56 +79,4 @@ public class RoleController {
         Page<Role> findAll = roleService.findAll(role, pageable);
         return ResultDataVoUtil.success(findAll);
     }
-    
-    @RequestMapping(value = "/find", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object find(Long roleId) {
-        Role findOne = roleService.findOne(roleId);
-        
-        Map<Menu, List<Menu>> map = new LinkedHashMap<>();
-        Set<Menu> menus = findOne.getMenu();
-        for (Menu menu : menus) {
-			if (menu.getZlevel() == 1) {
-				map.put(menu, new ArrayList<>());
-			}
-		}
-        
-        Set<Menu> keySet = map.keySet();
-        for (Menu parent : keySet) {
-        	List<Menu> children = map.get(parent);
-			for (Menu menu : menus) {
-				if (menu.getZlevel() != 1) {
-					if (menu.getParentId().intValue() == parent.getId().intValue()) {
-						children.add(menu);
-					}
-				}
-			}
-			parent.setChildren(children);
-		}
-        
-        return ResultDataVoUtil.success(keySet);
-    }
-    
-    /**
-     * 权限分配
-     * @return
-     */
-    @RequestMapping(value = "/assign", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object assign(@RequestParam(value="roleId" ,required=true)Long roleId, @RequestParam(value="menuIds" ,required=true)String menuIds) {
-        Set<Menu> menuList = new HashSet<>();
-        String[] split = menuIds.split(",");
-        for (String idStr : split) {
-			Long menuId = Long.valueOf(idStr);
-			Menu menu = menuService.findOne(menuId);
-			menuList.add(menu);
-		}
-        
-        Role role = roleService.findOne(roleId);
-        role.setMenu(menuList);
-        roleDao.save(role);
-        
-        return ResultDataVoUtil.success();
-    }
-    
 }

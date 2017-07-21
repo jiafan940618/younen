@@ -18,7 +18,7 @@ import com.yn.vo.ProvinceVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/province")
+@RequestMapping("/client/province")
 public class ProvinceController {
     @Autowired
     ProvinceService provinceService;

@@ -34,7 +34,7 @@ import com.yn.vo.StationVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/station")
+@RequestMapping("/client/station")
 public class StationController {
     @Autowired
     StationService stationService;
@@ -73,22 +73,8 @@ public class StationController {
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    @Transactional
     public Object delete(Long id) {
         stationService.delete(id);
-        
-        // 删除订单
-        Station station = stationService.findOne(id);
-        Order order = orderService.findOne(station.getOrderId());
-        orderService.delete(order.getId());
-        
-        // 电表解绑该电站
-        Set<Ammeter> ammeters = station.getAmmeter();
-        for (Ammeter ammeter : ammeters) {
-        	ammeter.setStationId(null);
-        	ammeterDao.save(ammeter);
-		}
-        
         return ResultDataVoUtil.success();
     }
 
@@ -108,21 +94,6 @@ public class StationController {
         BeanCopy.copyProperties(stationVo, station);
         Page<Station> findAll = stationService.findAll(station, pageable);
         return ResultDataVoUtil.success(findAll);
-    }
-    
-    /**
-     * 更改电站的通道模式
-     * @param stationId
-     * @param passageModel
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/changPassageModel", method = {RequestMethod.POST})
-    public Object changPassageModel(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="passageModel",required=true)Integer passageModel) {
-        Station station = stationService.findOne(stationId);
-        station.setPassageModel(passageModel);
-        stationDao.save(station);
-        return ResultDataVoUtil.success(station);
     }
     
     /**

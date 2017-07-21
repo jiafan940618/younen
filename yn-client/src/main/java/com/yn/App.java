@@ -14,8 +14,4 @@ public class App {
         SpringApplication.run(App.class, args);
     }
 
-    @Bean
-    public HibernateJpaSessionFactoryBean sessionFactory() {
-        return new HibernateJpaSessionFactoryBean();
-    }
 }

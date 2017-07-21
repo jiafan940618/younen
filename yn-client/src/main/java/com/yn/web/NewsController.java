@@ -18,7 +18,7 @@ import com.yn.vo.NewsVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/news")
+@RequestMapping("/client/news")
 public class NewsController {
     @Autowired
     NewsService newsService;

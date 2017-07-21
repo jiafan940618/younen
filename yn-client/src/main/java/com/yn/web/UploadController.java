@@ -14,7 +14,7 @@ import com.yn.vo.re.ResultDataVoUtil;
 
 
 @Controller
-@RequestMapping("/server/upload")
+@RequestMapping("/client/upload")
 public class UploadController {
 	@Resource
 	OssService ossService;

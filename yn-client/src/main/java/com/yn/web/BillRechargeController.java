@@ -18,7 +18,7 @@ import com.yn.vo.BillRechargeVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/billRecharge")
+@RequestMapping("/client/billRecharge")
 public class BillRechargeController {
     @Autowired
     BillRechargeService billRechargeService;

@@ -18,7 +18,7 @@ import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/user")
+@RequestMapping("/client/user")
 public class UserController {
     @Autowired
     UserService userService;

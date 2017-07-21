@@ -18,7 +18,7 @@ import com.yn.vo.AmmeterRecordVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/ammeterRecord")
+@RequestMapping("/client/ammeterRecord")
 public class AmmeterRecordController {
     @Autowired
     AmmeterRecordService ammeterRecordService;

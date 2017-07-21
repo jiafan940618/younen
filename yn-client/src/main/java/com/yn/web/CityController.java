@@ -18,7 +18,7 @@ import com.yn.vo.CityVo;
 import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
-@RequestMapping("/server/city")
+@RequestMapping("/client/city")
 public class CityController {
     @Autowired
     CityService cityService;
