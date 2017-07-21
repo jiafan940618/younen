@@ -1,0 +1,158 @@
+package com.yn.service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import com.yn.dao.UserDao;
+import com.yn.model.User;
+import com.yn.utils.BeanCopy;
+import com.yn.utils.MD5Util;
+import com.yn.utils.ObjToMap;
+import com.yn.utils.StringUtil;
+
+
+@Service
+public class UserService {
+    @Autowired
+    UserDao userDao;
+    @Autowired
+    WalletService walletService;
+
+    public User findOne(Long id) {
+        return userDao.findOne(id);
+    }
+
+    public void save(User user) {
+        if (user.getId() != null) {
+            User one = userDao.findOne(user.getId());
+            try {
+                BeanCopy.beanCopy(user, one);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            userDao.save(one);
+        } else {
+            userDao.save(user);
+        }
+
+        walletService.createWallet(user);
+    }
+
+    public void delete(Long id) {
+        userDao.delete(id);
+    }
+
+    public void deleteBatch(List<Long> id) {
+        userDao.deleteBatch(id);
+    }
+
+    public User findOne(User user) {
+        Specification<User> spec = getSpecification(user);
+        User findOne = userDao.findOne(spec);
+        return findOne;
+    }
+
+    public List<User> findAll(List<Long> list) {
+        return userDao.findAll(list);
+    }
+
+    public Page<User> findAll(User user, Pageable pageable) {
+        Specification<User> spec = getSpecification(user);
+        Page<User> findAll = userDao.findAll(spec, pageable);
+        return findAll;
+    }
+
+    public List<User> findAll(User user) {
+        Specification<User> spec = getSpecification(user);
+        return userDao.findAll(spec);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static Specification<User> getSpecification(User user) {
+        user.setDel(0);
+        Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
+        return (Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+
+            Predicate conjunction = cb.conjunction();
+            List<Expression<Boolean>> expressions = conjunction.getExpressions();
+            Iterator<Entry<String, Object>> iterator = objectMap.entrySet().iterator();
+
+            while (iterator.hasNext()) {
+                Entry<String, Object> entry = iterator.next();
+                if (!entry.getKey().equals("query")) {
+                    Object value = entry.getValue();
+                    if (value instanceof Map) {
+                        Iterator<Entry<String, Object>> iterator1 = ((Map) value).entrySet().iterator();
+                        while (iterator1.hasNext()) {
+                            Entry<String, Object> entry1 = iterator1.next();
+                            expressions.add(cb.equal(root.get(entry.getKey()).get(entry1.getKey()), entry1.getValue()));
+                        }
+                    } else {
+                        expressions.add(cb.equal(root.get(entry.getKey()), value));
+                    }
+                }
+            }
+
+            // 用户名，手机号，联系地址
+            if (!StringUtil.isEmpty(user.getQuery())) {
+                Predicate[] predicates = new Predicate[3];
+                predicates[0] = cb.like(root.get("userName"), "%" + user.getQuery() + "%");
+                predicates[1] = cb.like(root.get("phone"), "%" + user.getQuery() + "%");
+                predicates[2] = cb.like(root.get("fullAddressText"), "%" + user.getQuery() + "%");
+                expressions.add(cb.or(predicates));
+            }
+
+            return conjunction;
+        };
+    }
+
+    /**
+     * 根据用户生成登陆token
+     * 用户有phone，token=phone+登陆时间戳
+     * 用户没phone，token=uuid+登陆时间戳
+     *
+     * @param user
+     * @return
+     */
+    public String getToken(User user) {
+        Long loginDtm = System.currentTimeMillis();
+        String token = "";
+        if (!StringUtil.isEmpty(user.getPhone())) {
+            token = user.getPhone() + loginDtm;
+        } else {
+            UUID uuid = UUID.randomUUID();
+            String uStr = uuid.toString();
+            String[] split = uStr.split("-");
+            token = split[split.length - 1] + loginDtm;
+        }
+        return MD5Util.GetMD5Code(token);
+    }
+
+    /**
+     * 根据phone查找用户
+     *
+     * @param phone
+     * @return
+     */
+    public User findByPhone(String phone) {
+        User user = new User();
+        user.setPhone(phone);
+        return findOne(user);
+    }
+
+}

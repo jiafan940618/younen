@@ -1,0 +1,85 @@
+package com.yn.domain;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * Created by TT on 2017/1/17.
+ */
+@MappedSuperclass
+public class IDomain implements ISuperModel{
+	
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "int(11) comment '[id]'")
+//    @Field(analyze= Analyze.NO)//用作搜索时排序
+    private Long id;
+    @Column(insertable = false, updatable = false,columnDefinition = "int(1) default 0 comment '[逻辑删除]{0:未删;1:已删}'")
+    private Integer del;
+    @Column(insertable = false, updatable = false,columnDefinition = "datetime comment '[删除时间]'")
+    private Date delDtm;
+    @Column(insertable = false, updatable = false, columnDefinition = "datetime default CURRENT_TIMESTAMP comment '[创建时间]'")
+    private Date createDtm;
+    @Column(insertable = false, updatable = true, columnDefinition = "datetime default CURRENT_TIMESTAMP comment '[更新时间]'")
+    private Date updateDtm;
+    
+    
+    
+    @Transient
+	protected String query; // 查询的内容
+    @Transient
+    String queryStartDtm; // 查询的开始日期
+    @Transient
+	String queryEndDtm; // 查询的结束日期
+    
+    
+    
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public Integer getDel() {
+        return del;
+    }
+    public void setDel(Integer del) {
+        this.del = del;
+    }
+    public Date getDelDtm() {
+        return delDtm;
+    }
+    public void setDelDtm(Date delDtm) {
+        this.delDtm = delDtm;
+    }
+    public Date getCreateDtm() {
+        return createDtm;
+    }
+    public void setCreateDtm(Date createDtm) {
+        this.createDtm = createDtm;
+    }
+	public Date getUpdateDtm() {
+		return updateDtm;
+	}
+	public void setUpdateDtm(Date updateDtm) {
+		this.updateDtm = updateDtm;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	public String getQueryStartDtm() {
+		return queryStartDtm;
+	}
+	public void setQueryStartDtm(String queryStartDtm) {
+		this.queryStartDtm = queryStartDtm;
+	}
+	public String getQueryEndDtm() {
+		return queryEndDtm;
+	}
+	public void setQueryEndDtm(String queryEndDtm) {
+		this.queryEndDtm = queryEndDtm;
+	}
+}
