@@ -27,10 +27,8 @@ public class WalletController {
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
-        ResultData<Wallet> resultData = new ResultData<>();
         Wallet findOne = walletService.findOne(id);
-        resultData.setData(findOne);
-        return resultData;
+        return ResultDataVoUtil.success(findOne);
     }
 
     @ResponseBody
