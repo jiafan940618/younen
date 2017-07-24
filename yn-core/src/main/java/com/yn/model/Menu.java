@@ -11,6 +11,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 import com.yn.domain.IDomain;
+import lombok.Data;
 import org.hibernate.annotations.Where;
 
 /**
@@ -18,6 +19,7 @@ import org.hibernate.annotations.Where;
  *
  */
 @Entity
+@Data
 public class Menu extends IDomain implements Serializable {
 	
 	@Column(columnDefinition = "int(11) comment '[父菜单id]'")
@@ -33,7 +35,7 @@ public class Menu extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(200) comment '[菜单图片]'")
 	private String imgUrl;
 	@Column(columnDefinition = "varchar(200) comment '[权限界面地址]'")
-	private String path;
+	private String routeName;
 	@Column(columnDefinition = "varchar(50) comment '[备注]'")
 	private String remark;
 
@@ -45,85 +47,4 @@ public class Menu extends IDomain implements Serializable {
 
 	@Transient
 	private Menu parent;
-
-	public Long getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-
-	public Integer getZlevel() {
-		return zlevel;
-	}
-
-	public void setZlevel(Integer zlevel) {
-		this.zlevel = zlevel;
-	}
-
-	public Integer getRank() {
-		return rank;
-	}
-
-	public void setRank(Integer rank) {
-		this.rank = rank;
-	}
-
-	public String getMenuName() {
-		return menuName;
-	}
-
-	public void setMenuName(String menuName) {
-		this.menuName = menuName;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	public List<Menu> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<Menu> children) {
-		this.children = children;
-	}
-
-	public Menu getParent() {
-		return parent;
-	}
-
-	public void setParent(Menu parent) {
-		this.parent = parent;
-	}
-
 }

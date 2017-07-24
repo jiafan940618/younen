@@ -11,11 +11,14 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.yn.dao.UserDao;
+import com.yn.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.yn.dao.ServerDao;
@@ -29,11 +32,14 @@ import com.yn.utils.RepositoryUtil;
 public class ServerService {
 	@Autowired
 	ServerDao serverDao;
+    @Autowired
+    UserDao userDao;
 
 	public Server findOne(Long id) {
 		return serverDao.findOne(id);
 	}
 
+	@Transactional
 	public void save(Server server) {
 		if (server.getId() != null) {
 			Server one = serverDao.findOne(server.getId());
@@ -43,13 +49,13 @@ public class ServerService {
 				e.printStackTrace();
 			}
 			serverDao.save(one);
-		} else {
+            updateUserRoleId(server);
+        } else {
 			serverDao.save(server);
 		}
-		System.out.println();
 	}
 
-	public void delete(Long id) {
+    public void delete(Long id) {
 		serverDao.delete(id);
 	}
 
@@ -77,7 +83,7 @@ public class ServerService {
 		Specification<Server> spec = RepositoryUtil.getSpecification(server);
 		return serverDao.findAll(spec);
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Specification<Server> getSpecification(Server server) {
 		server.setDel(0);
@@ -127,5 +133,22 @@ public class ServerService {
 			return conjunction;
 		};
 	}
+
+    /**
+     * // 修改服务商的认证状态时，服务商用户的roleId要跟着变
+     * @param server
+     */
+    private void updateUserRoleId(Server server) {
+        if (server.getType() != null) {
+            User user = userDao.findOne(server.getUserId());
+            // 未认证
+            if (server.getType().equals(0)) {
+                user.setRoleId(4);
+            } else if (server.getType().equals(1)) {
+                user.setRoleId(5);
+            }
+            userDao.save(user);
+        }
+    }
 	
 }

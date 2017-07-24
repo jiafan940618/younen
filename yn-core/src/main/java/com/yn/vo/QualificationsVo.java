@@ -1,31 +1,18 @@
 package com.yn.vo;
 
+import com.yn.model.Apolegamy;
+import lombok.Data;
+
+import java.util.Set;
+
 /**
- * 服务商承诺
+ * 资质
  */
+@Data
 public class QualificationsVo {
-	
-	protected Long id;
-	private String imgUrl;
-	private String text;
-	
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getImgUrl() {
-		return imgUrl;
-	}
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
-	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
+
+    protected Long id;
+    private String imgUrl;
+    private String text;
+    private Set<ApolegamyVo> apolegamy;
 }

@@ -64,4 +64,12 @@ public class WalletController {
         Page<Wallet> findAll = walletService.findAll(wallet, pageable);
         return ResultDataVoUtil.success(findAll);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/selectByUserId", method = {RequestMethod.POST})
+    public Object selectByUserId(Long userId) {
+        Wallet wallet = new Wallet();
+        Wallet findOne = walletService.findOne(wallet);
+        return ResultDataVoUtil.success(findOne);
+    }
 }

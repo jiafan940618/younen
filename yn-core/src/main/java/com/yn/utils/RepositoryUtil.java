@@ -11,6 +11,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.yn.model.Apolegamy;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -108,7 +109,7 @@ public class RepositoryUtil {
 	 * @return
 	 */
 	public static <T> Specification<T> getSpecification(Object t) {
-		// t.setDel(0);
+//		 t.setDel(0);
 		if (t instanceof ISuperModel) {
 			ISuperModel new_name = (ISuperModel) t;
 			new_name.setDel(0);

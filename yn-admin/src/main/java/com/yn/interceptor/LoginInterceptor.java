@@ -78,17 +78,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 if (user != null) {
                     SessionCache.instance().setUser(user);
                     return true;
-                } else {
-                    throw new MyException(444, Constant.NO_LOGIN);
                 }
+            } else if (ip.equals("0:0:0:0:0:0:0:1")) {
+                user = userService.findOne(1L);
+                SessionCache.instance().setUser(user);
+                return true;
             }
 
-            // 上线前要去掉
-            else {
-                User findOne = userService.findOne(1L);
-                SessionCache.instance().setUser(findOne);
-            }
-
+            throw new MyException(444, Constant.NO_LOGIN);
         }
 
         return true;
@@ -120,7 +117,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if (url.indexOf("/client/userLogin/webLogin") > -1) {
+        if (url.indexOf("/server/userLogin/") > -1) {
             return true;
         }
         return false;

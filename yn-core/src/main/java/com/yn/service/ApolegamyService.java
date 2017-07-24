@@ -2,6 +2,7 @@ package com.yn.service;
 
 import java.util.List;
 
+import com.yn.model.ApolegamyServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import com.yn.utils.RepositoryUtil;
 public class ApolegamyService {
 	@Autowired
 	ApolegamyDao apolegamyDao;
+	@Autowired
+    ApolegamyServerService apolegamyServerService;
 
 	public Apolegamy findOne(Long id) {
 		return apolegamyDao.findOne(id);
@@ -38,8 +41,20 @@ public class ApolegamyService {
 	}
 
 	public void delete(Long id) {
+	    // 删除优能选配项目
 		apolegamyDao.delete(id);
-	}
+
+		// 删除服务商的选配项目
+        Apolegamy apolegamy = apolegamyDao.findOne(id);
+        if (apolegamy.getDel().equals(1)) {
+            ApolegamyServer apolegamyServer = new ApolegamyServer();
+            apolegamyServer.setApolegamyId(id);
+            List<ApolegamyServer> apolegamyServerList = apolegamyServerService.findAll(apolegamyServer);
+            for (ApolegamyServer apolegamyServer1 : apolegamyServerList) {
+                apolegamyServerService.delete(apolegamyServer1.getId());
+            }
+        }
+    }
 
 	public void deleteBatch(List<Long> id) {
 		apolegamyDao.deleteBatch(id);

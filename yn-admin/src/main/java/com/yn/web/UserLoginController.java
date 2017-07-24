@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -8,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.yn.model.Server;
+import com.yn.service.ServerService;
+import com.yn.utils.ObjToMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,17 +31,20 @@ import com.yn.vo.re.ResultDataVoUtil;
 @Controller
 @RequestMapping(value = "/server/userLogin")
 public class UserLoginController {
-    @Resource
+    @Autowired
     private UserService userService;
-    @Resource
+    @Autowired
     UserDao userDao;
+    @Autowired
+    ServerService serverService;
+
 
     /**
      * 登陆接口
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
-    public Object appLogin(@RequestParam(value = "phone", required = true) String phone, @RequestParam(value = "password", required = true) String password, @RequestParam(value = "code", required = true) String code) {
+    public Object appLogin(@RequestParam("phone")String phone, @RequestParam("password")String password, @RequestParam("code")String code) {
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
             return ResultDataVoUtil.error(777, Constant.CODE_ERROR);
@@ -48,9 +56,7 @@ public class UserLoginController {
         } else if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
             return ResultDataVoUtil.error(777, Constant.PASSWORD_ERROR);
         }
-
-        // 角色权限错误
-        else if (user.getRoleId() == null || user.getRoleId() == 6) {
+        if (user.getRoleId() == null || user.getRoleId() == 6) {
             return ResultDataVoUtil.error(777, "权限不足");
         }
 
@@ -59,7 +65,17 @@ public class UserLoginController {
 
         SessionCache.instance().setUser(user);
         user.setPassword(null);
-        return ResultDataVoUtil.success(user);
+
+        // 返回服务商id
+        Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
+        Server server = new Server();
+        server.setUserId(user.getId());
+        Server serverResult = serverService.findOne(server);
+        if (serverResult != null) {
+            objectMap.put("serverId", serverResult.getId());
+        }
+
+        return ResultDataVoUtil.success(objectMap);
     }
 
     /**
