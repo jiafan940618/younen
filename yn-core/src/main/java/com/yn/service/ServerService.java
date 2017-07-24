@@ -12,6 +12,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.yn.dao.UserDao;
+import com.yn.enums.RoleEnum;
+import com.yn.enums.ServerTypeEnum;
 import com.yn.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -141,11 +143,10 @@ public class ServerService {
     private void updateUserRoleId(Server server) {
         if (server.getType() != null) {
             User user = userDao.findOne(server.getUserId());
-            // 未认证
-            if (server.getType().equals(0)) {
-                user.setRoleId(4);
-            } else if (server.getType().equals(1)) {
-                user.setRoleId(5);
+            if (server.getType().equals(ServerTypeEnum.NOT_AUTHENTICATED.getCode())) {
+                user.setRoleId(RoleEnum.NOT_AUTHENTICATED_SERVER.getRoleId());
+            } else if (server.getType().equals(ServerTypeEnum.AUTHENTICATED.getCode())) {
+                user.setRoleId(RoleEnum.AUTHENTICATED_SERVER.getRoleId());
             }
             userDao.save(user);
         }

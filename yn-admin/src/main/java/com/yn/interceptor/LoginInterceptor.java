@@ -112,12 +112,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * 不拦截UserLoginController
-     *
      * @param url
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if (url.indexOf("/server/userLogin/") > -1) {
+        if (url.indexOf("/userLogin/") > -1) {
             return true;
         }
         return false;

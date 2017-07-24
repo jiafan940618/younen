@@ -53,7 +53,7 @@ public class User extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(255) comment '[openIdc]'")
 	protected String openIdc;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[角色id]'")
-	protected Integer roleId;
+	protected Long roleId;
 	
 	/**
 	 * 银行卡

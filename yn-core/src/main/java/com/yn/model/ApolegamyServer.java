@@ -16,10 +16,11 @@ import java.io.Serializable;
 @Data
 public class ApolegamyServer extends IDomain implements Serializable {
 
-    @Column(columnDefinition = "int(11) NOT NULL comment'[优能选配id]'")
-    private Long apolegamyId;
     @Column(columnDefinition = "int(11) NOT NULL comment'[服务商id]'")
     private Long serverId;
+    @Column(columnDefinition = "int(11) NOT NULL comment'[选配项目id]'")
+    private Long apolegamyId;
+
 
     /**
      * 选配项目
