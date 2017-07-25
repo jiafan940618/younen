@@ -69,9 +69,9 @@ public class Server extends IDomain implements Serializable {
     private Integer rank;
     @Column(insertable = false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[服务费率]'")
     private Double factorage;
-    @Column(columnDefinition = "varchar(255) comment '[服务商服务城市id]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[服务商服务城市id]'")
     private String serverCityIds;
-    @Column(columnDefinition = "varchar(255) comment '[服务商服务城市]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[服务商服务城市]'")
     private String serverCityText;
     @Column(insertable = false, updatable = true, columnDefinition = "int(1) default 0 comment '[是否已经认证]{0:未认证,1:已认证}'")
     private Integer type;
@@ -102,7 +102,7 @@ public class Server extends IDomain implements Serializable {
      * 选配项目
      */
     @OneToMany
-    @JoinColumn(name = "serverId", insertable = false, updatable = false)
+    @JoinColumn(name = "serverId", insertable = true, updatable = true)
     @Where(clause = "del=0")
     private Set<ApolegamyServer> apolegamyServer;
 

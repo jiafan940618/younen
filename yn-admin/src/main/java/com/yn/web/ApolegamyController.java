@@ -1,25 +1,20 @@
 package com.yn.web;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.model.Apolegamy;
 import com.yn.service.ApolegamyService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.ValidatorUtil;
 import com.yn.vo.ApolegamyVo;
 import com.yn.vo.re.ResultDataVoUtil;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/server/apolegamy")
@@ -37,13 +32,6 @@ public class ApolegamyController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody ApolegamyVo apolegamyVo) {
-        if (apolegamyVo.getId() == null) {
-        	List<String> validate = ValidatorUtil.validate(apolegamyVo);
-    		if (validate!=null&&validate.size()>0) {
-    			return  ResultDataVoUtil.error(777, StringUtils.join(validate, ","));
-    		}
-		}
-        
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         apolegamyService.save(apolegamy);

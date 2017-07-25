@@ -86,7 +86,7 @@ public class BillOrderController {
      */
     @RequestMapping(value = "/manualInput", method = {RequestMethod.POST})
     @ResponseBody
-    public Object manualInput(@RequestParam(value="orderId",required=true)Long orderId, @RequestParam(value="money",required=true)Double money) {
+    public Object manualInput(@RequestParam(value="orderId")Long orderId, @RequestParam(value="money")Double money) {
         User user = SessionCache.instance().checkUserIsLogin();
         
         Order order = orderService.findOne(orderId);

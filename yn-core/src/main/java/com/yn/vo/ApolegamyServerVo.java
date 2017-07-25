@@ -1,7 +1,5 @@
 package com.yn.vo;
 
-import lombok.Data;
-
 /**
  * 服务商选配项目
  */

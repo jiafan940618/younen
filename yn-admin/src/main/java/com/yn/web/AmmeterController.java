@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import com.yn.dao.AmmeterDao;
+import com.yn.enums.AmmeterTypeEnum;
 import com.yn.enums.ResultEnum;
 import com.yn.model.Ammeter;
 import com.yn.model.City;
@@ -54,9 +55,9 @@ public class AmmeterController {
 
         // 根据dAddr设置发电用电
         String dAddr = ammeter.getdAddr().toString();
-        if (dAddr.substring(0, 1).equals("1")) {
+        if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode())) {
             ammeter.setType(1);
-        } else if (dAddr.substring(0, 1).equals("2")) {
+        } else if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.USE_ELECTRICITY.getCode())) {
             ammeter.setType(2);
         }
 

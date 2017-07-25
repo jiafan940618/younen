@@ -1,6 +1,7 @@
 package com.yn.vo;
 
 import com.yn.domain.QueryVo;
+import com.yn.model.ApolegamyServer;
 
 import java.util.Date;
 import java.util.Set;
@@ -42,6 +43,7 @@ public class ServerVo extends QueryVo{
 	private Integer type;
 	
 	private Set<QualificationsVo> qualifications;
+	private Set<ApolegamyServerVo> apolegamyServer;
 
 	public Long getId() {
 		return id;
@@ -289,5 +291,13 @@ public class ServerVo extends QueryVo{
 
 	public void setQualifications(Set<QualificationsVo> qualifications) {
 		this.qualifications = qualifications;
+	}
+
+	public Set<ApolegamyServerVo> getApolegamyServer() {
+		return apolegamyServer;
+	}
+
+	public void setApolegamyServer(Set<ApolegamyServerVo> apolegamyServer) {
+		this.apolegamyServer = apolegamyServer;
 	}
 }

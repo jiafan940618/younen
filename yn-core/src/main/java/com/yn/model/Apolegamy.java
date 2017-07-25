@@ -12,15 +12,15 @@ import java.io.Serializable;
 @Entity
 public class Apolegamy extends IDomain implements Serializable {
 	
-	@Column(columnDefinition = "varchar(255) comment '[项目名称]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[项目名称]'")
 	private String apolegamyName;
-	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[价格 元]'")
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[价格 元]'")
 	private Double price;
-	@Column(columnDefinition = "varchar(255) comment '[展示图片地址]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[展示图片地址]'")
 	private String imgUrl;
-	@Column(columnDefinition = "varchar(255) comment '[icon图片地址]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[icon图片地址]'")
 	private String iconUrl;
-    @Column(columnDefinition = "varchar(255) comment '[单位]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[单位]'")
 	private String unit;
     @Column(columnDefinition = "int(11) comment '[资质id]'")
     private Long qualificationsId;
