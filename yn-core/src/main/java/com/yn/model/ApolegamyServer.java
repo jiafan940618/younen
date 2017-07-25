@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Entity
 public class ApolegamyServer extends IDomain implements Serializable {
 
-    @Column(columnDefinition = "int(11) NOT NULL comment'[服务商id]'")
+    @Column(columnDefinition = "int(11) comment'[服务商id]'")
     private Long serverId;
-    @Column(columnDefinition = "int(11) NOT NULL comment'[选配项目id]'")
+    @Column(columnDefinition = "int(11) comment'[选配项目id]'")
     private Long apolegamyId;
 
 

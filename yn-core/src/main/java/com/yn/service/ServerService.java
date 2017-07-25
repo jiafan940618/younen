@@ -47,7 +47,6 @@ public class ServerService {
 			Server one = serverDao.findOne(server.getId());
 			try {
 				BeanCopy.beanCopy(server, one);
-                System.out.println();
             } catch (Exception e) {
 				e.printStackTrace();
 			}

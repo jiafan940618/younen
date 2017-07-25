@@ -3,6 +3,7 @@ package com.yn.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 import org.hibernate.annotations.Where;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -101,8 +102,8 @@ public class Server extends IDomain implements Serializable {
     /**
      * 选配项目
      */
-    @OneToMany
-    @JoinColumn(name = "serverId", insertable = true, updatable = true)
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name = "serverId", insertable = false, updatable = true)
     @Where(clause = "del=0")
     private Set<ApolegamyServer> apolegamyServer;
 
