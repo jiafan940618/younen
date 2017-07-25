@@ -1,34 +1,20 @@
 package com.yn.job;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
-import com.yn.dao.StationDao;
-import com.yn.model.Am1Phase;
-import com.yn.model.Am3Phase;
-import com.yn.model.AmPhaseRecord;
-import com.yn.model.Ammeter;
-import com.yn.model.AmmeterRecord;
-import com.yn.model.AmmeterStatusCode;
+import com.yn.model.*;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmmeterRecordService;
 import com.yn.service.AmmeterService;
 import com.yn.service.AmmeterStatusCodeService;
-import com.yn.service.StationService;
 import com.yn.utils.DateUtil;
-import org.springframework.stereotype.Component;
+import org.hibernate.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -38,12 +24,6 @@ import org.springframework.stereotype.Component;
 public class AmPhaseRecordJob {
     @Autowired
     SessionFactory sessionFactory;
-    @Autowired
-    StationService stationService;
-    @Autowired
-    StationDao stationDao;
-    @Autowired
-    AmPhaseRecordDao amPhaseRecordDao;
     @Autowired
     AmPhaseRecordService amPhaseRecordService;
     @Autowired

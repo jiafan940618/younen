@@ -1,11 +1,8 @@
 package com.yn.enums;
 
-import lombok.Getter;
-
 /**
  * Created by Xiang on 2017/7/24.
  */
-@Getter
 public enum ApolegamyTypeEnum {
 
     // [类型]{0:优能的选配项目,1:服务商的选配项目}
@@ -19,5 +16,13 @@ public enum ApolegamyTypeEnum {
     ApolegamyTypeEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

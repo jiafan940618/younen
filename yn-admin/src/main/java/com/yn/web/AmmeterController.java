@@ -2,6 +2,10 @@ package com.yn.web;
 
 import java.util.List;
 
+import com.yn.model.City;
+import com.yn.model.Province;
+import com.yn.service.CityService;
+import com.yn.service.ProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,10 @@ public class AmmeterController {
     AmmeterService ammeterService;
     @Autowired
     AmmeterDao ammeterDao;
+    @Autowired
+    CityService cityService;
+    @Autowired
+    ProvinceService provinceService;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -41,14 +49,22 @@ public class AmmeterController {
     public Object save(@RequestBody AmmeterVo ammeterVo) {
         Ammeter ammeter = new Ammeter();
         BeanCopy.copyProperties(ammeterVo, ammeter);
-        
+
+        // 设置cityText provinceText
+        City city = cityService.findOne(ammeter.getCityId());
+        Province province = provinceService.findOne(ammeter.getProvinceId());
+        ammeter.setCityText(city.getCityText());
+        ammeter.setProvinceText(province.getProvinceText());
+
+        // 根据dAddr设置发电用电
         String dAddr = ammeter.getdAddr().toString();
         if (dAddr.substring(0, 1).equals("1")) {
         	ammeter.setType(1);
 		} else if (dAddr.substring(0, 1).equals("2")) {
 			ammeter.setType(2);
 		}
-        
+
+		// 判断是否有关联电站
         if (ammeter.getStationId() == null) {
 			return ResultDataVoUtil.error(777, "请选择电站");
 		}

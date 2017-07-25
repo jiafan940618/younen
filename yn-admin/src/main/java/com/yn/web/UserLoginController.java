@@ -1,17 +1,16 @@
 package com.yn.web;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.yn.dao.UserDao;
 import com.yn.model.Server;
+import com.yn.model.User;
 import com.yn.service.ServerService;
+import com.yn.service.UserService;
+import com.yn.session.SessionCache;
+import com.yn.utils.CodeUtil;
+import com.yn.utils.Constant;
+import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
+import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yn.dao.UserDao;
-import com.yn.model.User;
-import com.yn.service.UserService;
-import com.yn.session.SessionCache;
-import com.yn.utils.CodeUtil;
-import com.yn.utils.Constant;
-import com.yn.utils.MD5Util;
-import com.yn.vo.re.ResultDataVoUtil;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/server/userLogin")

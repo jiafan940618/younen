@@ -1,18 +1,15 @@
 package com.yn.model;
 
 import com.yn.domain.IDomain;
-import lombok.Data;
-
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.io.Serializable;
 
 /**
  * 订单的选配项目
  */
 @Entity
-@Data
 public class ApolegamyOrder extends IDomain implements Serializable {
 
     @Column(columnDefinition = "int(11) comment '[订单id]'")
@@ -29,4 +26,60 @@ public class ApolegamyOrder extends IDomain implements Serializable {
     private String unit;
     @Column(columnDefinition = "int(1) comment '[类型]{0:优能的选配项目,1:服务商的选配项目}'")
     private Integer type;
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getApolegamyName() {
+        return apolegamyName;
+    }
+
+    public void setApolegamyName(String apolegamyName) {
+        this.apolegamyName = apolegamyName;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }

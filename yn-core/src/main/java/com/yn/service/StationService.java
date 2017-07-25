@@ -1,11 +1,7 @@
 package com.yn.service;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +10,10 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.yn.dao.AmmeterDao;
+import com.yn.dao.OrderDao;
+import com.yn.model.Ammeter;
+import com.yn.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -42,6 +42,10 @@ public class StationService {
     SystemConfigService systemConfigService;
 	@Autowired
     SubsidyDao subsidyDao;
+	@Autowired
+    OrderDao orderDao;
+	@Autowired
+    AmmeterDao ammeterDao;
 
 	public Station findOne(Long id) {
 		return stationDao.findOne(id);
@@ -63,7 +67,22 @@ public class StationService {
 	}
 
 	public void delete(Long id) {
+		// 1.删除电站
 		stationDao.delete(id);
+
+		// 2.删除订单
+        Station station = stationDao.findOne(id);
+        if (station.getDel().equals(1)) {
+            Order order = orderDao.findOne(station.getOrderId());
+            orderDao.delete(order.getId());
+
+            // 3.解绑电表
+            Set<Ammeter> ammeters = station.getAmmeter();
+            for (Ammeter ammeter : ammeters) {
+                ammeter.setStationId(null);
+                ammeterDao.save(ammeter);
+            }
+        }
 	}
 
 	public void deleteBatch(List<Long> id) {
@@ -296,5 +315,18 @@ public class StationService {
 		rm.put("tolMoneyOf25Year", totalMoneyOf25YearStr);
 		return rm;
 	}
+
+    /**
+     * 更改电站的通道模式
+     * @param stationId
+     * @param passageModel
+     * @return
+     */
+    public Station changPassageModel(Long stationId, Integer passageModel) {
+        Station station = stationDao.findOne(stationId);
+        station.setPassageModel(passageModel);
+        stationDao.save(station);
+        return station;
+    }
 	
 }

@@ -1,11 +1,8 @@
 package com.yn.enums;
 
-import lombok.Getter;
-
 /**
  * Created by Xiang on 2017/7/24.
  */
-@Getter
 public enum RoleEnum {
 
     ADMINISTRATOR(1L, "管理员"),
@@ -21,6 +18,22 @@ public enum RoleEnum {
 
     RoleEnum(Long roleId, String message) {
         this.roleId = roleId;
+        this.message = message;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
         this.message = message;
     }
 }

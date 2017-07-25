@@ -2,10 +2,9 @@ package com.yn.model;
 
 import com.yn.domain.IDomain;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.io.Serializable;
 
 @Entity
 public class TemStationYear extends IDomain implements Serializable {

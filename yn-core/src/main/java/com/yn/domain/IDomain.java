@@ -1,14 +1,11 @@
 package com.yn.domain;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.util.Date;
 
 /**
  * Created by TT on 2017/1/17.
  */
-@Data
 @MappedSuperclass
 public class IDomain implements ISuperModel {
 	
@@ -34,4 +31,71 @@ public class IDomain implements ISuperModel {
     private String queryStartDtm; // 查询的开始日期
     @Transient
     private String queryEndDtm; // 查询的结束日期
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getDel() {
+        return del;
+    }
+
+    @Override
+    public void setDel(Integer del) {
+        this.del = del;
+    }
+
+    public Date getDelDtm() {
+        return delDtm;
+    }
+
+    public void setDelDtm(Date delDtm) {
+        this.delDtm = delDtm;
+    }
+
+    public Date getCreateDtm() {
+        return createDtm;
+    }
+
+    public void setCreateDtm(Date createDtm) {
+        this.createDtm = createDtm;
+    }
+
+    public Date getUpdateDtm() {
+        return updateDtm;
+    }
+
+    public void setUpdateDtm(Date updateDtm) {
+        this.updateDtm = updateDtm;
+    }
+
+    @Override
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public String getQueryStartDtm() {
+        return queryStartDtm;
+    }
+
+    public void setQueryStartDtm(String queryStartDtm) {
+        this.queryStartDtm = queryStartDtm;
+    }
+
+    public String getQueryEndDtm() {
+        return queryEndDtm;
+    }
+
+    public void setQueryEndDtm(String queryEndDtm) {
+        this.queryEndDtm = queryEndDtm;
+    }
 }

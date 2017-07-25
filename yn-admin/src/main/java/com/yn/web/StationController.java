@@ -1,37 +1,21 @@
 package com.yn.web;
 
 
-import java.util.Map;
-import java.util.Set;
-
+import com.yn.dao.StationDao;
+import com.yn.model.Station;
+import com.yn.service.StationService;
+import com.yn.utils.BeanCopy;
+import com.yn.vo.StationVo;
+import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.yn.dao.AmmeterDao;
-import com.yn.dao.OrderDao;
-import com.yn.dao.StationDao;
-import com.yn.dao.SubsidyDao;
-import com.yn.dao.TemStationDao;
-import com.yn.model.Ammeter;
-import com.yn.model.Order;
-import com.yn.model.Station;
-import com.yn.service.OrderService;
-import com.yn.service.StationService;
-import com.yn.service.SystemConfigService;
-import com.yn.service.TemStationService;
-import com.yn.utils.BeanCopy;
-import com.yn.vo.StationVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/server/station")
@@ -40,20 +24,6 @@ public class StationController {
     StationService stationService;
     @Autowired
     StationDao stationDao;
-    @Autowired
-    OrderDao orderDao;
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    AmmeterDao ammeterDao;
-    @Autowired
-    SubsidyDao subsidyDao;
-    @Autowired
-    SystemConfigService systemConfigService;
-    @Autowired
-    TemStationDao temStationDao;
-    @Autowired
-    TemStationService temStationService;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -76,19 +46,6 @@ public class StationController {
     @Transactional
     public Object delete(Long id) {
         stationService.delete(id);
-        
-        // 删除订单
-        Station station = stationService.findOne(id);
-        Order order = orderService.findOne(station.getOrderId());
-        orderService.delete(order.getId());
-        
-        // 电表解绑该电站
-        Set<Ammeter> ammeters = station.getAmmeter();
-        for (Ammeter ammeter : ammeters) {
-        	ammeter.setStationId(null);
-        	ammeterDao.save(ammeter);
-		}
-        
         return ResultDataVoUtil.success();
     }
 
@@ -118,13 +75,11 @@ public class StationController {
      */
     @ResponseBody
     @RequestMapping(value = "/changPassageModel", method = {RequestMethod.POST})
-    public Object changPassageModel(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="passageModel",required=true)Integer passageModel) {
-        Station station = stationService.findOne(stationId);
-        station.setPassageModel(passageModel);
-        stationDao.save(station);
+    public Object changPassageModel(@RequestParam(value="stationId")Long stationId, @RequestParam(value="passageModel")Integer passageModel) {
+        Station station = stationService.changPassageModel(stationId, passageModel);
         return ResultDataVoUtil.success(station);
     }
-    
+
     /**
 	 * 电站信息
 	 */

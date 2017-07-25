@@ -1,7 +1,6 @@
 package com.yn.model;
 
 import com.yn.domain.IDomain;
-import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +14,6 @@ import java.util.Set;
  * 用户
  */
 @Entity
-@Data
 public class User extends IDomain implements Serializable {
 	
 	@Column(columnDefinition = "varchar(255) comment '[手机号码]'")
@@ -61,4 +59,156 @@ public class User extends IDomain implements Serializable {
 	@OneToMany
     @JoinColumn(name = "userId", insertable = false, updatable = true)
     private Set<BankCard> bankCard;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getHeadImgUrl() {
+        return headImgUrl;
+    }
+
+    public void setHeadImgUrl(String headImgUrl) {
+        this.headImgUrl = headImgUrl;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getAddressText() {
+        return addressText;
+    }
+
+    public void setAddressText(String addressText) {
+        this.addressText = addressText;
+    }
+
+    public String getFullAddressText() {
+        return fullAddressText;
+    }
+
+    public void setFullAddressText(String fullAddressText) {
+        this.fullAddressText = fullAddressText;
+    }
+
+    public String getPrivilegeCodeInit() {
+        return privilegeCodeInit;
+    }
+
+    public void setPrivilegeCodeInit(String privilegeCodeInit) {
+        this.privilegeCodeInit = privilegeCodeInit;
+    }
+
+    public String getPrivilegeCode() {
+        return privilegeCode;
+    }
+
+    public void setPrivilegeCode(String privilegeCode) {
+        this.privilegeCode = privilegeCode;
+    }
+
+    public String getOpenIda() {
+        return openIda;
+    }
+
+    public void setOpenIda(String openIda) {
+        this.openIda = openIda;
+    }
+
+    public String getOpenIdb() {
+        return openIdb;
+    }
+
+    public void setOpenIdb(String openIdb) {
+        this.openIdb = openIdb;
+    }
+
+    public String getOpenIdc() {
+        return openIdc;
+    }
+
+    public void setOpenIdc(String openIdc) {
+        this.openIdc = openIdc;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public Set<BankCard> getBankCard() {
+        return bankCard;
+    }
+
+    public void setBankCard(Set<BankCard> bankCard) {
+        this.bankCard = bankCard;
+    }
 }

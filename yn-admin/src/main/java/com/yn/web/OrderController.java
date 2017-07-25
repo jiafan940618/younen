@@ -103,7 +103,7 @@ public class OrderController {
 				oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
 			}
         	oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());
-        	oda.setApolegamyPriceTol(oda.getApolegamyPriceTol() + order.getApolegamyPrice());
+        	oda.setApolegamyPriceTol(oda.getApolegamyPriceTol() + order.getServerApolegamyPrice());
         	oda.setHadPayPriceTol(oda.getHadPayPriceTol() + order.getHadPayPrice());
 		}
         

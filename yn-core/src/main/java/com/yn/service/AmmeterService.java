@@ -1,29 +1,23 @@
 package com.yn.service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.yn.dao.AmmeterDao;
 import com.yn.model.Ammeter;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public class AmmeterService {
@@ -46,11 +40,21 @@ public class AmmeterService {
 		} else {
 			ammeterDao.save(ammeter);
 		}
-		System.out.println();
 	}
 
+	@Transactional
 	public void delete(Long id) {
+		// 1.删除电表
 		ammeterDao.delete(id);
+
+        Ammeter ammeter = ammeterDao.findOne(id);
+        if (ammeter.getDel().equals(1)) {
+            // 2.将stationId设置成null
+            if (ammeter.getStationId() != null) {
+                ammeter.setStationId(null);
+                ammeterDao.save(ammeter);
+            }
+        }
 	}
 
 	public void deleteBatch(List<Long> id) {
