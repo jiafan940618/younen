@@ -1,5 +1,6 @@
 package com.yn.vo.re;
 
+import com.yn.enums.ResultEnum;
 import com.yn.utils.ResultData;
 
 /**
@@ -25,6 +26,15 @@ public class ResultDataVoUtil {
         ResultData resultData = new ResultData();
         resultData.setCode(code);
         resultData.setMsg(msg);
+        resultData.setSuccess(false);
+        resultData.setData(null);
+        return resultData;
+    }
+
+    public static ResultData<Object> error(ResultEnum resultEnum) {
+        ResultData resultData = new ResultData();
+        resultData.setCode(resultEnum.getCode());
+        resultData.setMsg(resultEnum.getMessage());
         resultData.setSuccess(false);
         resultData.setData(null);
         return resultData;

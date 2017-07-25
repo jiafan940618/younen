@@ -41,7 +41,9 @@ public class Order extends IDomain implements Serializable {
 	private String privilegeCode;
 	@Column(columnDefinition = "int(1) NOT NULL comment '[类型]{0:居民,1:工业,2:商业,3:农业}'")
 	private Integer type;
-	
+
+    @Column(columnDefinition = "int(11) comment '[订单方案id]'")
+	private Long orderPlanId;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[装机容量]'")
 	private Double capacity; 
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[服务商方案价格]'")
@@ -109,9 +111,9 @@ public class Order extends IDomain implements Serializable {
 	/**
 	 * 订单的方案
 	 */
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="orderId", insertable=true, updatable=true)
-    private List<OrderPlan> orderPlan;
+    @OneToOne
+    @JoinColumn(name="orderPlanId", insertable = false, updatable = false)
+    private OrderPlan orderPlan;
 	
 	/**
 	 * 订单的交易记录
@@ -392,11 +394,11 @@ public class Order extends IDomain implements Serializable {
         this.apolegamyOrder = apolegamyOrder;
     }
 
-    public List<OrderPlan> getOrderPlan() {
+    public OrderPlan getOrderPlan() {
         return orderPlan;
     }
 
-    public void setOrderPlan(List<OrderPlan> orderPlan) {
+    public void setOrderPlan(OrderPlan orderPlan) {
         this.orderPlan = orderPlan;
     }
 
@@ -406,5 +408,13 @@ public class Order extends IDomain implements Serializable {
 
     public void setBillOrder(Set<BillOrder> billOrder) {
         this.billOrder = billOrder;
+    }
+
+    public Long getOrderPlanId() {
+        return orderPlanId;
+    }
+
+    public void setOrderPlanId(Long orderPlanId) {
+        this.orderPlanId = orderPlanId;
     }
 }

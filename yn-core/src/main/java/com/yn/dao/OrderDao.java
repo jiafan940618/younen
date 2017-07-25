@@ -2,6 +2,7 @@ package com.yn.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -33,4 +34,7 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     
     @Query("select COALESCE(sum(s.capacity),0) from Order s WHERE s.serverId=?1 AND s.del=0")
     double sumCapacity(Long serverId);
+
+    @Query("select o.userId from Order o where o.del=0 and o.serverId=?1")
+    Set<Long> findUserId(Long serverId);
 }

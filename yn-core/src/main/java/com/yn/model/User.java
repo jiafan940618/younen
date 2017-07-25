@@ -16,31 +16,35 @@ import java.util.Set;
 @Entity
 public class User extends IDomain implements Serializable {
 	
-	@Column(columnDefinition = "varchar(255) comment '[手机号码]'")
+	@Column(columnDefinition = "varchar(255) comment '[登陆token]'")
 	protected String token;
-	@Column(columnDefinition = "varchar(255) comment '[手机号码]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[手机号码]'")
 	protected String phone;
-	@Column(columnDefinition = "varchar(255) comment '[密码]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[密码]'")
 	protected String password;
-	@Column(columnDefinition = "varchar(255) comment '[邮箱]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[邮箱]'")
 	protected String email;
 	@Column(columnDefinition = "varchar(255) comment '[头像]'")
 	protected String headImgUrl;
-	@Column(columnDefinition = "varchar(255) comment '[昵称]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[昵称]'")
 	protected String nickName;
-	@Column(columnDefinition = "varchar(255) comment '[用户名]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[用户名]'")
 	protected String userName;
-	@Column(columnDefinition = "int(1) default 0 comment '[性别]{0:未知,1:男,2:女}'")
+	@Column(columnDefinition = "int(1) NOT NULL comment '[性别]{0:未知,1:男,2:女}'")
 	protected Integer sex;
-	@Column(columnDefinition = "int(11) comment '[省id]'")
+	@Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
 	protected Integer provinceId;
-	@Column(columnDefinition = "int(11) comment '[市id]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
+	private String provinceText;
+	@Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
 	protected Integer cityId;
-	@Column(columnDefinition = "varchar(255) comment '[地址]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
+    private String cityText;
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[详细地址]'")
 	protected String addressText;
-	@Column(columnDefinition = "varchar(255) comment '[全地址]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[全地址]'")
 	protected String fullAddressText;
-	@Column(columnDefinition = "varchar(255) comment '[注册码]'")
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[注册码]'")
 	protected String privilegeCodeInit;
 	@Column(columnDefinition = "varchar(255) comment '[注册时使用的注册码]'")
 	protected String privilegeCode;
@@ -210,5 +214,21 @@ public class User extends IDomain implements Serializable {
 
     public void setBankCard(Set<BankCard> bankCard) {
         this.bankCard = bankCard;
+    }
+
+    public String getProvinceText() {
+        return provinceText;
+    }
+
+    public void setProvinceText(String provinceText) {
+        this.provinceText = provinceText;
+    }
+
+    public String getCityText() {
+        return cityText;
+    }
+
+    public void setCityText(String cityText) {
+        this.cityText = cityText;
     }
 }

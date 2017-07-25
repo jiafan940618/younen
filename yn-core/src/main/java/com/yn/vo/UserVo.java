@@ -17,7 +17,9 @@ public class UserVo extends QueryVo {
 	private String userName;
 	private Integer sex;
 	private Integer provinceId;
+	private String provinceText;
 	private Integer cityId;
+	private String cityText;
 	private String addressText;
 	private String fullAddressText;
 	private String privilegeCodeInit;
@@ -177,5 +179,21 @@ public class UserVo extends QueryVo {
 
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
+	}
+
+	public String getProvinceText() {
+		return provinceText;
+	}
+
+	public void setProvinceText(String provinceText) {
+		this.provinceText = provinceText;
+	}
+
+	public String getCityText() {
+		return cityText;
+	}
+
+	public void setCityText(String cityText) {
+		this.cityText = cityText;
 	}
 }

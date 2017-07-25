@@ -1,13 +1,14 @@
 package com.yn.web;
 
 import com.yn.dao.UserDao;
+import com.yn.enums.ResultEnum;
+import com.yn.enums.RoleEnum;
 import com.yn.model.Server;
 import com.yn.model.User;
 import com.yn.service.ServerService;
 import com.yn.service.UserService;
 import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
-import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.re.ResultDataVoUtil;
@@ -41,20 +42,19 @@ public class UserLoginController {
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
-    public Object appLogin(@RequestParam("phone")String phone, @RequestParam("password")String password, @RequestParam("code")String code) {
+    public Object appLogin(@RequestParam("phone") String phone, @RequestParam("password") String password, @RequestParam("code") String code) {
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
-            return ResultDataVoUtil.error(777, Constant.CODE_ERROR);
+            return ResultDataVoUtil.error(ResultEnum.CODE_ERROR);
         }
 
         User user = userService.findByPhone(phone);
         if (user == null) {
-            return ResultDataVoUtil.error(777, Constant.NO_THIS_USER);
+            return ResultDataVoUtil.error(ResultEnum.NO_THIS_USER);
+        } else if (user.getRoleId() == null || user.getRoleId().equals(RoleEnum.ORDINARY_MEMBER.getRoleId())) {
+            return ResultDataVoUtil.error(ResultEnum.NO_PERMISSION);
         } else if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
-            return ResultDataVoUtil.error(777, Constant.PASSWORD_ERROR);
-        }
-        if (user.getRoleId() == null || user.getRoleId() == 6) {
-            return ResultDataVoUtil.error(777, "权限不足");
+            return ResultDataVoUtil.error(ResultEnum.PASSWORD_ERROR);
         }
 
         user.setToken(userService.getToken(user));
@@ -104,5 +104,4 @@ public class UserLoginController {
         String getMD5Code = MD5Util.GetMD5Code(code);
         return ResultDataVoUtil.success(getMD5Code);
     }
-
 }

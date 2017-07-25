@@ -1,29 +1,21 @@
 package com.yn.service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
+import com.yn.dao.OrderDao;
 import com.yn.dao.UserDao;
 import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.*;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 @Service
@@ -32,6 +24,8 @@ public class UserService {
     UserDao userDao;
     @Autowired
     WalletService walletService;
+    @Autowired
+    OrderDao orderDao;
 
     public User findOne(Long id) {
         return userDao.findOne(id);
@@ -80,6 +74,20 @@ public class UserService {
     public List<User> findAll(User user) {
         Specification<User> spec = getSpecification(user);
         return userDao.findAll(spec);
+    }
+
+    public Page<User> findAll(User user, Long serverId, Pageable pageable) {
+        Page<User> findAll = null;
+        // 服务商登陆，只可以看到自己的下单用户
+        if (serverId != null) {
+            Set<Long> userIds = orderDao.findUserId(serverId);
+            findAll = userDao.findByIdIn(userIds, pageable);
+        } else {
+            // 管理员可以看到所有用户
+            Specification<User> spec = getSpecification(user);
+            findAll = userDao.findAll(spec, pageable);
+        }
+        return findAll;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

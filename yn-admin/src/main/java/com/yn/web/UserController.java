@@ -1,21 +1,16 @@
 package com.yn.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.model.User;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultDataVoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/server/user")
@@ -57,11 +52,11 @@ public class UserController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(UserVo userVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(UserVo userVo, Long serverId, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
-        Page<User> findAll = userService.findAll(user, pageable);
+        Page<User> findAll = userService.findAll(user, serverId, pageable);
         return ResultDataVoUtil.success(findAll);
     }
-    
+
 }

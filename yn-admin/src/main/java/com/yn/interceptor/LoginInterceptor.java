@@ -1,8 +1,12 @@
 package com.yn.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.yn.enums.ResultEnum;
+import com.yn.exception.MyException;
+import com.yn.model.User;
+import com.yn.service.UserService;
+import com.yn.session.SessionCache;
+import com.yn.utils.GetIP;
+import com.yn.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -12,21 +16,13 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.yn.exception.MyException;
-import com.yn.model.User;
-import com.yn.service.UserService;
-import com.yn.session.SessionCache;
-import com.yn.utils.Constant;
-import com.yn.utils.GetIP;
-import com.yn.utils.StringUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    UserService userService;
 
     /**
      * 在业务处理器处理请求之前被调用 如果返回false 从当前的拦截器往回执行所有拦截器的afterCompletion(),再退出拦截器链
@@ -85,7 +81,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
 
-            throw new MyException(444, Constant.NO_LOGIN);
+            throw new MyException(ResultEnum.NO_LOGIN);
         }
 
         return true;

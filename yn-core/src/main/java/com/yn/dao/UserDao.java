@@ -1,6 +1,8 @@
 package com.yn.dao;
 
 import com.yn.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     @Modifying
@@ -26,4 +29,6 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
     
     @Query("SELECT COUNT(*) FROM User u WHERE u.del=0")
     long countNum();
+
+    Page<User> findByIdIn(Set<Long> userIds, Pageable pageable);
 }

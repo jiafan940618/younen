@@ -1,22 +1,16 @@
 package com.yn.web;
 
+import com.yn.model.Wallet;
+import com.yn.service.WalletService;
+import com.yn.utils.BeanCopy;
+import com.yn.vo.WalletVo;
 import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.yn.model.Wallet;
-import com.yn.service.WalletService;
-import com.yn.utils.BeanCopy;
-import com.yn.utils.ResultData;
-import com.yn.vo.WalletVo;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/server/wallet")
@@ -63,13 +57,5 @@ public class WalletController {
         BeanCopy.copyProperties(walletVo, wallet);
         Page<Wallet> findAll = walletService.findAll(wallet, pageable);
         return ResultDataVoUtil.success(findAll);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/selectByUserId", method = {RequestMethod.POST})
-    public Object selectByUserId(Long userId) {
-        Wallet wallet = new Wallet();
-        Wallet findOne = walletService.findOne(wallet);
-        return ResultDataVoUtil.success(findOne);
     }
 }
