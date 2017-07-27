@@ -3,7 +3,6 @@ package com.yn.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 import org.hibernate.annotations.Where;
-import org.springframework.boot.autoconfigure.cache.CacheType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +15,7 @@ import java.util.Set;
 @Entity
 public class Server extends IDomain implements Serializable {
 
-    @Column(columnDefinition = "int(11) default 0 comment '[用户id]'")
+    @Column(columnDefinition = "int(11) comment '[用户id]'")
     private Long userId;
     @Column(columnDefinition = "varchar(255) comment '[企业邮箱]'")
     private String companyEmail;
@@ -91,13 +90,16 @@ public class Server extends IDomain implements Serializable {
     @OneToMany
     @JoinColumn(name = "serverId", insertable = false, updatable = false)
     @Where(clause = "del=0")
+    @OrderBy("id ASC")
     private Set<ServerPlan> serverPlan;
 
     /**
      * 资质
      */
-    @ManyToMany
-    private Set<Qualifications> qualifications;
+    @OneToMany
+    @JoinColumn(name = "serverId", insertable = false, updatable = true)
+    @Where(clause = "del=0")
+    private Set<QualificationsServer> qualificationsServer;
 
     /**
      * 选配项目
@@ -355,12 +357,12 @@ public class Server extends IDomain implements Serializable {
         this.serverPlan = serverPlan;
     }
 
-    public Set<Qualifications> getQualifications() {
-        return qualifications;
+    public Set<QualificationsServer> getQualificationsServer() {
+        return qualificationsServer;
     }
 
-    public void setQualifications(Set<Qualifications> qualifications) {
-        this.qualifications = qualifications;
+    public void setQualificationsServer(Set<QualificationsServer> qualificationsServer) {
+        this.qualificationsServer = qualificationsServer;
     }
 
     public Set<ApolegamyServer> getApolegamyServer() {

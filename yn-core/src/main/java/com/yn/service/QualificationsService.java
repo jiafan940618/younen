@@ -1,9 +1,12 @@
 package com.yn.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.yn.dao.ApolegamyDao;
+import com.yn.enums.DeleteEnum;
 import com.yn.model.Apolegamy;
+import com.yn.model.QualificationsServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,10 @@ public class QualificationsService {
 	QualificationsDao qualificationsDao;
     @Autowired
     ApolegamyService apolegamyService;
+    @Autowired
+    QualificationsServerService qualificationsServerService;
+    @Autowired
+    ApolegamyDao apolegamyDao;
 
 	public Qualifications findOne(Long id) {
 		return qualificationsDao.findOne(id);
@@ -45,12 +52,20 @@ public class QualificationsService {
 
 	@Transactional
 	public void delete(Long id) {
-	    // 删除资质
+	    // 1.删除资质
 		qualificationsDao.delete(id);
-		Qualifications qualifications = qualificationsDao.findOne(id);
 
-		// 删除资质的选配项目
-		if (qualifications.getDel().equals(1)) {
+		// 2.删除服务商的资质
+		Qualifications qualifications = qualificationsDao.findOne(id);
+		if (qualifications.getDel().equals(DeleteEnum.DEL.getCode())) {
+            QualificationsServer qualificationsServerE = new QualificationsServer();
+            qualificationsServerE.setQualificationsId(id);
+            List<QualificationsServer> qualificationsServerList = qualificationsServerService.findAll(qualificationsServerE);
+            for (QualificationsServer qualificationsServer : qualificationsServerList) {
+                qualificationsServerService.delete(qualificationsServer.getId());
+            }
+
+            // 3.删除资质的选配项目
 		    if (!CollectionUtils.isEmpty(qualifications.getApolegamy())) {
 		        for (Apolegamy apolegamy : qualifications.getApolegamy()) {
                     apolegamyService.delete(apolegamy.getId());
@@ -82,5 +97,33 @@ public class QualificationsService {
 	public List<Qualifications> findAll(Qualifications qualifications) {
 		Specification<Qualifications> spec = RepositoryUtil.getSpecification(qualifications);
 		return qualificationsDao.findAll(spec);
-	} 
+	}
+
+	@Transactional
+    public void saveWithApolegamy(Qualifications qualifications) {
+        Set<Apolegamy> apolegamies = qualifications.getApolegamy();
+
+        // 保存资质
+        qualifications.setApolegamy(null);
+        Qualifications result = qualificationsDao.save(qualifications);
+
+        Long qulificationsId = result.getId();
+
+        // 更新资质选配项目的资质id
+        if (!CollectionUtils.isEmpty(apolegamies)) {
+            for (Apolegamy apolegamy : apolegamies) {
+                apolegamy.setQualificationsId(qulificationsId);
+                apolegamyService.save(apolegamy);
+            }
+        } else {
+            Apolegamy apolegamyE = new Apolegamy();
+            apolegamyE.setQualificationsId(qulificationsId);
+            List<Apolegamy> apolegamyList = apolegamyService.findAll(apolegamyE);
+            for (Apolegamy apolegamy : apolegamyList) {
+                apolegamy.setQualificationsId(null);
+                apolegamyDao.save(apolegamy);
+            }
+        }
+
+    }
 }

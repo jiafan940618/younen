@@ -36,7 +36,7 @@ public class QualificationsController {
     public Object save(@RequestBody QualificationsVo qualificationsVo) {
         Qualifications qualifications = new Qualifications();
         BeanCopy.copyProperties(qualificationsVo, qualifications);
-        qualificationsService.save(qualifications);
+        qualificationsService.saveWithApolegamy(qualifications);
         return ResultDataVoUtil.success(qualifications);
     }
 

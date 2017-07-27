@@ -22,7 +22,7 @@ public class Qualifications extends IDomain implements Serializable {
      * 选配项目
      */
     @OneToMany(cascade= CascadeType.ALL)
-    @JoinColumn(name="qualificationsId", insertable=false, updatable=true)
+    @JoinColumn(name="qualificationsId", insertable=false, updatable=false)
     @Where(clause = "del=0")
     private Set<Apolegamy> apolegamy;
 

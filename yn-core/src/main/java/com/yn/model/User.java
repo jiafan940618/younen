@@ -1,6 +1,7 @@
 package com.yn.model;
 
 import com.yn.domain.IDomain;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,7 +63,12 @@ public class User extends IDomain implements Serializable {
 	 */
 	@OneToMany
     @JoinColumn(name = "userId", insertable = false, updatable = true)
+    @Where(clause="del=0")
     private Set<BankCard> bankCard;
+
+
+
+
 
     public String getToken() {
         return token;
