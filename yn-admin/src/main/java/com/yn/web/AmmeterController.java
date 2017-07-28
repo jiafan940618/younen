@@ -44,40 +44,7 @@ public class AmmeterController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody AmmeterVo ammeterVo) {
-        Ammeter ammeter = new Ammeter();
-        BeanCopy.copyProperties(ammeterVo, ammeter);
-
-        // 设置cityText provinceText
-        City city = cityService.findOne(ammeter.getCityId());
-        Province province = provinceService.findOne(ammeter.getProvinceId());
-        ammeter.setCityText(city.getCityText());
-        ammeter.setProvinceText(province.getProvinceText());
-
-        // 根据dAddr设置发电用电
-        String dAddr = ammeter.getdAddr().toString();
-        if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode())) {
-            ammeter.setType(1);
-        } else if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.USE_ELECTRICITY.getCode())) {
-            ammeter.setType(2);
-        }
-
-        // 判断是否有关联电站
-        if (ammeter.getStationId() == null) {
-            return ResultDataVoUtil.error(ResultEnum.NO_CHOOSE_STATION);
-        }
-
-        Ammeter ammeterR = new Ammeter();
-        ammeterR.setcAddr(ammeter.getcAddr());
-        ammeterR.setdAddr(ammeter.getdAddr());
-        Ammeter findOne = ammeterDao.findOne(Example.of(ammeterR));
-
-        if (findOne != null) {
-            if (ammeter.getId() == null) {
-                ammeter.setId(findOne.getId());
-            }
-        }
-        ammeterService.save(ammeter);
-
+        Ammeter ammeter = ammeterService.saveAndbindStation(ammeterVo);
         return ResultDataVoUtil.success(ammeter);
     }
 
@@ -108,16 +75,14 @@ public class AmmeterController {
 
     /**
      * 解绑电站
+     * @param ammeterId
+     * @return
      */
     @RequestMapping(value = "/relieveStation", method = {RequestMethod.POST})
     @ResponseBody
     public Object relieveStation(@RequestParam("ammeterId") Long ammeterId) {
-        Ammeter findOne = ammeterDao.findOne(ammeterId);
-        if (findOne != null) {
-            findOne.setStationId(null);
-            ammeterDao.save(findOne);
-        }
-        return ResultDataVoUtil.success(findOne);
+        Ammeter ammeter = ammeterService.relieveStation(ammeterId);
+        return ResultDataVoUtil.success(ammeter);
     }
 
     /**

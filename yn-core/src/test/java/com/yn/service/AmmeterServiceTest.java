@@ -9,18 +9,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
 
 /**
- * Created by Xiang on 2017/7/27.
+ * Created by Xiang on 2017/7/28.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class QualificationsServerServiceTest {
+public class AmmeterServiceTest {
 
     @Autowired
-    QualificationsServerService qualificationsServerService;
+    AmmeterService ammeterService;
 
     @Test
-    public void save() throws Exception {
-        qualificationsServerService.saveBatch("1",1L);
+    public void saveAndbindStation() throws Exception {
+
+
+
     }
 
 }
