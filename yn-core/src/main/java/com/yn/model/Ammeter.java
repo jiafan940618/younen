@@ -34,15 +34,15 @@ public class Ammeter extends IDomain implements Serializable {
 	private String wConf;
 	
 	
-	@Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
+	@Column(columnDefinition = "int(11) comment '[省id]'")
 	private Long provinceId;
-	@Column(columnDefinition = "varchar(255) NOT NULL comment '[省名字]'")
+	@Column(columnDefinition = "varchar(255) comment '[省名字]'")
 	private String provinceText;
-	@Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
+	@Column(columnDefinition = "int(11) comment '[市id]'")
 	private Long cityId;
-	@Column(columnDefinition = "varchar(255) NOT NULL comment '[市名字]'")
+	@Column(columnDefinition = "varchar(255) comment '[市名字]'")
 	private String cityText;
-	@Column(columnDefinition = "varchar(255) NOT NULL comment '[地址]'")
+	@Column(columnDefinition = "varchar(255) comment '[地址]'")
 	private String addressText;
 	@Column(columnDefinition = "int(11) comment '[电站id]'")
 	private Long stationId;
@@ -56,7 +56,7 @@ public class Ammeter extends IDomain implements Serializable {
 	private Date workDtm;
 	@Column(columnDefinition = "datetime comment '[出厂日期]'")
 	private Date outfactoryDtm;
-	@Column(columnDefinition = "varchar(255) NOT NULL comment '[sim卡]'")
+	@Column(columnDefinition = "varchar(255) comment '[sim卡]'")
 	private String sim;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[初始电量]'")
 	private Double initKwh;
