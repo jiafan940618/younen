@@ -5,6 +5,7 @@ import com.yn.dao.StationDao;
 import com.yn.enums.AmmeterTypeEnum;
 import com.yn.enums.DeleteEnum;
 import com.yn.enums.ResultEnum;
+import com.yn.enums.StationStatusEnum;
 import com.yn.exception.MyException;
 import com.yn.model.Ammeter;
 import com.yn.model.City;
@@ -68,12 +69,8 @@ public class AmmeterService {
 		// 1.删除电表
 		ammeterDao.delete(id);
 
-        // 2.将stationId设置成null
-        Ammeter ammeter = ammeterDao.findOne(id);
-        if (ammeter.getStationId() != null) {
-            ammeter.setStationId(null);
-            ammeterDao.save(ammeter);
-        }
+        // 2.解绑电站
+        relieveStation(id);
 	}
 
 	public void deleteBatch(List<Long> id) {
@@ -169,10 +166,10 @@ public class AmmeterService {
 
         // 根据dAddr设置发电用电
         String dAddr = ammeter.getdAddr().toString();
-        if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode())) {
-            ammeter.setType(1);
-        } else if (dAddr.substring(0, 1).equals(AmmeterTypeEnum.USE_ELECTRICITY.getCode())) {
-            ammeter.setType(2);
+        if (dAddr.substring(0, 1).equalsIgnoreCase(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().toString())) {
+            ammeter.setType(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+        } else if (dAddr.substring(0, 1).equalsIgnoreCase(AmmeterTypeEnum.USE_ELECTRICITY.getCode().toString())) {
+            ammeter.setType(AmmeterTypeEnum.USE_ELECTRICITY.getCode());
         }
 
         // 判断是否有关联电站
@@ -213,9 +210,7 @@ public class AmmeterService {
      * @param ammeterId
      * @return
      */
-    @Transactional
     public Ammeter relieveStation(Long ammeterId) {
-
         // 将电表的stationId设置成null
         Ammeter findOne = ammeterDao.findOne(ammeterId);
         if (findOne != null) {
@@ -224,16 +219,27 @@ public class AmmeterService {
                 findOne.setStationId(null);
                 ammeterDao.save(findOne);
 
-                // 判断电站是否还存在电表，如果电站下没有绑定电表了，将电站的 采集器码 字段设置成null
-                Station station = stationDao.findOne(stationId);
-                if (!CollectionUtils.isEmpty(station.getAmmeter())) {
-                    station.setDevConfCode(null);
-                    stationDao.save(station);
-                }
+                changDevConfCodeAndStatus(stationId);
             }
         }
 
         return findOne;
     }
-	
+
+    /**
+     * 判断电站是否还存在电表，
+     * 如果电站下没有绑定电表了，
+     * 将电站的 采集器码 字段设置成null，
+     * 并且将电站的状态改成 0：未绑定电站
+     * @param stationId
+     */
+    private void changDevConfCodeAndStatus(Long stationId) {
+        Station station = stationDao.findOne(stationId);
+        if (CollectionUtils.isEmpty(station.getAmmeter())) {
+            station.setDevConfCode(null);
+            station.setStatus(StationStatusEnum.NOT_BINDING_AMMETER.getCode());
+            stationDao.save(station);
+        }
+    }
+
 }
