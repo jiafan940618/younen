@@ -2,6 +2,7 @@ package com.yn.web;
 
 import java.util.List;
 
+import com.yn.enums.OrderEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,13 +94,13 @@ public class OrderController {
         for (Order order : findAll) {
         	Double totalPrice = order.getTotalPrice();
         	oda.setPriceTol(oda.getPriceTol() + totalPrice);
-        	if (order.getStatus() == 0) {
+        	if (order.getStatus().equals(OrderEnum.STATUS_APPLY.getCode())) {
         		oda.setApplyingPriceTol(oda.getApplyingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 1) {
+			} else if (order.getStatus().equals(OrderEnum.STATUS_BUILD.getCode())) {
 				oda.setBuildingPriceTol(oda.getBuildingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 2) {
+			} else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED_APPLY.getCode())) {
 				oda.setGridConnectedingPriceTol(oda.getGridConnectedingPriceTol() + totalPrice);
-			} else if (order.getStatus() == 3) {
+			} else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED.getCode())) {
 				oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
 			}
         	oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());

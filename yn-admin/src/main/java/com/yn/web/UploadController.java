@@ -11,22 +11,43 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.yn.service.OssService;
 import com.yn.vo.re.ResultDataVoUtil;
 
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
 @RequestMapping("/server/upload")
 public class UploadController {
-	@Resource
-	OssService ossService;
-	
-	/**
-	 * 批量上传文件上传图片
-	 */
-	@RequestMapping(value = "/upload", method = {RequestMethod.POST, RequestMethod.GET})
-	@ResponseBody
-	public Object upload(MultipartHttpServletRequest request) {
-		String[] saveToOSSs = ossService.uploadFiles(request);
-		return ResultDataVoUtil.success(saveToOSSs);
-	}
-	
+    @Resource
+    OssService ossService;
+
+    /**
+     * 批量上传文件上传图片
+     */
+    @RequestMapping(value = "/upload", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object upload(MultipartHttpServletRequest request) {
+        String[] saveToOSSs = ossService.uploadFiles(request);
+        return ResultDataVoUtil.success(saveToOSSs);
+    }
+
+
+    @RequestMapping(value = "/upload4KindEditor", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object upload4KindEditor(MultipartHttpServletRequest request) {
+
+        Map<String, Object> map = new HashMap<>();
+        String[] saveToOSSs = ossService.uploadFiles(request);
+        String result = saveToOSSs[0];
+        if (request.equals("上传失败")) {
+            map.put("error", 1);
+            map.put("url", null);
+            map.put("msg", "上传失败");
+        } else {
+            map.put("error", 0);
+            map.put("url", result);
+        }
+        return map;
+    }
+
 }

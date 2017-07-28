@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.OrderDao;
+import com.yn.enums.DeleteEnum;
 import com.yn.model.Ammeter;
 import com.yn.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.yn.dao.StationDao;
@@ -66,13 +68,18 @@ public class StationService {
 		System.out.println();
 	}
 
+	@Transactional
 	public void delete(Long id) {
 		// 1.删除电站
 		stationDao.delete(id);
 
 		// 2.删除订单
         Station station = stationDao.findOne(id);
-        if (station.getDel().equals(1)) {
+        if (station.getDel().equals(DeleteEnum.DEL.getCode())) {
+            // 将采集器码设置成 null
+            station.setDevConfCode(null);
+            stationDao.save(station);
+
             Order order = orderDao.findOne(station.getOrderId());
             orderDao.delete(order.getId());
 
