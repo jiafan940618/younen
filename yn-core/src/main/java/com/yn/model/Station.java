@@ -53,7 +53,7 @@ public class Station extends IDomain implements Serializable {
 	private Date workDtm;
 	@Column(columnDefinition = "varchar(255) comment '[采集器码]'")
 	private String devConfCode;
-	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[电站状态]{0:未绑定电表,1:正在发电}'")
+	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[电站状态]{0:未绑定电表,1:正在发电,2:电表异常}'")
 	private Integer status;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[通道模式]{0:合计模式,1:多通道模式}'")
 	private Integer passageModel;

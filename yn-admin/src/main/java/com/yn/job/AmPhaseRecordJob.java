@@ -11,6 +11,7 @@ import org.hibernate.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * 采集原始数据
  */
-//@Component
+@Component
 public class AmPhaseRecordJob {
     @Autowired
     SessionFactory sessionFactory;

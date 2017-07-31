@@ -21,7 +21,7 @@ public class Subsidy extends IDomain implements Serializable {
 	private Long cityId;
 	@Column(columnDefinition = "varchar(255) comment '[城市名称]'")
 	private String cityText;
-	@Column(columnDefinition = "int(1) comment '[类型]{0:居民,1:工业,2:商业,3:农业}'")
+	@Column(columnDefinition = "int(1) comment '[类型]{1:居民,2:工业,3:商业,4:农业}'")
 	private Integer type;
 	@Column(columnDefinition = "int(11) comment '[城市日照量 小时/天]'")
 	private Integer sunCount;

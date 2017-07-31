@@ -6,11 +6,11 @@ package com.yn.enums;
 public enum CommonEnum {
 
 
-    // [类型]{0:居民,1:工业,2:商业,3:农业}
-    RESIDENT_TYPE(0, "居民"),
-    INDUSTRY_TYPE(1, "工业"),
-    BUSINESS_TYPE(2, "商业"),
-    AGRICULTURE_TYPE(3, "农业"),
+    // [类型]{1:居民,2:工业,3:商业,4:农业}
+    RESIDENT_TYPE(1, "居民"),
+    INDUSTRY_TYPE(2, "工业"),
+    BUSINESS_TYPE(3, "商业"),
+    AGRICULTURE_TYPE(4, "农业"),
 
 
 

@@ -124,7 +124,7 @@ public class AmmeterService {
 				}
 			}
 
-			// 根据采集器码，城市，电站码，电站名
+			// 根据采集器码，城市名，电站码，电站名
 			if (!StringUtils.isEmpty(ammeter.getQuery())) {
 				Predicate[] predicates = new Predicate[4];
 				predicates[0] = cb.like(root.get("cAddr"), "%" + ammeter.getQuery() + "%");
@@ -200,6 +200,10 @@ public class AmmeterService {
             }
         }
         station.setDevConfCode(ammeter.getcAddr());
+        // 如果电站未绑定电表，电站的状态改成正在发电
+        if (station.getStatus().equals(StationStatusEnum.NOT_BINDING_AMMETER.getCode())) {
+            station.setStatus(StationStatusEnum.ELECTRICITY_GENERATING.getCode());
+        }
         stationService.save(station);
 
         return ammeter;

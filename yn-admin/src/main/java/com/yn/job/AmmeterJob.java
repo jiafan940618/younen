@@ -22,7 +22,7 @@ import com.yn.utils.DateUtil;
  * 修改电表/电站信息
  * 保存电表工作状态记录
  */
-//@Component
+@Component
 public class AmmeterJob {
     @Autowired
     AmmeterService ammeterService;

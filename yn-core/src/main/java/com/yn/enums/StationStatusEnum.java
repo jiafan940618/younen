@@ -5,9 +5,10 @@ package com.yn.enums;
  */
 public enum StationStatusEnum {
 
-    // [电站状态]{0:未绑定电表,1:正在发电}
+    // [电站状态]{0:未绑定电表,1:正在发电,2:电表异常}
     NOT_BINDING_AMMETER(0, "未绑定电表"),
     ELECTRICITY_GENERATING(1, "正在发电"),
+    AMMETER_ABNORMAL(2, "电表异常"),
     ;
 
     private Integer code;

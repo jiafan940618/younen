@@ -23,6 +23,8 @@ public class OrderPlanVo {
 	private Double inverterWarrantyYear;
 	
 	private String otherMaterialJsonText;
+
+	private Double unitPrice;
 	
 	
 	public Long getOrderId() {
@@ -114,5 +116,13 @@ public class OrderPlanVo {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Double getUnitPrice() {
+		return unitPrice;
+	}
+
+	public void setUnitPrice(Double unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 }

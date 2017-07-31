@@ -33,7 +33,7 @@ public class ServerVo extends QueryVo {
     private String qualificationsImgUrl;
     private Double priceaRing;
     private Double pricebRing;
-    private Double design_price;
+    private Double designPrice;
     private Double warrantyYear;
     private Integer rank;
     private Double factorage;
@@ -229,14 +229,6 @@ public class ServerVo extends QueryVo {
         this.pricebRing = pricebRing;
     }
 
-    public Double getDesign_price() {
-        return design_price;
-    }
-
-    public void setDesign_price(Double design_price) {
-        this.design_price = design_price;
-    }
-
     public Double getWarrantyYear() {
         return warrantyYear;
     }
@@ -299,5 +291,13 @@ public class ServerVo extends QueryVo {
 
     public void setApolegamyServer(Set<ApolegamyServerVo> apolegamyServer) {
         this.apolegamyServer = apolegamyServer;
+    }
+
+    public Double getDesignPrice() {
+        return designPrice;
+    }
+
+    public void setDesignPrice(Double designPrice) {
+        this.designPrice = designPrice;
     }
 }

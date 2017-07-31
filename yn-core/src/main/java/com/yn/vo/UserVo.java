@@ -16,9 +16,9 @@ public class UserVo extends QueryVo {
 	private String nickName;
 	private String userName;
 	private Integer sex;
-	private Integer provinceId;
+	private Long provinceId;
 	private String provinceText;
-	private Integer cityId;
+	private Long cityId;
 	private String cityText;
 	private String addressText;
 	private String fullAddressText;
@@ -101,22 +101,6 @@ public class UserVo extends QueryVo {
 		this.sex = sex;
 	}
 
-	public Integer getProvinceId() {
-		return provinceId;
-	}
-
-	public void setProvinceId(Integer provinceId) {
-		this.provinceId = provinceId;
-	}
-
-	public Integer getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
-	}
-
 	public String getAddressText() {
 		return addressText;
 	}
@@ -196,4 +180,20 @@ public class UserVo extends QueryVo {
 	public void setCityText(String cityText) {
 		this.cityText = cityText;
 	}
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
 }

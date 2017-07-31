@@ -131,7 +131,7 @@ public class ServerService {
     }
 
     /**
-     * // 修改服务商的认证状态时，服务商用户的roleId要跟着变
+     * 修改服务商的认证状态时，服务商用户的roleId要跟着变
      *
      * @param server
      */

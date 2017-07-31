@@ -10,8 +10,7 @@ public enum RoleEnum {
     BUSINESS_ADMINISTRATOR(3L, "业务管理员"),
     NOT_AUTHENTICATED_SERVER(4L, "未认证服务商"),
     AUTHENTICATED_SERVER(5L, "认证服务商"),
-    ORDINARY_MEMBER(6L, "普通会员"),
-    ;
+    ORDINARY_MEMBER(6L, "普通会员"),;
 
     private Long roleId;
     private String message;
@@ -25,15 +24,8 @@ public enum RoleEnum {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

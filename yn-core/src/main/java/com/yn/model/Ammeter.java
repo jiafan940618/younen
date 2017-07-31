@@ -16,13 +16,13 @@ import java.util.Date;
 @Entity
 public class Ammeter extends IDomain implements Serializable {
 
-	@Column(columnDefinition = "int(11) NOT NULL comment '[cAddr]'")
+	@Column(columnDefinition = "int(11) NOT NULL comment '[采集器地址]'")
 	private String cAddr;
-	@Column(columnDefinition = "int(11) NOT NULL comment '[iAddr]'")
+	@Column(columnDefinition = "int(11) NOT NULL comment '[接口地址]'")
 	private Integer iAddr;
-	@Column(columnDefinition = "int(11) NOT NULL comment '[dAddr]'")
+	@Column(columnDefinition = "int(11) NOT NULL comment '[设备地址]'")
 	private Long dAddr;
-	@Column(columnDefinition = "int(11) NOT NULL comment '[dType]'")
+	@Column(columnDefinition = "int(11) NOT NULL comment '[设备类型]'")
 	private Integer dType;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[dName]'")
 	private String dName;

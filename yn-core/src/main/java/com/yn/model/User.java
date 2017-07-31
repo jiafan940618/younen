@@ -23,7 +23,7 @@ public class User extends IDomain implements Serializable {
 	protected String phone;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[密码]'")
 	protected String password;
-	@Column(columnDefinition = "varchar(255) NOT NULL comment '[邮箱]'")
+	@Column(columnDefinition = "varchar(255) comment '[邮箱]'")
 	protected String email;
 	@Column(columnDefinition = "varchar(255) comment '[头像]'")
 	protected String headImgUrl;
@@ -34,11 +34,11 @@ public class User extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(1) NOT NULL comment '[性别]{0:未知,1:男,2:女}'")
 	protected Integer sex;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
-	protected Integer provinceId;
+	protected Long provinceId;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
 	private String provinceText;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
-	protected Integer cityId;
+	protected Long cityId;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
     private String cityText;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[详细地址]'")
@@ -134,22 +134,6 @@ public class User extends IDomain implements Serializable {
         this.sex = sex;
     }
 
-    public Integer getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(Integer provinceId) {
-        this.provinceId = provinceId;
-    }
-
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
-
     public String getAddressText() {
         return addressText;
     }
@@ -236,5 +220,21 @@ public class User extends IDomain implements Serializable {
 
     public void setCityText(String cityText) {
         this.cityText = cityText;
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
     }
 }
