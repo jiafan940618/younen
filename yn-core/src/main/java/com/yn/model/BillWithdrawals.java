@@ -1,5 +1,6 @@
 package com.yn.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 
 import java.io.Serializable;
@@ -7,6 +8,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * 提现
@@ -20,13 +23,13 @@ public class BillWithdrawals extends IDomain implements Serializable {
 	private Long walletId;
 	@Column(columnDefinition = "varchar(255) comment '[交易单号]'")
 	private String tradeNo;
-	@Column(updatable = true, columnDefinition = "varchar(255) comment '[持卡人]'")
+	@Column(columnDefinition = "varchar(255) comment '[持卡人]'")
 	private String realName;
-	@Column(updatable = true, columnDefinition = "varchar(255) comment '[预留手机号]'")
+	@Column(columnDefinition = "varchar(255) comment '[预留手机号]'")
 	private String phone;
-	@Column(updatable = true, columnDefinition = "varchar(255) comment '[开户银行]'")
+	@Column(columnDefinition = "varchar(255) comment '[开户银行]'")
 	private String bankName;
-	@Column(updatable = true, columnDefinition = "varchar(255) comment '[银行卡号]'")
+	@Column(columnDefinition = "varchar(255) comment '[银行卡号]'")
 	private String bankCardNum;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[提现金额]'")
 	private Double money;
@@ -34,6 +37,14 @@ public class BillWithdrawals extends IDomain implements Serializable {
     private Date applyDtm;
 	@Column(columnDefinition = "int(1) default 0 comment '[提现状态]{0:申请中,1:提现成功,2:提现失败}'")
 	private Integer status;
+
+	/**
+	 * 用户
+	 */
+	@ManyToOne
+	@JoinColumn(name = "userId", insertable = false, updatable = false)
+	@JsonIgnoreProperties(value = {"password","role"})
+	private User user;
 	
 	public Long getUserId() {
 		return userId;
@@ -94,5 +105,13 @@ public class BillWithdrawals extends IDomain implements Serializable {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

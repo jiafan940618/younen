@@ -103,7 +103,7 @@ public class BillRechargeService {
 				}
 			}
 
-			// 根据交易单号，用户名
+			// 根据交易单号，用户
 			String queryStr = billRecharge.getQuery();
 			if (!StringUtils.isEmpty(queryStr)) {
 				Predicate[] predicates = new Predicate[2];

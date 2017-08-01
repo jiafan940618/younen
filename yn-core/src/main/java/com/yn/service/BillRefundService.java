@@ -103,12 +103,12 @@ public class BillRefundService {
 				}
 			}
 
-			// 根据交易单号，用户名
+			// 根据交易单号，用户
 			String queryStr = billRefund.getQuery();
 			if (!StringUtils.isEmpty(queryStr)) {
 				Predicate[] predicates = new Predicate[2];
 				predicates[0] = cb.like(root.get("tradeNo"), "%" + queryStr + "%");
-				predicates[1] = cb.like(root.get("realName"), "%" + queryStr + "%");
+				predicates[1] = cb.like(root.get("user").get("userName"), "%" + queryStr + "%");
 				expressions.add(cb.or(predicates));
 			}
 			
