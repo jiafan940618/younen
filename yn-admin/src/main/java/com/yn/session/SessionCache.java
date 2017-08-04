@@ -1,5 +1,6 @@
 package com.yn.session;
 
+import com.yn.enums.ResultEnum;
 import com.yn.exception.MyException;
 import com.yn.model.User;
 import com.yn.utils.Constant;
@@ -86,7 +87,7 @@ public class SessionCache {
     public User checkUserIsLogin() {
         User sessionUser = SessionCache.instance().getUser();
         if (sessionUser == null) {
-            throw new MyException(444, Constant.NO_LOGIN);
+            throw new MyException(ResultEnum.NO_LOGIN);
         }
         return sessionUser;
     }
