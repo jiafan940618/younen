@@ -53,7 +53,7 @@ public class NewsService {
 	}
 
     public News findOne(News news) {
-        Specification<News> spec = RepositoryUtil.getSpecification(news);
+        Specification<News> spec = getSpecification(news);
         News findOne = newsDao.findOne(spec);
         return findOne;
     }
@@ -63,13 +63,13 @@ public class NewsService {
     }
 
     public Page<News> findAll(News news, Pageable pageable) {
-        Specification<News> spec = RepositoryUtil.getSpecification(news);
+        Specification<News> spec = getSpecification(news);
         Page<News> findAll = newsDao.findAll(spec, pageable);
         return findAll;
     }
 
     public List<News> findAll(News news) {
-        Specification<News> spec = RepositoryUtil.getSpecification(news);
+        Specification<News> spec = getSpecification(news);
         return newsDao.findAll(spec);
     }
 

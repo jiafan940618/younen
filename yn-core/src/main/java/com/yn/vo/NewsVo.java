@@ -1,11 +1,13 @@
 package com.yn.vo;
 
+import com.yn.domain.QueryVo;
+
 /**
  * 资讯，动态，视频
  * @author hy-03
  *
  */
-public class NewsVo {
+public class NewsVo extends QueryVo {
 	
 	private Long id;
 	private String title;

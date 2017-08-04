@@ -104,11 +104,12 @@ public class OrderService {
 
 			// 根据订单号，联系人，联系人手机号，服务商名称
 			if (!StringUtils.isEmpty(order.getQuery())) {
-				Predicate[] predicates = new Predicate[4];
+				Predicate[] predicates = new Predicate[5];
 				predicates[0] = cb.like(root.get("orderCode"), "%" + order.getQuery() + "%");
 				predicates[1] = cb.like(root.get("linkMan"), "%" + order.getQuery() + "%");
 				predicates[2] = cb.like(root.get("linkPhone"), "%" + order.getQuery() + "%");
-				predicates[3] = cb.like(root.get("server").get("companyName"), "%" + order.getQuery() + "%");
+				predicates[3] = cb.like(root.get("addressText"), "%" + order.getQuery() + "%");
+				predicates[4] = cb.like(root.get("server").get("companyName"), "%" + order.getQuery() + "%");
 				expressions.add(cb.or(predicates));
 			}
 			

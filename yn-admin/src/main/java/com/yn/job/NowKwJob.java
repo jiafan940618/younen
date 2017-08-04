@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 /**
  * 更新电站的实时功率
  */
-@Component
+//@Component
 public class NowKwJob {
 	@Autowired
 	AmmeterService ammeterService;

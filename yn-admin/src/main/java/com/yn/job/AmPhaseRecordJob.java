@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 采集原始数据
  */
-@Component
+//@Component
 public class AmPhaseRecordJob {
     @Autowired
     SessionFactory sessionFactory;
