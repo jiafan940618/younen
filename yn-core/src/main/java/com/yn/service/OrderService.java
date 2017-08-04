@@ -11,6 +11,9 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.yn.domain.OrderDetailAccounts;
+import com.yn.enums.OrderEnum;
+import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -126,8 +129,53 @@ public class OrderService {
 			return conjunction;
 		};
 	}
-	
-	
+
+    /**
+     * 账目明细
+     * @param serverId
+     * @return
+     */
+    public OrderDetailAccounts detailAccounts(Long serverId) {
+        Order orderR = new Order();
+        orderR.setServerId(serverId);
+        List<Order> findAll = findAll(orderR);
+
+        OrderDetailAccounts oda = new OrderDetailAccounts();
+        oda.setOrderNum(findAll.size());
+
+        for (Order order : findAll) {
+            Double totalPrice = order.getTotalPrice();
+            oda.setPriceTol(oda.getPriceTol() + totalPrice);
+            if (order.getStatus().equals(OrderEnum.STATUS_APPLY.getCode())) {
+                // 申请中项目
+                oda.setApplyingPriceTol(oda.getApplyingPriceTol() + totalPrice);
+            } else if (order.getStatus().equals(OrderEnum.STATUS_BUILD.getCode())) {
+                // 建设中项目
+                oda.setBuildingPriceTol(oda.getBuildingPriceTol() + totalPrice);
+            } else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED_APPLY.getCode())) {
+                // 申请并网发电项目
+                oda.setGridConnectedingPriceTol(oda.getGridConnectedingPriceTol() + totalPrice);
+            } else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED.getCode())) {
+                // 并网发电中项目
+                oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
+            }
+            // 优能服务费
+            oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());
+            // 优能选配项目
+            oda.setYnApolegamyPriceTol(oda.getYnApolegamyPriceTol() + order.getYnApolegamyPrice());
+            // 服务商选配项目
+            oda.setServerApolegamyPriceTol(oda.getServerApolegamyPriceTol() + order.getServerApolegamyPrice());
+            // 已支付金额
+            oda.setHadPayPriceTol(oda.getHadPayPriceTol() + order.getHadPayPrice());
+            // 未支付金额
+            oda.setNotPayPriceTol(oda.getNotPayPriceTol() + (order.getTotalPrice() - order.getHadPayPrice()));
+        }
+
+        // 营业利润 = 优能服务费 + 优能选配项目金额
+        oda.setProfitTol(oda.getFactoragePriceTol() + oda.getYnApolegamyPriceTol());
+
+        return oda;
+    }
 	
 	
 

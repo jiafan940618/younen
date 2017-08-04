@@ -82,7 +82,7 @@ public class Order extends IDomain implements Serializable {
 	
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[并网发电-支付状态]{0:未支付,1:已支付}'")
 	private Integer gridConnectedIsPay;
-	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[并网发电-并网状态]{0:未并网,1:并网完成}'")	
+	@Column(insertable=false, columnDefinition = "int(1) default 1 comment '[并网发电-并网状态]{1:申请中,2:并网完成}'")
 	private Integer gridConnectedStepA;
 	
 	/**

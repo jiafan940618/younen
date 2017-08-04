@@ -84,31 +84,8 @@ public class OrderController {
     @RequestMapping(value = "/detailAccounts", method = {RequestMethod.POST})
     @ResponseBody
     public Object detailAccounts(Long serverId) {
-        Order orderR = new Order();
-        orderR.setServerId(serverId);
-        List<Order> findAll = orderService.findAll(orderR);
-        
-        OrderDetailAccounts oda = new OrderDetailAccounts();
-        oda.setOrderNum(findAll.size());
-        
-        for (Order order : findAll) {
-        	Double totalPrice = order.getTotalPrice();
-        	oda.setPriceTol(oda.getPriceTol() + totalPrice);
-        	if (order.getStatus().equals(OrderEnum.STATUS_APPLY.getCode())) {
-        		oda.setApplyingPriceTol(oda.getApplyingPriceTol() + totalPrice);
-			} else if (order.getStatus().equals(OrderEnum.STATUS_BUILD.getCode())) {
-				oda.setBuildingPriceTol(oda.getBuildingPriceTol() + totalPrice);
-			} else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED_APPLY.getCode())) {
-				oda.setGridConnectedingPriceTol(oda.getGridConnectedingPriceTol() + totalPrice);
-			} else if (order.getStatus().equals(OrderEnum.STATUS_GRIDCONNECTED.getCode())) {
-				oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
-			}
-        	oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());
-        	oda.setApolegamyPriceTol(oda.getApolegamyPriceTol() + order.getServerApolegamyPrice());
-        	oda.setHadPayPriceTol(oda.getHadPayPriceTol() + order.getHadPayPrice());
-		}
-        
-        return ResultDataVoUtil.success(oda);
+        OrderDetailAccounts detailAccounts = orderService.detailAccounts(serverId);
+        return ResultDataVoUtil.success(detailAccounts);
     }
     
 }
