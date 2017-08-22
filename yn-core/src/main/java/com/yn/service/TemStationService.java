@@ -1,10 +1,10 @@
 package com.yn.service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import com.yn.model.News;
+import com.yn.utils.ObjToMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +17,9 @@ import com.yn.model.TemStation;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.RepositoryUtil;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.*;
 
 @Service
 public class TemStationService {
@@ -50,7 +53,7 @@ public class TemStationService {
 	}
 
     public TemStation findOne(TemStation temStation) {
-        Specification<TemStation> spec = RepositoryUtil.getSpecification(temStation);
+        Specification<TemStation> spec = getSpecification(temStation);
         TemStation findOne = temStationDao.findOne(spec);
         return findOne;
     }
@@ -60,15 +63,64 @@ public class TemStationService {
     }
 
     public Page<TemStation> findAll(TemStation temStation, Pageable pageable) {
-        Specification<TemStation> spec = RepositoryUtil.getSpecification(temStation);
+        Specification<TemStation> spec = getSpecification(temStation);
         Page<TemStation> findAll = temStationDao.findAll(spec, pageable);
         return findAll;
     }
 
     public List<TemStation> findAll(TemStation temStation) {
-        Specification<TemStation> spec = RepositoryUtil.getSpecification(temStation);
+        Specification<TemStation> spec = getSpecification(temStation);
         return temStationDao.findAll(spec);
     }
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Specification<TemStation> getSpecification(TemStation temStation) {
+		temStation.setDel(0);
+		Map<String, Object> objectMap = ObjToMap.getObjectMap(temStation);
+		return (Root<TemStation> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+
+			Predicate conjunction = cb.conjunction();
+			List<Expression<Boolean>> expressions = conjunction.getExpressions();
+			Iterator<Map.Entry<String, Object>> iterator = objectMap.entrySet().iterator();
+
+			while (iterator.hasNext()) {
+				Map.Entry<String, Object> entry = iterator.next();
+				if (!entry.getKey().equals("query") && !entry.getKey().equals("queryStartDtm") && !entry.getKey().equals("queryEndDtm")) {
+					Object value = entry.getValue();
+					if (value instanceof Map) {
+						Iterator<Map.Entry<String, Object>> iterator1 = ((Map) value).entrySet().iterator();
+						while (iterator1.hasNext()) {
+							Map.Entry<String, Object> entry1 = iterator1.next();
+							expressions.add(cb.equal(root.get(entry.getKey()).get(entry1.getKey()), entry1.getValue()));
+						}
+					} else {
+						expressions.add(cb.equal(root.get(entry.getKey()), value));
+					}
+				}
+			}
+
+			// 根据xxx来查询
+			String queryStr = temStation.getQuery();
+			if (!StringUtils.isEmpty(queryStr)) {
+//				Predicate[] predicates = new Predicate[2];
+//				predicates[0] = cb.like(root.get("title"), "%" + queryStr + "%");
+//				predicates[1] = cb.like(root.get("author"), "%" + queryStr + "%");
+//				expressions.add(cb.or(predicates));
+			}
+
+			// 根据日期筛选
+			String queryStartDtm = temStation.getQueryStartDtm();
+			String queryEndDtm = temStation.getQueryEndDtm();
+			if (!StringUtils.isEmpty(queryStartDtm)) {
+				expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+			}
+			if (!StringUtils.isEmpty(queryEndDtm)) {
+				expressions.add(cb.lessThan(root.get("createDtm"), DateUtil.parseString(queryEndDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+			}
+
+			return conjunction;
+		};
+	}
     
     /**
      * 查找今日每个时刻所有电站的发电量

@@ -120,6 +120,7 @@ public class Order extends IDomain implements Serializable {
 	 */
 	@OneToMany
     @JoinColumn(name="orderId", insertable=false, updatable=false)
+    @OrderBy("create_dtm DESC")
     private Set<BillOrder> billOrder;
 
     public String getOrderCode() {

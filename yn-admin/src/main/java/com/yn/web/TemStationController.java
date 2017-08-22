@@ -1,31 +1,28 @@
 package com.yn.web;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.domain.EachHourTemStation;
 import com.yn.model.TemStation;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.TemStationVo;
 import com.yn.vo.re.ResultDataVoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/server/temStation")
 public class TemStationController {
+
+
     @Autowired
     TemStationService temStationService;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -67,18 +64,19 @@ public class TemStationController {
         Page<TemStation> findAll = temStationService.findAll(temStation, pageable);
         return ResultDataVoUtil.success(findAll);
     }
-    
+
     /**
      * 根据电站id查找今日每个时刻的发电量/用电量
+     *
      * @param stationId
      * @param type
      * @return
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
-    public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+    public Object todayKwh(@RequestParam(value = "stationId", required = true) Long stationId, @RequestParam(value = "type", required = true) Integer type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
         return ResultDataVoUtil.success(todayKwhByStationId);
     }
-    
+
 }
