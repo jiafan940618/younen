@@ -1,22 +1,9 @@
 package com.yn.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.dao.BillOrderDao;
 import com.yn.dao.OrderDao;
 import com.yn.model.BillOrder;
 import com.yn.model.Order;
-import com.yn.model.User;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.session.SessionCache;
@@ -24,10 +11,18 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.StringUtil;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultDataVoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/server/billOrder")
 public class BillOrderController {
+
+
     @Autowired
     BillOrderService billOrderService;
     @Autowired
@@ -36,6 +31,7 @@ public class BillOrderController {
     OrderService orderService;
     @Autowired
     OrderDao orderDao;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -80,26 +76,27 @@ public class BillOrderController {
 
     /**
      * 手动录入订单的交易
+     *
      * @param orderId
      * @param money
      * @return
      */
     @RequestMapping(value = "/manualInput", method = {RequestMethod.POST})
     @ResponseBody
-    public Object manualInput(@RequestParam(value="orderId")Long orderId, @RequestParam(value="money")Double money) {
-        User user = SessionCache.instance().checkUserIsLogin();
-        
+    public Object manualInput(@RequestParam(value = "orderId") Long orderId, @RequestParam(value = "money") Double money) {
+        Long userId = SessionCache.instance().checkUserIsLogin();
+
         Order order = orderService.findOne(orderId);
         Double totalPrice = order.getTotalPrice();
         Double hadPayPrice = order.getHadPayPrice();
         Double shouldPayPrice = totalPrice - hadPayPrice;
-        
+
         if (hadPayPrice.doubleValue() == totalPrice.doubleValue()) {
-        	return ResultDataVoUtil.error(777, "该订单已经支付完，不用继续录入");
-		} else if ((hadPayPrice + money) > totalPrice) {
-            return ResultDataVoUtil.error(777, "该订单的总价是"+ totalPrice +"元，已经支付了" + hadPayPrice + "元， 此次录入的金额不可以超过" + shouldPayPrice + "元");
-		}
-        
+            return ResultDataVoUtil.error(777, "该订单已经支付完，不用继续录入");
+        } else if ((hadPayPrice + money) > totalPrice) {
+            return ResultDataVoUtil.error(777, "该订单的总价是" + totalPrice + "元，已经支付了" + hadPayPrice + "元， 此次录入的金额不可以超过" + shouldPayPrice + "元");
+        }
+
         BillOrder billOrder = new BillOrder();
         billOrder.setOrderId(orderId);
         billOrder.setPayWay(0);
@@ -107,13 +104,13 @@ public class BillOrderController {
         billOrder.setRemark("手动录入");
         billOrder.setStatus(0);
         billOrder.setUserId(order.getUserId());
-        billOrder.setDutyUserId(user.getId());
+        billOrder.setDutyUserId(userId);
         billOrder.setTradeNo(StringUtil.getRandomTradeNo());
         billOrderDao.save(billOrder);
-        
+
         order.setHadPayPrice(order.getHadPayPrice() + money);
         orderDao.save(order);
-        
+
         return ResultDataVoUtil.success();
     }
 }

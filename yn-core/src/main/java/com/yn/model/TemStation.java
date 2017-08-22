@@ -11,7 +11,7 @@ public class TemStation extends IDomain implements Serializable {
 
     @Column(columnDefinition = "int(11) comment '[电站id]'")
     private Long stationId;
-    @Column(updatable = true, columnDefinition = "varchar(255) comment '[电站码]'")
+    @Column(columnDefinition = "varchar(255) comment '[电站码]'")
     private String stationCode;
     @Column(columnDefinition = "int(11) comment '[服务商id]'")
     private Long serverId;
@@ -23,9 +23,9 @@ public class TemStation extends IDomain implements Serializable {
     private Integer dType;
     @Column(columnDefinition = "int(11) comment '[w_addr]'")
     private Integer wAddr;
-    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[瞬时功率]'")
+    @Column(columnDefinition = "decimal(12,2) default 0 comment '[瞬时功率]'")
     private Double kw;
-    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[电量]'")
+    @Column(columnDefinition = "decimal(12,2) default 0 comment '[电量]'")
     private Double kwh;
     @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
     private Integer type;

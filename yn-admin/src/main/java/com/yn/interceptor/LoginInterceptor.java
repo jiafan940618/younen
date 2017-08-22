@@ -10,7 +10,6 @@ import com.yn.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,46 +37,27 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String url = request.getQueryString() == null ? requestURL + "" : (requestURL + "?" + request.getQueryString());
         logger.info(url);
         logger.info(ip);
-        // 拦截后台管理端请求，后台管理必须登录
-        // if(requestURL.toString().contains("admin.ingdu.cn")){
-        // Integer admin = (Integer) request.getSession().getAttribute("admin");
-        // if((admin==null||admin!=1)&&(!(requestURL.contains("/server/user/login")||requestURL.contains("/server/user/logout")||requestURL.contains("/server/file/upload")))){
-        // //使用OutputStream流向客户端输出“未登录”错误信息
-        // OutputStream os = response.getOutputStream();
-        // response.setHeader("content-type",
-        // "text/html;charset=UTF-8");//通过设置响应头控制浏览器以UTF-8的编码显示数据，如果不加这句话，那么浏览器显示的将是乱码
-        // ResultData<Object> resultData = new ResultData<Object>();
-        // Constant.noLogin(resultData);
-        // String data = JSON.toJSONString(resultData);
-        // byte[] dataByteArr =
-        // data.getBytes("UTF-8");//将字符转换成字节数组，指定以UTF-8编码进行转换
-        // os.write(dataByteArr);//使用OutputStream流向客户端输出字节数组
-        // os.close();//关闭输出流
-        // return false;
-        // }
-        // return true;
-        // }
 
         if (fromUserLogin(url)) {
             return true;
         }
 
-        User user = SessionCache.instance().getUser();
-        if (user == null) {
+        Long userId = SessionCache.instance().getUserId();
+        if (userId == null) {
             BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
             UserService userService = (UserService) factory.getBean("userService");
             String token = request.getHeader("token");
             if (!StringUtil.isEmpty(token)) {
-                User userE = new User();
-                userE.setToken(token);
-                user = userService.findOne(userE);
+                User userR = new User();
+                userR.setToken(token);
+                User user = userService.findOne(userR);
                 if (user != null) {
-                    SessionCache.instance().setUser(user);
+                    SessionCache.instance().setUserId(user.getId());
                     return true;
                 }
             } else if (ip.equals("0:0:0:0:0:0:0:1")) {
-                user = userService.findOne(1L);
-                SessionCache.instance().setUser(user);
+                User user = userService.findOne(1L);
+                SessionCache.instance().setUserId(user.getId());
                 return true;
             }
 
@@ -108,6 +88,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     /**
      * 不拦截UserLoginController
+     *
      * @param url
      * @return
      */

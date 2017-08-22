@@ -29,6 +29,8 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/server/userLogin")
 public class UserLoginController {
+
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -43,25 +45,39 @@ public class UserLoginController {
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
     public Object appLogin(@RequestParam("phone") String phone, @RequestParam("password") String password, @RequestParam("code") String code) {
+
+
+        // 校验图形验证码
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
             return ResultDataVoUtil.error(ResultEnum.CODE_ERROR);
         }
 
+
+        // 校验用户权限
         User user = userService.findByPhone(phone);
         if (user == null) {
             return ResultDataVoUtil.error(ResultEnum.NO_THIS_USER);
         } else if (user.getRoleId() == null || user.getRoleId().equals(RoleEnum.ORDINARY_MEMBER.getRoleId())) {
             return ResultDataVoUtil.error(ResultEnum.NO_PERMISSION);
-        } else if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
+        }
+
+
+        // 校验密码
+        if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
             return ResultDataVoUtil.error(ResultEnum.PASSWORD_ERROR);
         }
 
+
+        // 更新token
         user.setToken(userService.getToken(user));
         userDao.save(user);
 
-        SessionCache.instance().setUser(user);
+
+        // 保存用户到session，不返回密码给前端
+        SessionCache.instance().setUserId(user.getId());
         user.setPassword(null);
+
 
         // 返回服务商id
         Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
@@ -71,6 +87,7 @@ public class UserLoginController {
         if (serverResult != null) {
             objectMap.put("serverId", serverResult.getId());
         }
+
 
         return ResultDataVoUtil.success(objectMap);
     }

@@ -12,7 +12,6 @@ public class IDomain implements ISuperModel {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "int(11) comment '[id]'")
-//    @Field(analyze= Analyze.NO)//用作搜索时排序
     private Long id;
     @Column(insertable = false, updatable = false,columnDefinition = "int(1) default 0 comment '[逻辑删除]{0:未删;1:已删}'")
     private Integer del;

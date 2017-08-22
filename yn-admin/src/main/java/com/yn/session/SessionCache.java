@@ -2,8 +2,6 @@ package com.yn.session;
 
 import com.yn.enums.ResultEnum;
 import com.yn.exception.MyException;
-import com.yn.model.User;
-import com.yn.utils.Constant;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 public class SessionCache {
 
-    User user;
+    Long userId;
 
     String code;
 
@@ -22,6 +20,14 @@ public class SessionCache {
     String code4register;
 
     String code4findpaw;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getCode4findpaw() {
         return code4findpaw;
@@ -55,14 +61,6 @@ public class SessionCache {
         this.code = code;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     private SessionCache() {
 
     }
@@ -84,11 +82,11 @@ public class SessionCache {
      *
      * @return
      */
-    public User checkUserIsLogin() {
-        User sessionUser = SessionCache.instance().getUser();
-        if (sessionUser == null) {
+    public Long checkUserIsLogin() {
+        Long sessionUserId = SessionCache.instance().getUserId();
+        if (sessionUserId == null) {
             throw new MyException(ResultEnum.NO_LOGIN);
         }
-        return sessionUser;
+        return sessionUserId;
     }
 }

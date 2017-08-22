@@ -36,4 +36,7 @@ public interface TemStationDao extends JpaRepository<TemStation, Long>, JpaSpeci
     
     @Query("select COALESCE(sum(t.kwh),0) from TemStation t WHERE t.createDtm>=?1 AND t.createDtm<?2 AND t.type=?3 AND t.stationId=?4 AND t.del=0")
     double sumKwhByStationId(Date startDtm, Date endDtm, Integer type, Long stationId);
+
+    @Query("select o.dAddr from TemStation o where o.stationId = ?1 and o.type = ?2 and o.del = 0")
+    List<Long> findDaddr(Long stationId, Integer type);
 }

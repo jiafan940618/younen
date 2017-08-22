@@ -1,19 +1,14 @@
 package com.yn.web;
 
 import com.yn.dao.AmmeterDao;
-import com.yn.enums.AmmeterTypeEnum;
-import com.yn.enums.ResultEnum;
+import com.yn.dao.TemStationDao;
+import com.yn.enums.DeleteEnum;
 import com.yn.model.Ammeter;
-import com.yn.model.City;
-import com.yn.model.Province;
 import com.yn.service.AmmeterService;
-import com.yn.service.CityService;
-import com.yn.service.ProvinceService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.AmmeterVo;
 import com.yn.vo.re.ResultDataVoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,14 +20,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/server/ammeter")
 public class AmmeterController {
+
+
     @Autowired
-    AmmeterService ammeterService;
+    private AmmeterService ammeterService;
     @Autowired
-    AmmeterDao ammeterDao;
+    private AmmeterDao ammeterDao;
     @Autowired
-    CityService cityService;
-    @Autowired
-    ProvinceService provinceService;
+    private TemStationDao temStationDao;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -75,6 +71,7 @@ public class AmmeterController {
 
     /**
      * 解绑电站
+     *
      * @param ammeterId
      * @return
      */
@@ -92,6 +89,13 @@ public class AmmeterController {
     @ResponseBody
     public Object findDAddr(Long stationId, Integer type) {
         List<Long> findDAddr = ammeterDao.findDAddr(stationId, type);
+        return ResultDataVoUtil.success(findDAddr);
+    }
+
+    @RequestMapping(value = "/test", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object test(Long stationId, Integer type) {
+        List<Long> findDAddr = temStationDao.findDaddr(stationId, type);
         return ResultDataVoUtil.success(findDAddr);
     }
 

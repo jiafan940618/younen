@@ -35,10 +35,10 @@ public class FeedbackController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody FeedbackVo feedbackVo) {
-        User user = SessionCache.instance().checkUserIsLogin();
+        Long userId = SessionCache.instance().checkUserIsLogin();
         Feedback feedback = new Feedback();
         BeanCopy.copyProperties(feedbackVo, feedback);
-        feedback.setUserId(user.getId());
+        feedback.setUserId(userId);
         feedbackService.save(feedback);
         return ResultDataVoUtil.success(feedback);
     }
