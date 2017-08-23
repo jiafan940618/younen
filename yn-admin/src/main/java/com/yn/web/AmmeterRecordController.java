@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/server/ammeterRecord")
@@ -74,7 +75,7 @@ public class AmmeterRecordController {
     @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST})
     @ResponseBody
     public Object findDAddr(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
-        List<Long> findDAddr = ammeterRecordDao.findDAddr(stationId, type);
+        Set<Long> findDAddr = ammeterRecordDao.findDAddr(stationId, type);
         return ResultDataVoUtil.success(findDAddr);
     }
 

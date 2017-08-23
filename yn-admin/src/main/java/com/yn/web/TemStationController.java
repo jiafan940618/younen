@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/server/temStation")
@@ -89,7 +90,7 @@ public class TemStationController {
     @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
-        List<Long> findDAddr = temStationDao.findDAddr(stationId, type);
+        Set<Long> findDAddr = temStationDao.findDAddr(stationId, type);
         return ResultDataVoUtil.success(findDAddr);
     }
 
