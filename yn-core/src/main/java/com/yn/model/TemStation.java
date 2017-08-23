@@ -29,7 +29,7 @@ public class TemStation extends IDomain implements Serializable {
     private Double kwh;
     @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
     private Integer type;
-    @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017-07-20 11:00]'")
+    @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017072109]'")
     private String recordTime;
 
     public Long getStationId() {

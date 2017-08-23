@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.dao.TemStationDao;
 import com.yn.domain.EachHourTemStation;
 import com.yn.model.TemStation;
 import com.yn.service.TemStationService;
@@ -21,7 +22,9 @@ public class TemStationController {
 
 
     @Autowired
-    TemStationService temStationService;
+    private TemStationService temStationService;
+    @Autowired
+    private TemStationDao temStationDao;
 
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
@@ -74,9 +77,21 @@ public class TemStationController {
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
-    public Object todayKwh(@RequestParam(value = "stationId", required = true) Long stationId, @RequestParam(value = "type", required = true) Integer type) {
+    public Object todayKwh(@RequestParam(value = "stationId") Long stationId, @RequestParam(value = "type") Integer type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
         return ResultDataVoUtil.success(todayKwhByStationId);
     }
+
+
+    /**
+     * 设备地址
+     */
+    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
+        List<Long> findDAddr = temStationDao.findDAddr(stationId, type);
+        return ResultDataVoUtil.success(findDAddr);
+    }
+
 
 }

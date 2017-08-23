@@ -2,7 +2,6 @@ package com.yn.web;
 
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.TemStationDao;
-import com.yn.enums.DeleteEnum;
 import com.yn.model.Ammeter;
 import com.yn.service.AmmeterService;
 import com.yn.utils.BeanCopy;
@@ -82,21 +81,5 @@ public class AmmeterController {
         return ResultDataVoUtil.success(ammeter);
     }
 
-    /**
-     * 设备地址
-     */
-    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object findDAddr(Long stationId, Integer type) {
-        List<Long> findDAddr = ammeterDao.findDAddr(stationId, type);
-        return ResultDataVoUtil.success(findDAddr);
-    }
-
-    @RequestMapping(value = "/test", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public Object test(Long stationId, Integer type) {
-        List<Long> findDAddr = temStationDao.findDaddr(stationId, type);
-        return ResultDataVoUtil.success(findDAddr);
-    }
 
 }

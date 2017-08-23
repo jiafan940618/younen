@@ -38,5 +38,5 @@ public interface TemStationDao extends JpaRepository<TemStation, Long>, JpaSpeci
     double sumKwhByStationId(Date startDtm, Date endDtm, Integer type, Long stationId);
 
     @Query("select o.dAddr from TemStation o where o.stationId = ?1 and o.type = ?2 and o.del = 0")
-    List<Long> findDaddr(Long stationId, Integer type);
+    List<Long> findDAddr(Long stationId, Integer type);
 }

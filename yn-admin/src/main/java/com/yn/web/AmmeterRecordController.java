@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.dao.AmmeterRecordDao;
 import com.yn.model.AmmeterRecord;
 import com.yn.service.AmmeterRecordService;
 import com.yn.utils.BeanCopy;
@@ -12,11 +13,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/server/ammeterRecord")
 public class AmmeterRecordController {
+
+
     @Autowired
-    AmmeterRecordService ammeterRecordService;
+    private AmmeterRecordService ammeterRecordService;
+    @Autowired
+    private AmmeterRecordDao ammeterRecordDao;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -58,4 +66,17 @@ public class AmmeterRecordController {
         Page<AmmeterRecord> findAll = ammeterRecordService.findAll(ammeterRecord, pageable);
         return ResultDataVoUtil.success(findAll);
     }
+
+
+    /**
+     * 设备地址
+     */
+    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST})
+    @ResponseBody
+    public Object findDAddr(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
+        List<Long> findDAddr = ammeterRecordDao.findDAddr(stationId, type);
+        return ResultDataVoUtil.success(findDAddr);
+    }
+
+
 }

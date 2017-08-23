@@ -20,12 +20,15 @@ import java.util.Map.Entry;
 
 @Service
 public class UserService {
+
+
     @Autowired
     UserDao userDao;
     @Autowired
     WalletService walletService;
     @Autowired
     OrderDao orderDao;
+
 
     public User findOne(Long id) {
         return userDao.findOne(id);
@@ -130,9 +133,20 @@ public class UserService {
     }
 
     /**
-     * 根据用户生成登陆token
-     * 用户有phone，token=phone+登陆时间戳
-     * 用户没phone，token=uuid+登陆时间戳
+     * 更新用户token
+     *
+     * @param user
+     * @return
+     */
+    public User updateToken(User user) {
+        String token = getToken(user);
+        user.setToken(token);
+        User result = userDao.save(user);
+        return result;
+    }
+
+    /**
+     * 生成登陆token
      *
      * @param user
      * @return
@@ -151,6 +165,7 @@ public class UserService {
         return MD5Util.GetMD5Code(token);
     }
 
+
     /**
      * 根据phone查找用户
      *
@@ -162,5 +177,35 @@ public class UserService {
         user.setPhone(phone);
         return findOne(user);
     }
+
+
+    /**
+     * 根据account查找用户
+     *
+     * @param account
+     * @return
+     */
+    public User findByAccount(String account) {
+        User user = new User();
+        user.setAccount(account);
+        return findOne(user);
+    }
+
+
+    /**
+     * 根据 手机号 或 账号 查找用户
+     *
+     * @param param
+     * @return
+     */
+    public User findByPhoneOrAccount(String param) {
+        User user = findByPhone(param);
+        if (user == null) {
+            user = findByAccount(param);
+        }
+
+        return user;
+    }
+
 
 }

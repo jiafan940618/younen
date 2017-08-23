@@ -1,6 +1,5 @@
 package com.yn.web;
 
-import com.yn.dao.UserDao;
 import com.yn.enums.ResultEnum;
 import com.yn.enums.RoleEnum;
 import com.yn.model.Server;
@@ -34,13 +33,11 @@ public class UserLoginController {
     @Autowired
     private UserService userService;
     @Autowired
-    UserDao userDao;
-    @Autowired
     ServerService serverService;
 
 
     /**
-     * 登陆接口
+     * 登入
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
@@ -54,8 +51,11 @@ public class UserLoginController {
         }
 
 
+        // 根据 phone 和 account 查找用户
+        User user = userService.findByPhoneOrAccount(phone);
+
+
         // 校验用户权限
-        User user = userService.findByPhone(phone);
         if (user == null) {
             return ResultDataVoUtil.error(ResultEnum.NO_THIS_USER);
         } else if (user.getRoleId() == null || user.getRoleId().equals(RoleEnum.ORDINARY_MEMBER.getRoleId())) {
@@ -70,8 +70,7 @@ public class UserLoginController {
 
 
         // 更新token
-        user.setToken(userService.getToken(user));
-        userDao.save(user);
+        userService.updateToken(user);
 
 
         // 保存用户到session，不返回密码给前端
@@ -90,6 +89,17 @@ public class UserLoginController {
 
 
         return ResultDataVoUtil.success(objectMap);
+    }
+
+    /**
+     * 登出
+     * @return
+     */
+    @RequestMapping(value = "/logOut", method = {RequestMethod.POST})
+    @ResponseBody
+    public Object logOut() {
+        SessionCache.clean();
+        return ResultDataVoUtil.success();
     }
 
     /**

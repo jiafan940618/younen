@@ -78,6 +78,16 @@ public class SessionCache {
     }
 
     /**
+     * 清空缓存
+     */
+    public static void clean() {
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) ra).getRequest();
+        HttpSession session = request.getSession();
+        session.setAttribute("SessionCache", null);
+    }
+
+    /**
      * 检查用户是否登陆
      *
      * @return

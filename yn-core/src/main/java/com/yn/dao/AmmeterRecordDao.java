@@ -20,4 +20,7 @@ public interface AmmeterRecordDao extends JpaRepository<AmmeterRecord, Long>, Jp
     @Modifying
     @Query("update AmmeterRecord set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+
+    @Query("select o.dAddr from AmmeterRecord o where o.stationId = ?1 and o.type = ?2 and o.del = 0")
+    List<Long> findDAddr(Long stationId, Integer type);
 }

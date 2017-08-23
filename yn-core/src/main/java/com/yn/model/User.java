@@ -27,6 +27,8 @@ public class User extends IDomain implements Serializable {
 	protected String email;
 	@Column(columnDefinition = "varchar(255) comment '[头像]'")
 	protected String headImgUrl;
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[账号]'")
+	protected String account;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[昵称]'")
 	protected String nickName;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[用户名]'")
@@ -236,5 +238,13 @@ public class User extends IDomain implements Serializable {
 
     public void setCityId(Long cityId) {
         this.cityId = cityId;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 }
