@@ -36,7 +36,7 @@ public class UserLoginController {
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST})
     @ResponseBody
-    public Object appLogin(@RequestParam(value = "phone", required = true) String phone, @RequestParam(value = "password", required = true) String password, @RequestParam(value = "code", required = true) String code) {
+    public Object appLogin(@RequestParam(value = "phone") String phone, @RequestParam(value = "password") String password, String code) {
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
             return ResultDataVoUtil.error(777, Constant.CODE_ERROR);
