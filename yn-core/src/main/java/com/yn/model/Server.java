@@ -73,7 +73,7 @@ public class Server extends IDomain implements Serializable {
     private String serverCityIds;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[服务商服务城市]'")
     private String serverCityText;
-    @Column(insertable = false, updatable = true, columnDefinition = "int(1) default 0 comment '[是否已经认证]{0:未认证,1:已认证}'")
+    @Column(insertable = false, columnDefinition = "int(1) default 0 comment '[是否已经认证]{0:未认证,1:已认证}'")
     private Integer type;
 
     /**
