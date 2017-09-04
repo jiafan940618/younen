@@ -2,12 +2,13 @@ package com.yn.web;
 
 import com.yn.dao.*;
 import com.yn.domain.EachHourTemStation;
+import com.yn.enums.NoticeEnum;
 import com.yn.model.Order;
 import com.yn.model.Station;
 import com.yn.model.User;
 import com.yn.service.TemStationService;
-import com.yn.utils.DateUtil;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.session.SessionCache;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +32,6 @@ public class HomePageController {
     @Autowired
     TemStationDao temStationDao;
     @Autowired
-    TemStationYearDao temStationYearDao;
-    @Autowired
     FeedbackDao feedbackDao;
     @Autowired
     UserDao userDao;
@@ -43,6 +41,8 @@ public class HomePageController {
     OrderDao orderDao;
     @Autowired
     AmmeterDao ammeterDao;
+    @Autowired
+    private NoticeDao noticeDao;
 
 
     /**
@@ -68,8 +68,52 @@ public class HomePageController {
         map.put("tolNowKw", sumNowKw);
         map.put("tolKwh", sumKwh);
 
-        return ResultDataVoUtil.success(map);
+        return ResultVOUtil.success(map);
     }
+
+    /**
+     * 最新动态
+     *
+     * @return
+     */
+//    @RequestMapping(value = "/latestNews", method = {RequestMethod.POST})
+//    @ResponseBody
+//    public Object latestNews(Long serverId) {
+//
+//        Date[] todaySpace = DateUtil.getTodaySpace();
+//        Date startDtm = todaySpace[0];
+//        Date endDtm = todaySpace[1];
+//
+//        long unreadMessageNum = 0;
+//        long stationNum = 0;
+//        long userNum = 0;
+//        long serverNum = 0;
+//        long orderNum = 0;
+//        long ammeterNum = 0;
+//
+//        if (serverId == null) {
+//            unreadMessageNum = feedbackDao.countUnconfirmed();
+//            stationNum = stationDao.countNum(startDtm, endDtm);
+//            userNum = userDao.countNum(startDtm, endDtm);
+//            serverNum = serverDao.countNum(startDtm, endDtm);
+//            orderNum = orderDao.countNum(startDtm, endDtm);
+//            ammeterNum = ammeterDao.countNum(startDtm, endDtm);
+//        } else {
+//            stationNum = stationDao.countNum(startDtm, endDtm, serverId);
+//            orderNum = orderDao.countNum(startDtm, endDtm, serverId);
+//        }
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("unreadMessageNum", unreadMessageNum);
+//        map.put("stationNum", stationNum);
+//        map.put("userNum", userNum);
+//        map.put("serverNum", serverNum);
+//        map.put("orderNum", orderNum);
+//        map.put("ammeterNum", ammeterNum);
+//
+//        return ResultVOUtil.success(map);
+//    }
+
 
     /**
      * 最新动态
@@ -78,41 +122,32 @@ public class HomePageController {
      */
     @RequestMapping(value = "/latestNews", method = {RequestMethod.POST})
     @ResponseBody
-    public Object latestNews(Long serverId) {
+    public Object latestNews() {
 
-        Date[] todaySpace = DateUtil.getTodaySpace();
-        Date startDtm = todaySpace[0];
-        Date endDtm = todaySpace[1];
 
-        long unreadMessageNum = 0;
-        long stationNum = 0;
-        long userNum = 0;
-        long serverNum = 0;
-        long orderNum = 0;
-        long ammeterNum = 0;
+        Long userId = SessionCache.instance().checkUserIsLogin();
 
-        if (serverId == null) {
-            unreadMessageNum = feedbackDao.countUnconfirmed();
-            stationNum = stationDao.countNum(startDtm, endDtm);
-            userNum = userDao.countNum(startDtm, endDtm);
-            serverNum = serverDao.countNum(startDtm, endDtm);
-            orderNum = orderDao.countNum(startDtm, endDtm);
-            ammeterNum = ammeterDao.countNum(startDtm, endDtm);
-        } else {
-            stationNum = stationDao.countNum(startDtm, endDtm, serverId);
-            orderNum = orderDao.countNum(startDtm, endDtm, serverId);
-        }
+
+        long userNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_USER.getCode(), NoticeEnum.UN_READ.getCode());
+        long serverNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_SERVER.getCode(), NoticeEnum.UN_READ.getCode());
+        long orderNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_ORDER.getCode(), NoticeEnum.UN_READ.getCode());
+        long stationNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_STATION.getCode(), NoticeEnum.UN_READ.getCode());
+        long ammeterNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_AMMETER.getCode(), NoticeEnum.UN_READ.getCode());
+        long unreadMessageNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_FEEDBACK.getCode(), NoticeEnum.UN_READ.getCode());
+
 
         Map<String, Object> map = new HashMap<>();
-        map.put("unreadMessageNum", unreadMessageNum);
-        map.put("stationNum", stationNum);
         map.put("userNum", userNum);
         map.put("serverNum", serverNum);
         map.put("orderNum", orderNum);
+        map.put("stationNum", stationNum);
         map.put("ammeterNum", ammeterNum);
+        map.put("unreadMessageNum", unreadMessageNum);
 
-        return ResultDataVoUtil.success(map);
+
+        return ResultVOUtil.success(map);
     }
+
 
     /**
      * 业务数据
@@ -156,7 +191,7 @@ public class HomePageController {
         map.put("orderCapacity", orderCapacity);
         map.put("userNum", userNum);
 
-        return ResultDataVoUtil.success(map);
+        return ResultVOUtil.success(map);
     }
 
     /**
@@ -168,7 +203,7 @@ public class HomePageController {
     @ResponseBody
     public Object todayKwh(Long serverId) {
         List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId);
-        return ResultDataVoUtil.success(todayKwh);
+        return ResultVOUtil.success(todayKwh);
     }
 
 }

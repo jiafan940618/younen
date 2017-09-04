@@ -18,7 +18,7 @@ import com.yn.model.SystemConfig;
 import com.yn.service.SystemConfigService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.SystemConfigVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/server/systemConfig")
@@ -30,7 +30,7 @@ public class SystemConfigController {
     @ResponseBody
     public Object findOne(Long id) {
         SystemConfig findOne = systemConfigService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -39,14 +39,14 @@ public class SystemConfigController {
         SystemConfig systemConfig = new SystemConfig();
         BeanCopy.copyProperties(systemConfigVo, systemConfig);
         systemConfigService.save(systemConfig);
-        return ResultDataVoUtil.success(systemConfig);
+        return ResultVOUtil.success(systemConfig);
     }
 
 //    @ResponseBody
 //    @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         systemConfigService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -55,7 +55,7 @@ public class SystemConfigController {
         SystemConfig systemConfig = new SystemConfig();
         BeanCopy.copyProperties(systemConfigVo, systemConfig);
         SystemConfig findOne = systemConfigService.findOne(systemConfig);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -64,7 +64,7 @@ public class SystemConfigController {
         SystemConfig systemConfig = new SystemConfig();
         BeanCopy.copyProperties(systemConfigVo, systemConfig);
         Page<SystemConfig> findAll = systemConfigService.findAll(systemConfig, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
     /**
@@ -76,7 +76,7 @@ public class SystemConfigController {
     @ResponseBody
     public Object findByKey(String key) {
         String value = systemConfigService.get(key);
-        return ResultDataVoUtil.success(value);
+        return ResultVOUtil.success(value);
     }
     
     /**
@@ -95,6 +95,6 @@ public class SystemConfigController {
         	map.put(key, value);
 		}
         
-        return ResultDataVoUtil.success(map);
+        return ResultVOUtil.success(map);
     }
 }

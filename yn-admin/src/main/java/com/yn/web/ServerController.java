@@ -1,11 +1,11 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +16,6 @@ import com.yn.model.Server;
 import com.yn.service.ServerService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.ServerVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/server")
@@ -28,7 +27,7 @@ public class ServerController {
     @ResponseBody
     public Object findOne(Long id) {
         Server findOne = serverService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -37,14 +36,14 @@ public class ServerController {
         Server server = new Server();
         BeanCopy.copyProperties(serverVo, server);
         serverService.save(server);
-        return ResultDataVoUtil.success(server);
+        return ResultVOUtil.success(server);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         serverService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -53,7 +52,7 @@ public class ServerController {
         Server server = new Server();
         BeanCopy.copyProperties(serverVo, server);
         Server findOne = serverService.findOne(server);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -62,6 +61,6 @@ public class ServerController {
         Server server = new Server();
         BeanCopy.copyProperties(serverVo, server);
         Page<Server> findAll = serverService.findAll(server, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

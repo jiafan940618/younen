@@ -1,6 +1,6 @@
 package com.yn.web;
 
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Wallet;
 import com.yn.service.WalletService;
 import com.yn.utils.BeanCopy;
-import com.yn.utils.ResultData;
 import com.yn.vo.WalletVo;
 
 @RestController
@@ -28,7 +27,7 @@ public class WalletController {
     @ResponseBody
     public Object findOne(Long id) {
         Wallet findOne = walletService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -37,14 +36,14 @@ public class WalletController {
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         walletService.save(wallet);
-        return ResultDataVoUtil.success(wallet);
+        return ResultVOUtil.success(wallet);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         walletService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -53,7 +52,7 @@ public class WalletController {
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         Wallet findOne = walletService.findOne(wallet);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -62,6 +61,6 @@ public class WalletController {
         Wallet wallet = new Wallet();
         BeanCopy.copyProperties(walletVo, wallet);
         Page<Wallet> findAll = walletService.findAll(wallet, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

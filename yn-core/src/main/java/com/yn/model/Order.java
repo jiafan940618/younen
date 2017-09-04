@@ -84,7 +84,15 @@ public class Order extends IDomain implements Serializable {
 	private Integer gridConnectedIsPay;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[并网发电-并网状态]{0:未申请,1:已申请,2:并网完成}'")
 	private Integer gridConnectedStepA;
-	
+
+
+    /**
+     * 是否已读
+     */
+    @Transient
+    private Integer isRead;
+
+
 	/**
 	 * 用户
 	 */
@@ -417,5 +425,13 @@ public class Order extends IDomain implements Serializable {
 
     public void setOrderPlanId(Long orderPlanId) {
         this.orderPlanId = orderPlanId;
+    }
+
+    public Integer getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Integer isRead) {
+        this.isRead = isRead;
     }
 }

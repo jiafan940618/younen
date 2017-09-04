@@ -1,7 +1,5 @@
 package com.yn.web;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
-import com.yn.domain.OrderDetailAccounts;
 import com.yn.model.Order;
 import com.yn.service.OrderService;
 import com.yn.service.ServerPlanService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.OrderVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/client/order")
@@ -39,7 +36,7 @@ public class OrderController {
     @ResponseBody
     public Object findOne(Long id) {
         Order findOne = orderService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -48,14 +45,14 @@ public class OrderController {
         Order order = new Order();
         BeanCopy.copyProperties(orderVo, order);
         orderService.save(order);
-        return ResultDataVoUtil.success(order);
+        return ResultVOUtil.success(order);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         orderService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -64,7 +61,7 @@ public class OrderController {
         Order order = new Order();
         BeanCopy.copyProperties(orderVo, order);
         Order findOne = orderService.findOne(order);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -73,6 +70,6 @@ public class OrderController {
         Order order = new Order();
         BeanCopy.copyProperties(orderVo, order);
         Page<Order> findAll = orderService.findAll(order, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.yn.service.OssService;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class UploadController {
     @ResponseBody
     public Object upload(MultipartHttpServletRequest request) {
         String[] saveToOSSs = ossService.uploadFiles(request);
-        return ResultDataVoUtil.success(saveToOSSs);
+        return ResultVOUtil.success(saveToOSSs);
     }
 
 

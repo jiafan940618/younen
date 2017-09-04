@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.Qualifications;
 import com.yn.service.QualificationsService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.QualificationsVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/qualifications")
@@ -27,7 +27,7 @@ public class QualificationsController {
     @ResponseBody
     public Object findOne(Long id) {
         Qualifications findOne = qualificationsService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class QualificationsController {
         Qualifications qualifications = new Qualifications();
         BeanCopy.copyProperties(qualificationsVo, qualifications);
         qualificationsService.save(qualifications);
-        return ResultDataVoUtil.success(qualifications);
+        return ResultVOUtil.success(qualifications);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         qualificationsService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class QualificationsController {
         Qualifications qualifications = new Qualifications();
         BeanCopy.copyProperties(qualificationsVo, qualifications);
         Qualifications findOne = qualificationsService.findOne(qualifications);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class QualificationsController {
         Qualifications qualifications = new Qualifications();
         BeanCopy.copyProperties(qualificationsVo, qualifications);
         Page<Qualifications> findAll = qualificationsService.findAll(qualifications, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

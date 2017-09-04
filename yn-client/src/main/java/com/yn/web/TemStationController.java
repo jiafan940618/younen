@@ -2,6 +2,7 @@ package com.yn.web;
 
 import java.util.List;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,6 @@ import com.yn.model.TemStation;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.TemStationVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/temStation")
@@ -31,7 +31,7 @@ public class TemStationController {
     @ResponseBody
     public Object findOne(Long id) {
         TemStation findOne = temStationService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -40,14 +40,14 @@ public class TemStationController {
         TemStation temStation = new TemStation();
         BeanCopy.copyProperties(temStationVo, temStation);
         temStationService.save(temStation);
-        return ResultDataVoUtil.success(temStation);
+        return ResultVOUtil.success(temStation);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         temStationService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -56,7 +56,7 @@ public class TemStationController {
         TemStation temStation = new TemStation();
         BeanCopy.copyProperties(temStationVo, temStation);
         TemStation findOne = temStationService.findOne(temStation);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -65,7 +65,7 @@ public class TemStationController {
         TemStation temStation = new TemStation();
         BeanCopy.copyProperties(temStationVo, temStation);
         Page<TemStation> findAll = temStationService.findAll(temStation, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
     /**
@@ -78,7 +78,7 @@ public class TemStationController {
     @ResponseBody
     public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
-        return ResultDataVoUtil.success(todayKwhByStationId);
+        return ResultVOUtil.success(todayKwhByStationId);
     }
     
 }

@@ -1,8 +1,6 @@
 package com.yn.web;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.dao.CityDao;
 import com.yn.dao.ProvinceDao;
 import com.yn.dao.SubsidyDao;
-import com.yn.model.City;
-import com.yn.model.Province;
 import com.yn.model.Subsidy;
 import com.yn.service.SubsidyService;
 import com.yn.utils.BeanCopy;
-import com.yn.utils.ValidatorUtil;
 import com.yn.vo.SubsidyVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/subsidy")
@@ -42,7 +36,7 @@ public class SubsidyController {
     @ResponseBody
     public Object findOne(Long id) {
         Subsidy findOne = subsidyService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -51,14 +45,14 @@ public class SubsidyController {
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
         subsidyService.save(subsidy);
-        return ResultDataVoUtil.success(subsidy);
+        return ResultVOUtil.success(subsidy);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         subsidyService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -67,7 +61,7 @@ public class SubsidyController {
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
         Subsidy findOne = subsidyService.findOne(subsidy);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -76,7 +70,7 @@ public class SubsidyController {
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
         Page<Subsidy> findAll = subsidyService.findAll(subsidy, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
 }

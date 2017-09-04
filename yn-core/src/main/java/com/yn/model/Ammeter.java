@@ -3,10 +3,7 @@ package com.yn.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -66,6 +63,14 @@ public class Ammeter extends IDomain implements Serializable {
 	private Integer status;
 	@Column(columnDefinition = "varchar(255) comment '[电表状态码]'")
 	private String statusCode;
+
+
+    /**
+     * 是否已读
+     */
+    @Transient
+    private Integer isRead;
+
 	
 	/**
 	 * 电站
@@ -273,5 +278,13 @@ public class Ammeter extends IDomain implements Serializable {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public Integer getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Integer isRead) {
+        this.isRead = isRead;
     }
 }

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.Menu;
 import com.yn.service.MenuService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.MenuVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/menu")
@@ -27,7 +27,7 @@ public class MenuController {
     @ResponseBody
     public Object findOne(Long id) {
         Menu findOne = menuService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
 //    @ResponseBody
@@ -36,14 +36,14 @@ public class MenuController {
         Menu menu = new Menu();
         BeanCopy.copyProperties(menuVo, menu);
         menuService.save(menu);
-        return ResultDataVoUtil.success(menu);
+        return ResultVOUtil.success(menu);
     }
 
 //    @ResponseBody
 //    @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         menuService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class MenuController {
         Menu menu = new Menu();
         BeanCopy.copyProperties(menuVo, menu);
         Menu findOne = menuService.findOne(menu);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class MenuController {
         Menu menu = new Menu();
         BeanCopy.copyProperties(menuVo, menu);
         Page<Menu> findAll = menuService.findAll(menu, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

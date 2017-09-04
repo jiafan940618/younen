@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.News;
 import com.yn.service.NewsService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewsVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/news")
@@ -27,7 +27,7 @@ public class NewsController {
     @ResponseBody
     public Object findOne(Long id) {
         News findOne = newsService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class NewsController {
         News news = new News();
         BeanCopy.copyProperties(newsVo, news);
         newsService.save(news);
-        return ResultDataVoUtil.success(news);
+        return ResultVOUtil.success(news);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         newsService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class NewsController {
         News news = new News();
         BeanCopy.copyProperties(newsVo, news);
         News findOne = newsService.findOne(news);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class NewsController {
         News news = new News();
         BeanCopy.copyProperties(newsVo, news);
         Page<News> findAll = newsService.findAll(news, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

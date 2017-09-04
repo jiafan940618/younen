@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.Banner;
 import com.yn.service.BannerService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.BannerVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/banner")
@@ -27,7 +27,7 @@ public class BannerController {
     @ResponseBody
     public Object findOne(Long id) {
         Banner findOne = bannerService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class BannerController {
         Banner banner = new Banner();
         BeanCopy.copyProperties(bannerVo, banner);
         bannerService.save(banner);
-        return ResultDataVoUtil.success(banner);
+        return ResultVOUtil.success(banner);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         bannerService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class BannerController {
         Banner banner = new Banner();
         BeanCopy.copyProperties(bannerVo, banner);
         Banner findOne = bannerService.findOne(banner);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class BannerController {
         Banner banner = new Banner();
         BeanCopy.copyProperties(bannerVo, banner);
         Page<Banner> findAll = bannerService.findAll(banner, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

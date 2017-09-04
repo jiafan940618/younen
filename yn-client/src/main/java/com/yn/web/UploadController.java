@@ -2,6 +2,7 @@ package com.yn.web;
 
 import javax.annotation.Resource;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.yn.service.OssService;
-import com.yn.vo.re.ResultDataVoUtil;
-
 
 
 @Controller
@@ -26,7 +25,7 @@ public class UploadController {
 	@ResponseBody
 	public Object upload(MultipartHttpServletRequest request) {
 		String[] saveToOSSs = ossService.uploadFiles(request);
-		return ResultDataVoUtil.success(saveToOSSs);
+		return ResultVOUtil.success(saveToOSSs);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.Province;
 import com.yn.service.ProvinceService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.ProvinceVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/province")
@@ -27,7 +27,7 @@ public class ProvinceController {
     @ResponseBody
     public Object findOne(Long id) {
         Province findOne = provinceService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class ProvinceController {
         Province province = new Province();
         BeanCopy.copyProperties(provinceVo, province);
         provinceService.save(province);
-        return ResultDataVoUtil.success(province);
+        return ResultVOUtil.success(province);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         provinceService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class ProvinceController {
         Province province = new Province();
         BeanCopy.copyProperties(provinceVo, province);
         Province findOne = provinceService.findOne(province);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class ProvinceController {
         Province province = new Province();
         BeanCopy.copyProperties(provinceVo, province);
         Page<Province> findAll = provinceService.findAll(province, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

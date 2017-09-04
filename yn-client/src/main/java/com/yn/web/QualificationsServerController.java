@@ -4,7 +4,7 @@ import com.yn.model.QualificationsServer;
 import com.yn.service.QualificationsServerService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.QualificationsServerVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ public class QualificationsServerController {
     @ResponseBody
     public Object findOne(Long id) {
         QualificationsServer findOne = qualificationsServerService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -31,14 +31,14 @@ public class QualificationsServerController {
         QualificationsServer qualificationsServer = new QualificationsServer();
         BeanCopy.copyProperties(qualificationsServerVo, qualificationsServer);
         qualificationsServerService.save(qualificationsServer);
-        return ResultDataVoUtil.success(qualificationsServer);
+        return ResultVOUtil.success(qualificationsServer);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         qualificationsServerService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -47,7 +47,7 @@ public class QualificationsServerController {
         QualificationsServer qualificationsServer = new QualificationsServer();
         BeanCopy.copyProperties(qualificationsServerVo, qualificationsServer);
         QualificationsServer findOne = qualificationsServerService.findOne(qualificationsServer);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -56,6 +56,6 @@ public class QualificationsServerController {
         QualificationsServer qualificationsServer = new QualificationsServer();
         BeanCopy.copyProperties(qualificationsServerVo, qualificationsServer);
         Page<QualificationsServer> findAll = qualificationsServerService.findAll(qualificationsServer, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.Devide;
 import com.yn.service.DevideService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.DevideVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/devide")
@@ -27,7 +27,7 @@ public class DevideController {
     @ResponseBody
     public Object findOne(Long id) {
         Devide findOne = devideService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class DevideController {
         Devide devide = new Devide();
         BeanCopy.copyProperties(devideVo, devide);
         devideService.save(devide);
-        return ResultDataVoUtil.success(devide);
+        return ResultVOUtil.success(devide);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         devideService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class DevideController {
         Devide devide = new Devide();
         BeanCopy.copyProperties(devideVo, devide);
         Devide findOne = devideService.findOne(devide);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,7 +61,7 @@ public class DevideController {
         Devide devide = new Devide();
         BeanCopy.copyProperties(devideVo, devide);
         Page<Devide> findAll = devideService.findAll(devide, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
 }

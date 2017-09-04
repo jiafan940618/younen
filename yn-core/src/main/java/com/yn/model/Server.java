@@ -76,6 +76,14 @@ public class Server extends IDomain implements Serializable {
     @Column(insertable = false, columnDefinition = "int(1) default 0 comment '[是否已经认证]{0:未认证,1:已认证}'")
     private Integer type;
 
+
+    /**
+     * 是否已读
+     */
+    @Transient
+    private Integer isRead;
+
+
     /**
      * 用户
      */
@@ -371,5 +379,13 @@ public class Server extends IDomain implements Serializable {
 
     public void setApolegamyServer(Set<ApolegamyServer> apolegamyServer) {
         this.apolegamyServer = apolegamyServer;
+    }
+
+    public Integer getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Integer isRead) {
+        this.isRead = isRead;
     }
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +22,6 @@ import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @Controller
 @RequestMapping(value = "/client/userLogin")
@@ -39,19 +39,19 @@ public class UserLoginController {
     public Object appLogin(@RequestParam(value = "phone") String phone, @RequestParam(value = "password") String password, String code) {
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
-            return ResultDataVoUtil.error(777, Constant.CODE_ERROR);
+            return ResultVOUtil.error(777, Constant.CODE_ERROR);
         }
 
         User user = userService.findByPhone(phone);
         if (user == null) {
-            return ResultDataVoUtil.error(777, Constant.NO_THIS_USER);
+            return ResultVOUtil.error(777, Constant.NO_THIS_USER);
         } else if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
-            return ResultDataVoUtil.error(777, Constant.PASSWORD_ERROR);
+            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
         }
 
         // 角色权限错误
         else if (user.getRoleId() == null || user.getRoleId() == 6) {
-            return ResultDataVoUtil.error(777, "权限不足");
+            return ResultVOUtil.error(777, "权限不足");
         }
 
         user.setToken(userService.getToken(user));
@@ -59,7 +59,7 @@ public class UserLoginController {
 
         SessionCache.instance().setUser(user);
         user.setPassword(null);
-        return ResultDataVoUtil.success(user);
+        return ResultVOUtil.success(user);
     }
 
     /**
@@ -89,7 +89,7 @@ public class UserLoginController {
     @ResponseBody
     public Object findOne(String code) {
         String getMD5Code = MD5Util.GetMD5Code(code);
-        return ResultDataVoUtil.success(getMD5Code);
+        return ResultVOUtil.success(getMD5Code);
     }
 
 }

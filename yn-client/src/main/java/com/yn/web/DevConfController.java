@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.DevConf;
 import com.yn.service.DevConfService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.DevConfVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/devConf")
@@ -27,7 +27,7 @@ public class DevConfController {
     @ResponseBody
     public Object findOne(Long id) {
         DevConf findOne = devConfService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class DevConfController {
         DevConf devConf = new DevConf();
         BeanCopy.copyProperties(devConfVo, devConf);
         devConfService.save(devConf);
-        return ResultDataVoUtil.success(devConf);
+        return ResultVOUtil.success(devConf);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         devConfService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class DevConfController {
         DevConf devConf = new DevConf();
         BeanCopy.copyProperties(devConfVo, devConf);
         DevConf findOne = devConfService.findOne(devConf);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class DevConfController {
         DevConf devConf = new DevConf();
         BeanCopy.copyProperties(devConfVo, devConf);
         Page<DevConf> findAll = devConfService.findAll(devConf, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

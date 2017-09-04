@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.BillRecharge;
 import com.yn.service.BillRechargeService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.BillRechargeVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/billRecharge")
@@ -27,7 +27,7 @@ public class BillRechargeController {
     @ResponseBody
     public Object findOne(Long id) {
         BillRecharge findOne = billRechargeService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class BillRechargeController {
         BillRecharge billRecharge = new BillRecharge();
         BeanCopy.copyProperties(billRechargeVo, billRecharge);
         billRechargeService.save(billRecharge);
-        return ResultDataVoUtil.success(billRecharge);
+        return ResultVOUtil.success(billRecharge);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         billRechargeService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class BillRechargeController {
         BillRecharge billRecharge = new BillRecharge();
         BeanCopy.copyProperties(billRechargeVo, billRecharge);
         BillRecharge findOne = billRechargeService.findOne(billRecharge);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class BillRechargeController {
         BillRecharge billRecharge = new BillRecharge();
         BeanCopy.copyProperties(billRechargeVo, billRecharge);
         Page<BillRecharge> findAll = billRechargeService.findAll(billRecharge, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

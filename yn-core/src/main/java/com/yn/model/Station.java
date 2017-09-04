@@ -59,6 +59,14 @@ public class Station extends IDomain implements Serializable {
 	private Integer passageModel;
 	@Column(columnDefinition = "int(1) NOT NULL comment '[类型]{0:居民,1:工业,2:商业,3:农业}'")
 	private Integer type;
+
+
+    /**
+     * 是否已读
+     */
+    @Transient
+    private Integer isRead;
+
 	
 	/**
 	 * 订单
@@ -299,5 +307,13 @@ public class Station extends IDomain implements Serializable {
 
     public void setAmmeter(Set<Ammeter> ammeter) {
         this.ammeter = ammeter;
+    }
+
+    public Integer getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Integer isRead) {
+        this.isRead = isRead;
     }
 }

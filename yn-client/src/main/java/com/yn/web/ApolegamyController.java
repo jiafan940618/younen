@@ -1,8 +1,6 @@
 package com.yn.web;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Apolegamy;
 import com.yn.service.ApolegamyService;
 import com.yn.utils.BeanCopy;
-import com.yn.utils.ValidatorUtil;
 import com.yn.vo.ApolegamyVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/apolegamy")
@@ -31,7 +27,7 @@ public class ApolegamyController {
     @ResponseBody
     public Object findOne(Long id) {
         Apolegamy findOne = apolegamyService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -40,14 +36,14 @@ public class ApolegamyController {
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         apolegamyService.save(apolegamy);
-        return ResultDataVoUtil.success(apolegamy);
+        return ResultVOUtil.success(apolegamy);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         apolegamyService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -56,7 +52,7 @@ public class ApolegamyController {
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         Apolegamy findOne = apolegamyService.findOne(apolegamy);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -65,6 +61,6 @@ public class ApolegamyController {
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         Page<Apolegamy> findAll = apolegamyService.findAll(apolegamy, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

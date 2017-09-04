@@ -10,7 +10,7 @@ import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +47,7 @@ public class UserLoginController {
         // 校验图形验证码
         String sessionCode = SessionCache.instance().getCode();
         if (sessionCode == null || !sessionCode.equals(code)) {
-            return ResultDataVoUtil.error(ResultEnum.CODE_ERROR);
+            return ResultVOUtil.error(ResultEnum.CODE_ERROR);
         }
 
 
@@ -57,15 +57,15 @@ public class UserLoginController {
 
         // 校验用户权限
         if (user == null) {
-            return ResultDataVoUtil.error(ResultEnum.NO_THIS_USER);
+            return ResultVOUtil.error(ResultEnum.NO_THIS_USER);
         } else if (user.getRoleId() == null || user.getRoleId().equals(RoleEnum.ORDINARY_MEMBER.getRoleId())) {
-            return ResultDataVoUtil.error(ResultEnum.NO_PERMISSION);
+            return ResultVOUtil.error(ResultEnum.NO_PERMISSION);
         }
 
 
         // 校验密码
         if (!user.getPassword().equals(MD5Util.GetMD5Code(password))) {
-            return ResultDataVoUtil.error(ResultEnum.PASSWORD_ERROR);
+            return ResultVOUtil.error(ResultEnum.PASSWORD_ERROR);
         }
 
 
@@ -88,7 +88,7 @@ public class UserLoginController {
         }
 
 
-        return ResultDataVoUtil.success(objectMap);
+        return ResultVOUtil.success(objectMap);
     }
 
     /**
@@ -99,7 +99,7 @@ public class UserLoginController {
     @ResponseBody
     public Object logOut() {
         SessionCache.clean();
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     /**
@@ -129,6 +129,6 @@ public class UserLoginController {
     @ResponseBody
     public Object findOne(String code) {
         String getMD5Code = MD5Util.GetMD5Code(code);
-        return ResultDataVoUtil.success(getMD5Code);
+        return ResultVOUtil.success(getMD5Code);
     }
 }

@@ -24,7 +24,7 @@ import com.yn.service.SubsidyService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.ValidatorUtil;
 import com.yn.vo.SubsidyVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/server/subsidy")
@@ -42,7 +42,7 @@ public class SubsidyController {
     @ResponseBody
     public Object findOne(Long id) {
         Subsidy findOne = subsidyService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -51,7 +51,7 @@ public class SubsidyController {
         if (subsidyVo.getId() == null) {
         	List<String> validate = ValidatorUtil.validate(subsidyVo);
     		if (validate!=null&&validate.size()>0) {
-    			return ResultDataVoUtil.error(777, StringUtils.join(validate, ","));
+    			return ResultVOUtil.error(777, StringUtils.join(validate, ","));
     		}
 		}
         
@@ -72,14 +72,14 @@ public class SubsidyController {
 		subsidy.setCityText(city.getCityText());
 		
         subsidyService.save(subsidy);
-        return ResultDataVoUtil.success(subsidy);
+        return ResultVOUtil.success(subsidy);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         subsidyService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -88,7 +88,7 @@ public class SubsidyController {
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
         Subsidy findOne = subsidyService.findOne(subsidy);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -97,7 +97,7 @@ public class SubsidyController {
         Subsidy subsidy = new Subsidy();
         BeanCopy.copyProperties(subsidyVo, subsidy);
         Page<Subsidy> findAll = subsidyService.findAll(subsidy, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
 }

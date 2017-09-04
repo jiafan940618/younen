@@ -15,7 +15,7 @@ import com.yn.model.ServerPlan;
 import com.yn.service.ServerPlanService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.ServerPlanVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/client/serverPlan")
@@ -27,7 +27,7 @@ public class ServerPlanController {
     @ResponseBody
     public Object findOne(Long id) {
         ServerPlan findOne = serverPlanService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class ServerPlanController {
         ServerPlan serverPlan = new ServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
         serverPlanService.save(serverPlan);
-        return ResultDataVoUtil.success(serverPlan);
+        return ResultVOUtil.success(serverPlan);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         serverPlanService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class ServerPlanController {
         ServerPlan serverPlan = new ServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
         ServerPlan findOne = serverPlanService.findOne(serverPlan);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class ServerPlanController {
         ServerPlan serverPlan = new ServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
         Page<ServerPlan> findAll = serverPlanService.findAll(serverPlan, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

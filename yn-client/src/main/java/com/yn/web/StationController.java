@@ -2,18 +2,16 @@ package com.yn.web;
 
 
 import java.util.Map;
-import java.util.Set;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +20,6 @@ import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
 import com.yn.dao.TemStationDao;
-import com.yn.model.Ammeter;
-import com.yn.model.Order;
 import com.yn.model.Station;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
@@ -31,7 +27,6 @@ import com.yn.service.SystemConfigService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.StationVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/station")
@@ -59,7 +54,7 @@ public class StationController {
     @ResponseBody
     public Object findOne(Long id) {
         Station findOne = stationService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -68,14 +63,14 @@ public class StationController {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
         stationService.save(station);
-        return ResultDataVoUtil.success(station);
+        return ResultVOUtil.success(station);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         stationService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -84,7 +79,7 @@ public class StationController {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
         Station findOne = stationService.findOne(station);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -93,7 +88,7 @@ public class StationController {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
         Page<Station> findAll = stationService.findAll(station, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
     /**
@@ -103,7 +98,7 @@ public class StationController {
 	@ResponseBody
 	public Object stationInfo(Long stationId) {
 		Map<String, Object> stationInfo = stationService.stationInfo(stationId);
-		return ResultDataVoUtil.success(stationInfo);
+		return ResultVOUtil.success(stationInfo);
 	}
     
     /**
@@ -113,7 +108,7 @@ public class StationController {
 	@ResponseBody
 	public Object get25YearIncome(Long stationId) {
 		Map<String,Object> map = stationService.get25YearIncome(stationId);
-		return ResultDataVoUtil.success(map);
+		return ResultVOUtil.success(map);
 	}
     
 }

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.AmmeterRecord;
 import com.yn.service.AmmeterRecordService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.AmmeterRecordVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/ammeterRecord")
@@ -27,7 +27,7 @@ public class AmmeterRecordController {
     @ResponseBody
     public Object findOne(Long id) {
         AmmeterRecord findOne = ammeterRecordService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class AmmeterRecordController {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
         ammeterRecordService.save(ammeterRecord);
-        return ResultDataVoUtil.success(ammeterRecord);
+        return ResultVOUtil.success(ammeterRecord);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         ammeterRecordService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class AmmeterRecordController {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
         AmmeterRecord findOne = ammeterRecordService.findOne(ammeterRecord);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class AmmeterRecordController {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
         Page<AmmeterRecord> findAll = ammeterRecordService.findAll(ammeterRecord, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

@@ -7,7 +7,7 @@ import com.yn.utils.ResultData;
  * 数据返回
  * Created by hy-03 on 2017/7/19.
  */
-public class ResultDataVoUtil {
+public class ResultVOUtil {
 
     public static ResultData<Object> success(Object object) {
         ResultData resultData = new ResultData();

@@ -1,14 +1,11 @@
 package com.yn.exception;
 
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.yn.utils.Constant;
-import com.yn.utils.ResultData;
 
 
 /**
@@ -24,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = MyException.class)
     @ResponseBody
     public Object defaultErrorHandler(MyException e) {
-        return ResultDataVoUtil.error(e.getCode(), e.getMessage());
+        return ResultVOUtil.error(e.getCode(), e.getMessage());
     }
     
 }

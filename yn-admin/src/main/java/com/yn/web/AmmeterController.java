@@ -6,15 +6,13 @@ import com.yn.model.Ammeter;
 import com.yn.service.AmmeterService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.AmmeterVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/server/ammeter")
@@ -23,31 +21,27 @@ public class AmmeterController {
 
     @Autowired
     private AmmeterService ammeterService;
-    @Autowired
-    private AmmeterDao ammeterDao;
-    @Autowired
-    private TemStationDao temStationDao;
 
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
         Ammeter findOne = ammeterService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody AmmeterVo ammeterVo) {
         Ammeter ammeter = ammeterService.saveAndbindStation(ammeterVo);
-        return ResultDataVoUtil.success(ammeter);
+        return ResultVOUtil.success(ammeter);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         ammeterService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -56,7 +50,7 @@ public class AmmeterController {
         Ammeter ammeter = new Ammeter();
         BeanCopy.copyProperties(ammeterVo, ammeter);
         Ammeter findOne = ammeterService.findOne(ammeter);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -65,7 +59,10 @@ public class AmmeterController {
         Ammeter ammeter = new Ammeter();
         BeanCopy.copyProperties(ammeterVo, ammeter);
         Page<Ammeter> findAll = ammeterService.findAll(ammeter, pageable);
-        return ResultDataVoUtil.success(findAll);
+
+        
+
+        return ResultVOUtil.success(findAll);
     }
 
     /**
@@ -78,7 +75,7 @@ public class AmmeterController {
     @ResponseBody
     public Object relieveStation(@RequestParam("ammeterId") Long ammeterId) {
         Ammeter ammeter = ammeterService.relieveStation(ammeterId);
-        return ResultDataVoUtil.success(ammeter);
+        return ResultVOUtil.success(ammeter);
     }
 
 

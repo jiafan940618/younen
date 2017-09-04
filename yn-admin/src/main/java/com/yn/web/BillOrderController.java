@@ -10,7 +10,7 @@ import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.StringUtil;
 import com.yn.vo.BillOrderVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +37,7 @@ public class BillOrderController {
     @ResponseBody
     public Object findOne(Long id) {
         BillOrder findOne = billOrderService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -46,14 +46,14 @@ public class BillOrderController {
         BillOrder billOrder = new BillOrder();
         BeanCopy.copyProperties(billOrderVo, billOrder);
         billOrderService.save(billOrder);
-        return ResultDataVoUtil.success(billOrder);
+        return ResultVOUtil.success(billOrder);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         billOrderService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -62,7 +62,7 @@ public class BillOrderController {
         BillOrder billOrder = new BillOrder();
         BeanCopy.copyProperties(billOrderVo, billOrder);
         BillOrder findOne = billOrderService.findOne(billOrder);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -71,7 +71,7 @@ public class BillOrderController {
         BillOrder billOrder = new BillOrder();
         BeanCopy.copyProperties(billOrderVo, billOrder);
         Page<BillOrder> findAll = billOrderService.findAll(billOrder, orderStatus, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 
     /**
@@ -92,9 +92,9 @@ public class BillOrderController {
         Double shouldPayPrice = totalPrice - hadPayPrice;
 
         if (hadPayPrice.doubleValue() == totalPrice.doubleValue()) {
-            return ResultDataVoUtil.error(777, "该订单已经支付完，不用继续录入");
+            return ResultVOUtil.error(777, "该订单已经支付完，不用继续录入");
         } else if ((hadPayPrice + money) > totalPrice) {
-            return ResultDataVoUtil.error(777, "该订单的总价是" + totalPrice + "元，已经支付了" + hadPayPrice + "元， 此次录入的金额不可以超过" + shouldPayPrice + "元");
+            return ResultVOUtil.error(777, "该订单的总价是" + totalPrice + "元，已经支付了" + hadPayPrice + "元， 此次录入的金额不可以超过" + shouldPayPrice + "元");
         }
 
         BillOrder billOrder = new BillOrder();
@@ -111,6 +111,6 @@ public class BillOrderController {
         order.setHadPayPrice(order.getHadPayPrice() + money);
         orderDao.save(order);
 
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 }

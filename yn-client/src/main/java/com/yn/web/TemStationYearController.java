@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.TemStationYear;
 import com.yn.service.TemStationYearService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.TemStationYearVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/temStationYear")
@@ -27,7 +27,7 @@ public class TemStationYearController {
     @ResponseBody
     public Object findOne(Long id) {
         TemStationYear findOne = temStationYearService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class TemStationYearController {
         TemStationYear temStationYear = new TemStationYear();
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
         temStationYearService.save(temStationYear);
-        return ResultDataVoUtil.success(temStationYear);
+        return ResultVOUtil.success(temStationYear);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         temStationYearService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class TemStationYearController {
         TemStationYear temStationYear = new TemStationYear();
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
         TemStationYear findOne = temStationYearService.findOne(temStationYear);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class TemStationYearController {
         TemStationYear temStationYear = new TemStationYear();
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
         Page<TemStationYear> findAll = temStationYearService.findAll(temStationYear, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.Feedback;
-import com.yn.model.User;
 import com.yn.service.FeedbackService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.FeedbackVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/feedback")
@@ -29,7 +28,7 @@ public class FeedbackController {
     @ResponseBody
     public Object findOne(Long id) {
         Feedback findOne = feedbackService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -40,14 +39,14 @@ public class FeedbackController {
         BeanCopy.copyProperties(feedbackVo, feedback);
         feedback.setUserId(userId);
         feedbackService.save(feedback);
-        return ResultDataVoUtil.success(feedback);
+        return ResultVOUtil.success(feedback);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         feedbackService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -56,7 +55,7 @@ public class FeedbackController {
         Feedback feedback = new Feedback();
         BeanCopy.copyProperties(feedbackVo, feedback);
         Feedback findOne = feedbackService.findOne(feedback);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -65,6 +64,6 @@ public class FeedbackController {
         Feedback feedback = new Feedback();
         BeanCopy.copyProperties(feedbackVo, feedback);
         Page<Feedback> findAll = feedbackService.findAll(feedback, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

@@ -15,7 +15,7 @@ import com.yn.model.City;
 import com.yn.service.CityService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.CityVo;
-import com.yn.vo.re.ResultDataVoUtil;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/client/city")
@@ -27,7 +27,7 @@ public class CityController {
     @ResponseBody
     public Object findOne(Long id) {
         City findOne = cityService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class CityController {
         City city = new City();
         BeanCopy.copyProperties(cityVo, city);
         cityService.save(city);
-        return ResultDataVoUtil.success(city);
+        return ResultVOUtil.success(city);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         cityService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class CityController {
         City city = new City();
         BeanCopy.copyProperties(cityVo, city);
         City findOne = cityService.findOne(city);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class CityController {
         City city = new City();
         BeanCopy.copyProperties(cityVo, city);
         Page<City> findAll = cityService.findAll(city, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }

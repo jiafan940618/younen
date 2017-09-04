@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.User;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.UserVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/client/user")
@@ -27,7 +27,7 @@ public class UserController {
     @ResponseBody
     public Object findOne(Long id) {
         User findOne = userService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class UserController {
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
         userService.save(user);
-        return ResultDataVoUtil.success(user);
+        return ResultVOUtil.success(user);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         userService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class UserController {
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
         User findOne = userService.findOne(user);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,7 +61,7 @@ public class UserController {
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
         Page<User> findAll = userService.findAll(user, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
     
 }

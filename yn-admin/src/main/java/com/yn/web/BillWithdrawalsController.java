@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import com.yn.model.BillWithdrawals;
 import com.yn.service.BillWithdrawalsService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.BillWithdrawalsVo;
-import com.yn.vo.re.ResultDataVoUtil;
 
 @RestController
 @RequestMapping("/server/billWithdrawals")
@@ -27,7 +27,7 @@ public class BillWithdrawalsController {
     @ResponseBody
     public Object findOne(Long id) {
         BillWithdrawals findOne = billWithdrawalsService.findOne(id);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @ResponseBody
@@ -36,14 +36,14 @@ public class BillWithdrawalsController {
         BillWithdrawals billWithdrawals = new BillWithdrawals();
         BeanCopy.copyProperties(billWithdrawalsVo, billWithdrawals);
         billWithdrawalsService.save(billWithdrawals);
-        return ResultDataVoUtil.success(billWithdrawals);
+        return ResultVOUtil.success(billWithdrawals);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         billWithdrawalsService.delete(id);
-        return ResultDataVoUtil.success();
+        return ResultVOUtil.success();
     }
 
     @ResponseBody
@@ -52,7 +52,7 @@ public class BillWithdrawalsController {
         BillWithdrawals billWithdrawals = new BillWithdrawals();
         BeanCopy.copyProperties(billWithdrawalsVo, billWithdrawals);
         BillWithdrawals findOne = billWithdrawalsService.findOne(billWithdrawals);
-        return ResultDataVoUtil.success(findOne);
+        return ResultVOUtil.success(findOne);
     }
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -61,6 +61,6 @@ public class BillWithdrawalsController {
         BillWithdrawals billWithdrawals = new BillWithdrawals();
         BeanCopy.copyProperties(billWithdrawalsVo, billWithdrawals);
         Page<BillWithdrawals> findAll = billWithdrawalsService.findAll(billWithdrawals, pageable);
-        return ResultDataVoUtil.success(findAll);
+        return ResultVOUtil.success(findAll);
     }
 }
