@@ -1,9 +1,10 @@
 package com.yn.web;
 
-import com.yn.dao.AmmeterDao;
-import com.yn.dao.TemStationDao;
+import com.yn.enums.NoticeEnum;
 import com.yn.model.Ammeter;
 import com.yn.service.AmmeterService;
+import com.yn.service.NoticeService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.AmmeterVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/server/ammeter")
 public class AmmeterController {
@@ -21,12 +24,25 @@ public class AmmeterController {
 
     @Autowired
     private AmmeterService ammeterService;
+    @Autowired
+    private NoticeService noticeService;
 
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
         Ammeter findOne = ammeterService.findOne(id);
+
+
+        // 更新记录为已读
+        if (findOne != null) {
+            Long userId = SessionCache.instance().getUserId();
+            if (userId != null) {
+                noticeService.update2Read(NoticeEnum.NEW_AMMETER.getCode(), id, userId);
+            }
+        }
+
+
         return ResultVOUtil.success(findOne);
     }
 
@@ -60,7 +76,18 @@ public class AmmeterController {
         BeanCopy.copyProperties(ammeterVo, ammeter);
         Page<Ammeter> findAll = ammeterService.findAll(ammeter, pageable);
 
-        
+
+        // 判断是否已读
+        Long userId = SessionCache.instance().getUserId();
+        if (userId != null) {
+            List<Ammeter> content = findAll.getContent();
+            for (Ammeter one : content) {
+                Boolean isNew = noticeService.findIsNew(NoticeEnum.NEW_AMMETER.getCode(), one.getId(), userId);
+                if (isNew) {
+                    one.setIsRead(NoticeEnum.UN_READ.getCode());
+                }
+            }
+        }
 
         return ResultVOUtil.success(findAll);
     }

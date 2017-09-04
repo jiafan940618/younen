@@ -1,9 +1,11 @@
 package com.yn.web;
 
 
-import com.yn.dao.StationDao;
+import com.yn.enums.NoticeEnum;
 import com.yn.model.Station;
+import com.yn.service.NoticeService;
 import com.yn.service.StationService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.StationVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -15,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,13 +28,24 @@ public class StationController {
     @Autowired
     StationService stationService;
     @Autowired
-    StationDao stationDao;
+    private NoticeService noticeService;
 
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
         Station findOne = stationService.findOne(id);
+
+
+        // 更新记录为已读
+        if (findOne != null) {
+            Long userId = SessionCache.instance().getUserId();
+            if (userId != null) {
+                noticeService.update2Read(NoticeEnum.NEW_STATION.getCode(), id, userId);
+            }
+        }
+
+
         return ResultVOUtil.success(findOne);
     }
 
@@ -68,6 +82,18 @@ public class StationController {
         BeanCopy.copyProperties(stationVo, station);
         Page<Station> findAll = stationService.findAll(station, pageable);
 
+
+        // 判断是否已读
+        Long userId = SessionCache.instance().getUserId();
+        if (userId != null) {
+            List<Station> content = findAll.getContent();
+            for (Station one : content) {
+                Boolean isNew = noticeService.findIsNew(NoticeEnum.NEW_STATION.getCode(), one.getId(), userId);
+                if (isNew) {
+                    one.setIsRead(NoticeEnum.UN_READ.getCode());
+                }
+            }
+        }
 
 
         return ResultVOUtil.success(findAll);

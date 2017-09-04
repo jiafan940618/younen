@@ -7,6 +7,8 @@ import com.yn.model.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -55,13 +57,38 @@ public class NoticeService {
         notice.setDel(DeleteEnum.NOT_DEL.getCode());
 
 
-        Notice result = noticeDao.findOne(Example.of(notice));
-        if (result != null) {
+        List<Notice> result = noticeDao.findAll(Example.of(notice));
+        if (!CollectionUtils.isEmpty(result)) {
             return true;
         }
 
 
         return false;
+    }
+
+
+    /**
+     * 更新记录为已读
+     *
+     * @param type
+     * @param typeId
+     * @param userId
+     */
+    @Transactional
+    public void update2Read(Integer type, Long typeId, Long userId) {
+        Notice notice = new Notice();
+        notice.setType(type);
+        notice.setTypeId(typeId);
+        notice.setUserId(userId);
+        notice.setIsRead(NoticeEnum.UN_READ.getCode());
+        notice.setDel(DeleteEnum.NOT_DEL.getCode());
+
+
+        List<Notice> result = noticeDao.findAll(Example.of(notice));
+        for (Notice one : result) {
+            one.setIsRead(NoticeEnum.READ.getCode());
+            noticeDao.save(one);
+        }
     }
 
 
