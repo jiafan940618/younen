@@ -92,4 +92,24 @@ public class NoticeService {
     }
 
 
+    /**
+     * 删除
+     *
+     * @param type
+     * @param typeId
+     */
+    @Transactional
+    public void delete(Integer type, Long typeId) {
+        Notice notice = new Notice();
+        notice.setType(type);
+        notice.setTypeId(typeId);
+
+
+        List<Notice> result = noticeDao.findAll(Example.of(notice));
+        for (Notice one : result) {
+            noticeDao.delete(one.getId());
+        }
+    }
+
+
 }

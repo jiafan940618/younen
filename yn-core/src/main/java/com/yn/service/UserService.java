@@ -2,6 +2,7 @@ package com.yn.service;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.UserDao;
+import com.yn.enums.NoticeEnum;
 import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.MD5Util;
@@ -28,6 +29,8 @@ public class UserService {
     WalletService walletService;
     @Autowired
     OrderDao orderDao;
+    @Autowired
+    private NoticeService noticeService;
 
 
     public User findOne(Long id) {
@@ -52,6 +55,9 @@ public class UserService {
 
     public void delete(Long id) {
         userDao.delete(id);
+
+        // 删除未读信息
+        noticeService.delete(NoticeEnum.NEW_USER.getCode(), id);
     }
 
     public void deleteBatch(List<Long> id) {

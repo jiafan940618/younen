@@ -20,5 +20,5 @@ public interface NoticeDao extends JpaRepository<Notice, Long>, JpaSpecification
     @Query("update Notice set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
 
-    long countByUserIdAndTypeAndIsRead(Long userId, Integer type, Integer isRead);
+    long countByUserIdAndTypeAndIsReadAndDel(Long userId, Integer type, Integer isRead, Integer del);
 }

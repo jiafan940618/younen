@@ -2,6 +2,7 @@ package com.yn.service;
 
 import java.util.List;
 
+import com.yn.enums.NoticeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +16,13 @@ import com.yn.utils.RepositoryUtil;
 
 @Service
 public class FeedbackService {
+
+
     @Autowired
     FeedbackDao feedbackDao;
+    @Autowired
+    private NoticeService noticeService;
+
 
     public Feedback findOne(Long id) {
         return feedbackDao.findOne(id);
@@ -38,6 +44,9 @@ public class FeedbackService {
 
     public void delete(Long id) {
         feedbackDao.delete(id);
+
+        // 删除未读信息
+        noticeService.delete(NoticeEnum.NEW_FEEDBACK.getCode(), id);
     }
     
     public void deleteBatch(List<Long> id) {

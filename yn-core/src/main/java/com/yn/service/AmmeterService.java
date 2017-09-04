@@ -2,10 +2,8 @@ package com.yn.service;
 
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.StationDao;
-import com.yn.enums.AmmeterTypeEnum;
-import com.yn.enums.DeleteEnum;
-import com.yn.enums.ResultEnum;
-import com.yn.enums.StationStatusEnum;
+import com.yn.dao.UserDao;
+import com.yn.enums.*;
 import com.yn.exception.MyException;
 import com.yn.model.Ammeter;
 import com.yn.model.City;
@@ -27,13 +25,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 @Service
 public class AmmeterService {
+
+
     @Autowired
     AmmeterDao ammeterDao;
     @Autowired
@@ -44,12 +42,17 @@ public class AmmeterService {
     StationService stationService;
     @Autowired
     StationDao stationDao;
+    @Autowired
+    private NoticeService noticeService;
+    @Autowired
+    private UserDao userDao;
+
 
     public Ammeter findOne(Long id) {
         return ammeterDao.findOne(id);
     }
 
-    public void save(Ammeter ammeter) {
+    public Ammeter save(Ammeter ammeter) {
         if (ammeter.getId() != null) {
             Ammeter one = ammeterDao.findOne(ammeter.getId());
             try {
@@ -57,9 +60,9 @@ public class AmmeterService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ammeterDao.save(one);
+            return ammeterDao.save(one);
         } else {
-            ammeterDao.save(ammeter);
+            return ammeterDao.save(ammeter);
         }
     }
 
@@ -70,6 +73,9 @@ public class AmmeterService {
 
         // 2.解绑电站
         relieveStation(id);
+
+        // 3.删除未读信息
+        noticeService.delete(NoticeEnum.NEW_AMMETER.getCode(), id);
     }
 
     public void deleteBatch(List<Long> id) {
@@ -188,7 +194,15 @@ public class AmmeterService {
                 ammeter.setId(findOne.getId());
             }
         }
-        save(ammeter);
+        Ammeter result = save(ammeter);
+
+
+        // 插入电表的未读信息
+        if (findOne == null) {
+            // 查找超级管理员、电表管理员、业务管理员、未认证服务商、已认证服务商的userId
+            List<Long> userIds = userDao.findIdByRoleIds(Arrays.asList(1L, 2L, 3L, 4L, 5L));
+            noticeService.insertBatch(NoticeEnum.NEW_AMMETER.getCode(), result.getId(), userIds);
+        }
 
         // 判断电站已经存在的采集器码 与 要绑定的电表的采集器码是否一致
         Station station = stationService.findOne(ammeter.getStationId());

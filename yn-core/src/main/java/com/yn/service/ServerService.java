@@ -2,6 +2,7 @@ package com.yn.service;
 
 import com.yn.dao.ServerDao;
 import com.yn.dao.UserDao;
+import com.yn.enums.NoticeEnum;
 import com.yn.enums.RoleEnum;
 import com.yn.enums.ServerTypeEnum;
 import com.yn.model.Server;
@@ -30,6 +31,9 @@ public class ServerService {
     ServerDao serverDao;
     @Autowired
     UserDao userDao;
+    @Autowired
+    private NoticeService noticeService;
+
 
     public Server findOne(Long id) {
         return serverDao.findOne(id);
@@ -53,6 +57,9 @@ public class ServerService {
 
     public void delete(Long id) {
         serverDao.delete(id);
+
+        // 删除未读信息
+        noticeService.delete(NoticeEnum.NEW_SERVER.getCode(), id);
     }
 
     public void deleteBatch(List<Long> id) {

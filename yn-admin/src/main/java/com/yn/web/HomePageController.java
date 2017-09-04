@@ -2,6 +2,7 @@ package com.yn.web;
 
 import com.yn.dao.*;
 import com.yn.domain.EachHourTemStation;
+import com.yn.enums.DeleteEnum;
 import com.yn.enums.NoticeEnum;
 import com.yn.model.Order;
 import com.yn.model.Station;
@@ -128,12 +129,12 @@ public class HomePageController {
         Long userId = SessionCache.instance().checkUserIsLogin();
 
 
-        long userNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_USER.getCode(), NoticeEnum.UN_READ.getCode());
-        long serverNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_SERVER.getCode(), NoticeEnum.UN_READ.getCode());
-        long orderNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_ORDER.getCode(), NoticeEnum.UN_READ.getCode());
-        long stationNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_STATION.getCode(), NoticeEnum.UN_READ.getCode());
-        long ammeterNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_AMMETER.getCode(), NoticeEnum.UN_READ.getCode());
-        long unreadMessageNum = noticeDao.countByUserIdAndTypeAndIsRead(userId, NoticeEnum.NEW_FEEDBACK.getCode(), NoticeEnum.UN_READ.getCode());
+        long userNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_USER.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
+        long serverNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_SERVER.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
+        long orderNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_ORDER.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
+        long stationNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_STATION.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
+        long ammeterNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_AMMETER.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
+        long unreadMessageNum = noticeDao.countByUserIdAndTypeAndIsReadAndDel(userId, NoticeEnum.NEW_FEEDBACK.getCode(), NoticeEnum.UN_READ.getCode(), DeleteEnum.NOT_DEL.getCode());
 
 
         Map<String, Object> map = new HashMap<>();
