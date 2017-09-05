@@ -2,6 +2,7 @@ package com.yn.web;
 
 import com.yn.dao.*;
 import com.yn.domain.EachHourTemStation;
+import com.yn.enums.AmmeterTypeEnum;
 import com.yn.enums.DeleteEnum;
 import com.yn.enums.NoticeEnum;
 import com.yn.model.Order;
@@ -203,7 +204,7 @@ public class HomePageController {
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
     public Object todayKwh(Long serverId) {
-        List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId);
+        List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
         return ResultVOUtil.success(todayKwh);
     }
 

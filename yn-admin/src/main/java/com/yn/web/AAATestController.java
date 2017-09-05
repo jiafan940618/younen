@@ -1,8 +1,8 @@
 package com.yn.web;
 
-import com.yn.dao.mapper.SystemConfigMapper;
-import com.yn.model.SystemConfig;
-import com.yn.utils.ObjToMap;
+import com.yn.domain.EachHourTemStation;
+import com.yn.enums.AmmeterTypeEnum;
+import com.yn.service.TemStationService;
 import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,18 +18,19 @@ public class AAATestController {
 
 
     @Autowired
-    private SystemConfigMapper systemConfigMapper;
+    private TemStationService temStationService;
 
 
-    @RequestMapping(value = "/getPhoneCode", method = {RequestMethod.POST})
+    @RequestMapping(value = "/getTodayKwh2", method = {RequestMethod.POST})
     @ResponseBody
-    public Object getPhoneCode(SystemConfig systemConfig) {
+    public Object getTodayKwh2() {
 
 
-        SystemConfig systemConfigs = systemConfigMapper.select(34L);
+        List<EachHourTemStation> todayKwh2 = temStationService.getTodayKwh(null, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
 
 
-        return ResultVOUtil.success(systemConfigs);
+        return ResultVOUtil.success(todayKwh2);
     }
+
 
 }

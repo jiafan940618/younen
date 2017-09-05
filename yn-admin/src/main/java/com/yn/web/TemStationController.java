@@ -78,7 +78,7 @@ public class TemStationController {
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
-    public Object todayKwh(@RequestParam(value = "stationId") Long stationId, @RequestParam(value = "type") Integer type) {
+    public Object todayKwh(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
         return ResultVOUtil.success(todayKwhByStationId);
     }

@@ -40,4 +40,10 @@ public interface TemStationDao extends JpaRepository<TemStation, Long>, JpaSpeci
 
     @Query("select o.dAddr from TemStation o where o.stationId = ?1 and o.type = ?2 and o.del = 0")
     Set<Long> findDAddr(Long stationId, Integer type);
+
+    List<TemStation> findByTypeAndCreateDtmBetween(Integer type, Date start, Date end);
+
+    List<TemStation> findByServerIdAndTypeAndCreateDtmBetween(Long serverId, Integer type, Date start, Date end);
+
+    List<TemStation> findByStationIdAndTypeAndCreateDtmBetween(Long stationId, Integer type, Date start, Date end);
 }
