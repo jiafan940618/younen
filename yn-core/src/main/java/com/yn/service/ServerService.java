@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 @Service
 public class ServerService {
+
     @Autowired
     ServerDao serverDao;
     @Autowired
@@ -86,6 +87,11 @@ public class ServerService {
         Specification<Server> spec = RepositoryUtil.getSpecification(server);
         return serverDao.findAll(spec);
     }
+    
+    public Page<Server> findLocalServer(Server server, Pageable pageable) {
+		Page<Server> findLocalServer = serverDao.findByServerCityIdsLikeAndDel(server.getServerCityIds(), 0, pageable);
+		return findLocalServer;
+	}
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static Specification<Server> getSpecification(Server server) {

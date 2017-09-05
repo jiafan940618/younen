@@ -63,4 +63,13 @@ public class ServerController {
         Page<Server> findAll = serverService.findAll(server, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    @RequestMapping(value = "/findLocalServer", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object findLocalServer(ServerVo serverVo, @PageableDefault(value = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    	Server server = new Server();
+    	BeanCopy.copyProperties(serverVo, server);
+    	Page<Server> findLocalServer = serverService.findLocalServer(server, pageable);
+    	return ResultDataVoUtil.success(findLocalServer);
+    }
 }
