@@ -74,4 +74,30 @@ public class Inverter extends IDomain implements Serializable {
 		this.frequency = frequency;
 	}
 
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public Double getQualityAssurance() {
+		return qualityAssurance;
+	}
+
+	public void setQualityAssurance(Double qualityAssurance) {
+		this.qualityAssurance = qualityAssurance;
+	}
+
+	public Double getBoardYear() {
+		return boardYear;
+	}
+
+	public void setBoardYear(Double boardYear) {
+		this.boardYear = boardYear;
+	}
+	
+	
+
 }
