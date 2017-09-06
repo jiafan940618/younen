@@ -3,9 +3,11 @@ package com.yn.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
 import com.yn.domain.IDomain;
 
+@Entity
 public class ProductionDetail extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(5) comment '[服务商编号]'")
 	private Integer serverId;

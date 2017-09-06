@@ -3,9 +3,16 @@ package com.yn.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
 import com.yn.domain.IDomain;
 
+/**
+ * 逆变器的表
+ * */
+
+
+@Entity
 public class Inverter extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(3) comment '[品牌编号]'")
 	private Integer brandId;
@@ -19,6 +26,13 @@ public class Inverter extends IDomain implements Serializable {
 	private int voltage;
 	@Column(columnDefinition = "int(3) comment '[频率]'")
 	private int frequency;
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器板质保期 年]'")
+	private Double qualityAssurance;
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
+	private Double boardYear;
+	
+	
+	
 
 	public Integer getBrandId() {
 		return brandId;

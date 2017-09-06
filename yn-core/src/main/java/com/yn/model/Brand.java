@@ -3,9 +3,11 @@ package com.yn.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
 import com.yn.domain.IDomain;
 
+@Entity
 public class Brand extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(255) comment '[产品类型]'")
 	private String type;
