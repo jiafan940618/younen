@@ -7,10 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cascade;
+
 import com.yn.domain.IDomain;
 
 @Entity
 public class NewServerPlan extends IDomain implements Serializable {
+	
+	
 	
 	@Column(columnDefinition = "int(11) comment '[服务商id]'")
 	private Long serverId;
@@ -30,14 +34,31 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Integer minPurchase;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
 	private Double unitPrice;
-	
-	   @OneToOne
+
+	/** 电池板*/
+	@OneToOne
 	    @JoinColumn(name = "batteryboardId", insertable = false, updatable = false)
 	    private SolarPanel solarPanel;
-	   
+	  /** 逆变器 */ 
 	   @OneToOne
 	    @JoinColumn(name = "inverterId", insertable = false, updatable = false)
 	    private Inverter inverter;
+ 
+
+
+
+
+	public NewServerPlan() {}
+	
+	
+
+	public NewServerPlan(Long serverId, Integer minPurchase, Double unitPrice) {
+		this.serverId = serverId;
+		this.minPurchase = minPurchase;
+		this.unitPrice = unitPrice;
+	}
+
+
 
 	public Long getServerId() {
 		return serverId;

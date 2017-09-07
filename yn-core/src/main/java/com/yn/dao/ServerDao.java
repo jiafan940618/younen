@@ -28,4 +28,10 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	long countNum(Date startDtm, Date endDtm);
 
 	Page<Server> findByServerCityIdsLikeAndDel(String ids, int del, Pageable pageable);
+	
+	 @Transactional
+	    @Modifying
+	    @Query("select new Server(factorage)  from Server  where id = :serverid")
+	    Server findServer(@Param("serverid") Long serverid);
+	
 }

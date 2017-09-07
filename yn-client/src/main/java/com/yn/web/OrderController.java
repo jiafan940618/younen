@@ -1,5 +1,7 @@
 package com.yn.web;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.model.Order;
+import com.yn.model.Wallet;
 import com.yn.service.OrderService;
 import com.yn.service.ServerPlanService;
+import com.yn.service.WalletService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.ResultData;
 import com.yn.vo.OrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -31,7 +36,9 @@ public class OrderController {
     OrderDao orderDao;
     @Autowired
     OrderPlanDao orderPlanDao;
-
+    @Autowired
+    WalletService walletService;
+    
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
@@ -72,4 +79,32 @@ public class OrderController {
         Page<Order> findAll = orderService.findAll(order, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+     /** 订单详情*/
+    @ResponseBody
+    @RequestMapping(value = "/seeOrder")
+    public Object LookOrder(HttpSession session) {
+    	
+    	Order order =(Order)session.getAttribute("order");
+    	
+        return ResultVOUtil.success(order);
+    }
+    
+     /** 线上支付,第一步*/
+    @ResponseBody
+    @RequestMapping(value = "/orderPrice")
+    public ResultData<Object> findOrderprice(OrderVo orderVo) {
+    	
+    	
+    Order order = orderService.findOne(orderVo.getId());
+    
+    Wallet wallet = walletService.findOne(orderVo.getUserId());
+    	
+    	
+        return ResultVOUtil.success(null);
+    }
+  
+    
+    
+    
 }

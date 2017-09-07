@@ -1,6 +1,8 @@
 package com.yn.web;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,18 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.Apolegamy;
 import com.yn.model.ApolegamyServer;
+import com.yn.model.NewServerPlan;
 import com.yn.model.Order;
-import com.yn.model.Server;
+import com.yn.model.OrderPlan;
+import com.yn.model.ProductionDetail;
+import com.yn.model.Qualifications;
+import com.yn.model.QualificationsServer;
 import com.yn.model.ServerPlan;
 import com.yn.model.User;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
+import com.yn.service.NewServerPlanService;
+import com.yn.service.OrderPlanService;
+import com.yn.service.OrderService;
+import com.yn.service.ProductionService;
+import com.yn.service.QualificationsServerService;
 import com.yn.service.ServerPlanService;
+import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.Constant;
 import com.yn.utils.ResultData;
+import com.yn.vo.NewServerPlanVo;
+import com.yn.vo.PriceVo;
 import com.yn.vo.ServerPlanVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
+
 
 @RestController
 @RequestMapping("/client/serverPlan")
@@ -40,11 +56,25 @@ public class ServerPlanController {
 	private static final Logger logger = LoggerFactory.getLogger(ServerPlanController.class);
 	
 	@Autowired
+	OrderService orderService;
+	@Autowired
+	OrderPlanService orderPlanService;
+	@Autowired
+	UserService userservice;
+	@Autowired
     ApolegamyServerService apolegamyserService;
     @Autowired
 	ApolegamyService apolegamyService;
     @Autowired
     ServerPlanService serverPlanService;
+    @Autowired
+    ProductionService productionService;
+    @Autowired
+    QualificationsServerService qualificationsServerService;
+    
+    @Autowired
+    NewServerPlanService newserverPlanService;
+    
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -87,37 +117,207 @@ public class ServerPlanController {
         return ResultVOUtil.success(findAll);
     }
     
+   
+    
+    
+    /** 处理金额*/
+    @ResponseBody
+    @RequestMapping(value = "/findPlan")
+    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,UserVo userVo,
+    		@RequestParam("ids") List<Long> ids,@RequestParam("price") String price,HttpSession session) {
+    	
+    	
+    	
+    	
+    	 Integer minpur =	newserverPlanVo.getMinPurchase();
+    	 
+    	
+    	 NewServerPlan newserverPlan = new NewServerPlan();
+        BeanCopy.copyProperties(newserverPlanVo, newserverPlan);
+        
+        
+        User user = new User();
+        BeanCopy.copyProperties(userVo, user);
+        
+        NewServerPlan findOne = newserverPlanService.selectOne(newserverPlanVo);
+        
+        if(null == minpur || minpur < findOne.getMinPurchase() ){
+        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
+        	
+        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
+  	  	}
+        
+        Double utilprice =  findOne.getUnitPrice();
+      
+        Integer minpurchase =  newserverPlanVo.getMinPurchase();
+         /** 计算总价格*/
+        Double AllMoney = utilprice * minpurchase;
+         /*** 计算备选项目价格*/
+        List<Apolegamy> list =  apolegamyService.findAll(ids);
+        
+       Double apoPrice = 0.0;
+        
+         for (Apolegamy apolegamy : list) {
+        	 apoPrice += apolegamy.getPrice();
+		}
+        
+        if((AllMoney+apoPrice) != Double.valueOf(price) ){
+        	 /** 价格不对 */
+        	logger.info("------ ---- -- -- -- -- - -- - - ：金额错误 ");
+        	return  ResultVOUtil.error(777, Constant.PRICE_ERROR); 
+        }
+
+        User user02 =  userservice.findOne(user);
+        /** 添加订单*/ 
+        Order order  = newserverPlanService. getOrder(newserverPlan,user02,Double.valueOf(price),apoPrice);
+        
+        orderService.save(order);
+        
+        Order neworder =   orderService.findOne(order);
+        
+         /** 订单计划表*/
+        
+        Long id =  newserverPlan.getId();
+     
+        NewServerPlan  serverPlan = newserverPlanService.findOne(id);
+        
+       OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan,neworder);
+       
+       orderPlanService.save(orderPlan);
+        
+       OrderPlan newOrdPlan =  orderPlanService.findOne(orderPlan);
+       
+       order.setOrderPlanId(newOrdPlan.getId());
+       
+       neworder.setOrderPlan(newOrdPlan);
+       
+       
+       /** 处理订单的信息*/
+     
+       session.setAttribute("order", neworder);
+       
+        return ResultVOUtil.success(null);
+    }
+    
     
    
     
     /** 方案接口*/
     @ResponseBody
     @RequestMapping(value = "/Orderplan")
-    public ResultData<Object> findOrderplan(ServerPlanVo serverPlanVo) {
-  
-        ServerPlan serverPlan = new ServerPlan();
-        serverPlan.setId(serverPlanVo.getServerId());
+    public ResultData<Object> findOrderplan() {
+    //	ServerPlanVo serverPlanVo
+    	
+        NewServerPlan serverPlan = new NewServerPlan();
+        serverPlan.setServerId(1L);
 
-       List<ServerPlan>  list = serverPlanService.findAll(serverPlan);
-
-        return ResultVOUtil.success(list);
+       List<NewServerPlan>  list = newserverPlanService.findAll(serverPlan);
+       
+      List<PriceVo> listprice = new ArrayList<PriceVo>();
+     
+       
+       for (NewServerPlan newServerPlan : list) {
+    	   PriceVo newprice = new PriceVo();
+    	   Double allMoney = newServerPlan.getMinPurchase() * newServerPlan.getUnitPrice();
+    	   Long id = newServerPlan.getId();
+    	   
+    	   newprice.setAllmoney(allMoney);
+    	   newprice.setId(id);
+    	   
+    	   listprice.add(newprice);
+       }
+      
+        return ResultVOUtil.newsuccess(list, listprice);
     }
     
-    /** 配选项目*/
+    /** 配选项目,与资质*/
     @ResponseBody
     @RequestMapping(value = "/apolegamy")
-    public ResultData<Object> findApolegamy(ServerPlanVo serverPlanVo) {
-
-         ApolegamyServer apolegamyServer = new ApolegamyServer();
-         apolegamyServer.setServerId(serverPlanVo.getServerId());
-         
-         List<ApolegamyServer>  list = apolegamyserService.findAll(apolegamyServer);      
+    public ResultData<Object> findApolegamy() {
+    	 /** 资质*/
+    	QualificationsServer qualificationsServer = new QualificationsServer();
+    	qualificationsServer.setServerId(1L);
     	
-        return ResultVOUtil.success(list);
+    	List<QualificationsServer>	listqua =	qualificationsServerService.findAll(qualificationsServer);
+    	List<Qualifications>  newlist = new ArrayList<Qualifications>();
+    	for (QualificationsServer qualificationsServer2 : listqua) {
+    		
+    		Qualifications qualifications =	qualificationsServer2.getQualifications();
+    		newlist.add(qualifications);
+		}
+    	
+        /** 配选项目*/
+         ApolegamyServer apolegamyServer = new ApolegamyServer();
+         apolegamyServer.setServerId(1L);
+         
+         List<ApolegamyServer>  list = apolegamyserService.findAll(apolegamyServer);  
+         
+         List<Apolegamy> listapo = new ArrayList<Apolegamy>();
+         
+         for (ApolegamyServer apolegamyServer2 : list) {
+        	 Apolegamy Apolegamy =	 apolegamyServer2.getApolegamy();
+        	 
+        	 listapo.add(Apolegamy);
+		}
+    	
+        return ResultVOUtil.newsuccess(listapo,newlist);
     }
     
+    /** 服务详情  Service details*/
+    @ResponseBody
+    @RequestMapping(value = "/detail")
+    public ResultData<Object> finddetail() {
+    	
+    	ProductionDetail production = new ProductionDetail();
+    	production.setServerId(1);
+    	
+    	 production = productionService.findOne(production);
+    	
+        return ResultVOUtil.success(production);
+    }
     
-    
+     /** 备份的方案*/
+   /* @ResponseBody
+    @RequestMapping(value = "/planAll")
+    public ResultData<Object> finddall() {
+    	  NewServerPlan serverPlan = new NewServerPlan();
+          serverPlan.setServerId(1L);
+
+         List<NewServerPlan>  list = newserverPlanService.findAll(serverPlan);
+         
+        List<PriceVo> listprice = new ArrayList<PriceVo>();
+         for (NewServerPlan newServerPlan : list) {
+      	   PriceVo newprice = new PriceVo();
+      	   Double allMoney = newServerPlan.getMinPurchase() * newServerPlan.getUnitPrice();
+      	   Long id = newServerPlan.getId();
+      	   
+      	   newprice.setAllmoney(allMoney);
+      	   newprice.setId(id);
+      	   
+      	   listprice.add(newprice);
+      	
+         }
+         ApolegamyServer apolegamyServer = new ApolegamyServer();
+         apolegamyServer.setServerId(1L);
+         
+         List<ApolegamyServer>  listap = apolegamyserService.findAll(apolegamyServer);  
+         
+         List<Apolegamy> listapo = new ArrayList<Apolegamy>();
+         
+         for (ApolegamyServer apolegamyServer2 : listap) {
+        	 Apolegamy Apolegamy =	 apolegamyServer2.getApolegamy();
+        	 
+        	 listapo.add(Apolegamy);
+		}
+         ProductionDetail production = new ProductionDetail();
+     	production.setServerId(1);
+     	
+     	 production = productionService.findOne(production);
+    	
+    	
+    	
+        return ResultVOUtil.aginsuccess(list, listprice, listapo, production);
+    }*/
     
     
 }

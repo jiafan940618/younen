@@ -117,7 +117,13 @@ public class Server extends IDomain implements Serializable {
     @Where(clause = "del=0")
     private Set<ApolegamyServer> apolegamyServer;
 
-    public Long getUserId() {
+    public Server() {}
+
+	public Server(Double factorage) {
+		this.factorage = factorage;
+	}
+
+	public Long getUserId() {
         return userId;
     }
 

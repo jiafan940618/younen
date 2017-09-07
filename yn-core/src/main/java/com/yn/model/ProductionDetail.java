@@ -9,6 +9,7 @@ import com.yn.domain.IDomain;
 
 @Entity
 public class ProductionDetail extends IDomain implements Serializable {
+	
 	@Column(columnDefinition = "int(5) comment '[服务商编号]'")
 	private Integer serverId;
 	@Column(columnDefinition = "text comment '[内容]'")

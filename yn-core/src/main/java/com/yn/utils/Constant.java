@@ -12,5 +12,45 @@ public class Constant {
     public final static String PARAMS_ERROR = "参数错误";
     public final static String NO_PERMISSION = "权限不足";
     public final static String STORER_NO_LOGIN = "请选择商家";
+    
+    public final static String PASSWORD_NULL = "密码不能为空";
+    /**注册的数据返回 */
+    public final static String PHONE_NULL = "电话不能为空";
+    public final static String CODE_NULL = "请先发送验证码";
+    public final static String CODE_AGAIN = "该验证码已失效，请重新获取";
+    public final static String PHONE_EXIST = "该手机号已经被注册";
+    public final static String PHONE_NOTEXIST = "该手机号不存在";
+    
+    
+    /** 用户第二次注册*/
+    public final static String NO_FIRST = "请先完成第一步注册";
+    public final static String NICK_NULL = "昵称不能为空";
+    public final static String NICK_EXIST = "昵称已存在";
+    public final static String NAME_NULL = "姓名不能为空";
+    public final static String SEX_NULL = "性别不能为空";
+    
+    public final static String CODE_FALSE = "短信发送失败";
+    public final static String ADDRESS_LONG = "详细地址过长";
+    
+    
+    /** 服务商的注册返回提示 */
+    public final static String CITY_LONG = "服务城市名过长";
+    public final static String SERVER_NULL = "该服务商不存在";
+    
+    public final static String FILE_NULL = "上传失败";
+    public final static String FILE_ERROR= "上传失败：上传的文件类型不符合要求,请上传PNG或者JPG格式的图片";
+    
+    /** 首页*/
+    public final static String FLOOR_ERROR = "请输入正确的面积 : 0 -- 100000";
+    
+    /** 订单支付*/
+    public final static String PUR_NULL = "千瓦时不能为空且小于";
+    public final static String PRICE_ERROR = "网络错误，请重新提交";
+    
+    
+    
+    
+    
+    
 
 }

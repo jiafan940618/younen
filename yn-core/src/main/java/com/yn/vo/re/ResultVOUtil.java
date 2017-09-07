@@ -1,7 +1,12 @@
 package com.yn.vo.re;
 
+import java.util.List;
+
 import com.yn.enums.ResultEnum;
+import com.yn.model.Apolegamy;
+import com.yn.model.ProductionDetail;
 import com.yn.utils.ResultData;
+import com.yn.vo.PriceVo;
 
 /**
  * 数据返回
@@ -17,6 +22,29 @@ public class ResultVOUtil {
         resultData.setData(object);
         return resultData;
     }
+    
+    public static <T> ResultData<Object> newsuccess(Object object,List<T> list) {
+        ResultData resultData = new ResultData();
+        
+        resultData.setCode(200);
+        resultData.setMsg("成功");
+        resultData.setSuccess(true);
+        resultData.setData(object);
+        resultData.setList(list);
+        return resultData;
+    }
+    
+ /*   public static ResultData<Object> aginsuccess(Object object,List<PriceVo> list,List<Apolegamy> listapo,ProductionDetail production) {
+        ResultData resultData = new ResultData();
+        resultData.setCode(200);
+        resultData.setMsg("成功");
+        resultData.setSuccess(true);
+        resultData.setData(object);
+        resultData.setList(list);
+        return resultData;
+    }*/
+    
+    
 
     public static ResultData<Object> success() {
         return success(null);

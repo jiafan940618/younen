@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.model.ServerPlan;
+import com.yn.vo.NewServerPlanVo;
 
 public interface ServerPlanDao extends JpaRepository<ServerPlan, Long>, JpaSpecificationExecutor<ServerPlan> {
     @Modifying
@@ -20,4 +21,6 @@ public interface ServerPlanDao extends JpaRepository<ServerPlan, Long>, JpaSpeci
     @Modifying
     @Query("update ServerPlan set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+   
 }

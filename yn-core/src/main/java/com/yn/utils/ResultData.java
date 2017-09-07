@@ -1,5 +1,10 @@
 package com.yn.utils;
 
+import java.util.List;
+
+import com.yn.model.Apolegamy;
+import com.yn.model.ProductionDetail;
+import com.yn.vo.PriceVo;
 
 public class ResultData<T> {
 
@@ -10,8 +15,19 @@ public class ResultData<T> {
     private String msg;
 
     private Boolean success = true;
+    
+    private List<T> list;
 
-    public Boolean getSuccess() {
+	
+	public List<T> getList() {
+		return list;
+	}
+
+	public void setList(List<T> list) {
+		this.list = list;
+	}
+
+	public Boolean getSuccess() {
         return success;
     }
 
