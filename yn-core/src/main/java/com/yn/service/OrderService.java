@@ -34,6 +34,10 @@ public class OrderService {
     public Order findOne(Long id) {
         return orderDao.findOne(id);
     }
+    
+  /*  public Order findOrder(Order order) {
+        return orderDao.findOrder(order);
+    }*/
 
     public void save(Order order) {
         if (order.getId() != null) {

@@ -1,9 +1,12 @@
 package com.yn.service;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +35,10 @@ public class NewServerPlanService {
 	@Autowired
 	ServerDao serverDao;
 	
-	
+	static DecimalFormat df = new DecimalFormat("0.00");
+	static DecimalFormat df1 = new DecimalFormat("0000");
+	static Random rd = new Random();
+	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
 	
 	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
 	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
@@ -120,8 +126,8 @@ public class NewServerPlanService {
 	    	
 	    	Order order = new Order();
 	    	 /** 保存订单*/
-	        String orderCode =  toSerialCode(newserverPlan.getId(), 4);
-	        user.setPassword(null);
+	    	String orderCode = toSerialCode(newserverPlan.getId(), 4) + format.format(System.currentTimeMillis()) + df1.format(rd.nextInt(9999));
+	      //  user.setPassword(null);
 	        user.getAddressText();
 	        
 	         /** 找到服务费率*/
@@ -132,9 +138,13 @@ public class NewServerPlanService {
 	        /** 订单id*/
 	        Long order_planid = newserverPlan.getId();
 	        
+	        order.setProvinceId(user.getProvinceId());
+	        order.setProvinceText(user.getProvinceText());
+	        order.setServerName(server.getCompanyName());
 	        /**  转移数据*/
 	        order.setAddressText(user.getAddressText());
-	     
+	        order.setCityId(user.getCityId());
+	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getNickName());
 	        
 	        order.setLinkPhone(user.getPhone());
@@ -142,8 +152,11 @@ public class NewServerPlanService {
 	        order.setServerName(server.getCompanyName());
 	        order.setOrderCode(orderCode);
 	        order.setUserId(user.getId());
+	        order.setServerId(newserverPlan.getServerId());
+	        /** 优惠码*/
+	        order.setPrivilegeCode(null);
 	        /** 优能的选配项目价格*/
-	        
+	        order.setYnApolegamyPrice(apoPrice);
 	        /** 服务商选配项目价格*/
 	        order.setServerApolegamyPrice(apoPrice);
 	        /** 总价格*/
@@ -199,6 +212,7 @@ public class NewServerPlanService {
 	    	  
 	    	  orderPlan.setOtherMaterialJsonText(serverPlan.getMaterialJson());
 	    	  
+	    	  orderPlan.setUnitPrice(serverPlan.getUnitPrice());
 	    	  orderPlan.setDel(0);
 	    	  
 	    	  orderPlan.setOrderId(order.getId());
@@ -209,6 +223,12 @@ public class NewServerPlanService {
 	    	  
 
 			return orderPlan;
+	    }
+	    
+	    
+	  public  List<Object> selectServerPlan(Long serverId){
+		  
+		return planDao.selectServerPlan(serverId);	
 	    }
 
 }

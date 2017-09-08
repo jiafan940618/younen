@@ -34,4 +34,15 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
 
     @Query("select u.id from User u where u.roleId in ?1 and u.del = 0")
     List<Long> findIdByRoleIds(List<Long> roleIds);
+    
+    @Transactional
+    @Modifying
+    @Query("update User set password= :#{#user.password} where id = :#{#user.id}")
+	void updatePas(@Param("user") User user);
+    
+    @Transactional
+    @Modifying
+    @Query("update User set token= :#{#user.password} where id = :#{#user.id}")
+	void updateToken(@Param("user") User user);
+    
 }

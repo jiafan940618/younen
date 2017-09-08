@@ -20,7 +20,7 @@ public class Constant {
     public final static String CODE_AGAIN = "该验证码已失效，请重新获取";
     public final static String PHONE_EXIST = "该手机号已经被注册";
     public final static String PHONE_NOTEXIST = "该手机号不存在";
-    
+    public final static String PASSWORD_AGAIN_ERROR = "俩次密码不一致";
     
     /** 用户第二次注册*/
     public final static String NO_FIRST = "请先完成第一步注册";

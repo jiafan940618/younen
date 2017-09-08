@@ -1,5 +1,7 @@
 package com.yn.service;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -20,10 +22,10 @@ public class ServerPlanService {
     @Autowired
     ServerPlanDao serverPlanDao;
     
-/*	private static DecimalFormat df = new DecimalFormat("0.00");
+	private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
 	private static Random rd = new Random();
-    private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");*/
+    private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
 	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
 	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
 			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };

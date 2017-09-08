@@ -119,7 +119,8 @@ public class Server extends IDomain implements Serializable {
 
     public Server() {}
 
-	public Server(Double factorage) {
+	public Server(String companyName,Double factorage) {
+		this.companyName = companyName;
 		this.factorage = factorage;
 	}
 

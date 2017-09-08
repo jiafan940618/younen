@@ -44,8 +44,8 @@ public class OrderPlan extends IDomain implements Serializable {
 	@Column(columnDefinition = "text comment '[其他材料jsonText]'")
 	private String otherMaterialJsonText;
 
-    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
-    private Double unitPrice;
+	 @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
+	    private Double unitPrice;
 
     public Long getOrderId() {
         return orderId;

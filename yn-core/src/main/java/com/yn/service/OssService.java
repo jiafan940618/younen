@@ -5,14 +5,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.aliyun.oss.OSSClient;
+import com.yn.utils.FileUtil;
 
 @Service
 public class OssService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OssService.class);
 	
 	/**
 	 * 图片上传oss,不涉及后台
@@ -37,7 +42,7 @@ public class OssService {
 	/**
 	 * 图片保存oos
 	 */
-	private String upload(MultipartFile file, String realpath) {
+	public String upload(MultipartFile file, String realpath) {
 		String path = null;
 		String operatePath = null;
 		String type = null;
@@ -57,6 +62,16 @@ public class OssService {
 				|| (type.toLowerCase().equals(".apk") && file != null)
 				
 				) {
+			
+			File localFolder = new File(realpath);
+			if (!FileUtil.validateFolder(localFolder)) {
+				boolean isSuccess = FileUtil.makeDirs(localFolder);
+				if (isSuccess) {
+					logger.info("create folder success, folder path is: " + realpath);
+				} else {
+					logger.info("create folder failed, folder path is: " + realpath);
+				}
+			}
 
 			path = realpath + File.separator + operateName;
 			operatePath = realpath + File.separator + fileName.replace(".", "1.");

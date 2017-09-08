@@ -20,4 +20,9 @@ public interface CityDao extends JpaRepository<City, Long>, JpaSpecificationExec
     @Modifying
     @Query("update City set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Transactional
+    @Modifying
+    @Query("SELECT new City(id, cityText) FROM City WHERE provinceId= :provinceId")
+    List<City> findbycity(@Param("provinceId") Long provinceId);
 }

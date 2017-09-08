@@ -29,9 +29,8 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 
 	Page<Server> findByServerCityIdsLikeAndDel(String ids, int del, Pageable pageable);
 	
-	 @Transactional
-	    @Modifying
-	    @Query("select new Server(factorage)  from Server  where id = :serverid")
+
+	    @Query("select new Server(companyName,factorage)  from Server  where id = :serverid")
 	    Server findServer(@Param("serverid") Long serverid);
 	
 }

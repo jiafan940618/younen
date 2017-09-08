@@ -1,9 +1,14 @@
 package com.yn.vo;
 
 import com.yn.domain.QueryVo;
+import com.yn.model.Devide;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+
+import javax.management.loading.PrivateClassLoader;
+
 
 /**
  * 服务商
@@ -40,12 +45,41 @@ public class ServerVo extends QueryVo {
     private String serverCityIds;
     private String serverCityText;
     private Integer type;
+    
+    private String password;
+    private String phone;
 
     private Set<QualificationsServerVo> qualificationsServer;
     private Set<ApolegamyServerVo> apolegamyServer;
+    
+    private List<Devide> device;
+    
+    
+    public List<Devide> getDevice() {
+		return device;
+	}
 
+	public void setDevice(List<Devide> device) {
+		this.device = device;
+	}
 
-    public Long getId() {
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public Long getId() {
         return id;
     }
 

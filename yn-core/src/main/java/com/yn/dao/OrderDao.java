@@ -37,4 +37,10 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
 
     @Query("select o.userId from Order o where o.del=0 and o.serverId=?1")
     Set<Long> findUserId(Long serverId);
+    
+  /*  @Query("select * from Order where orderCode = :#(#order.orderCode)")
+    Order findOrder(@Param("order") Order order);*/
+    
+    
+    
 }

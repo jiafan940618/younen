@@ -20,4 +20,8 @@ public interface ProvinceDao extends JpaRepository<Province, Long>, JpaSpecifica
     @Modifying
     @Query("update Province set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Modifying
+    @Query("select new Province(id,provinceText) from Province")
+    List<Province> selectProvince();
 }
