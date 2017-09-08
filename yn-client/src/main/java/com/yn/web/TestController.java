@@ -82,6 +82,12 @@ public class TestController {
 			return ResultVOUtil.success(list);
 	    }
 	
+	 @RequestMapping(value = "/dotest02")
+	 @ResponseBody
+	    public ResultData<Object> someTest() {
+			return ResultVOUtil.success(null);
+	    }
+	 
 	
 	
 
