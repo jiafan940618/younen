@@ -6,12 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 
 import com.yn.domain.IDomain;
 
 @Entity
+@Table(name="new_server_plan")
 public class NewServerPlan extends IDomain implements Serializable {
 	
 	
@@ -21,8 +23,20 @@ public class NewServerPlan extends IDomain implements Serializable {
 	
 	@Column(columnDefinition = "int(11) comment '[电池板id]'")
 	private Long batteryboardId;
-
+	@Column(columnDefinition = "String(255) comment '[服务方案图片]'")
+	private String planImgUrl;
 	
+	
+	public String getPlanImgUrl() {
+		return planImgUrl;
+	}
+
+
+
+	public void setPlanImgUrl(String planImgUrl) {
+		this.planImgUrl = planImgUrl;
+	}
+
 	@Column(columnDefinition = "int(11) comment '[逆变器id]'")
 	private Long inverterId;
 	
@@ -34,6 +48,8 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Integer minPurchase;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
 	private Double unitPrice;
+	
+	
 
 	/** 电池板*/
 	@OneToOne

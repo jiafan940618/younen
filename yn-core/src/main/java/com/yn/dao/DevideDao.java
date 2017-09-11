@@ -20,4 +20,12 @@ public interface DevideDao extends JpaRepository<Devide, Long>, JpaSpecification
     @Modifying
     @Query("update Devide set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Modifying
+    @Query("select   new Devide(id,devideModel,devideBrand) from  Devide  where parentId = :#{#deviceType.parentId}  and devideModel is Not null")
+	List<Devide> selectBatch(@Param("deviceType") Devide deviceType);
+    
+    @Modifying
+    @Query("SELECT  new Devide(id,devideBrand) from  Devide WHERE parentId =:#{#deviceType.parentId} and devideModel is null ")
+	List<Devide> selectDevice(@Param("deviceType") Devide deviceType);
 }

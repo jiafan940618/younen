@@ -17,9 +17,9 @@ import java.util.Map;
 public class OrderDetailService {
 
 	private Map<String, String> result;
-	private Double APPLY_PAYMENT_SCALE = 0.3;
-	private Double BUILD_PAYMENT_SCALE = 0.7;
-	private Double GRIDCONNECTED_PAYMENT_SCALE = 1.0;
+	private Double APPLY_PAYMENT_SCALE = 0.3;// 申请中0.3
+	private Double BUILD_PAYMENT_SCALE = 0.6;// 建设中0.3+0.3
+	private Double GRIDCONNECTED_PAYMENT_SCALE = 1.0;// 并网发电0.3+0.3+0.4
 	private Double SURVEYAPPOINTMENTPAYMENT = 5000.0;
 
 	public Map<String, String> loanApplication(Order order) {
@@ -67,8 +67,10 @@ public class OrderDetailService {
 	public Map<String, String> surveyAppointment(Order order) {
 		result = new HashMap<>();
 		Double hadPayPrice = order.getHadPayPrice();
-		if(hadPayPrice>=SURVEYAPPOINTMENTPAYMENT){
-			//order.setApplyStepA(applyStepA);
+		if (hadPayPrice >= SURVEYAPPOINTMENTPAYMENT) {
+			order.setApplyStepA(1);
+		} else {
+			result.put("needToPay", SURVEYAPPOINTMENTPAYMENT.toString());
 		}
 		return result;
 	}

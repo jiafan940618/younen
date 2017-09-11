@@ -23,6 +23,20 @@ public class DevideService {
     public Devide findOne(Long id) {
         return devideDao.findOne(id);
     }
+    
+    /** 拿到型号*/
+    public List<Devide> selectBatch(Devide deviceType){
+    	
+		return devideDao.selectBatch(deviceType);
+    }
+    
+    /** 拿到品牌*/
+   public List<Devide> selectDevice(Devide deviceType){
+
+    	return 	devideDao.selectDevice(deviceType);
+    }
+    
+    
 
     public void save(Devide devide) {
         if (devide.getId() != null) {

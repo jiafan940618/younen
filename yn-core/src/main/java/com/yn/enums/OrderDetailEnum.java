@@ -13,6 +13,7 @@ public enum OrderDetailEnum {
 	GRIDCONNECTEDAPPLICATION(5, "并网申请"), 
 	BUILDAPPLICATION(6, "施工申请"), 
 	STATIONRUN(7, "并网发电");
+	
 	/*LOANAPPLICATION, 
 	APPLYPAYMENT, 
 	BUILDPAYMENT, 

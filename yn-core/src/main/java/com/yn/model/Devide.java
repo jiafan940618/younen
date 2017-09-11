@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
@@ -17,6 +19,10 @@ import org.hibernate.annotations.Where;
 @Entity
 public class Devide extends IDomain implements Serializable {
 	
+	 @Id
+	    @GeneratedValue
+	    @Column(columnDefinition = "int(11) comment '[id]'")
+	    private Long id;
 	@Column(updatable = true, columnDefinition = "varchar(255) comment '[设备名称]'")
 	private String devideName;
 	@Column(updatable = true, columnDefinition = "varchar(255) comment '[设备品牌]'")
@@ -36,6 +42,27 @@ public class Devide extends IDomain implements Serializable {
 	private List<Devide> children;
 	
 	
+	
+	
+	public Devide() {
+		super();
+	}
+
+	public Devide(Long id, String devideBrand) {
+		super();
+		this.id = id;
+		this.devideBrand = devideBrand;
+	}
+
+
+	public Devide(Long id, String devideModel, String devideBrand) {
+		super();
+		this.id = id;
+		this.devideBrand = devideBrand;
+		this.devideModel = devideModel;
+	}
+
+
 	public String getDevideName() {
 		return devideName;
 	}

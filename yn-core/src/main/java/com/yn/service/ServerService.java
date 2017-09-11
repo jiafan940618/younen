@@ -27,7 +27,9 @@ import java.util.Map.Entry;
 
 @Service
 public class ServerService {
-
+	
+	 @Autowired
+	    UserService uservice;
     @Autowired
     ServerDao serverDao;
     @Autowired
@@ -35,6 +37,7 @@ public class ServerService {
     @Autowired
     private NoticeService noticeService;
 
+   
 
     public Server findOne(Long id) {
         return serverDao.findOne(id);
@@ -159,5 +162,33 @@ public class ServerService {
             userDao.save(user);
         }
     }
+    
+  public Server findbylegalPersonPhone(String phone) {
+    	
+    	Server server = new Server();
+    	server.setLegalPersonPhone(phone);
+    	
+		return findOne(server);
+    }
+   public Server findbycompanyEmail(String email) {
+	   Server server = new Server();
+	   server.setCompanyEmail(email);;
+		return findOne(server);
+    }
+   public Server findbyuserName(String userName) {
+	   User server = new User();
+   		server.setNickName(userName);
+   		
+   		User user = uservice.findOne(server);
+   		if(user == null){
+   			return null;
+   		}
+   		
+   		Long userId = user.getId();
+   		
+    	Server server2 =findOne(userId);
+   		
+		return server2;
+   }
 
 }

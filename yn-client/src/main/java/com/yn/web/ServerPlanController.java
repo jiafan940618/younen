@@ -1,6 +1,8 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.ResultData;
+import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServerPlanVo;
 import com.yn.vo.PriceVo;
 import com.yn.vo.ServerPlanVo;
@@ -116,19 +119,12 @@ public class ServerPlanController {
         Page<ServerPlan> findAll = serverPlanService.findAll(serverPlan, pageable);
         return ResultVOUtil.success(findAll);
     }
-    
-   
-    
-    
+ 
     /** 处理金额*/
     @ResponseBody
     @RequestMapping(value = "/findPlan")
-    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,UserVo userVo,
-    		@RequestParam("ids") List<Long> ids,@RequestParam("price") String price,HttpSession session) {
-    	
-    	
-    	
-    	
+    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("ids") List<Long> ids,String price,UserVo userVo,HttpSession session) {
+
     	 Integer minpur =	newserverPlanVo.getMinPurchase();
     	 
     	
@@ -136,10 +132,7 @@ public class ServerPlanController {
         BeanCopy.copyProperties(newserverPlanVo, newserverPlan);
         
         
-        User user = new User();
-        BeanCopy.copyProperties(userVo, user);
-        
-        NewServerPlan findOne = newserverPlanService.selectOne(newserverPlanVo);
+        NewServerPlan findOne = newserverPlanService.findOne(newserverPlanVo.getId());
         
         if(null == minpur || minpur < findOne.getMinPurchase() ){
         	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
@@ -167,34 +160,15 @@ public class ServerPlanController {
         	return  ResultVOUtil.error(777, Constant.PRICE_ERROR); 
         }
 
-        User user02 =  userservice.findOne(user);
-        /** 添加订单*/ 
-        Order order  = newserverPlanService. getOrder(newserverPlan,user02,Double.valueOf(price),apoPrice);
-        
-        orderService.save(order);
-        
-        Order neworder =   orderService.findOne(order);
-        
-         /** 订单计划表*/
-        
-        Long id =  newserverPlan.getId();
-     
-        NewServerPlan  serverPlan = newserverPlanService.findOne(id);
-        
-       OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan,neworder);
-       
-       orderPlanService.save(orderPlan);
-        
-       OrderPlan newOrdPlan =  orderPlanService.findOne(orderPlan);
-       
-       order.setOrderPlanId(newOrdPlan.getId());
-       
-       neworder.setOrderPlan(newOrdPlan);
-       
-       
+     User newuser=   userservice.findOne(userVo.getId());
        /** 处理订单的信息*/
-     
-       session.setAttribute("order", neworder);
+       
+       session.setAttribute("list", list);
+       session.setAttribute("newserverPlan", findOne);
+       session.setAttribute("user", newuser);
+       session.setAttribute("price", AllMoney);
+       
+      // session.setAttribute("order", neworder);
        
         return ResultVOUtil.success(null);
     }
@@ -211,23 +185,38 @@ public class ServerPlanController {
         NewServerPlan serverPlan = new NewServerPlan();
         serverPlan.setServerId(1L);
 
-       List<NewServerPlan>  list = newserverPlanService.findAll(serverPlan);
+        List<NewPlanVo> list = new ArrayList<NewPlanVo>();
+
+       List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
        
-      List<PriceVo> listprice = new ArrayList<PriceVo>();
-     
-       
-       for (NewServerPlan newServerPlan : list) {
-    	   PriceVo newprice = new PriceVo();
-    	   Double allMoney = newServerPlan.getMinPurchase() * newServerPlan.getUnitPrice();
-    	   Long id = newServerPlan.getId();
-    	   
-    	   newprice.setAllmoney(allMoney);
-    	   newprice.setId(id);
-    	   
-    	   listprice.add(newprice);
-       }
-      
-        return ResultVOUtil.newsuccess(list, listprice);
+
+        for (Object obj : list01) {
+			NewPlanVo newPlanVo  = new NewPlanVo();
+        	
+        	Object[] object = (Object[])obj;
+        	Integer id = (Integer) object[0];
+        	Integer serverid =(Integer) object[1];
+        	String materialJson =(String) object[2];
+        	Integer minPurchase =(Integer)object[3];
+        	BigDecimal unitPrice =(BigDecimal)object[4];
+        	String img_url = (String)object[5];
+        	String invstername = (String)object[6] +"   " +(String)object[7];
+        	String brandname =(String)object[8] +"   " +(String)object[9];
+        	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
+        	
+        	newPlanVo.setId(id);
+        	newPlanVo.setServerId(serverid);
+        	newPlanVo.setMaterialJson(materialJson);
+        	newPlanVo.setUnitPrice(unitPrice);
+        	newPlanVo.setImg_url(img_url);
+        	newPlanVo.setInvstername(invstername);
+        	newPlanVo.setBrandname(brandname);
+        	newPlanVo.setAllMoney(allMoney.doubleValue());
+        	
+        	list.add(newPlanVo);
+		}
+
+        return ResultVOUtil.success(list);
     }
     
     /** 配选项目,与资质*/

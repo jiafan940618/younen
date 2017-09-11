@@ -1,5 +1,6 @@
 package com.yn.vo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ public class PriceVo {
 	
 	private Long id;
 
-	private Double Allmoney;
+	private BigDecimal  Allmoney;
 
 	public Long getId() {
 		return id;
@@ -21,14 +22,17 @@ public class PriceVo {
 	}
 
 
-	public Double getAllmoney() {
+	public BigDecimal getAllmoney() {
 		return Allmoney;
 	}
 
 
-	public void setAllmoney(Double allmoney) {
-		Allmoney = allmoney;
+	public void setAllmoney(BigDecimal allmoney) {
+		this.Allmoney = allmoney;
 	}
+
+
+
 	
 	
 	

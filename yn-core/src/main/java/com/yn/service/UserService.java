@@ -7,14 +7,22 @@ import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
+import com.yn.utils.ResultData;
 import com.yn.utils.StringUtil;
+import com.yn.vo.re.ResultVOUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.*;
+import javax.servlet.http.HttpSession;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -22,6 +30,7 @@ import java.util.Map.Entry;
 @Service
 public class UserService {
 
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     UserDao userDao;
@@ -36,6 +45,11 @@ public class UserService {
     public User findOne(Long id) {
         return userDao.findOne(id);
     }
+    
+    public void updatePas(User user){
+    	userDao.updatePas(user);
+    }
+
 
     public void save(User user) {
         if (user.getId() != null) {
@@ -212,6 +226,105 @@ public class UserService {
 
         return user;
     }
+    
 
+
+
+    
+    /**
+     * 根据email查找用户
+     * @param phone
+     * @return
+     */
+    
+    public User findByEamil(String Eamil) {
+        User user = new User();
+        user.setEmail(Eamil);
+       
+        return findOne(user);
+    }
+    
+    /**
+     * 根据用户名查找用户
+     * @param phone
+     * @return
+     */
+    
+    public User findByUserName(String UserName) {
+        User user = new User();
+        user.setUserName(UserName);
+        return findOne(user);
+    }
+    
+    /**
+     * 根据昵称查找用户
+     * @param phone
+     * @return
+     */
+    
+    public User findByNickName(String NickName) {
+        User user = new User();
+        user.setNickName(NickName);
+       
+        return findOne(user);
+    }
+    
+    public static ResultData<Object> checkMsgTimeOut(String sessionName, HttpSession httpSession) {
+		ResultData<Object> resultData = new ResultData<Object>();
+		
+		Long codeTime = (Long)httpSession.getAttribute(sessionName);
+		if (codeTime==null) {
+			resultData.setCode(403);
+			resultData.setSuccess(false);
+			resultData.setMsg("请先发送验证码");
+			return resultData;
+		}
+		// 如果短信验证码超过了5分钟
+		Long spaceTime = System.currentTimeMillis() - codeTime;
+		if(spaceTime > 300000){
+			httpSession.setAttribute(sessionName,null);
+			resultData.setCode(403);
+			resultData.setSuccess(false);
+			resultData.setMsg("该验证码已失效，请重新获取");
+			return resultData;
+		}
+		return resultData;
+	}
+    
+  
+    public ResultData<Object> getresult(MultipartFile file){
+    	Map<String,String> map = new HashMap<String, String>();
+
+    	String loghead = "----- ----- ----- "; 
+    	 String fileName = file.getOriginalFilename();  
+         // 获取上传文件扩展名  
+         String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());  
+         // 对扩展名进行小写转换  
+         fileExt = fileExt.toLowerCase();  
+         // 图片文件大小过滤  
+         if (!"jpg".equals(fileExt) && !"jpeg".equals(fileExt) && !"png".equals(fileExt) && !"bmp".equals(fileExt)  
+                 && !"gif".equals(fileExt)) {  
+        	 logger.info(loghead + "上传失败:无效图片文件类型"); 
+
+             return ResultVOUtil.error(1001, "上传失败:无效图片文件类型");
+         }  
+         long fileSize = file.getSize();  
+         logger.info(loghead + "fileInfo:fileName=" + fileName + "&fileSize=" + fileSize);  
+         if (fileSize <= 0) {  
+        	 logger.info(loghead + "上传失败:文件为空");  
+        	
+             return ResultVOUtil.error(1002, "上传失败:文件为空");
+         } else if (fileSize > (2 * 1024 * 1024)) {  
+        	 logger.info(loghead + "上传失败:文件大小不能超过2M");
+        
+             return ResultVOUtil.error(1003, "上传失败:文件大小不能超过2M");
+         }
+         
+        
+		return ResultVOUtil.success(null);
+         
+    }
+    
+   
 
 }
