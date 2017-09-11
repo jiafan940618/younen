@@ -112,13 +112,14 @@ public class OrderController {
 	}
 
 	/** 线上支付,第一步 */
-	@ResponseBody
-	@RequestMapping(value = "/orderPrice")
+	/*@ResponseBody
+	@RequestMapping(value = "/orderPrices")
 	public ResultData<Object> findOrderprice(OrderVo orderVo) {
 		Order order = orderService.findOne(orderVo.getId());
 		Wallet wallet = walletService.findOne(orderVo.getUserId());
 		return ResultVOUtil.success(null);
-	}
+	}*/
+	
 
 	/**
 	 * 点击订单详情页各个按钮出发同一个接口，但调用不同的函数处理
