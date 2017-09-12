@@ -2,10 +2,14 @@ package com.yn.web;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+
+
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -14,26 +18,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.yn.dao.mapper.ServerMapper;
-import com.yn.model.Apolegamy;
-import com.yn.model.NewServerPlan;
+
 import com.yn.model.Server;
 import com.yn.model.newPage;
-import com.yn.service.ApolegamyService;
-import com.yn.service.DevideService;
-import com.yn.service.NewServerPlanService;
-import com.yn.service.ServerService;
 import com.yn.service.SolarPanelSerice;
-import com.yn.service.SystemConfigService;
+
+
 import com.yn.utils.ResultData;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.SolarPanelVo;
@@ -42,6 +40,7 @@ import com.yn.vo.re.ResultVOUtil;
 @RestController
 @RequestMapping("/client/test")
 public class TestController {
+
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
@@ -141,9 +140,5 @@ for (Server server2 : list) {
 	}
 
 }*/
-
-	 
-	
-	
 
 }

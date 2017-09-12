@@ -12,6 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.yn.model.BillOrder;
+import com.yn.model.Order;
+
+
 /**
  * 订单详情服务：为页面每一个按钮单独一个功能
  * 
@@ -288,5 +300,6 @@ public class OrderDetailService {
 			return -1d;
 		return needToPay;
 	}
+
 
 }

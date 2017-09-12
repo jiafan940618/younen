@@ -332,8 +332,6 @@ public class Order extends IDomain implements Serializable {
         this.applyStepB = applyStepB;
     }
 
-  
-
     public String getApplyStepBImgUrl() {
 		return applyStepBImgUrl;
 	}
