@@ -23,9 +23,9 @@ public class SolarPanel extends IDomain implements Serializable {
 	private int type;
 	@Column(columnDefinition = "int(2) comment '[转换效率]'")
 	private int conversionEfficiency;
-	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板质保期 年]'")
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池组件保期 年]'")
 	private Double qualityAssurance;
-	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[保修年限 年]'")
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[附件年限 年]'")
 	private Double boardYear;
 
 	public String getBrandName() {

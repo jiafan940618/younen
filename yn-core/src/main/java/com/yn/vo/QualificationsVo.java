@@ -11,6 +11,7 @@ public class QualificationsVo {
     private String imgUrl;
     private String text;
     private Set<ApolegamyVo> apolegamy;
+    
 
     public Long getId() {
         return id;

@@ -20,6 +20,19 @@ public class ResultVOUtil {
         return resultData;
     }
     
+    public static <T> ResultData<Object> newsuccess(Object object,List<T> list,List<T> newlist,T pro) {
+        ResultData resultData = new ResultData();
+        
+        resultData.setCode(200);
+        resultData.setMsg("成功");
+        resultData.setSuccess(true);
+        resultData.setData(object);
+        resultData.setList(list);
+        resultData.setProdu(pro);
+        resultData.setNewlist(newlist);
+        return resultData;
+    }
+    
     public static <T> ResultData<Object> newsuccess(Object object,List<T> list) {
         ResultData resultData = new ResultData();
         

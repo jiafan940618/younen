@@ -134,4 +134,11 @@ public class QualificationsServerService {
             }
         }
     }
+    
+    
+    
+    public  List<Object> selectQualif(Long serverid){
+		return qualificationsServerDao.selectQualif(serverid);
+    	
+    }
 }

@@ -1,5 +1,7 @@
 package com.yn.vo;
 
+import java.math.BigDecimal;
+
 import com.yn.model.Inverter;
 import com.yn.model.SolarPanel;
 
@@ -14,6 +16,8 @@ public class NewServerPlanVo {
 	private Long inverterId;
 	private Inverter inverter;
 	
+	private BigDecimal capacity;
+	
 	private String materialJson;
 	
 	private Integer minPurchase;
@@ -21,6 +25,12 @@ public class NewServerPlanVo {
 	
 	
 	
+	public BigDecimal getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(BigDecimal capacity) {
+		this.capacity = capacity;
+	}
 		public Long getId() {
 			return id;
 		}

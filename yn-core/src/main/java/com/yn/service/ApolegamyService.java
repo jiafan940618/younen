@@ -80,4 +80,12 @@ public class ApolegamyService {
 		Specification<Apolegamy> spec = RepositoryUtil.getSpecification(apolegamy);
 		return apolegamyDao.findAll(spec);
 	} 
+	
+	public	List<Object> selectApo(Long serverid){
+		
+		return apolegamyDao.selectApo(serverid);
+	}
+	
+	
+	
 }

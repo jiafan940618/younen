@@ -1,8 +1,10 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,15 +21,24 @@ import com.yn.model.NewServerPlan;
 import com.yn.model.News;
 import com.yn.model.Order;
 import com.yn.model.OrderPlan;
+import com.yn.model.QualificationsServer;
 import com.yn.model.Server;
 import com.yn.model.ServerPlan;
 import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.ApolegamyVo;
 import com.yn.vo.NewServerPlanVo;
+import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerPlanVo;
 @Service
 public class NewServerPlanService {
+	
+	 @Autowired
+	    QualificationsServerService qualificationsServerService;
+	    @Autowired
+	    ApolegamyService apolegamyService;
+	    
 	
 	@Autowired
 	NewServerPlanDao planDao;
@@ -226,9 +237,67 @@ public class NewServerPlanService {
 	    }
 	    
 	    
-	  public  List<Object> selectServerPlan(Long serverId){
-		  
-		return planDao.selectServerPlan(serverId);	
-	    }
+	    public  List<Object> selectServerPlan(Long serverId){
+			  
+			return planDao.selectServerPlan(serverId);	
+		    }
 
+		  /** 处理服务方案*/
+		    public List<Object> getPlan(Long serverId){
+		    	
+		    	QualificationsServer qualificationsServer = new QualificationsServer();
+		    	qualificationsServer.setServerId(serverId);
+		    	
+		    	List<Object> newList = new LinkedList<Object>();
+		    	/** 资质*/
+		    	 //q.img_url,q.text
+		    	List<Object>	listqua =	qualificationsServerService.selectQualif(serverId);
+		    	
+		    	for (Object obj : listqua) {
+		    		Object[] object = (Object[])obj;
+		    	
+		    		QualificationsVo quVo = new QualificationsVo();
+		    		
+		    		String quaimg_url = (String)object[0];
+		    		String text =(String)object[1];
+		    		
+		    		quVo.setImgUrl(quaimg_url);
+		    		quVo.setText(text);
+		    		
+		    		newList.add(quVo);
+				}
+
+		       
+				return newList;
+		    }
+		    
+		    public List<Object> getPlanTH(Long serverId){
+		    	List<Object> newList = new LinkedList<Object>();
+		    	 /** 配选项目*/
+		          //m.`id`,m.`apolegamy_name`,m.`img_url`,m.`price`,m.`unit`,m.`TYPE`
+		         List<Object>  list = apolegamyService.selectApo(serverId);  
+		         
+		         for (Object obj01 : list) {
+		        	 Object[] object01 = (Object[])obj01;
+		        	 ApolegamyVo vol = new ApolegamyVo();
+		        	 
+		        	 Integer id =(Integer) object01[0];
+		        	 String apolegamyName =(String)object01[1];
+		        	 String apoimgUrl =(String) object01[2];
+		        	 BigDecimal apoprice  = (BigDecimal)object01[3];
+		        	 String unit = (String) object01[4];
+		        	 Integer type = (Integer) object01[5];
+		        	 
+		        	 vol.setId(Long.valueOf(id));
+		        	 vol.setApolegamyName(apolegamyName);
+		        	 vol.setImgUrl(apoimgUrl);
+		        	 vol.setUnit(unit);
+		        	 vol.setType(type);
+		        	 vol.setPrice(apoprice.doubleValue());
+		        	 
+		        	 newList.add(vol);
+				}
+				return newList;
+
+		    } 
 }

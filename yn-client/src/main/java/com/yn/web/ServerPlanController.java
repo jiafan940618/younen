@@ -55,8 +55,7 @@ import com.yn.vo.re.ResultVOUtil;
 @RestController
 @RequestMapping("/client/serverPlan")
 public class ServerPlanController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ServerPlanController.class);
+private static final Logger logger = LoggerFactory.getLogger(ServerPlanController.class);
 	
 	@Autowired
 	OrderService orderService;
@@ -74,6 +73,8 @@ public class ServerPlanController {
     ProductionService productionService;
     @Autowired
     QualificationsServerService qualificationsServerService;
+    @Autowired
+    NewServerPlanService plan;
     
     @Autowired
     NewServerPlanService newserverPlanService;
@@ -123,18 +124,20 @@ public class ServerPlanController {
     /** 处理金额*/
     @ResponseBody
     @RequestMapping(value = "/findPlan")
-    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("ids") List<Long> ids,String price,UserVo userVo,HttpSession session) {
-
-    	 Integer minpur =	newserverPlanVo.getMinPurchase();
-    	 
+    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> ids,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
     	
+
     	 NewServerPlan newserverPlan = new NewServerPlan();
         BeanCopy.copyProperties(newserverPlanVo, newserverPlan);
         
         
         NewServerPlan findOne = newserverPlanService.findOne(newserverPlanVo.getId());
         
-        if(null == minpur || minpur < findOne.getMinPurchase() ){
+        Integer minpur =	findOne.getMinPurchase();
+        
+        logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+newserverPlanVo.getCapacity().intValue());
+        
+        if(null == minpur || minpur > newserverPlanVo.getCapacity().intValue() ){
         	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
         	
         	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
@@ -142,7 +145,7 @@ public class ServerPlanController {
         
         Double utilprice =  findOne.getUnitPrice();
       
-        Integer minpurchase =  newserverPlanVo.getMinPurchase();
+        Integer minpurchase =  newserverPlanVo.getCapacity().intValue();
          /** 计算总价格*/
         Double AllMoney = utilprice * minpurchase;
          /*** 计算备选项目价格*/
@@ -160,18 +163,19 @@ public class ServerPlanController {
         	return  ResultVOUtil.error(777, Constant.PRICE_ERROR); 
         }
 
-     User newuser=   userservice.findOne(userVo.getId());
+   //  User newuser=   userservice.findOne(userVo.getId());
        /** 处理订单的信息*/
        
-       session.setAttribute("list", list);
-       session.setAttribute("newserverPlan", findOne);
-       session.setAttribute("user", newuser);
+       session.setAttribute("list", ids);
+       session.setAttribute("newserverplanid", newserverPlanVo.getId());
+       session.setAttribute("userid", userVo.getId());
        session.setAttribute("price", AllMoney);
        
       // session.setAttribute("order", neworder);
        
         return ResultVOUtil.success(null);
     }
+
     
     
    
@@ -180,133 +184,64 @@ public class ServerPlanController {
     @ResponseBody
     @RequestMapping(value = "/Orderplan")
     public ResultData<Object> findOrderplan() {
-    //	ServerPlanVo serverPlanVo
-    	
-        NewServerPlan serverPlan = new NewServerPlan();
-        serverPlan.setServerId(1L);
-
-        List<NewPlanVo> list = new ArrayList<NewPlanVo>();
-
-       List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
-       
-
-        for (Object obj : list01) {
-			NewPlanVo newPlanVo  = new NewPlanVo();
+        //	ServerPlanVo serverPlanVo
         	
-        	Object[] object = (Object[])obj;
-        	Integer id = (Integer) object[0];
-        	Integer serverid =(Integer) object[1];
-        	String materialJson =(String) object[2];
-        	Integer minPurchase =(Integer)object[3];
-        	BigDecimal unitPrice =(BigDecimal)object[4];
-        	String img_url = (String)object[5];
-        	String invstername = (String)object[6] +"   " +(String)object[7];
-        	String brandname =(String)object[8] +"   " +(String)object[9];
-        	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
-        	
-        	newPlanVo.setId(id);
-        	newPlanVo.setServerId(serverid);
-        	newPlanVo.setMaterialJson(materialJson);
-        	newPlanVo.setUnitPrice(unitPrice);
-        	newPlanVo.setImg_url(img_url);
-        	newPlanVo.setInvstername(invstername);
-        	newPlanVo.setBrandname(brandname);
-        	newPlanVo.setAllMoney(allMoney.doubleValue());
-        	
-        	list.add(newPlanVo);
-		}
+            NewServerPlan serverPlan = new NewServerPlan();
+            serverPlan.setServerId(1L);
 
-        return ResultVOUtil.success(list);
-    }
-    
-    /** 配选项目,与资质*/
-    @ResponseBody
-    @RequestMapping(value = "/apolegamy")
-    public ResultData<Object> findApolegamy() {
-    	 /** 资质*/
-    	QualificationsServer qualificationsServer = new QualificationsServer();
-    	qualificationsServer.setServerId(1L);
-    	
-    	List<QualificationsServer>	listqua =	qualificationsServerService.findAll(qualificationsServer);
-    	List<Qualifications>  newlist = new ArrayList<Qualifications>();
-    	for (QualificationsServer qualificationsServer2 : listqua) {
-    		
-    		Qualifications qualifications =	qualificationsServer2.getQualifications();
-    		newlist.add(qualifications);
-		}
-    	
-        /** 配选项目*/
-         ApolegamyServer apolegamyServer = new ApolegamyServer();
-         apolegamyServer.setServerId(1L);
-         
-         List<ApolegamyServer>  list = apolegamyserService.findAll(apolegamyServer);  
-         
-         List<Apolegamy> listapo = new ArrayList<Apolegamy>();
-         
-         for (ApolegamyServer apolegamyServer2 : list) {
-        	 Apolegamy Apolegamy =	 apolegamyServer2.getApolegamy();
-        	 
-        	 listapo.add(Apolegamy);
-		}
-    	
-        return ResultVOUtil.newsuccess(listapo,newlist);
-    }
-    
-    /** 服务详情  Service details*/
-    @ResponseBody
-    @RequestMapping(value = "/detail")
-    public ResultData<Object> finddetail() {
-    	
-    	ProductionDetail production = new ProductionDetail();
-    	production.setServerId(1);
-    	
-    	 production = productionService.findOne(production);
-    	
-        return ResultVOUtil.success(production);
-    }
-    
-     /** 备份的方案*/
-   /* @ResponseBody
-    @RequestMapping(value = "/planAll")
-    public ResultData<Object> finddall() {
-    	  NewServerPlan serverPlan = new NewServerPlan();
-          serverPlan.setServerId(1L);
+            List<NewPlanVo> list = new ArrayList<NewPlanVo>();
 
-         List<NewServerPlan>  list = newserverPlanService.findAll(serverPlan);
-         
-        List<PriceVo> listprice = new ArrayList<PriceVo>();
-         for (NewServerPlan newServerPlan : list) {
-      	   PriceVo newprice = new PriceVo();
-      	   Double allMoney = newServerPlan.getMinPurchase() * newServerPlan.getUnitPrice();
-      	   Long id = newServerPlan.getId();
-      	   
-      	   newprice.setAllmoney(allMoney);
-      	   newprice.setId(id);
-      	   
-      	   listprice.add(newprice);
-      	
-         }
-         ApolegamyServer apolegamyServer = new ApolegamyServer();
-         apolegamyServer.setServerId(1L);
-         
-         List<ApolegamyServer>  listap = apolegamyserService.findAll(apolegamyServer);  
-         
-         List<Apolegamy> listapo = new ArrayList<Apolegamy>();
-         
-         for (ApolegamyServer apolegamyServer2 : listap) {
-        	 Apolegamy Apolegamy =	 apolegamyServer2.getApolegamy();
-        	 
-        	 listapo.add(Apolegamy);
-		}
-         ProductionDetail production = new ProductionDetail();
-     	production.setServerId(1);
-     	
-     	 production = productionService.findOne(production);
-    	
-    	
-    	
-        return ResultVOUtil.aginsuccess(list, listprice, listapo, production);
-    }*/
+           List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
+           
+
+            for (Object obj : list01) {
+    			NewPlanVo newPlanVo  = new NewPlanVo();
+            	
+            	Object[] object = (Object[])obj;
+            	Integer id = (Integer) object[0];
+            	Integer serverid =(Integer) object[1];
+            	String materialJson =(String) object[2];
+            	Integer minPurchase =(Integer)object[3];
+            	BigDecimal unitPrice =(BigDecimal)object[4];
+            	String img_url = (String)object[5];
+            	String invstername = (String)object[6] +"   " +(String)object[7];
+            	String brandname =(String)object[8] +"   " +(String)object[9];
+            	String conent = (String)object[10];
+            	BigDecimal bigcapacity =(BigDecimal)object[11];
+            	
+            	Integer capacity =	bigcapacity.intValue();
+            	
+            	
+            	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
+            	
+            	newPlanVo.setId(id);
+            	newPlanVo.setServerId(serverid);
+            	newPlanVo.setMaterialJson(materialJson);
+            	newPlanVo.setUnitPrice(unitPrice);
+            	newPlanVo.setImg_url(img_url);
+            	newPlanVo.setInvstername(invstername);
+            	newPlanVo.setBrandname(brandname);
+            	newPlanVo.setAllMoney(allMoney.doubleValue());
+            	newPlanVo.setConent(conent);
+            	newPlanVo.setCapacity(capacity);
+            	newPlanVo.setMinPurchase(minPurchase);
+            	
+            	list.add(newPlanVo);
+    		}
+            
+            List<Object> newlist =	 plan.getPlan(serverPlan.getServerId());
+            
+            List<Object> newlist02 =  plan.getPlanTH(serverPlan.getServerId());
+            
+            System.out.println(serverPlan.getServerId());
+            ProductionDetail production = new ProductionDetail();
+        	production.setServerId(serverPlan.getServerId().intValue());
+        	
+        	 production = productionService.findOne(production);
+
+            return ResultVOUtil.newsuccess(list, newlist,newlist02,production);
+        }
+    
     
     
 }

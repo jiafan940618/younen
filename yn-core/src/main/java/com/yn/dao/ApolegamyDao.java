@@ -20,4 +20,11 @@ public interface ApolegamyDao extends JpaRepository<Apolegamy, Long>, JpaSpecifi
     @Modifying
     @Query("update Apolegamy set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Query(value = " select"
+    		+ " m.`id`,m.`apolegamy_name`,m.`img_url`,m.`price`,m.`unit`,m.`TYPE` "
+    		+ "from apolegamy_server a LEFT JOIN apolegamy m ON m.id =a.`apolegamy_id`"
+    		+ "  where a.del=0 and a.server_id=?1" ,nativeQuery=true)
+    
+    	List<Object> selectApo(Long serverid);
 }

@@ -1,6 +1,11 @@
 package com.yn.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,13 +40,16 @@ import com.yn.model.User;
 import com.yn.model.newPage;
 import com.yn.service.DevideService;
 import com.yn.service.ServerService;
+import com.yn.service.SolarPanelSerice;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
+import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
+import com.yn.vo.SolarPanelVo;
 import com.yn.vo.re.ResultVOUtil;
 
 
@@ -49,7 +58,8 @@ import com.yn.vo.re.ResultVOUtil;
 public class ServerController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ServerController.class);
-	
+	@Autowired
+	SolarPanelSerice solarService;
 	@Autowired
 	private DevideService devideService;
 	@Autowired
@@ -468,6 +478,65 @@ public class ServerController {
   		
   		return ResultVOUtil.success(page);
   	}
+   
+   
+   /**
+	 * 根据服务商可服务的城市来，显示省和城市
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/findProAndCity")
+	public Object findProAndCity( HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
+		ResultData<Object> resultData = new ResultData<>();
+
+		return resultData;
+	}
+	
+	/**
+	 * 分页显示服务商
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/find")
+	public ResultData<Object> find(String cityName, newPage<Server> page) {
+		
+		List<SolarPanelVo> solar = null;
+		List<QualificationsVo> quali =null;
+		List<Object> list = null;
+		
+		if(null == cityName || cityName.equals("")){
+			
+		 list =  solarService.findObject(page.getStart(), page.getLimit());
+
+			
+		}else{
+			
+			 list =  solarService.findtwoObject(cityName,page.getStart(), page.getLimit());
+
+		}
+		/*if(null == list || list.size()==0){
+			
+		}*/
+			solar  =solarService.getpanel(list);
+			
+			List<Long> ids = new LinkedList<Long>();
+			 for (SolarPanelVo solarPanelVo : solar) {
+				 if(ids.size()!=0){
+					 ids.remove(0);
+				 }
+				
+				logger.info("服务商信息为："+solarPanelVo.getS_id() +" -- -- "+solarPanelVo.getCompanyName()+" -- "+solarPanelVo.getCompanyLogo());
+				ids.add(solarPanelVo.getS_id());
+				
+				 List<Object> list02 = solarService.findquatwoObject(ids);
+				 
+				  quali = solarService.getqua(list02);
+				 for (QualificationsVo qualificationsVo : quali) {
+					 logger.info("资质为："+qualificationsVo.getId()+" -- "+qualificationsVo.getImgUrl());
+				}	
+				 solarPanelVo.setList(quali); 
+			}
+
+		return ResultVOUtil.success(solar);
+	}
 	
 	
 	

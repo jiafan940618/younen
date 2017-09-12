@@ -149,16 +149,16 @@ public class OrderController {
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
 			break;
 		case GRIDCONNECTEDPAYMENT:
-			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
+			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付 --> 报建状态
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
 			break;
 		case GRIDCONNECTEDAPPLICATION:
-			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
+			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请  --> 并网发电的线上支付
 			break;
 		case BUILDAPPLICATION:
-			result = orderDetailService.buildApplication(findOne);// 施工申请
+			result = orderDetailService.buildApplication(findOne);// 建设中 --> 施工申请
 			break;
 		case STATIONRUN:
 			result = orderDetailService.stationRun(findOne);// 并网发电

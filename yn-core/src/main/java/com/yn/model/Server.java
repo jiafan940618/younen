@@ -14,7 +14,11 @@ import java.util.Set;
  */
 @Entity
 public class Server extends IDomain implements Serializable {
-
+	
+	 @Id
+	    @GeneratedValue
+	    @Column(columnDefinition = "int(11) comment '[id]'")
+	    private Long id;
     @Column(columnDefinition = "int(11) comment '[用户id]'")
     private Long userId;
     @Column(columnDefinition = "varchar(255) comment '[企业邮箱]'")
@@ -99,7 +103,7 @@ public class Server extends IDomain implements Serializable {
     @JoinColumn(name = "serverId", insertable = false, updatable = false)
     @Where(clause = "del=0")
     @OrderBy("id ASC")
-    private Set<ServerPlan> serverPlan;
+    private Set<NewServerPlan> newServerPlan;
 
     /**
      * 资质
@@ -122,6 +126,16 @@ public class Server extends IDomain implements Serializable {
 	public Server(String companyName,Double factorage) {
 		this.companyName = companyName;
 		this.factorage = factorage;
+	}
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Long getUserId() {
@@ -364,15 +378,17 @@ public class Server extends IDomain implements Serializable {
         this.user = user;
     }
 
-    public Set<ServerPlan> getServerPlan() {
-        return serverPlan;
-    }
+   
 
-    public void setServerPlan(Set<ServerPlan> serverPlan) {
-        this.serverPlan = serverPlan;
-    }
+    public Set<NewServerPlan> getNewServerPlan() {
+		return newServerPlan;
+	}
 
-    public Set<QualificationsServer> getQualificationsServer() {
+	public void setNewServerPlan(Set<NewServerPlan> newServerPlan) {
+		this.newServerPlan = newServerPlan;
+	}
+
+	public Set<QualificationsServer> getQualificationsServer() {
         return qualificationsServer;
     }
 

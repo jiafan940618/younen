@@ -17,6 +17,11 @@ public class NewPlanVo {
 	
 	private Double allMoney;
 	
+	private String conent;
+	
+	private Integer capacity;
+	
+	
 	//订单服务商与用户的信息
 	private String companyName;
 	private String orderCode;
@@ -26,7 +31,18 @@ public class NewPlanVo {
 	
 	
 	
-	
+	public Integer getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+	public String getConent() {
+		return conent;
+	}
+	public void setConent(String conent) {
+		this.conent = conent;
+	}
 	public Double getAllMoney() {
 		return allMoney;
 	}
@@ -111,8 +127,6 @@ public class NewPlanVo {
 	public void setBrandname(String brandname) {
 		this.brandname = brandname;
 	}
-	
-	
 	
 
 }

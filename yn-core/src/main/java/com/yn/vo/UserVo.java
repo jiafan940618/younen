@@ -8,6 +8,8 @@ import com.yn.domain.QueryVo;
 public class UserVo extends QueryVo {
 	
 	private Long id;
+	private Long userid;
+	
 	private String token;
 	private String phone;
 	private String password;
@@ -28,6 +30,16 @@ public class UserVo extends QueryVo {
 	private String openIdb;
 	private String openIdc;
 	private Long roleId;
+
+	
+	
+	public Long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
 
 	public Long getId() {
 		return id;

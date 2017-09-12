@@ -3,81 +3,64 @@ package com.yn.web;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.mapper.ServerMapper;
 import com.yn.model.Apolegamy;
 import com.yn.model.NewServerPlan;
 import com.yn.model.Server;
+import com.yn.model.newPage;
 import com.yn.service.ApolegamyService;
 import com.yn.service.DevideService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.ServerService;
+import com.yn.service.SolarPanelSerice;
 import com.yn.service.SystemConfigService;
 import com.yn.utils.ResultData;
+import com.yn.vo.QualificationsVo;
+import com.yn.vo.SolarPanelVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/client/test")
 public class TestController {
 	
-	@Autowired
-	private NewServerPlanService planService;
 	
-	  @Autowired
-	ApolegamyService apolegamyService;
-	  
-	  
-	  private static DecimalFormat df = new DecimalFormat("0.00");
-		private static DecimalFormat df1 = new DecimalFormat("0000");
-		private static Random rd = new Random();
-	    private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
-		/** 自定义进制(0,1没有加入,容易与o,l混淆) */
-		private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
-				'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
-		/** (不能与自定义进制有重复) */
-		private static final char b = 'o';
-		/** 进制长度 */
-		private static final int binLen = r.length;
-
-
-	    
-		public static String toSerialCode(long id, int s) {
-			char[] buf = new char[32];
-			int charPos = 32;
-
-			while ((id / binLen) > 0) {
-				int ind = (int) (id % binLen);
-				// System.out.println(num + "-->" + ind);
-				buf[--charPos] = r[ind];
-				id /= binLen;
-			}
-			buf[--charPos] = r[(int) (id % binLen)];
-			// System.out.println(num + "-->" + num % binLen);
-			String str = new String(buf, charPos, (32 - charPos));
-			// 不够长度的自动随机补全
-			if (str.length() < s) {
-				StringBuilder sb = new StringBuilder();
-				sb.append(b);
-				Random rnd = new Random();
-				for (int i = 1; i < s - str.length(); i++) {
-					sb.append(r[rnd.nextInt(binLen)]);
-				}
-				str += sb.toString();
-			}
-			return str;
-		}
+	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+	@Autowired
+	SolarPanelSerice solarService;
+	@Autowired
+	ServerMapper serverMapper;
+	
+	
 	
 	 @RequestMapping(value = "/dotest")
 	 @ResponseBody
 	    public ResultData<Object> newTest() {
 		
-	List<Object> list = planService.selectServerPlan(1L);
+		String cityName="深圳市";
+		 
+		 List<Server> list =	serverMapper.find(cityName);
+		 
+		 
 
 			return ResultVOUtil.success(list);
 	    }
@@ -85,8 +68,80 @@ public class TestController {
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
 	    public ResultData<Object> someTest() {
-			return ResultVOUtil.success(null);
+		 
+		 String cityName ="";
+		 
+			List<SolarPanelVo> solar = null;
+			List<QualificationsVo> quali =null;
+			List<Object> list = null;
+			
+			newPage<Server> page = new newPage<Server>();
+			page.setIndex(1);
+			page.setLimit(3);
+			
+			if(null == cityName || cityName.equals("")){
+				
+			 list =  solarService.findObject(page.getStart(), page.getLimit());
+
+				
+			}else{
+				
+				 list =  solarService.findtwoObject(cityName,page.getStart(), page.getLimit());
+
+			}
+				solar  =solarService.getpanel(list);
+				
+				List<Long> ids = new LinkedList<Long>();
+				 for (SolarPanelVo solarPanelVo : solar) {
+					 if(ids.size()!=0){
+						 ids.remove(0);
+					 }
+					logger.info("服务商信息为："+solarPanelVo.getS_id() +" -- -- "+solarPanelVo.getCompanyName()+" -- "+solarPanelVo.getCompanyLogo());
+					ids.add(solarPanelVo.getS_id());
+					
+					List<Object> list02 = solarService.findquatwoObject(ids);
+					 
+					  quali = solarService.getqua(list02);
+					 for (QualificationsVo qualificationsVo : quali) {
+						 logger.info("资质为："+qualificationsVo.getId()+" -- "+qualificationsVo.getImgUrl());
+					}
+					 solarPanelVo.setList(quali);
+				}
+
+			return ResultVOUtil.success(solar);
 	    }
+	 
+	 /* Server server = new Server();
+	 server.setServerCityText("深圳市");
+	 server.setServerCityIds("199");
+	 
+	 Pageable pageable = new PageRequest(0, 20, Direction.DESC, "id");
+	
+Page<Server> page =	serverService.findAll(server, pageable);
+
+System.out.println(page.getTotalPages());
+
+List<Server> list = page.getContent();
+Set<NewServerPlan> doset =  new  HashSet<NewServerPlan>();
+
+for (Server server2 : list) {
+	
+	Set<NewServerPlan> set = server2.getNewServerPlan();
+	
+
+	int i=0;
+	 for (NewServerPlan newServerPlan : set) {
+		 if(i==0){
+			 doset.add(newServerPlan);
+			 server2.setNewServerPlan(null);
+			 server2.setNewServerPlan(doset);
+			 System.out.println(newServerPlan.getId()+" -- -- "+newServerPlan.getInverterId());
+			 break;
+		 }
+	}
+
+}*/
+
 	 
 	
 	

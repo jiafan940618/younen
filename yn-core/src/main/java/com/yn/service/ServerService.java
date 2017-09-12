@@ -2,34 +2,47 @@ package com.yn.service;
 
 import com.yn.dao.ServerDao;
 import com.yn.dao.UserDao;
+import com.yn.dao.mapper.ServerMapper;
 import com.yn.enums.NoticeEnum;
 import com.yn.enums.RoleEnum;
 import com.yn.enums.ServerTypeEnum;
+import com.yn.model.NewServerPlan;
 import com.yn.model.Server;
 import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 @Service
 public class ServerService {
 	
-	 @Autowired
-	    UserService uservice;
+	
+	@Autowired
+	UserService uservice;
     @Autowired
     ServerDao serverDao;
     @Autowired
@@ -37,8 +50,8 @@ public class ServerService {
     @Autowired
     private NoticeService noticeService;
 
-   
-
+  
+    
     public Server findOne(Long id) {
         return serverDao.findOne(id);
     }
@@ -131,7 +144,8 @@ public class ServerService {
                 predicates[2] = cb.like(root.get("salesmanPhone"), "%" + queryStr + "%");
                 expressions.add(cb.or(predicates));
             }
-
+            
+        
             // 根据日期筛选
             String queryStartDtm = server.getQueryStartDtm();
             String queryEndDtm = server.getQueryEndDtm();
@@ -190,5 +204,37 @@ public class ServerService {
    		
 		return server2;
    }
+   
+ /* public  List<Server> find(Map<String, String> map){
+	  
+	  return serverMapper.find(map);
+  }*/
+   
+   public List<Server> getpage(Page<Server> page){
 
+		
+		List<Server> list = page.getContent();
+		Set<NewServerPlan> doset =  new  HashSet<NewServerPlan>();
+		
+		for (Server server2 : list) {
+			
+			Set<NewServerPlan> set = server2.getNewServerPlan();
+			
+		
+			int i=0;
+			 for (NewServerPlan newServerPlan : set) {
+				 if(i==0){
+					 doset.add(newServerPlan);
+					 server2.setNewServerPlan(null);
+					 server2.setNewServerPlan(doset);
+				
+					 break;
+				 }
+			}
+
+		}
+		return list;
+   }
+   
 }
+

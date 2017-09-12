@@ -1,6 +1,7 @@
 package com.yn.service;
 
 import com.yn.dao.OrderDao;
+import com.yn.dao.mapper.OrderMapper;
 import com.yn.domain.OrderDetailAccounts;
 import com.yn.enums.NoticeEnum;
 import com.yn.enums.OrderEnum;
@@ -29,11 +30,22 @@ public class OrderService {
     protected OrderDao orderDao;
     @Autowired
     private NoticeService noticeService;
+    @Autowired
+	private OrderMapper mapper;
 
 
+    public Order findByOrderCode(String OrderCode) {
+    	
+        return orderDao.findByOrderCode(OrderCode);
+    }
+    
     public Order findOne(Long id) {
         return orderDao.findOne(id);
     }
+    
+    public boolean checkUpdateOrderStatus(Order order){
+		return mapper.updateByCondition(order)>0?true:false;
+	}
     
   /*  public Order findOrder(Order order) {
         return orderDao.findOrder(order);
@@ -183,6 +195,8 @@ public class OrderService {
 
         return oda;
     }
+    
+    
 
 
 }
