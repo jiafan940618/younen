@@ -120,11 +120,11 @@
 			<version>1.2.1rc1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springside</groupId>
-			<artifactId>springside-core</artifactId>
-			<version>4.0.0.RC3</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springside</groupId>-->
+			<!--<artifactId>springside-core</artifactId>-->
+			<!--<version>4.0.0.RC3</version>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -132,11 +132,11 @@
 			<version>19.0-rc1</version>
 		</dependency>
 		
-		 <dependency>
-            <groupId>com.yuntongxun</groupId>
-            <artifactId>CCP_REST_SDK_JAVA_v2.7r</artifactId>
-            <version>2.7</version>
-        </dependency>
+		 <!--<dependency>-->
+            <!--<groupId>com.yuntongxun</groupId>-->
+            <!--<artifactId>CCP_REST_SDK_JAVA_v2.7r</artifactId>-->
+            <!--<version>2.7</version>-->
+        <!--</dependency>-->
         
         <!--  <dependency>
             <groupId>com.lycheepay</groupId>
@@ -144,9 +144,29 @@
             <version>3.8.5</version>
         </dependency>
         -->
-      
-
 
 	</dependencies>
+
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArgs>
+						<arg>-extdirs</arg>
+						<arg>yn-core/lib</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
 
 </project>
