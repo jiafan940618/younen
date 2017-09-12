@@ -39,9 +39,15 @@ public class OrderService {
 		return orderDao.findOne(id);
 	}
 
+	/**
+	 * 验证订单的状态是否更新成功！
+	 * 
+	 * @param order
+	 * @return
+	 */
 	//@Transactional(propagation=Propagation.REQUIRED)
-	public int updateByCondition(Order order){
-		return mapper.updateByCondition(order);
+	public boolean checkUpdateOrderStatus(Order order){
+		return mapper.updateByCondition(order)>0?true:false;
 	}
 
 	/*

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BillOrder;
 import com.yn.model.Order;
 
@@ -25,8 +24,6 @@ public class OrderDetailService {
 
 	@Autowired
 	private OrderService orderService;
-	
-	
 
 	@Value("${APPLY_PAYMENT_SCALE}")
 	private Double APPLY_PAYMENT_SCALE;// 申请中 --> 需：30%
@@ -66,9 +63,9 @@ public class OrderDetailService {
 			order.setLoanStatus(1);// 贷款申请中
 			order.setStatus(0);// 订单申请中
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -88,9 +85,9 @@ public class OrderDetailService {
 			result.put("needToPay", needToPay.toString());
 			order.setApplyIsPay(0);// 未支付
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -110,9 +107,9 @@ public class OrderDetailService {
 			result.put("needToPay", needToPay.toString());
 			order.setApplyIsPay(0);// 未支付
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -123,22 +120,46 @@ public class OrderDetailService {
 	 * @return
 	 */
 	public Map<String, String> gridConnectedPayment(Order order) {
+		/*
+		 * result = new HashMap<>(); Double needToPay =
+		 * this.calculatedNeedToPayMoney(order, GRIDCONNECTED_PAYMENT_SCALE); if
+		 * (needToPay < 0) { result.put("needToPay", "0");
+		 * order.setApplyIsPay(1);// 申请中-支付状态 order.setGridConnectedIsPay(1);//
+		 * 并网发电-支付状态 order.setGridConnectedStepA(1);// 并网发电-并网状态 --> 1:已申请 }
+		 * else { result.put("needToPay", needToPay.toString());
+		 * order.setApplyIsPay(0); order.setGridConnectedIsPay(0);
+		 * order.setGridConnectedStepA(0); } //更新状态 int byCondition =
+		 * orderService.orderService.checkUpdateOrderStatus(order);
+		 * result.put("updateOrderStauts", byCondition+""); return result;
+		 */
 		result = new HashMap<>();
-		Double needToPay = this.calculatedNeedToPayMoney(order, GRIDCONNECTED_PAYMENT_SCALE);
-		if (needToPay < 0) {
-			result.put("needToPay", "0");
-			order.setApplyIsPay(1);// 申请中-支付状态
-			order.setGridConnectedIsPay(1);// 并网发电-支付状态
-			order.setGridConnectedStepA(1);// 并网发电-并网状态 --> 1:已申请
+		Double hadPayPrice = order.getHadPayPrice();
+		Double totalPrice = order.getTotalPrice();
+		// 计算出尾款 :: 100% - 60% --> 40%
+		double needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE);
+		if (hadPayPrice != null) {
+			if (hadPayPrice >= needToPay) {
+				result.put("needToPay", "0");
+				order.setApplyIsPay(1);// 申请中-支付状态
+				// 修改状态 ： 已支付、已申请、并网发电申请中
+				order.setGridConnectedIsPay(1);
+				order.setGridConnectedStepA(1);
+				order.setStatus(2);
+			} else {
+				result.put("needToPay", needToPay + "");
+				order.setGridConnectedIsPay(0);
+				order.setGridConnectedStepA(0);
+				order.setApplyIsPay(0);
+			}
 		} else {
-			result.put("needToPay", needToPay.toString());
-			order.setApplyIsPay(0);
+			result.put("needToPay", needToPay + "");
 			order.setGridConnectedIsPay(0);
 			order.setGridConnectedStepA(0);
+			order.setApplyIsPay(0);
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -158,9 +179,9 @@ public class OrderDetailService {
 			result.put("needToPay", needToPay.toString());
 			order.setApplyStepA(0);
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -185,9 +206,9 @@ public class OrderDetailService {
 			order.setApplyIsPay(0);
 			order.setGridConnectedIsPay(0);
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -212,9 +233,9 @@ public class OrderDetailService {
 			order.setBuildStepA(0);
 			order.setBuildStepB(0);
 		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -226,24 +247,19 @@ public class OrderDetailService {
 	 */
 	public Map<String, String> stationRun(Order order) {
 		result = new HashMap<>();
-		Double hadPayPrice = order.getHadPayPrice();
-		Double totalPrice = order.getTotalPrice();
-		// 计算出尾款 :: 100% - 60% --> 40%
-		double needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE);
-		if (hadPayPrice >= needToPay) {
-			result.put("needToPay", "0");
-			// 修改状态 ： 已支付、已申请、并网发电申请中
-			order.setGridConnectedIsPay(1);
-			order.setGridConnectedStepA(1);
-			order.setStatus(2);
-		} else {
-			result.put("needToPay", needToPay + "");
-			order.setGridConnectedIsPay(0);
-			order.setGridConnectedStepA(0);
-		}
-		//更新状态
-		int byCondition = orderService.updateByCondition(order);
-		result.put("updateOrderStauts", byCondition+"");
+		/*
+		 * Double hadPayPrice = order.getHadPayPrice(); Double totalPrice =
+		 * order.getTotalPrice(); // 计算出尾款 :: 100% - 60% --> 40% double
+		 * needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE); if
+		 * (hadPayPrice >= needToPay) { result.put("needToPay", "0"); // 修改状态 ：
+		 * 已支付、已申请、并网发电申请中 order.setGridConnectedIsPay(1);
+		 * order.setGridConnectedStepA(1); order.setStatus(2); } else {
+		 * result.put("needToPay", needToPay + "");
+		 * order.setGridConnectedIsPay(0); order.setGridConnectedStepA(0); }
+		 * //更新状态 int byCondition = orderService.updateByCondition(order);
+		 * result.put("updateOrderStauts", byCondition+"");
+		 */
+
 		return result;
 	}
 
@@ -261,6 +277,9 @@ public class OrderDetailService {
 		Double hadPayPrice = order.getHadPayPrice();// 已支付
 		Double totalPrice = order.getTotalPrice();// 总价
 		Double needToPay = totalPrice * interestRate;// 需要支付的金额
+		if (hadPayPrice == null) {
+			return needToPay;
+		}
 		// System.out.println("hadPayPrice :: "+hadPayPrice);
 		// System.out.println("totalPrice :: "+totalPrice);
 		// System.out.println("needToPay :: "+needToPay);
@@ -268,4 +287,5 @@ public class OrderDetailService {
 			return -1d;
 		return needToPay;
 	}
+
 }
