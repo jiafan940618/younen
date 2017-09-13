@@ -39,8 +39,7 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     Set<Long> findUserId(Long serverId);
     
     /** 根据订单号查找订单*/
-    @Query("select o from Order o where o.orderCode = ?1")
-    Order findByOrderCode(String OrderCode) ;
+  
     
     
     

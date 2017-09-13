@@ -50,4 +50,14 @@ public class Province extends IDomain implements Serializable{
 	public void setCity(Set<City> city) {
 		this.city = city;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 }

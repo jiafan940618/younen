@@ -16,6 +16,7 @@
 			<artifactId>yn-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+	
 	</dependencies>
 
 	<!--<build>-->
@@ -30,7 +31,7 @@
 
 
 	<build>
-        <finalName>yn-client</finalName>
+       <!--  <finalName>yn-client</finalName> -->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

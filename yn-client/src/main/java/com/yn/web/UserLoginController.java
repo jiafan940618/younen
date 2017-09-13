@@ -95,6 +95,8 @@ public class UserLoginController {
 	        
 	        NewUserVo userVo = new NewUserVo();
 	        
+	        userVo.setEmail(user.getEmail());
+	        userVo.setFullAddressText(user.getFullAddressText());
 	        userVo.setId(user.getId());
 	        userVo.setNickName(user.getNickName());
 	        userVo.setPhone(user.getPhone());

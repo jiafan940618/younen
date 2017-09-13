@@ -20,4 +20,9 @@ public interface BillOrderDao extends JpaRepository<BillOrder, Long>, JpaSpecifi
     @Modifying
     @Query("update BillOrder set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+  
+    @Query(" select b from BillOrder b where  b.tradeNo = :tradeNo ")
+    BillOrder findByTradeNo(@Param("tradeNo") String tradeNo );
+    
 }

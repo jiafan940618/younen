@@ -12,6 +12,29 @@ public class NewUserVo {
 	private String token;
 	
 	private String nickName;
+	
+	private String email;
+	
+	private String fullAddressText;
+	
+	
+	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getFullAddressText() {
+		return fullAddressText;
+	}
+
+	public void setFullAddressText(String fullAddressText) {
+		this.fullAddressText = fullAddressText;
+	}
 
 	public Long getId() {
 		return id;

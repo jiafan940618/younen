@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.soofa.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,29 +16,56 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
-import com.yn.kftentity.OrderPay;
-import com.yn.service.OrderService;
+import com.yn.model.BillOrder;
+import com.yn.service.BillOrderService;
 import com.yn.utils.CashierSignUtil;
 
-
-
 @Controller
-@RequestMapping(value="/sign")
+@RequestMapping(value="/client/sign")
 public class SignController {
 	
-	@Resource
-	private OrderService orderService;
+	@Autowired
+	private BillOrderService orderService;
 	
 	private final static String charset = "UTF-8";
 
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
 	
-	
-	@RequestMapping(value="/online")
-	public String doOnline(){
+	 /** pc端*/
+	@RequestMapping(value="/pconline")
+	public String doOnline(HttpServletRequest request){
 		
-		System.out.println("进入测试页面！");
+		/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
+		/** 手机端是支付宝app支付*/  /** alipayApp*/
+		
+		 /** pc端微信支付为二维码支付*/  /** wxMicro*/
+		/** 手机端是微信app支付*/  /** wxApp*/
+		
+		String outTradeNo="2017071014153897464";
+		String channel ="wxMicro";
+		
+		request.setAttribute("outTradeNo", outTradeNo);
+		request.setAttribute("channel", channel);
+		
+		String type ="2";
+		 //等于1是银联支付
+		if(type.equals("1")){
+			
+			return "forward:/client/sign/dosign";
+			 //等于2是支付宝支付	
+		}else if(type.equals("2")){
+			
+			return "forward:/client/payOrder/createPay.htm";
+			 //等于3是微信支付
+		}else if(type.equals("3")){
+			
+			 //等于4是快付通支付
+		}else if(type.equals("4")){
+			
+			return ""; 
+		}
+
 		
 		return "queryIndex";
 	}
@@ -47,7 +75,9 @@ public class SignController {
 		
 		Charset encoding = Charset.forName(charset);
 		
-	OrderPay orderPay =	new OrderPay();
+		String outTradeNo=(String) request.getAttribute("outTradeNo");
+		
+	BillOrder orderPay =	orderService.findByTradeNo(outTradeNo);
 		
 		
 try {
@@ -68,21 +98,27 @@ try {
 			//parameters.put("returnUrl", "http://10.36.160.29:8080/cashierDemo/returnUrl.jsp");
 			parameters.put("notifyAddr", "http://192.168.0.66:8080/guangfu/sign/doSuncRep");
 			
-			parameters.put("customerType", orderPay.getCustomertype());
+			parameters.put("customerType", "1");
 			//订单号
-			parameters.put("orderNo", orderPay.getOuttradeno());
+			parameters.put("orderNo", orderPay.getTradeNo());
 			parameters.put("tradeTime", "2016-12-08 15:00:00");
 			parameters.put("payPurpose", "1");
-			parameters.put("currency",  orderPay.getCurrency());
-			parameters.put("tradeName", orderPay.getBody());
-			parameters.put("subject", orderPay.getSubject());
-			parameters.put("description", orderPay.getDescription());
-			parameters.put("amount", orderPay.getAmount().toString());
+			 /** 币种，默认为 CNY*/
+			parameters.put("currency",  "CNY");
+			 //交易名称
+			parameters.put("tradeName", "交易名称1");
+			 //商品名称
+			parameters.put("subject", "商品名称02");
+			 //商品描述
+			parameters.put("description", "商品描述03");
+			
+			parameters.put("amount", orderPay.getMoney().toString());
 			//parameters.put("singlePrice", "");
 			//parameters.put("quantity", "");
 			//parameters.put("payerCustName", "");
 			 /** 添加时注意添加银行的类型*/
-			parameters.put("bankType",orderPay.getBanktype());
+			parameters.put("bankType","1051000");
+			
 			parameters.put("timeout", "5m");
 			//parameters.put("showUrl", "");
 			//parameters.put("merchantLogoUrl", "");

@@ -6,20 +6,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.mapper.ServerMapper;
+import com.yn.model.BillOrder;
 import com.yn.model.Server;
 import com.yn.model.newPage;
+import com.yn.service.BillOrderService;
 import com.yn.service.SolarPanelSerice;
 import com.yn.utils.ResultData;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.SolarPanelVo;
 import com.yn.vo.re.ResultVOUtil;
 
-@RestController
+@Controller
 @RequestMapping("/client/test")
 public class TestController {
 
@@ -28,68 +31,36 @@ public class TestController {
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 	@Autowired
 	SolarPanelSerice solarService;
+
 	@Autowired
-	ServerMapper serverMapper;
+	BillOrderService orderService;
+	
 	
 	
 	
 	 @RequestMapping(value = "/dotest")
-	 @ResponseBody
-	    public ResultData<Object> newTest() {
+	    public String  newTest() {
 		
-		String cityName="深圳市";
+		 System.out.println("进入方法！");
+		/*String cityName="深圳市";
+		
+		Server server = new Server();
+		server.setServerCityText(cityName);
 		 
-		 List<Server> list =	serverMapper.find(cityName);
-		 
-		 
+		 List<Server> list =	serverMapper.find(server);*/
 
-			return ResultVOUtil.success(list);
+			return "NewFile";
 	    }
 	
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
 	    public ResultData<Object> someTest() {
-		 
-		 String cityName ="";
-		 
-			List<SolarPanelVo> solar = null;
-			List<QualificationsVo> quali =null;
-			List<Object> list = null;
-			
-			newPage<Server> page = new newPage<Server>();
-			page.setIndex(1);
-			page.setLimit(3);
-			
-			if(null == cityName || cityName.equals("")){
-				
-			 list =  solarService.findObject(page.getStart(), page.getLimit());
+		 String outTradeNo="2017071014160552761"; 
+	
+		BillOrder order = orderService.findByTradeNo(outTradeNo);
+		
 
-				
-			}else{
-				
-				 list =  solarService.findtwoObject(cityName,page.getStart(), page.getLimit());
-
-			}
-				solar  =solarService.getpanel(list);
-				
-				List<Long> ids = new LinkedList<Long>();
-				 for (SolarPanelVo solarPanelVo : solar) {
-					 if(ids.size()!=0){
-						 ids.remove(0);
-					 }
-					logger.info("服务商信息为："+solarPanelVo.getS_id() +" -- -- "+solarPanelVo.getCompanyName()+" -- "+solarPanelVo.getCompanyLogo());
-					ids.add(solarPanelVo.getS_id());
-					
-					List<Object> list02 = solarService.findquatwoObject(ids);
-					 
-					  quali = solarService.getqua(list02);
-					 for (QualificationsVo qualificationsVo : quali) {
-						 logger.info("资质为："+qualificationsVo.getId()+" -- "+qualificationsVo.getImgUrl());
-					}
-					 solarPanelVo.setList(quali);
-				}
-
-			return ResultVOUtil.success(solar);
+			return ResultVOUtil.success(order);
 	    }
 	 
 	 /* Server server = new Server();

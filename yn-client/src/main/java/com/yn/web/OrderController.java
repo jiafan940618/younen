@@ -214,6 +214,8 @@ public class OrderController {
 		plan.setUserName(userVo.getUserName());
 
 		List<Apolegamy> list = (List<Apolegamy>) session.getAttribute("list");
+		
+		
 		session.setAttribute("newPlanVo", plan);
 		session.setAttribute("result", ResultVOUtil.newsuccess(plan, list));
 
@@ -237,6 +239,7 @@ public class OrderController {
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice);
+		
 
 		orderService.save(order);
 

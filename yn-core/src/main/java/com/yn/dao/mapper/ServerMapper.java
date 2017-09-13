@@ -11,7 +11,7 @@ import com.yn.model.Server;
 @Mapper
 public interface ServerMapper {
 	
-	List<Server> find(@Param(value="cityName") String cityName);
+	List<Server> find(Server server);
 	
 
 }

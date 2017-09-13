@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
 import com.yn.kftentity.OrderPay;
+import com.yn.model.BillOrder;
+import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.utils.HttpsClientUtil;
 import com.yn.utils.PropertyUtils;
@@ -26,7 +28,7 @@ import com.yn.utils.SignUtil;
 public class PayOrderAction {
 	
 	@Autowired
-	private OrderService orderService;
+	private BillOrderService orderService;
 
 	private String key;
 	private String requestUrl;
@@ -46,19 +48,25 @@ public class PayOrderAction {
 		return "payStart";
 	}
   
+	
+	
+	//https://qr.alipay.com/bax006707avarcn0xceg00a9
+	 //@RequestParam(value="outTradeNo") String outTradeNo,@RequestParam(value="channel") String channel
 	 /** 参数传一个订单号查询数据最后填充至map集合*/
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/createPay.htm")
-	public String createPay(HttpServletRequest request, HttpServletResponse response,@RequestParam(value="outTradeNo") String outTradeNo) throws Exception {  
-		
+	public String createPay(HttpServletRequest request, HttpServletResponse response) throws Exception {  
+		String outTradeNo=(String) request.getAttribute("outTradeNo");
+		String channel =(String)request.getAttribute("channel");
 		
 		Map paramMap = request.getParameterMap();
-		request.getParameterValues("属性名");
 		//根据订单号查询数据
-	
+	 //2017071014153897464
 		//OrderPay orderPay =orderPayService.selectOrder(outTradeNo);
 		
-		OrderPay orderPay = new OrderPay();
+		BillOrder orderPay = orderService.findByTradeNo(outTradeNo);
+		
+		//OrderPay orderPay = new OrderPay();
 		//获取参数
 		Map<String, String> param = RequestUtils.getRequestMapValue(paramMap);	
 		param.put("tradeType", "cs.pay.submit");
@@ -66,23 +74,23 @@ public class PayOrderAction {
 		 /** 测试mchid */
 		param.put("mchId", "000010000000000024");
 		
-		param.put("channel",orderPay.getChannel());  /** 付款方式*/
-		param.put("body", orderPay.getBody());   /** 商品描述*/
-		param.put("terminalType", orderPay.getTerminaltype()); /** 终端类型*/
-		param.put("outTradeNo", orderPay.getOuttradeno());    /** 订单号*/
+		param.put("channel",channel);  /** 付款方式*/
+		param.put("body", "这是一个测试!");   /** 商品描述*/
+		param.put("terminalType","pc"); /** 终端类型*/
+		param.put("outTradeNo", orderPay.getTradeNo());    /** 订单号*/
 		 //转换金额
-		String aomout = orderPay.getAmount().toString();     
+		String aomout = orderPay.getMoney().toString();     
 		param.put("amount", aomout);
-		param.put("description", orderPay.getDescription());   /** 附加数据*/
+		param.put("description", null);   /** 附加数据*/
 		
-		param.put("timePaid", orderPay.getTimepaid());     /**订单支付时间 */
-		param.put("timeExpire", orderPay.getTimeexpire());   /** 订单失效时间 */
-		param.put("extra", orderPay.getExtra());        /*** 扩展字段 */
+		param.put("timePaid", null);     /**订单支付时间 */
+		param.put("timeExpire", null);   /** 订单失效时间 */
+		param.put("extra", null);        /*** 扩展字段 */
 		
-		param.put("subject", orderPay.getSubject());    /** 商品标题 */ 
+		param.put("subject", null);    /** 商品标题 */ 
 		//过滤空值或null
 		Map<String, String> filterMap = SignUtil.paraFilter(param);
-		String channel = filterMap.get("channel");   /** 支付类型*/
+		//String channel = filterMap.get("channel");   /** 支付类型*/
 		//拼接
 		
 		String toSign = SignUtil.createSignPlainText(filterMap, true);
@@ -131,12 +139,11 @@ public class PayOrderAction {
 					return "redirect:" + returnMap.get("payCode");
 				}else if(channel.equals("alipayQR")){
 					//展示二维码，请商户调用第三方库将code_url生成二维码图片
+					System.out.println("支付的codeurl：----"+returnMap.get("codeUrl"));
 					request.setAttribute("codeUrl", returnMap.get("codeUrl"));
-				}else if(channel.equals("alipayMicro")){
+				}else if(channel.equals("alipayApp")){
 				
 					}
-				 
-				
 			}else{
 				request.setAttribute("resultCode", returnMap.get("resultCode"));
 				request.setAttribute("errCodeDes", returnMap.get("errCodeDes"));

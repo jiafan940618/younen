@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.persistence.criteria.*;
 import java.util.Iterator;
 import java.util.List;
@@ -30,15 +31,9 @@ public class OrderService {
     protected OrderDao orderDao;
     @Autowired
     private NoticeService noticeService;
-    @Autowired
+    @Resource
 	private OrderMapper mapper;
 
-
-    public Order findByOrderCode(String OrderCode) {
-    	
-        return orderDao.findByOrderCode(OrderCode);
-    }
-    
     public Order findOne(Long id) {
         return orderDao.findOne(id);
     }

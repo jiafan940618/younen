@@ -14,7 +14,15 @@ import java.util.Set;
 @Entity
 @Table(name="t_order")
 public class Order extends IDomain implements Serializable {
+	
+	  public Order() {
+		super();
+	}
 
+	@Id
+	    @GeneratedValue
+	    @Column(columnDefinition = "int(11) comment '[id]'")
+	    private Long id;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[订单号]'")
 	private String orderCode;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[服务商id]'")
@@ -132,7 +140,24 @@ public class Order extends IDomain implements Serializable {
     @OrderBy("create_dtm DESC")
     private Set<BillOrder> billOrder;
 
-    public String getOrderCode() {
+	
+	
+	
+    public Order(Long id, String orderCode, Long userId) {
+		this.id = id;
+		this.orderCode = orderCode;
+		this.userId = userId;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getOrderCode() {
         return orderCode;
     }
 
