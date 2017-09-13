@@ -54,7 +54,7 @@ public class TestController {
 	
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
-	    public ResultData<Object> someTest() {
+	    public Object someTest() {
 		 String outTradeNo="2017071014160552761"; 
 	
 		BillOrder order = orderService.findByTradeNo(outTradeNo);

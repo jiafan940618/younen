@@ -43,19 +43,15 @@
 			</plugin>
 		</plugins>
 
-		<resources>
+		<!-- <resources>
 			<resource>
 				<targetPath>lib/</targetPath>
 				<directory>../yn-core/lib</directory>
 			</resource>
 			<resource>
-				<!-- <targetPath>${project.basedir}</targetPath> -->
 				<directory>${project.basedir}/src/main/resources</directory>
-				<!-- <includes>
-					<include>**/application.properties</include>
-				</includes> -->
 			</resource>
-		</resources>
+		</resources> -->
 	</build>
 
 

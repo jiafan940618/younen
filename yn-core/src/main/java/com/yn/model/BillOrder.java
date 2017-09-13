@@ -12,6 +12,8 @@ import com.yn.domain.IDomain;
  */
 @Entity
 public class BillOrder extends IDomain implements Serializable{
+
+	private static final long serialVersionUID = 8510442621915013786L;
 	
 	@Column(columnDefinition = "int(11) comment '[订单id]'")
     private Long orderId;
