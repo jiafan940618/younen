@@ -1,10 +1,13 @@
 package com.yn.web;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,22 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
-
 import com.yn.enums.OrderDetailEnum;
-import com.yn.model.Order;
-import com.yn.model.Wallet;
-import com.yn.service.OrderDetailService;
-
 import com.yn.model.Apolegamy;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
 import com.yn.model.OrderPlan;
 import com.yn.model.Server;
 import com.yn.model.User;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.OrderDetailService;
 import com.yn.service.OrderPlanService;
-
 import com.yn.service.OrderService;
 import com.yn.service.ServerPlanService;
 import com.yn.service.ServerService;
@@ -68,6 +68,45 @@ public class OrderController {
 	WalletService walletService;
 	@Autowired
 	OrderDetailService orderDetailService;
+
+	static DecimalFormat df = new DecimalFormat("0.00");
+	static DecimalFormat df1 = new DecimalFormat("0000");
+	static Random rd = new Random();
+	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
+
+	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
+	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
+			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+	/** (不能与自定义进制有重复) */
+	private static final char b = 'o';
+	/** 进制长度 */
+	private static final int binLen = r.length;
+
+	public static String toSerialCode(long id, int s) {
+		char[] buf = new char[32];
+		int charPos = 32;
+
+		while ((id / binLen) > 0) {
+			int ind = (int) (id % binLen);
+			// System.out.println(num + "-->" + ind);
+			buf[--charPos] = r[ind];
+			id /= binLen;
+		}
+		buf[--charPos] = r[(int) (id % binLen)];
+		// System.out.println(num + "-->" + num % binLen);
+		String str = new String(buf, charPos, (32 - charPos));
+		// 不够长度的自动随机补全
+		if (str.length() < s) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(b);
+			Random rnd = new Random();
+			for (int i = 1; i < s - str.length(); i++) {
+				sb.append(r[rnd.nextInt(binLen)]);
+			}
+			str += sb.toString();
+		}
+		return str;
+	}
 
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
@@ -112,14 +151,15 @@ public class OrderController {
 	}
 
 	/** 线上支付,第一步 */
-	/*@ResponseBody
-	@RequestMapping(value = "/orderPrices")
-	public ResultData<Object> findOrderprice(OrderVo orderVo) {
-		Order order = orderService.findOne(orderVo.getId());
-		Wallet wallet = walletService.findOne(orderVo.getUserId());
-		return ResultVOUtil.success(null);
-	}*/
-	
+	/*
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(value = "/orderPrices") public ResultData<Object>
+	 * findOrderprice(OrderVo orderVo) { Order order =
+	 * orderService.findOne(orderVo.getId()); Wallet wallet =
+	 * walletService.findOne(orderVo.getUserId()); return
+	 * ResultVOUtil.success(null); }
+	 */
 
 	/**
 	 * 点击订单详情页各个按钮出发同一个接口，但调用不同的函数处理
@@ -149,16 +189,21 @@ public class OrderController {
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
 			break;
 		case GRIDCONNECTEDPAYMENT:
-			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付 --> 报建状态
+			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
+																		// -->
+																		// 报建状态
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
 			break;
 		case GRIDCONNECTEDAPPLICATION:
-			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请  --> 并网发电的线上支付
+			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
+																			// -->
+																			// 并网发电的线上支付
 			break;
 		case BUILDAPPLICATION:
-			result = orderDetailService.buildApplication(findOne);// 建设中 --> 施工申请
+			result = orderDetailService.buildApplication(findOne);// 建设中 -->
+																	// 施工申请
 			break;
 		case STATIONRUN:
 			result = orderDetailService.stationRun(findOne);// 并网发电
@@ -173,13 +218,19 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
 	public Object LookOrder(HttpSession session) {
-
-		User user = (User) session.getAttribute("user");
-		List<Apolegamy> list = (List<Apolegamy>) session.getAttribute("list");
+		Long userid = (Long) session.getAttribute("userid");
+		User user = userservice.findOne(userid);
+		List<Long> list = (List<Long>) session.getAttribute("list");
 		Double price = (Double) session.getAttribute("price");
-		NewServerPlan newserverPlan = (NewServerPlan) session.getAttribute("newserverPlan");
+		Long planid = (Long) session.getAttribute("newserverplanid");
+
+		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
 		NewPlanVo newPlanVo = new NewPlanVo();
+		// 生成订单编号 
+		String orderCode = toSerialCode(newserverPlan.getId(), 4) + format.format(System.currentTimeMillis())
+				+ df1.format(rd.nextInt(9999));
+		newPlanVo.setOrderCode(orderCode);
 
 		Server server = serverService.findOne(newserverPlan.getServerId());
 
@@ -197,7 +248,6 @@ public class OrderController {
 		newPlanVo.setBrandname(
 				newserverPlan.getSolarPanel().getBrandName() + "   " + newserverPlan.getSolarPanel().getModel());
 		newPlanVo.setAllMoney(price);
-
 		session.setAttribute("newPlanVo", newPlanVo);
 
 		return ResultVOUtil.newsuccess(newPlanVo, list);
@@ -214,8 +264,6 @@ public class OrderController {
 		plan.setUserName(userVo.getUserName());
 
 		List<Apolegamy> list = (List<Apolegamy>) session.getAttribute("list");
-		
-		
 		session.setAttribute("newPlanVo", plan);
 		session.setAttribute("result", ResultVOUtil.newsuccess(plan, list));
 
@@ -239,8 +287,9 @@ public class OrderController {
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice);
-		
-
+		// 取出订单号并添加
+		NewPlanVo attribute = (NewPlanVo) session.getAttribute("newPlanVo");
+		order.setOrderCode(attribute.getOrderCode());
 		orderService.save(order);
 
 		Order order02 = new Order();
