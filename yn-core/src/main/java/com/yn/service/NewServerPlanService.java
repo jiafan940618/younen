@@ -54,7 +54,7 @@ public class NewServerPlanService {
 	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
 	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
 			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
-	/** (不能与自定义进制有重复) */
+	/** (不能与自定义进制有重复)  */
 	private static final char b = 'o';
 	/** 进制长度 */
 	private static final int binLen = r.length;

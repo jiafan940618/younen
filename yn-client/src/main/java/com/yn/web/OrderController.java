@@ -95,7 +95,7 @@ public class OrderController {
 		buf[--charPos] = r[(int) (id % binLen)];
 		// System.out.println(num + "-->" + num % binLen);
 		String str = new String(buf, charPos, (32 - charPos));
-		// 不够长度的自动随机补全
+		// 不够长度的自动随机补全 
 		if (str.length() < s) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(b);
