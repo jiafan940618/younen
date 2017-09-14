@@ -17,19 +17,19 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "t_comment")
+@Table(name="t_comment")
 public class Comment extends IDomain implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(columnDefinition = "int(11) comment '[id]'")
 	private Long id;
-
+	
 	@Column(precision = 5, scale = 2, columnDefinition = "decimal(5,2) NOT NULL comment '[服务质量]'")
 	private Double serverQuality;
-
+	
 	@Column(precision = 5, scale = 2, columnDefinition = "decimal(5,2) NOT NULL comment '[服务效率]'")
 	private Double serverEfficiency;
-
+	
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[详细评价]'")
 	private String detailedEvaluation;
 
@@ -76,4 +76,5 @@ public class Comment extends IDomain implements Serializable {
 		this.id = id;
 	}
 
+	
 }
