@@ -220,10 +220,12 @@ public class OrderController {
         	 apoPrice += apolegamy.getPrice();
 		}
     	
-         NewServerPlan	newserverPlan =	(NewServerPlan) session.getAttribute("newserverPlan");
+         Long	planid =	(Long) session.getAttribute("newserverplanid");
+ 		
+ 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
     	  User user02 =  userservice.findByPhone(plan.getPhone());
          //** 添加订单*//* 
-         Order order  = newserverPlanService. getOrder(newserverPlan,user02,plan.getAllMoney(),apoPrice);
+         Order order  = newserverPlanService. getOrder(newserverPlan,user02,plan.getAllMoney(),apoPrice,plan.getOrderCode());
          
          orderService.save(order);
          

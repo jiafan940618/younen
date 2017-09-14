@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BillOrder;
 import com.yn.model.Order;
 
@@ -34,7 +35,7 @@ import com.yn.model.Order;
 public class OrderDetailService {
 
 	private Map<String, String> result;
-
+	
 	@Autowired
 	private OrderService orderService;
 

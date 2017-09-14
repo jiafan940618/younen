@@ -2,10 +2,13 @@ package com.yn.model;
 
 import java.util.List;
 
+import com.yn.utils.PropertyUtils;
+
 
 public class newPage<T> {
-
-	private Integer limit = 50;
+    /** 根据配置文件设置每页的大小*/
+	private Integer limit = Integer.parseInt(PropertyUtils.getProperty("limit"));
+	
 	private List<T> list;
 	private T example;
 

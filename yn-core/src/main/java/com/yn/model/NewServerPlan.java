@@ -16,7 +16,8 @@ import com.yn.domain.IDomain;
 @Table(name="new_server_plan")
 public class NewServerPlan extends IDomain implements Serializable {
 	
-	
+	@Column(columnDefinition = "int(11) comment '[服务商id]'")
+	private Integer capacity;
 	
 	@Column(columnDefinition = "int(11) comment '[服务商id]'")
 	private Long serverId;
@@ -27,15 +28,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private String planImgUrl;
 	
 	
-	public String getPlanImgUrl() {
-		return planImgUrl;
-	}
-
-
-
-	public void setPlanImgUrl(String planImgUrl) {
-		this.planImgUrl = planImgUrl;
-	}
+	
 
 	@Column(columnDefinition = "int(11) comment '[逆变器id]'")
 	private Long inverterId;
@@ -64,6 +57,18 @@ public class NewServerPlan extends IDomain implements Serializable {
 
 
 
+	public Integer getCapacity() {
+		return capacity;
+	}
+
+
+
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+
+
+
 	public NewServerPlan() {}
 	
 	
@@ -74,7 +79,15 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
+	public String getPlanImgUrl() {
+		return planImgUrl;
+	}
 
+
+
+	public void setPlanImgUrl(String planImgUrl) {
+		this.planImgUrl = planImgUrl;
+	}
 
 	public Long getServerId() {
 		return serverId;

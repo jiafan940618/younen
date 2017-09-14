@@ -23,8 +23,17 @@ public class NewServerPlanVo {
 	private Integer minPurchase;
 	private Double unitPrice;
 	
+	private Double warrantyYear;
 	
 	
+	
+	
+	public Double getWarrantyYear() {
+		return warrantyYear;
+	}
+	public void setWarrantyYear(Double warrantyYear) {
+		this.warrantyYear = warrantyYear;
+	}
 	public BigDecimal getCapacity() {
 		return capacity;
 	}

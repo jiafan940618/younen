@@ -50,7 +50,15 @@ public class ServerService {
     @Autowired
     private NoticeService noticeService;
 
+    public Long findcityCount(String cityName){
+    	
+    	return serverDao.findcityCount(cityName);
+    }
   
+  public  Long findCount(){
+	  
+	return serverDao.findCount();
+    }
     
     public Server findOne(Long id) {
         return serverDao.findOne(id);

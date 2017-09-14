@@ -67,7 +67,9 @@ public class UserLoginController {
 
 	 @RequestMapping(value = "/login", method = {RequestMethod.POST})
 	    @ResponseBody
-	    public Object appLogin(@RequestParam(value = "phone", required = true) String phone, @RequestParam(value = "password", required = true) String password,HttpServletResponse response) {
+	    public Object appLogin(@RequestParam(value = "phone", required = true) String phone,
+	    		@RequestParam(value = "password", required = true) String password,
+	    		HttpServletResponse response,HttpSession session) {
 	  
 	    	   	 User user =null; 
 	        user = userService.findByPhone(phone);
@@ -102,6 +104,8 @@ public class UserLoginController {
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
+	        
+	        session.setAttribute("user", userVo);
 	        
 	        
 	        return ResultVOUtil.success(userVo);

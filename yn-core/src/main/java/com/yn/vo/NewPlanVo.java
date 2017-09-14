@@ -12,16 +12,25 @@ public class NewPlanVo {
 	private Integer minPurchase;
 	private BigDecimal unitPrice;
 	private String img_url;
-	private String invstername;
+	
+	private String invstername; 
 	private String brandname;
 	
 	private Double allMoney;
+	
+	private Double apoPrice;
+	
+	private Double serPrice;
 	
 	private String conent;
 	
 	private Integer capacity;
 	
+	private Integer num;
 	
+	private Integer warrantyYear;
+	
+
 	//订单服务商与用户的信息
 	private String companyName;
 	private String orderCode;
@@ -30,7 +39,32 @@ public class NewPlanVo {
 	private String userName;
 	
 	
+
 	
+	public Integer getWarrantyYear() {
+		return warrantyYear;
+	}
+	public void setWarrantyYear(Integer warrantyYear) {
+		this.warrantyYear = warrantyYear;
+	}
+	public Integer getNum() {
+		return num;
+	}
+	public void setNum(Integer num) {
+		this.num = num;
+	}
+	public Double getApoPrice() {
+		return apoPrice;
+	}
+	public void setApoPrice(Double apoPrice) {
+		this.apoPrice = apoPrice;
+	}
+	public Double getSerPrice() {
+		return serPrice;
+	}
+	public void setSerPrice(Double serPrice) {
+		this.serPrice = serPrice;
+	}
 	public Integer getCapacity() {
 		return capacity;
 	}

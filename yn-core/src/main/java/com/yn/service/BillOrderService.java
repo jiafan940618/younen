@@ -1,8 +1,11 @@
 package com.yn.service;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,7 +22,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yn.dao.BankCardDao;
 import com.yn.dao.BillOrderDao;
+import com.yn.dao.OrderDao;
+import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
@@ -31,7 +37,24 @@ import com.yn.utils.StringUtil;
 public class BillOrderService {
 	@Autowired
 	BillOrderDao billOrderDao;
+	@Autowired 
+	ServerPlanService serverPlanService;
+	
+	@Autowired
+	BankCardDao bankCardDao ;
 
+	private static DecimalFormat df = new DecimalFormat("0.00");
+	private static DecimalFormat df1 = new DecimalFormat("0000");
+	private static Random rd = new Random();
+    private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
+	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
+	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
+			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+	/** (不能与自定义进制有重复) */
+	private static final char b = 'o';
+	/** 进制长度 */
+	private static final int binLen = r.length;
+	
 	public BillOrder findOne(Long id) {
 		return billOrderDao.findOne(id);
 	}
@@ -146,5 +169,30 @@ public class BillOrderService {
 		};
 	}
 	
+	 /** 根据订单号,拿到用户id找到银行卡*/
+	
+	public void getbankCard(String tradeNo){
+		
+		BillOrder billOrder =	billOrderDao.findByTradeNo(tradeNo);
+		
+		BankCard bankCard =bankCardDao.selectBank(billOrder.getUserId());
+		
+		bankCard.getBankNum();
+	
+	}
+	
+	/** 传一个对象 BillOrder 保存到交易记录表中*/
+	
+	public void saveBillOrder(BillOrder billOrder){
+		
+		String orderCode = serverPlanService.toSerialCode(billOrder.getUserId(), 4) + format.format(System.currentTimeMillis()) + df1.format(rd.nextInt(9999));
+		
+		billOrder.setTradeNo(orderCode);
+		 /** 第一次进来交易为失败*/
+		billOrder.setStatus(1);
+		
+		save(billOrder);
+		
+	}
 	
 }

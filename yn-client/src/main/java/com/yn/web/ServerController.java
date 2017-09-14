@@ -501,16 +501,21 @@ public class ServerController {
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
 		List<Object> list = null;
-		
+		Long totalCount =0L;
 		if(null == cityName || cityName.equals("")){
 			
 		 list =  solarService.findObject(page.getStart(), page.getLimit());
-
+		 	
+		 totalCount = serverService.findCount();
 			
+		 page.setTotal(totalCount.intValue());
 		}else{
 			
 			 list =  solarService.findtwoObject(cityName,page.getStart(), page.getLimit());
-
+			 
+			 totalCount = serverService.findcityCount(cityName);
+			 	
+			 page.setTotal(totalCount.intValue());
 		}
 		/*if(null == list || list.size()==0){
 			
@@ -535,7 +540,7 @@ public class ServerController {
 				 solarPanelVo.setList(quali); 
 			}
 
-		return ResultVOUtil.success(solar);
+		return ResultVOUtil.newsuccess(page, solar);
 	}
 	
 	

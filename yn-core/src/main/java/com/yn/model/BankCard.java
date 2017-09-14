@@ -28,9 +28,20 @@ public class BankCard extends IDomain implements Serializable {
     private String accountName;
     @Column(columnDefinition = "int(1) comment '[是否已经认证]{0:个人账户,1:工商账户}'")
     private Integer type;
+    @Column(columnDefinition = "varchar(1) comment '[银行卡的编号]'")
+    private String bankNum;
 
+    
+    
+    public String getBankNum() {
+		return bankNum;
+	}
 
-    public Long getUserId() {
+	public void setBankNum(String bankNum) {
+		this.bankNum = bankNum;
+	}
+
+	public Long getUserId() {
         return userId;
     }
 

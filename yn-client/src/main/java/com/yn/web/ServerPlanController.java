@@ -165,7 +165,17 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
 
    //  User newuser=   userservice.findOne(userVo.getId());
        /** 处理订单的信息*/
-       
+        
+        logger.info("num为:--- --- ---- "+newserverPlanVo.getCapacity().intValue());
+        logger.info("方案的id为： ------ ------ ------"+newserverPlanVo.getId());
+        logger.info("用户的id为： ------ ------ ------"+userVo.getId());
+        logger.info("总的金额为： ------ ------ ------"+userVo.getId());
+        
+        for (Long id : ids) {
+        	 logger.info("集合为： ------ ------ ------"+id);
+		}
+        
+       session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
        session.setAttribute("list", ids);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
        session.setAttribute("userid", userVo.getId());
@@ -185,9 +195,9 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     @RequestMapping(value = "/Orderplan")
     public ResultData<Object> findOrderplan() {
         //	ServerPlanVo serverPlanVo
-        	
+        	//logger.info("传过来的id为：-- ---- --- ---- "+serverId);
             NewServerPlan serverPlan = new NewServerPlan();
-            serverPlan.setServerId(1L);
+            serverPlan.setServerId(8L);
 
             List<NewPlanVo> list = new ArrayList<NewPlanVo>();
 

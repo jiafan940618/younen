@@ -41,6 +41,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 		 " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE e.del=0 LIMIT ?1,?2 ",nativeQuery=true)
 	  //  List<Object> findObject(@Param("start") Integer start,@Param("limit") Integer limit);
 	    List<Object> findObject(Integer start, Integer limit);
+
 	    
 	    @Query(value="SELECT "
 	    		+ " DISTINCT(s.id),s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,s.company_logo  FROM server s "+
@@ -61,7 +62,16 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	    		" LEFT JOIN qualifications t ON  t.id= q.qualifications_id WHERE e.del=0 and e.`server_city_text`=:cityName and e.id in (:ids)",nativeQuery=true)
 	   	    List<Object> findquaObject(@Param("ids") List<Long> ids);
 	    
+	  /** 查存储总页数*/
+	    @Query(value="SELECT  COUNT(1) FROM Server e WHERE e.del=0 ")
+		  //  List<Object> findObject(@Param("start") Integer start,@Param("limit") Integer limit);
+		    Long findCount();
 	    
+	    /** 查存储总页数*/
+	    @Query("SELECT  COUNT(1) FROM Server e WHERE e.del=0 AND e.serverCityText = :cityName  ")
+		  //  List<Object> findObject(@Param("start") Integer start,@Param("limit") Integer limit);
+	    Long findcityCount(@Param("cityName") String cityName);
+	      
 	    
 	    
 	

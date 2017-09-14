@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,9 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.dao.mapper.ServerMapper;
 import com.yn.model.BillOrder;
 import com.yn.model.Server;
+import com.yn.model.User;
 import com.yn.model.newPage;
 import com.yn.service.BillOrderService;
+import com.yn.service.ServerService;
 import com.yn.service.SolarPanelSerice;
+import com.yn.service.UserService;
+import com.yn.utils.PhoneFormatCheckUtils;
+import com.yn.utils.PropertyUtils;
 import com.yn.utils.ResultData;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.SolarPanelVo;
@@ -35,21 +41,21 @@ public class TestController {
 	@Autowired
 	BillOrderService orderService;
 	
-	
-	
+	@Autowired
+   UserService userService;
 	
 	 @RequestMapping(value = "/dotest")
-	    public String  newTest() {
+	 @ResponseBody
+	    public Object  newTest() {
 		
-		 System.out.println("进入方法！");
-		/*String cityName="深圳市";
+		Boolean istrue = PhoneFormatCheckUtils.isPhoneLegal("13613027433");
 		
-		Server server = new Server();
-		server.setServerCityText(cityName);
-		 
-		 List<Server> list =	serverMapper.find(server);*/
-
-			return "NewFile";
+		if(!istrue){
+			logger.info(" ----- ----- ----- 请输入正确的电话号码");
+			return ResultVOUtil.error(777, "请输入正确的电话号码");
+		}
+		   
+			return ResultVOUtil.success(null);
 	    }
 	
 	 @RequestMapping(value = "/dotest02")

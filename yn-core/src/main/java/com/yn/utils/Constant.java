@@ -14,6 +14,9 @@ public class Constant {
     public final static String STORER_NO_LOGIN = "请选择商家";
     
     public final static String PASSWORD_NULL = "密码不能为空";
+    public final static String USERNAME_LONG = "联系人字符不能超过12位";
+    public final static String ADRESS_NULL = "地址不能为空";
+    
     /**注册的数据返回 */
     public final static String PHONE_NULL = "电话不能为空";
     public final static String CODE_NULL = "请先发送验证码";
@@ -21,16 +24,17 @@ public class Constant {
     public final static String PHONE_EXIST = "该手机号已经被注册";
     public final static String PHONE_NOTEXIST = "该手机号不存在";
     public final static String PASSWORD_AGAIN_ERROR = "俩次密码不一致";
-    
+    public final static String PHONE_ERROR = "请输入正确的电话格式！";
     /** 用户第二次注册*/
     public final static String NO_FIRST = "请先完成第一步注册";
     public final static String NICK_NULL = "昵称不能为空";
     public final static String NICK_EXIST = "昵称已存在";
     public final static String NAME_NULL = "姓名不能为空";
     public final static String SEX_NULL = "性别不能为空";
-    
+    public final static String USERNAME_NULL = "用户名不能为空";
     public final static String CODE_FALSE = "短信发送失败";
     public final static String ADDRESS_LONG = "详细地址过长";
+    
     
     
     /** 服务商的注册返回提示 */

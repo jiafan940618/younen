@@ -20,4 +20,10 @@ public interface BankCardDao extends JpaRepository<BankCard, Long>, JpaSpecifica
     @Modifying
     @Query("update BankCard set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    
+    /** 根据用户id查询出银行卡的编号*/
+    @Query("select b from BankCard b where userId = :userId ")
+    BankCard selectBank(@Param("userId") Long userId);
+    
 }

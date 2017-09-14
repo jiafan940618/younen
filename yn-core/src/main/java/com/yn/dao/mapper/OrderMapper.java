@@ -1,8 +1,10 @@
 package com.yn.dao.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.yn.model.Order;
 
-//@Mapper
+@Mapper
 public interface OrderMapper {
 	
 //	@Transactional
