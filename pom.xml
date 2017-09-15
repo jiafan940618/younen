@@ -184,11 +184,7 @@
             <artifactId>gateway-client</artifactId>
             <version>3.8.5</version>
         </dependency> -->
-
-	</dependencies>
-
-
-
+</dependencies>
 	<build>
 		<plugins>
 			<plugin>
