@@ -294,7 +294,7 @@ public class OrderDetailService {
 	 *            --> 利率
 	 * @return
 	 */
-	private Double calculatedNeedToPayMoney(Order order, Double interestRate) {
+	public Double calculatedNeedToPayMoney(Order order, Double interestRate) {
 		Double hadPayPrice = order.getHadPayPrice();// 已支付
 		Double totalPrice = order.getTotalPrice();// 总价
 		Double needToPay = totalPrice * interestRate;// 需要支付的金额
@@ -307,6 +307,15 @@ public class OrderDetailService {
 		if (hadPayPrice >= needToPay)
 			return -1d;
 		return needToPay;
+	}
+
+	public Map<String, String> nextStep4Construction(Order findOne) {
+		
+		return null;
+	}
+
+	public Map<String, String> nextStep4Apply(Order findOne) {
+		return null;
 	}
 
 }
