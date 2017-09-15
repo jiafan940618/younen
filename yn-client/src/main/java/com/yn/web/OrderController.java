@@ -129,11 +129,11 @@ public class OrderController {
 		BeanCopy.copyProperties(orderVo, order);
 		Page<Order> findAll = orderService.findAll(order, pageable);
 		return ResultVOUtil.success(findAll);
-	}
-
+	}   
+  
 	/**
-	 * 点击订单详情页各个按钮出发同一个接口，但调用不同的函数处理
-	 * 
+	 * 点击订 单详情页各个按钮出发同一个接口，但调用不同的函数处理
+	 *  
 	 * @param orderVo
 	 * @param target
 	 *            LOANAPPLICATION, APPLYPAYMENT, BUILDPAYMENT,

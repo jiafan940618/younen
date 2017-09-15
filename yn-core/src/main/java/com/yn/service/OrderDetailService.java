@@ -13,7 +13,7 @@ import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.Order;
 
-/**
+/**  
  * 订单详情服务：为页面每一个按钮单独一个功能
  * 
  * @author Allen
@@ -76,7 +76,7 @@ public class OrderDetailService {
 
 	/**
 	 * 申请中 --> 线上支付
-	 * 
+	 *       
 	 * @param order
 	 * @return
 	 */
