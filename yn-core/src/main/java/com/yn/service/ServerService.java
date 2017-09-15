@@ -13,6 +13,7 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.NewPlanVo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,12 +29,15 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -49,6 +53,47 @@ public class ServerService {
     UserDao userDao;
     @Autowired
     private NoticeService noticeService;
+    
+    private static DecimalFormat df = new DecimalFormat("0.00");
+	private static DecimalFormat df1 = new DecimalFormat("0000");
+	private static Random rd = new Random();
+    private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
+	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
+	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
+			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+	/** (不能与自定义进制有重复) */
+	private static final char b = 'o';
+	/** 进制长度 */
+	private static final int binLen = r.length;
+
+
+	public static String toSerialCode(long id, int s) {
+		char[] buf = new char[32];
+		int charPos = 32;
+
+		while ((id / binLen) > 0) {
+			int ind = (int) (id % binLen);
+			// System.out.println(num + "-->" + ind);
+			buf[--charPos] = r[ind];
+			id /= binLen;
+		}
+		buf[--charPos] = r[(int) (id % binLen)];
+		// System.out.println(num + "-->" + num % binLen);
+		String str = new String(buf, charPos, (32 - charPos));
+		// 不够长度的自动随机补全 
+		if (str.length() < s) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(b);
+			Random rnd = new Random();
+			for (int i = 1; i < s - str.length(); i++) {
+				sb.append(r[rnd.nextInt(binLen)]);
+			}
+			str += sb.toString();
+		}
+		return str;
+	}   
+    
+    
 
     public Long findcityCount(String cityName){
     	
@@ -213,29 +258,19 @@ public class ServerService {
 		return server2;
    }
    
- /* public  List<Server> find(Map<String, String> map){
-	  
-	  return serverMapper.find(map);
-  }*/
-   
-   public List<Server> getpage(Page<Server> page){
 
-		
+   public List<Server> getpage(Page<Server> page){
 		List<Server> list = page.getContent();
 		Set<NewServerPlan> doset =  new  HashSet<NewServerPlan>();
-		
 		for (Server server2 : list) {
-			
 			Set<NewServerPlan> set = server2.getNewServerPlan();
-			
-		
+
 			int i=0;
 			 for (NewServerPlan newServerPlan : set) {
 				 if(i==0){
 					 doset.add(newServerPlan);
 					 server2.setNewServerPlan(null);
 					 server2.setNewServerPlan(doset);
-				
 					 break;
 				 }
 			}
@@ -243,6 +278,38 @@ public class ServerService {
 		}
 		return list;
    }
+   
+   public NewPlanVo getPlan(NewServerPlan newserverPlan,User user,Integer num, Double serPrice,Double apoPrice,Double price){
+	   
+	   Server server = findOne(newserverPlan.getServerId());
+	   NewPlanVo newPlanVo = new NewPlanVo();
+	   
+		String orderCode = toSerialCode(newserverPlan.getServerId(), 4) + format.format(System.currentTimeMillis())
+				+ df1.format(rd.nextInt(9999));
+		newPlanVo.setOrderCode(orderCode);
+
+		/** 后面得加上该字段*/
+		newPlanVo.setWarPeriod(newserverPlan.getWarPeriod().intValue());
+		newPlanVo.setSerPrice(serPrice);
+		newPlanVo.setApoPrice(apoPrice);
+		newPlanVo.setNum(num);
+		newPlanVo.setCompanyName(server.getCompanyName());
+		newPlanVo.setPhone(user.getPhone());
+		newPlanVo.setUserName(user.getUserName());
+		newPlanVo.setAddress(user.getAddressText());
+		newPlanVo.setId(newserverPlan.getId().intValue());
+		newPlanVo.setServerId(newserverPlan.getServerId().intValue());
+		newPlanVo.setMaterialJson(newserverPlan.getMaterialJson());
+		// newPlanVo.setUnitPrice(newserverPlan);
+		// newPlanVo.setImg_url(img_url);
+		newPlanVo.setInvstername(newserverPlan.getInverter().getBrandName() + "   " + newserverPlan.getInverter().getModel());
+		newPlanVo.setBrandname(newserverPlan.getSolarPanel().getBrandName() + "   " + newserverPlan.getSolarPanel().getModel());
+		newPlanVo.setAllMoney(price);
+		
+		return newPlanVo;
+   }
+   
+   
    
 }
 

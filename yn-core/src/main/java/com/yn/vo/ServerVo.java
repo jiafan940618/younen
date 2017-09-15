@@ -46,6 +46,8 @@ public class ServerVo extends QueryVo {
     private String serverCityText;
     private Integer type;
     
+    private String serverId;
+    
     private String password;
     private String phone;
 
@@ -55,7 +57,15 @@ public class ServerVo extends QueryVo {
     private List<Devide> device;
     
     
-    public List<Devide> getDevice() {
+    public String getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
+	}
+
+	public List<Devide> getDevice() {
 		return device;
 	}
 

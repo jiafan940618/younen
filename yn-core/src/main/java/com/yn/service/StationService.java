@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -33,6 +34,7 @@ import java.util.Map.Entry;
 public class StationService {
     @Autowired
     StationDao stationDao;
+    
     @Autowired
     TemStationService temStationService;
     @Autowired
@@ -44,7 +46,23 @@ public class StationService {
     @Autowired
     AmmeterDao ammeterDao;
     @Autowired
+    ServerService serverService;
+    
+    @Autowired
     private NoticeService noticeService;
+    
+    
+   	private static DecimalFormat df = new DecimalFormat("0.00");
+   	private static DecimalFormat df1 = new DecimalFormat("0000");
+   	private static Random rd = new Random();
+       private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");
+   	/** 自定义进制(0,1没有加入,容易与o,l混淆) */
+   	private static final char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p',
+   			'5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+   	/** (不能与自定义进制有重复) */
+   	private static final char b = 'o';
+   	/** 进制长度 */
+   	private static final int binLen = r.length;
 
     public Station findOne(Long id) {
         return stationDao.findOne(id);
@@ -337,6 +355,28 @@ public class StationService {
         station.setPassageModel(passageModel);
         stationDao.save(station);
         return station;
+    }
+    
+    
+    public void insertStation(Order order){
+    	/** 生成电站码*/
+     String stradNo =  format.format(System.currentTimeMillis())+ df1.format(rd.nextInt(9999));
+     
+     Station station = new Station();
+     station.setStationCode(stradNo);
+     station.setAddressText(order.getAddressText());
+     station.setStationName(order.getServerName());
+     station.setCapacity(order.getCapacity());
+     station.setOrderId(order.getId());
+     station.setLinkMan(order.getLinkMan());
+     station.setLinkPhone(order.getLinkPhone());
+     station.setUserId(order.getUserId());
+      /** 默认为居民*/
+     station.setType(0);
+     station.setServerId(order.getServerId());
+     station.setStatus(0);
+     
+     save(station);
     }
 
 }

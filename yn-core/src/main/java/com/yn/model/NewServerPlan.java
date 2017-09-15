@@ -1,6 +1,7 @@
 package com.yn.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +17,8 @@ import com.yn.domain.IDomain;
 @Table(name="new_server_plan")
 public class NewServerPlan extends IDomain implements Serializable {
 	
-	@Column(columnDefinition = "int(11) comment '[服务商id]'")
-	private Integer capacity;
+	@Column(columnDefinition = "decimal(12,2) comment '[保修期]'")
+	private BigDecimal warPeriod;
 	
 	@Column(columnDefinition = "int(11) comment '[服务商id]'")
 	private Long serverId;
@@ -26,8 +27,6 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Long batteryboardId;
 	@Column(columnDefinition = "String(255) comment '[服务方案图片]'")
 	private String planImgUrl;
-	
-	
 	
 
 	@Column(columnDefinition = "int(11) comment '[逆变器id]'")
@@ -41,8 +40,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Integer minPurchase;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
 	private Double unitPrice;
-	
-	
+
 
 	/** 电池板*/
 	@OneToOne
@@ -53,22 +51,6 @@ public class NewServerPlan extends IDomain implements Serializable {
 	    @JoinColumn(name = "inverterId", insertable = false, updatable = false)
 	    private Inverter inverter;
  
-
-
-
-
-	public Integer getCapacity() {
-		return capacity;
-	}
-
-
-
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
-
-
-
 	public NewServerPlan() {}
 	
 	
@@ -78,6 +60,21 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.minPurchase = minPurchase;
 		this.unitPrice = unitPrice;
 	}
+
+	
+	
+
+	public BigDecimal getWarPeriod() {
+		return warPeriod;
+	}
+
+
+
+	public void setWarPeriod(BigDecimal warPeriod) {
+		this.warPeriod = warPeriod;
+	}
+
+
 
 	public String getPlanImgUrl() {
 		return planImgUrl;

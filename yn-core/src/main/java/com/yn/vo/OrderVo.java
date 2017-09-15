@@ -23,7 +23,7 @@ public class OrderVo extends QueryVo{
 	private String addressText;
 	private String privilegeCode;
 	private Integer type;
-	
+	private String tradeNo;
 	
 	private Long orderPlanId;
 	private Double capacity; 
@@ -34,6 +34,7 @@ public class OrderVo extends QueryVo{
 	private Double hadPayPrice;
 	private Integer loanStatus;
 	
+	private Double speed;
 	
 	private Integer status;
 	private Integer applyIsPay;
@@ -47,11 +48,31 @@ public class OrderVo extends QueryVo{
 	
 	private Integer gridConnectedIsPay;
 	private Integer gridConnectedStepA;
+	private Integer waPeriod ;
 	
 	private Set<ApolegamyOrderVo> apolegamyOrder;
 	private OrderPlanVo orderPlan;
 	
 	
+	
+	public Integer getWaPeriod() {
+		return waPeriod;
+	}
+	public void setWaPeriod(Integer waPeriod) {
+		this.waPeriod = waPeriod;
+	}
+	public Double getSpeed() {
+		return speed;
+	}
+	public void setSpeed(Double speed) {
+		this.speed = speed;
+	}
+	public String getTradeNo() {
+		return tradeNo;
+	}
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
 	public Long getId() {
 		return id;
 	}

@@ -15,10 +15,7 @@ import java.util.Set;
 @Table(name="t_order")
 public class Order extends IDomain implements Serializable {
 	
-	  public Order() {
-		super();
-	}
-
+	
 	@Id
 	    @GeneratedValue
 	    @Column(columnDefinition = "int(11) comment '[id]'")
@@ -41,6 +38,8 @@ public class Order extends IDomain implements Serializable {
 	private String provinceText;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
 	private Long cityId;
+	@Column(columnDefinition = "int(10) NOT NULL comment '[保修期]'")
+	private Integer warPeriod;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[市名称]'")
 	private String cityText;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[建站地址]'")
@@ -49,8 +48,10 @@ public class Order extends IDomain implements Serializable {
 	private String privilegeCode;
 	@Column(columnDefinition = "int(1) NOT NULL comment '[类型]{0:居民,1:工业,2:商业,3:农业}'")
 	private Integer type;
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[备注]'")
+	private String ipoMemo;
 
-    @Column(columnDefinition = "int(11) comment '[订单方案id]'")
+	@Column(columnDefinition = "int(11) comment '[订单方案id]'")
 	private Long orderPlanId;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[装机容量]'")
 	private Double capacity; 
@@ -141,12 +142,39 @@ public class Order extends IDomain implements Serializable {
     private Set<BillOrder> billOrder;
 
 	
-	
-	
-    public Order(Long id, String orderCode, Long userId) {
+	  public Order() {}
+
+    public Order(Integer loanStatus, Integer applyIsPay, Integer applyStepA, Integer applyStepB) {
+		this.loanStatus = loanStatus;
+		this.applyIsPay = applyIsPay;
+		this.applyStepA = applyStepA;
+		this.applyStepB = applyStepB;
+	}
+
+
+
+
+	public Order(Long id, String orderCode, Long userId) {
 		this.id = id;
 		this.orderCode = orderCode;
 		this.userId = userId;
+	}
+
+	
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
+
+	public Integer getWarPeriod() {
+		return warPeriod;
+	}
+
+	public void setWarPeriod(Integer warPeriod) {
+		this.warPeriod = warPeriod;
 	}
 
 	public Long getId() {

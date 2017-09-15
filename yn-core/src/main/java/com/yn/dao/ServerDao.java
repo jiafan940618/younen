@@ -38,7 +38,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	    @Query(value="SELECT"
 	    		+ "  DISTINCT(e.id), e.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,e.company_logo  FROM server e "
 		+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"+
-		 " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE e.del=0 LIMIT ?1,?2 ",nativeQuery=true)
+		 " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE e.del=0 AND p.planid=1 LIMIT ?1,?2 ",nativeQuery=true)
 	  //  List<Object> findObject(@Param("start") Integer start,@Param("limit") Integer limit);
 	    List<Object> findObject(Integer start, Integer limit);
 
@@ -46,7 +46,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	    @Query(value="SELECT "
 	    		+ " DISTINCT(s.id),s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,s.company_logo  FROM server s "+
 	   		 " LEFT JOIN new_server_plan p ON s.id = p.`server_id`"+
-	   		 " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE s.del=0 and s.`server_city_text`=:cityName LIMIT :start,:limit",nativeQuery=true)
+	   		 " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE s.del=0 AND p.planid=1 and s.`server_city_text`=:cityName LIMIT :start,:limit",nativeQuery=true)
 	   	    List<Object> findtwoObject(@Param("cityName") String CityName,@Param("start") Integer start,@Param("limit") Integer limit);
 	     
 	    /** 查询资质*/

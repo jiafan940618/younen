@@ -38,7 +38,21 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     @Query("select o.userId from Order o where o.del=0 and o.serverId=?1")
     Set<Long> findUserId(Long serverId);
     
-    /** 根据订单号查找订单*/
+    /** 根据订单号查找订单信息*/
+     //,o.loan_status,o.apply_is_pay,o.apply_stepa,o.apply_stepb
+    @Query(value="SELECT o.id,o.order_code,s.station_code,o.capacity,"+
+	 "o.total_price,o.had_pay_price,o.server_name FROM t_order o LEFT JOIN station s ON s.order_id = o.id  WHERE o.id =:orderId",nativeQuery=true)
+    Object findOrder(@Param("orderId") Long orderId);
+    
+  @Query(value="SELECT o.link_man,o.link_phone,o.address_text,o.server_name,o.order_code, "+
+	" p.battery_board_brand,p.battery_board_model,p.inverter_brand,p.inverter_model,"
+	+ "p.other_material_json_text,o.capacity,o.plan_price,d.apo_ids,d.price,o.total_price,o.war_period,o.status"+
+		"  FROM t_order o LEFT JOIN order_plan p ON o.id = p.order_id"+ 
+		 "  LEFT JOIN apolegamy_order d ON d.order_id = o.id WHERE o.id =:orderId",nativeQuery=true)
+   
+   Object getInfoOrder(@Param("orderId") Long orderId);
+  
+ 
   
     
     

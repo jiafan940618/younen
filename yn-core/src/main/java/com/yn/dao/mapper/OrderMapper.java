@@ -13,5 +13,7 @@ public interface OrderMapper {
 	
 	
 	/** 根据订单号查询出订单详情*/
+	
+	Order findstatus(Long orderId);
 
 }

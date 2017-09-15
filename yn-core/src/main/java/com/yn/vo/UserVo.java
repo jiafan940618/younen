@@ -31,8 +31,19 @@ public class UserVo extends QueryVo {
 	private String openIdc;
 	private Long roleId;
 
+	 /** ioc端备注信息*/
+	private String ipoMemo;
 	
 	
+	
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
+
 	public Long getUserid() {
 		return userid;
 	}

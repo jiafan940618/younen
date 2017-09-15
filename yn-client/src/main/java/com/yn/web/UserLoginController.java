@@ -101,6 +101,7 @@ public class UserLoginController {
 	        userVo.setFullAddressText(user.getFullAddressText());
 	        userVo.setId(user.getId());
 	        userVo.setNickName(user.getNickName());
+	        userVo.setUserName(user.getUserName());
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());

@@ -22,7 +22,7 @@ public class ServerPlanService {
     @Autowired
     ServerPlanDao serverPlanDao;
     
-	private static DecimalFormat df = new DecimalFormat("0.00");
+    private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
 	private static Random rd = new Random();
     private  static	SimpleDateFormat format = new SimpleDateFormat("yyMMddHH");

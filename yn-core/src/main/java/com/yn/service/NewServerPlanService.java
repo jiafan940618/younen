@@ -3,6 +3,7 @@ package com.yn.service;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +29,9 @@ import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
 import com.yn.vo.ApolegamyVo;
+import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServerPlanVo;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerPlanVo;
 
@@ -131,6 +134,47 @@ public class NewServerPlanService {
 	    	
 	    	return	planDao.selectOne(newserverPlan);
 	    }
+	    /** 生成方案的数据*/
+	    
+	    public List<NewPlanVo> getnewServerPlan(List<Object> list){
+	    	  List<NewPlanVo> list01 = new ArrayList<NewPlanVo>();
+
+	    	 for (Object obj : list) {
+	    			NewPlanVo newPlanVo  = new NewPlanVo();
+	            	
+	            	Object[] object = (Object[])obj;
+	            	Integer id = (Integer) object[0];
+	            	Integer serverid =(Integer) object[1];
+	            	String materialJson =(String) object[2];
+	            	Integer minPurchase =(Integer)object[3];
+	            	BigDecimal unitPrice =(BigDecimal)object[4];
+	            	String img_url = (String)object[5];
+	            	String invstername = (String)object[6] +"   " +(String)object[7];
+	            	String brandname =(String)object[8] +"   " +(String)object[9];
+	            	BigDecimal warPer =(BigDecimal)object[10];
+
+	            	Integer warPeriod =	warPer.intValue();
+	            	
+	            	
+	            	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
+	            	
+	            	newPlanVo.setId(id);
+	            	newPlanVo.setServerId(serverid);
+	            	newPlanVo.setMaterialJson(materialJson);
+	            	newPlanVo.setUnitPrice(unitPrice);
+	            	newPlanVo.setImg_url(img_url);
+	            	newPlanVo.setInvstername(invstername);
+	            	newPlanVo.setBrandname(brandname);
+	            	newPlanVo.setAllMoney(allMoney.doubleValue());
+	            	newPlanVo.setWarPeriod(warPeriod);
+	            	newPlanVo.setMinPurchase(minPurchase);
+	            	list01.add(newPlanVo);
+	    		}
+			return list01;
+	    	
+	    }
+	    
+	    
 	    
 	    /** 根据用户和服务商生成一个订单 */
 	    
@@ -149,7 +193,9 @@ public class NewServerPlanService {
 	         
 	        /** 订单id*/
 	        Long order_planid = newserverPlan.getId();
-	        
+	         /** 保修期*/
+	        order.setWarPeriod(newserverPlan.getWarPeriod().intValue());
+	       // order.setCapacity(newserverPlan.getCapacity());
 	        order.setProvinceId(user.getProvinceId());
 	        order.setProvinceText(user.getProvinceText());
 	        order.setServerName(server.getCompanyName());
@@ -157,7 +203,12 @@ public class NewServerPlanService {
 	        order.setAddressText(user.getAddressText());
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
-	        order.setLinkMan(user.getNickName());
+	        order.setLinkMan(user.getUserName());
+	        
+	       /* if(null != newuser.getIpoMemo()){
+	        	order.setIpoMemo(newuser.getIpoMemo());
+	        }*/
+
 	        
 	        order.setLinkPhone(user.getPhone());
 	        order.setPlanPrice(price);
@@ -172,7 +223,7 @@ public class NewServerPlanService {
 	        /** 服务商选配项目价格*/
 	        order.setServerApolegamyPrice(apoPrice);
 	        /** 总价格*/
-	        order.setTotalPrice(price);
+	        order.setTotalPrice(price+apoPrice);
 	         /** 已付金额*/
 	        order.setHadPayPrice(0.0);
 	         /** 服务费*/
@@ -203,7 +254,7 @@ public class NewServerPlanService {
 	    	/** [电池板id]*/
 	    	  orderPlan.setBatteryBoardId(serverPlan.getBatteryboardId());
 	    	  /** [电池板品牌]*/
-	    	  orderPlan.setBatteryBoardName(serverPlan.getSolarPanel().getBrandName());
+	    	  orderPlan.setBatteryBoardBrand(serverPlan.getSolarPanel().getBrandName());
 	    	  /** [电池板型号]*/
 	    	  orderPlan.setBatteryBoardModel(serverPlan.getSolarPanel().getModel()); 
 	    	  /** [电池板质保期 年]*/
@@ -299,6 +350,9 @@ public class NewServerPlanService {
 
 		    } 
 
+		    
+		/** 拿到方案的数据*/
+		    
 	
 	/** 根据用户和服务商生成一个订单 */
 

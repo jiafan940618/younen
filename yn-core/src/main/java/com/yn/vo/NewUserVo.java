@@ -11,14 +11,34 @@ public class NewUserVo {
 	
 	private String token;
 	
-	private String nickName;
+	private String userName;
 	
 	private String email;
 	
 	private String fullAddressText;
 	
+	private String nickName;
+	
+	private String ipoMemo;
 	
 	
+	
+	
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
 	public String getEmail() {
 		return email;
@@ -68,17 +88,14 @@ public class NewUserVo {
 		this.token = token;
 	}
 
-	public String getNickName() {
-		return nickName;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	
-	
-	
-	
-	
+
+
 
 }

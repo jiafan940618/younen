@@ -35,7 +35,8 @@
 		<result column="total_price" property="totalPrice" jdbcType="DOUBLE" />
 		<result column="had_pay_price" property="hadPayPrice" jdbcType="DOUBLE" />
 
-
+		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
+		
 
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="apply_stepa" property="applyStepA" jdbcType="INTEGER" />
@@ -87,4 +88,12 @@
 		</set>
 		where id = #{id}
 	</update>
+	
+	<select id="findstatus" parameterType="java.lang.Long"  resultMap="BaseResultMap">
+		SELECT  o.loan_status,o.apply_is_pay,o.apply_stepa,o.apply_stepb 
+	 
+	  FROM t_order o  WHERE o.id =#{orderId}
+	
+	</select>
+	
 </mapper>

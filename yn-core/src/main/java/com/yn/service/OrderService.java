@@ -9,15 +9,22 @@ import com.yn.model.Order;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
+import com.yn.vo.NewPlanVo;
+import com.yn.vo.OrderVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.*;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +40,32 @@ public class OrderService {
     private NoticeService noticeService;
     @Resource
 	private OrderMapper mapper;
+    @Autowired
+    ApolegamyOrderService  apoleService;
 
     public Order findOne(Long id) {
         return orderDao.findOne(id);
     }
     
+    public  Object getInformOrder(Long orderId){
+    	
+		return orderDao.getInfoOrder(orderId);	
+    }
+    
+    
     public boolean checkUpdateOrderStatus(Order order){
 		return mapper.updateByCondition(order)>0?true:false;
 	}
     
-  /*  public Order findOrder(Order order) {
-        return orderDao.findOrder(order);
-    }*/
+    public Order findstatus(Long orderId){
+    	
+		return mapper.findstatus(orderId);
+    }
+    
+   public Object findOrder(Long orderId){
+	   
+	return orderDao.findOrder(orderId);  
+   }
 
     public void save(Order order) {
         if (order.getId() != null) {
@@ -190,5 +211,80 @@ public class OrderService {
 
         return oda;
     }
+    
+    /** 根据集合拿到订单的信息 */
+    public OrderVo getinfoOrder(Object object){
+    	
+    	Object[] obj = (Object[])object;
+    	
+    	Integer orderId = (Integer) obj[0];
+    	String orderCode =(String)obj[1];
+    	String tradeNo =(String)obj[2];
+    	BigDecimal capacity = (BigDecimal) obj[3];
+    	BigDecimal totalPrice = (BigDecimal) obj[4];
+    	BigDecimal payPrice = (BigDecimal) obj[5];
+    	String serverName =(String)obj[6];
+    
+    	Double speed = payPrice.doubleValue()/totalPrice.doubleValue();
+    	
+    	DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+    	speed = Double.parseDouble(decimalFormat.format(speed))*100;
+    	
+    	OrderVo orderVo = new OrderVo();
+    	orderVo.setId(orderId.longValue());
+    	orderVo.setOrderCode(orderCode);
+    	orderVo.setTradeNo(tradeNo);
+    	orderVo.setCapacity(capacity.doubleValue());
+    	orderVo.setTotalPrice(totalPrice.doubleValue());
+    	orderVo.setHadPayPrice(payPrice.doubleValue());
+    	orderVo.setSpeed(speed);
+    	orderVo.setServerName(serverName);
+
+		return orderVo;
+    }
+    
+    public NewPlanVo getVoNewPlan(Object object){
+    	
+    	NewPlanVo newPlanVo = new NewPlanVo();
+    	
+    	Object[] obj =(Object[])object;
+    	
+    	String userName  =(String) obj[0];
+    	String phone  =(String) obj[1];
+    	String addressText  =(String) obj[2];
+    	String serverName  =(String) obj[3];
+    	String orderCode  =(String) obj[4];
+    	
+    	String solName = (String) obj[5]+"   "+(String)obj[6];
+    	String InvestName = (String) obj[7]+"   "+(String)obj[8];
+    	
+    	String jsonText =(String)obj[9];
+    	BigDecimal capacity = (BigDecimal) obj[10];
+    	BigDecimal planPrice = (BigDecimal) obj[11];
+    	String ids  =(String) obj[12];
+    	
+    	
+    	BigDecimal price = (BigDecimal) obj[13];
+    	BigDecimal totalprice = (BigDecimal) obj[14];
+    	Integer warPeriod =(Integer)obj[15];
+    	Integer status =(Integer)obj[16];
+    	newPlanVo.setUserName(userName);
+    	newPlanVo.setPhone(phone);    	
+    	newPlanVo.setAddress(addressText);
+    	newPlanVo.setCompanyName(serverName);
+    	newPlanVo.setOrderCode(orderCode);
+    	newPlanVo.setInvstername(InvestName);
+    	newPlanVo.setBrandname(solName);
+    	newPlanVo.setMaterialJson(jsonText);
+    	newPlanVo.setWarPeriod(warPeriod);
+    	newPlanVo.setNum(capacity.intValue());
+    	newPlanVo.setAllMoney(planPrice.doubleValue());
+    	newPlanVo.setApoPrice(price.doubleValue());
+    	newPlanVo.setSerPrice(totalprice.doubleValue());
+    	newPlanVo.setIds(ids);
+    	newPlanVo.setStatus(status);
+		return newPlanVo;
+    }
+    
 
 }

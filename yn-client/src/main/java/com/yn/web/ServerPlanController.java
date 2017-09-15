@@ -48,6 +48,7 @@ import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServerPlanVo;
 import com.yn.vo.PriceVo;
 import com.yn.vo.ServerPlanVo;
+import com.yn.vo.ServerVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -125,23 +126,25 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     @ResponseBody
     @RequestMapping(value = "/findPlan")
     public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> ids,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
-    	
 
-    	 NewServerPlan newserverPlan = new NewServerPlan();
+    	for (Long long1 : ids) {
+			logger.info("id串为：-------- ----- ----- ---- "+long1);
+		}
+    	
+    	NewServerPlan newserverPlan = new NewServerPlan();
         BeanCopy.copyProperties(newserverPlanVo, newserverPlan);
-        
-        
+
         NewServerPlan findOne = newserverPlanService.findOne(newserverPlanVo.getId());
         
         Integer minpur =	findOne.getMinPurchase();
         
         logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+newserverPlanVo.getCapacity().intValue());
         
-        if(null == minpur || minpur > newserverPlanVo.getCapacity().intValue() ){
-        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
-        	
-        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
-  	  	}
+	        if(null == minpur || minpur > newserverPlanVo.getCapacity().intValue() ){
+	        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
+	        	
+	        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
+	  	  	}
         
         Double utilprice =  findOne.getUnitPrice();
       
@@ -149,96 +152,61 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
          /** 计算总价格*/
         Double AllMoney = utilprice * minpurchase;
          /*** 计算备选项目价格*/
+        
         List<Apolegamy> list =  apolegamyService.findAll(ids);
         
-       Double apoPrice = 0.0;
-        
-         for (Apolegamy apolegamy : list) {
-        	 apoPrice += apolegamy.getPrice();
-		}
-        
-        if((AllMoney+apoPrice) != Double.valueOf(price) ){
-        	 /** 价格不对 */
-        	logger.info("------ ---- -- -- -- -- - -- - - ：金额错误 ");
-        	return  ResultVOUtil.error(777, Constant.PRICE_ERROR); 
-        }
+        Double apoPrice = 0.0;
+ 
+        	 for (Apolegamy apolegamy : list) {
+	        	 apoPrice += apolegamy.getPrice();
+			}
+    
+  
+	        if((AllMoney+apoPrice) != Double.valueOf(price) ){
+	        	 /** 价格不对 */
+	        	logger.info("------ ---- -- -- -- -- - -- - - ：金额错误 ");
+	        	return  ResultVOUtil.error(777, Constant.PRICE_ERROR); 
+	        }
 
-   //  User newuser=   userservice.findOne(userVo.getId());
        /** 处理订单的信息*/
         
         logger.info("num为:--- --- ---- "+newserverPlanVo.getCapacity().intValue());
         logger.info("方案的id为： ------ ------ ------"+newserverPlanVo.getId());
-        logger.info("用户的id为： ------ ------ ------"+userVo.getId());
-        logger.info("总的金额为： ------ ------ ------"+userVo.getId());
-        
-        for (Long id : ids) {
-        	 logger.info("集合为： ------ ------ ------"+id);
-		}
-        
+        logger.info("用户的id为： ------ ------ ------"+userVo.getUserid());
+        logger.info("总的金额为： ------ ------ ------"+(AllMoney+apoPrice));
+        if(ids.size() !=0 ){
+	        for (Long id : ids) {
+	        	 logger.info("集合为： ------ ------ ------"+id);
+			}
+        }
        session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
+      /* if(ids.size() == 0 ){
+    	   session.setAttribute("list", 0);
+       }else{
+    	   session.setAttribute("list", ids);
+       }*/
        session.setAttribute("list", ids);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
-       session.setAttribute("userid", userVo.getId());
+       session.setAttribute("userid", userVo.getUserid());
        session.setAttribute("price", AllMoney);
-       
-      // session.setAttribute("order", neworder);
        
         return ResultVOUtil.success(null);
     }
 
-    
-    
-   
-    
+ //@RequestParam("serverId") Long serverId
     /** 方案接口*/
     @ResponseBody
     @RequestMapping(value = "/Orderplan")
-    public ResultData<Object> findOrderplan() {
+    public ResultData<Object> findOrderplan(ServerVo ServerVo) {
         //	ServerPlanVo serverPlanVo
-        	//logger.info("传过来的id为：-- ---- --- ---- "+serverId);
+        logger.info("传过来的serverId为：-- ---- --- ---- "+ServerVo.getServerId());
             NewServerPlan serverPlan = new NewServerPlan();
             serverPlan.setServerId(8L);
 
-            List<NewPlanVo> list = new ArrayList<NewPlanVo>();
-
            List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
            
+           List<NewPlanVo> list = newserverPlanService.getnewServerPlan(list01);
 
-            for (Object obj : list01) {
-    			NewPlanVo newPlanVo  = new NewPlanVo();
-            	
-            	Object[] object = (Object[])obj;
-            	Integer id = (Integer) object[0];
-            	Integer serverid =(Integer) object[1];
-            	String materialJson =(String) object[2];
-            	Integer minPurchase =(Integer)object[3];
-            	BigDecimal unitPrice =(BigDecimal)object[4];
-            	String img_url = (String)object[5];
-            	String invstername = (String)object[6] +"   " +(String)object[7];
-            	String brandname =(String)object[8] +"   " +(String)object[9];
-            	String conent = (String)object[10];
-            	BigDecimal bigcapacity =(BigDecimal)object[11];
-            	
-            	Integer capacity =	bigcapacity.intValue();
-            	
-            	
-            	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
-            	
-            	newPlanVo.setId(id);
-            	newPlanVo.setServerId(serverid);
-            	newPlanVo.setMaterialJson(materialJson);
-            	newPlanVo.setUnitPrice(unitPrice);
-            	newPlanVo.setImg_url(img_url);
-            	newPlanVo.setInvstername(invstername);
-            	newPlanVo.setBrandname(brandname);
-            	newPlanVo.setAllMoney(allMoney.doubleValue());
-            	newPlanVo.setConent(conent);
-            	newPlanVo.setCapacity(capacity);
-            	newPlanVo.setMinPurchase(minPurchase);
-            	
-            	list.add(newPlanVo);
-    		}
-            
             List<Object> newlist =	 plan.getPlan(serverPlan.getServerId());
             
             List<Object> newlist02 =  plan.getPlanTH(serverPlan.getServerId());

@@ -1,8 +1,11 @@
 package com.yn.web;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,20 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.dao.mapper.ServerMapper;
-import com.yn.model.BillOrder;
-import com.yn.model.Server;
-import com.yn.model.User;
-import com.yn.model.newPage;
+import com.yn.model.Apolegamy;
+import com.yn.service.ApolegamyOrderService;
+import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
-import com.yn.service.ServerService;
-import com.yn.service.SolarPanelSerice;
-import com.yn.service.UserService;
-import com.yn.utils.PhoneFormatCheckUtils;
-import com.yn.utils.PropertyUtils;
-import com.yn.utils.ResultData;
-import com.yn.vo.QualificationsVo;
-import com.yn.vo.SolarPanelVo;
+import com.yn.service.OrderService;
+import com.yn.service.StationService;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -36,37 +31,52 @@ public class TestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 	@Autowired
-	SolarPanelSerice solarService;
-
+	StationService stationService;
+	
 	@Autowired
 	BillOrderService orderService;
 	
 	@Autowired
-   UserService userService;
-	
-	 @RequestMapping(value = "/dotest")
+	OrderService ordService;
+	@Autowired
+	ApolegamyOrderService APOservice;
+
+	 @Autowired
+	ApolegamyService apolegamyService;
 	 @ResponseBody
-	    public Object  newTest() {
-		
-		Boolean istrue = PhoneFormatCheckUtils.isPhoneLegal("13613027433");
-		
-		if(!istrue){
-			logger.info(" ----- ----- ----- 请输入正确的电话号码");
-			return ResultVOUtil.error(777, "请输入正确的电话号码");
-		}
-		   
-			return ResultVOUtil.success(null);
+	 @RequestMapping(value = "/dotest")
+	    public Object  newTest(HttpSession session) {
+		 
+		 String ids ="0";
+		 List<Long> listids =APOservice.Transformation(ids);
+		 
+		 List<Apolegamy> list = apolegamyService.findAll(listids);
+		 Double apoPrice = 0.0;
+		 
+			for (Apolegamy apolegamy : list) {
+				apoPrice += apolegamy.getPrice();
+			}
+		 
+			return ResultVOUtil.success(list);
 	    }
 	
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
-	    public Object someTest() {
-		 String outTradeNo="2017071014160552761"; 
-	
-		BillOrder order = orderService.findByTradeNo(outTradeNo);
-		
+	    public Object someTest(HttpSession session) {
+		 
+		 List<Long> list =new ArrayList<Long>();
+			
+			Object  object= session.getAttribute("list");
+			if(object instanceof Integer){
+				
+				Integer num01	=(Integer)object;
 
-			return ResultVOUtil.success(order);
+			}else if(object instanceof List){
+			
+				list =(List<Long>)object;
+			}
+
+			return ResultVOUtil.success(null);
 	    }
 	 
 	 /* Server server = new Server();

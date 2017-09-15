@@ -49,6 +49,10 @@ public class UserService {
     public void updatePas(User user){
     	userDao.updatePas(user);
     }
+    
+    public void updateUser(User user){
+    	userDao.updateUser(user);
+    }
 
 
     public void save(User user) {

@@ -26,8 +26,20 @@ public class ApolegamyOrder extends IDomain implements Serializable {
     private String unit;
     @Column(columnDefinition = "int(1) comment '[类型]{0:优能的选配项目,1:服务商的选配项目}'")
     private Integer type;
+    @Column(columnDefinition = "varchar(255) comment '[选配项目id串]'")
+    private String apoIds;
+    
+    
 
-    public Long getOrderId() {
+    public String getApoIds() {
+		return apoIds;
+	}
+
+	public void setApoIds(String apoIds) {
+		this.apoIds = apoIds;
+	}
+
+	public Long getOrderId() {
         return orderId;
     }
 

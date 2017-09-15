@@ -28,8 +28,9 @@ public class NewPlanVo {
 	
 	private Integer num;
 	
-	private Integer warrantyYear;
+	private Integer warPeriod;
 	
+	private Integer status;
 
 	//订单服务商与用户的信息
 	private String companyName;
@@ -38,15 +39,29 @@ public class NewPlanVo {
 	private String address;
 	private String userName;
 	
+	private String ids;
 	
-
 	
-	public Integer getWarrantyYear() {
-		return warrantyYear;
+	public String getIds() {
+		return ids;
 	}
-	public void setWarrantyYear(Integer warrantyYear) {
-		this.warrantyYear = warrantyYear;
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+	public Integer getWarPeriod() {
+		return warPeriod;
+	}
+	public void setWarPeriod(Integer warPeriod) {
+		this.warPeriod = warPeriod;
+	}
+	
 	public Integer getNum() {
 		return num;
 	}

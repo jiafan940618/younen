@@ -517,9 +517,6 @@ public class ServerController {
 			 	
 			 page.setTotal(totalCount.intValue());
 		}
-		/*if(null == list || list.size()==0){
-			
-		}*/
 			solar  =solarService.getpanel(list);
 			
 			List<Long> ids = new LinkedList<Long>();

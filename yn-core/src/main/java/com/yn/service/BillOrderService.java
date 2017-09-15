@@ -3,6 +3,7 @@ package com.yn.service;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -83,6 +84,11 @@ public class BillOrderService {
 		return billOrderDao.findByTradeNo(tradeNo); 
 	 }
 		
+	 public	List<BillOrder> findByOrderId(Long OrderId){
+		 
+			return billOrderDao.findByOrderId(OrderId); 
+		 }
+	 
 	
 	public void deleteBatch(List<Long> id) {
 		billOrderDao.deleteBatch(id);
@@ -192,7 +198,29 @@ public class BillOrderService {
 		billOrder.setStatus(1);
 		
 		save(billOrder);
+	}
+	
+	public List<String> getSay(List<BillOrder> billOrder){
+		List<String> list = new LinkedList<String>();
 		
+		String billsay ="";
+		
+		if(null == billOrder || billOrder.size() == 0){
+			billsay = "无";
+			list.add(billsay);
+		}else{
+			int i =1;
+			
+			for (BillOrder billOrder2 : billOrder) {
+				billsay = billOrder2.getCreateDtm()+"    "+"第"+i+"次支付"+billOrder2.getMoney()+"元";
+				
+				list.add(billsay);
+				
+				i++;
+			}
+			
+		}
+		return list;
 	}
 	
 }

@@ -25,4 +25,7 @@ public interface BillOrderDao extends JpaRepository<BillOrder, Long>, JpaSpecifi
     @Query(" select b from BillOrder b where  b.tradeNo = :tradeNo ")
     BillOrder findByTradeNo(@Param("tradeNo") String tradeNo );
     
+    @Query(" select b from BillOrder b where  b.orderId = :orderId ")
+    List<BillOrder> findByOrderId(@Param("orderId") Long orderId );
+    
 }
