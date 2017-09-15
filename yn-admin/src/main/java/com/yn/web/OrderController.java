@@ -209,7 +209,7 @@ public class OrderController {
    	Long planid =(Long) session.getAttribute("newserverplanid");
     	
     	User user= userservice.findOne(userid);
-    	 	logger.info("num为:--- --- ---- ------------"+num);
+    	 	logger.info("num为:--- --- ----   ------------"+num);
 	        logger.info("方案的id为： ------ ------ ----"+planid);
 	        logger.info("用户的id为：  ------ ------ ----"+userid);
 	        logger.info("总的金额为： ------ ------ ------"+price);

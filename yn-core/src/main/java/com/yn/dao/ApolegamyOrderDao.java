@@ -7,5 +7,5 @@ import com.yn.model.Apolegamy;
 import com.yn.model.ApolegamyOrder;
 
 public interface ApolegamyOrderDao   extends JpaRepository<ApolegamyOrder, Long>, JpaSpecificationExecutor<ApolegamyOrder>{
-
+  
 }
