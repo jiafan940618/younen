@@ -1,6 +1,5 @@
 package com.yn.web;
 
-
 import java.util.HashMap;
 
 import java.util.List;
@@ -27,6 +26,7 @@ import com.yn.model.Order;
 import com.yn.service.OrderDetailService;
 import com.yn.model.Apolegamy;
 import com.yn.model.BillOrder;
+import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
 import com.yn.model.OrderPlan;
 import com.yn.model.User;
@@ -54,7 +54,7 @@ import com.yn.vo.re.ResultVOUtil;
 @RestController
 @RequestMapping("/client/order")
 public class OrderController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
 	@Autowired
@@ -86,9 +86,9 @@ public class OrderController {
 	OrderService ordService;
 	@Autowired
 	ApolegamyOrderService APOservice;
-	 @Autowired
+	@Autowired
 	ApolegamyService apolegamyService;
-	
+
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
 	public Object findOne(Long id) {
@@ -130,8 +130,6 @@ public class OrderController {
 		Page<Order> findAll = orderService.findAll(order, pageable);
 		return ResultVOUtil.success(findAll);
 	}
-
-
 
 	/**
 	 * 点击订单详情页各个按钮出发同一个接口，但调用不同的函数处理
@@ -186,136 +184,145 @@ public class OrderController {
 		return ResultVOUtil.success(result);
 	}
 
+	/**
+	 * 并网发电 发布评论
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/pushComment")
+	public Object pushComment(Comment comment) {
+		boolean stationRun = orderDetailService.pushComment(comment);
+		return ResultVOUtil.success(stationRun);
+	}
+
 	/** 订单详情 */
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
-	public Object LookOrder(HttpSession session,Integer OrderCode) {
+	public Object LookOrder(HttpSession session, Integer OrderCode) {
 
-		/*Integer num =6;
-		Long userid = 2L;
-		  List<Long>  list = new LinkedList<Long>();
-	    list.add(11L);
-	    list.add(13L);
-	   
-	    Double price =7700.00;
-    	Long planid =1L;*/
-		
-	Integer num =(Integer)session.getAttribute("num");
-	Long userid = (Long) session.getAttribute("userid");
+		/*
+		 * Integer num =6; Long userid = 2L; List<Long> list = new
+		 * LinkedList<Long>(); list.add(11L); list.add(13L);
+		 * 
+		 * Double price =7700.00; Long planid =1L;
+		 */
 
-	List<Long> list=(List<Long>) session.getAttribute("list");
+		Integer num = (Integer) session.getAttribute("num");
+		Long userid = (Long) session.getAttribute("userid");
 
-    Double price = (Double)session.getAttribute("price");
-   	Long planid =(Long) session.getAttribute("newserverplanid");
-    	
-    	User user= userservice.findOne(userid);
-    	 	logger.info("num为:--- --- ---- ------------"+num);
-	        logger.info("方案的id为： ------ ------ ----"+planid);
-	        logger.info("用户的id为：  ------ ------ ----"+userid);
-	        logger.info("总的金额为： ------ ------ ------"+price);
-    	
-    	 List<Apolegamy> list01 =  apolegamyService.findAll(list);
-    	 
-    	 Double apoPrice = 0.0;
+		List<Long> list = (List<Long>) session.getAttribute("list");
 
-	         for (Apolegamy apolegamy : list01) {
-	        	 apoPrice += apolegamy.getPrice();
-			 }
+		Double price = (Double) session.getAttribute("price");
+		Long planid = (Long) session.getAttribute("newserverplanid");
 
-        Double serPrice = price + apoPrice;
+		User user = userservice.findOne(userid);
+		logger.info("num为:--- --- ---- ------------" + num);
+		logger.info("方案的id为： ------ ------ ----" + planid);
+		logger.info("用户的id为：  ------ ------ ----" + userid);
+		logger.info("总的金额为： ------ ------ ------" + price);
+
+		List<Apolegamy> list01 = apolegamyService.findAll(list);
+
+		Double apoPrice = 0.0;
+
+		for (Apolegamy apolegamy : list01) {
+			apoPrice += apolegamy.getPrice();
+		}
+
+		Double serPrice = price + apoPrice;
 
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
 		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
-		
+
 		session.setAttribute("newPlanVo", newPlanVo);
-		/*session.setAttribute("list", list);
-		session.setAttribute("newserverplanid", planid);*/
-		//ResultVOUtil.newsuccess(newPlanVo, list01)
+		/*
+		 * session.setAttribute("list", list);
+		 * session.setAttribute("newserverplanid", planid);
+		 */
+		// ResultVOUtil.newsuccess(newPlanVo, list01)
 		return ResultVOUtil.newsuccess(newPlanVo, list01);
 	}
-	
+
 	/** 订单详情状态 */
 	@ResponseBody
 	@RequestMapping(value = "/ingorder")
-	public Object LookOrder1(HttpSession session,@RequestParam("orderId") Long OrderId) {
-		
+	public Object LookOrder1(HttpSession session, @RequestParam("orderId") Long OrderId) {
+
 		Object object = ordService.getInformOrder(OrderId);
-		 
+
 		NewPlanVo newPlanVo = ordService.getVoNewPlan(object);
-		
+
 		String ids = newPlanVo.getIds();
-		
-		List<Long> listids =APOservice.Transformation(ids);
-		
+
+		List<Long> listids = APOservice.Transformation(ids);
+
 		List<Apolegamy> list = apolegamyService.findAll(listids);
-		
-			return ResultVOUtil.newsuccess(newPlanVo, list);
+
+		return ResultVOUtil.newsuccess(newPlanVo, list);
 	}
-	
-	
+
 	/** 修改电站信息 */
 	@RequestMapping(value = "/updateInfo")
 	@ResponseBody
 	public Object udatestation(UserVo userVo, HttpSession session) {
-		 User user01 = new User();
-		 
-	        BeanCopy.copyProperties(userVo, user01);
+		User user01 = new User();
 
-	        logger.info("地址为：----------- "+user01.getAddressText());
-	        logger.info("电话为：----------- "+user01.getPhone());
-	        logger.info("用户名为：----------- "+user01.getUserName());
-		
-		if(null == user01.getAddressText()){
+		BeanCopy.copyProperties(userVo, user01);
+
+		logger.info("地址为：----------- " + user01.getAddressText());
+		logger.info("电话为：----------- " + user01.getPhone());
+		logger.info("用户名为：----------- " + user01.getUserName());
+
+		if (null == user01.getAddressText()) {
 			logger.info("--- ---- --- --- -- 地址不能为空");
-			
+
 			return ResultVOUtil.error(777, Constant.ADRESS_NULL);
 		}
-		if(user01.getAddressText().length()>40){
-			
+		if (user01.getAddressText().length() > 40) {
+
 			return ResultVOUtil.error(777, Constant.ADDRESS_LONG);
 		}
-		
-		if(null == user01.getPhone()){
+
+		if (null == user01.getPhone()) {
 			logger.info("--- ---- --- --- -- 电话不能为空");
-			
+
 			return ResultVOUtil.error(777, Constant.PHONE_NULL);
 		}
-		
-		if(!PhoneFormatCheckUtils.isPhoneLegal(user01.getPhone())){
+
+		if (!PhoneFormatCheckUtils.isPhoneLegal(user01.getPhone())) {
 			logger.info("--- ---- --- --- -- 请输入正确的电话格式");
 			return ResultVOUtil.error(777, Constant.PHONE_ERROR);
 		}
-		
-		if(null == user01.getUserName()){
+
+		if (null == user01.getUserName()) {
 			logger.info("--- ---- --- --- -- 联系人不能为空");
 			return ResultVOUtil.error(777, Constant.USERNAME_NULL);
 		}
-		if(user01.getUserName().length()>12){
+		if (user01.getUserName().length() > 12) {
 			logger.info("--- ---- --- --- -- 联系人字符不能超过12位");
 			return ResultVOUtil.error(777, Constant.USERNAME_LONG);
 		}
-		
-		
+
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
-		NewUserVo newuser = (NewUserVo)session.getAttribute("user");
-		
-		 /** 前端页面地址的参数*/
+		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+
+		/** 前端页面地址的参数 */
 		newuser.setFullAddressText(user01.getAddressText());
 		newuser.setIpoMemo(userVo.getIpoMemo());
 		newuser.setPhone(user01.getPhone());
 		newuser.setUserName(user01.getUserName());
-		Long userid =(Long) session.getAttribute("userid");
-		User user=   userservice.findOne(userid);
-		   
-		   user.setFullAddressText(user01.getAddressText());
-		   user.setPhone(user01.getPhone());
-		   user.setUserName(user01.getUserName());
-		   
-		   userservice.updateUser(user);
-		
-		
+		Long userid = (Long) session.getAttribute("userid");
+		User user = userservice.findOne(userid);
+
+		user.setFullAddressText(user01.getAddressText());
+		user.setPhone(user01.getPhone());
+		user.setUserName(user01.getUserName());
+
+		userservice.updateUser(user);
 
 		plan.setAddress(user01.getAddressText());
 		plan.setPhone(user01.getPhone());
@@ -331,32 +338,32 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/orderPrice")
 	public ResultData<Object> findOrderprice(HttpSession session) {
-		//NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
-	//	Integer type = (Integer)session.getAttribute("type");
-		
+		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
+		// Integer type = (Integer)session.getAttribute("type");
+
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-			
-		 List<Long>  listid=	(List<Long>) session.getAttribute("list");
-		 List<Apolegamy> list =  apolegamyService.findAll(listid);
-		 
+
+		List<Long> listid = (List<Long>) session.getAttribute("list");
+		List<Apolegamy> list = apolegamyService.findAll(listid);
+
 		Double apoPrice = 0.0;
 
 		for (Apolegamy apolegamy : list) {
 			apoPrice += apolegamy.getPrice();
 		}
 
-		Long planid =(Long) session.getAttribute("newserverplanid");
-		
+		Long planid = (Long) session.getAttribute("newserverplanid");
+
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
-		
-			newserverPlan.setMinPurchase(plan.getNum());
-		
-		
+
+		newserverPlan.setMinPurchase(plan.getNum());
+
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode());
-		
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
+				plan.getOrderCode());
+
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
 		orderService.save(order);
@@ -385,49 +392,46 @@ public class OrderController {
 
 		neworder.setOrderPlan(newOrdPlan);
 
-		 /** 添加电站*/
+		/** 添加电站 */
 		stationService.insertStation(neworder);
-		
+
 		APOservice.getapole(neworder, listid);
 
 		neworder.getUser().setPassword(null);
-		
-		Map<String, Long> map = new HashMap<String,Long>();
+
+		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
-		
-		 /** 传出电站的id*/ 
+
+		/** 传出电站的id */
 		return ResultVOUtil.success(map);
 	}
-	
-	/** 购买完成以后显示订单支付情况 */ /** @RequestParam("orderId") Long orderId*/
+
+	/** 购买完成以后显示订单支付情况 */
+	/** @RequestParam("orderId") Long orderId */
 	@ResponseBody
 	@RequestMapping(value = "/priceorder")
-	public Object giveorder(@RequestParam("orderId") Long orderId){
+	public Object giveorder(@RequestParam("orderId") Long orderId) {
 
 		Object order = orderService.findOrder(orderId);
-		
+
 		OrderVo order2 = orderService.getinfoOrder(order);
-		   
-	List<BillOrder> billOrder =	billOrderService.findByOrderId(orderId);
-		
-   List<String> list =	billOrderService.getSay(billOrder);
-  
-			return ResultVOUtil.newsuccess(order2, list);
+
+		List<BillOrder> billOrder = billOrderService.findByOrderId(orderId);
+
+		List<String> list = billOrderService.getSay(billOrder);
+
+		return ResultVOUtil.newsuccess(order2, list);
 
 	}
-	
-	 /** 显示购买的状态*/
+
+	/** 显示购买的状态 */
 	@ResponseBody
-	@RequestMapping(value="/OrderStatus")
-	public Object  giveStatus(@RequestParam("orderId") Long orderId){
-		
-	Order order =	orderService.findstatus(orderId);
-		
-		
+	@RequestMapping(value = "/OrderStatus")
+	public Object giveStatus(@RequestParam("orderId") Long orderId) {
+
+		Order order = orderService.findstatus(orderId);
+
 		return ResultVOUtil.success(order);
 	}
-	
-	
-	
 
 }

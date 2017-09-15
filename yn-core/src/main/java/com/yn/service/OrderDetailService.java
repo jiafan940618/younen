@@ -1,7 +1,9 @@
 package com.yn.service;
 
+import com.yn.dao.CommentDao;
 import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BillOrder;
+import com.yn.model.Comment;
 import com.yn.model.Order;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import org.springframework.stereotype.Service;
 import com.yn.model.BillOrder;
 import com.yn.model.Order;
 
-
 /**
  * 订单详情服务：为页面每一个按钮单独一个功能
  * 
@@ -35,7 +36,7 @@ import com.yn.model.Order;
 public class OrderDetailService {
 
 	private Map<String, String> result;
-	
+
 	@Autowired
 	private OrderService orderService;
 
@@ -50,6 +51,9 @@ public class OrderDetailService {
 
 	@Value("${SURVEYAPPOINTMENTPAYMENT}")
 	private Double SURVEYAPPOINTMENTPAYMENT;// 勘察预约 --> 需：25%
+
+	@Autowired
+	CommentDao commentDao;
 
 	/**
 	 * 贷款申请
@@ -261,20 +265,36 @@ public class OrderDetailService {
 	 */
 	public Map<String, String> stationRun(Order order) {
 		result = new HashMap<>();
-		/*
-		 * Double hadPayPrice = order.getHadPayPrice(); Double totalPrice =
-		 * order.getTotalPrice(); // 计算出尾款 :: 100% - 60% --> 40% double
-		 * needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE); if
-		 * (hadPayPrice >= needToPay) { result.put("needToPay", "0"); // 修改状态 ：
-		 * 已支付、已申请、并网发电申请中 order.setGridConnectedIsPay(1);
-		 * order.setGridConnectedStepA(1); order.setStatus(2); } else {
-		 * result.put("needToPay", needToPay + "");
-		 * order.setGridConnectedIsPay(0); order.setGridConnectedStepA(0); }
-		 * //更新状态 int byCondition = orderService.updateByCondition(order);
-		 * result.put("updateOrderStauts", byCondition+"");
-		 */
-
+		Double hadPayPrice = order.getHadPayPrice();
+		Double totalPrice = order.getTotalPrice();
+		// 计算出尾款 :: 100% - 60% --> 40%
+		double needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE);
+		if (hadPayPrice >= needToPay) {
+			result.put("needToPay", "0");
+			// 修改状态 ： 已支付、已申请、并网发电申请中
+			order.setGridConnectedIsPay(1);
+			order.setGridConnectedStepA(1);
+			order.setStatus(2);
+		} else {
+			result.put("needToPay", needToPay + "");
+			order.setGridConnectedIsPay(0);
+			order.setGridConnectedStepA(0);
+		}
+		// 更新状态 --> success：true
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition + "");
 		return result;
+	}
+
+	/**
+	 * 并网评分
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public boolean pushComment(Comment comment) {
+		Comment save = commentDao.save(comment);
+		return save.getId() > 0;
 	}
 
 	/**
@@ -301,6 +321,5 @@ public class OrderDetailService {
 			return -1d;
 		return needToPay;
 	}
-
 
 }
