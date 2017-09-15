@@ -21,13 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.enums.OrderDetailEnum;
+import com.yn.enums.ResultEnum;
 import com.yn.model.Order;
 import com.yn.service.OrderDetailService;
 import com.yn.model.Apolegamy;
 import com.yn.model.BillOrder;
+import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
 import com.yn.model.OrderPlan;
 import com.yn.model.User;
+import com.yn.model.Wallet;
 import com.yn.service.ApolegamyOrderService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
@@ -182,6 +185,66 @@ public class OrderController {
 			break;
 		}
 		return ResultVOUtil.success(result);
+	}
+	
+	/**
+	 * 订单详情页面的两个下一步
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
+	public Object nextStep(Integer nextId, OrderVo orderVo) {
+		// 判断参数是否异常
+		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
+			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+		Order order = new Order();
+		BeanCopy.copyProperties(orderVo, order);
+		Order findOne = orderService.findOne(order.getId());
+		Map<String, String> result = new HashMap<>();
+		Double flag4Money = 0d;// 支付的钱
+		// flag4ApplyStepA; //完成屋顶勘察预约的
+		// flag4ApplyStepB; //完成申请保健的
+		// flag4BuildStepA; //完成施工申请的
+		// 申请中的下一步
+		if (nextId == 1) {
+			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
+			result.put("flag4ApplyStepA", order.getApplyStepA() > 0 ? true + "" : false + "");
+			result.put("flag4ApplyStepB", order.getApplyStepB() > 0 ? true + "" : false + "");
+		} else { // 施工中的下一步
+			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
+			result.put("flag4BuildStepA", order.getBuildStepA() > 0 ? true + "" : false + "");
+		}
+		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
+		return ResultVOUtil.success(result);
+	}
+
+	/**
+	 * 根据用户id查询余额
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getBalance", method = { RequestMethod.POST })
+	public Object getBalance(User user) {
+		Wallet wallet = walletService.findWalletByUser(user.getId());
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userBalance", wallet.getMoney().toString());
+		return ResultVOUtil.success(map);
+	}
+
+	/**
+	 * 并网发电 发布评论
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/pushComment")
+	public Object pushComment(Comment comment) {
+		boolean stationRun = orderDetailService.pushComment(comment);
+		return ResultVOUtil.success(stationRun);
 	}
 
 	/** 订单详情 */
@@ -351,7 +414,7 @@ public class OrderController {
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode());
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),null);
 		
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());

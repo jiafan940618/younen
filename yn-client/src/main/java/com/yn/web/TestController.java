@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,7 @@ import com.yn.service.StationService;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
+@SpringBootTest
 @RequestMapping("/client/test")
 public class TestController {
 
@@ -43,21 +45,14 @@ public class TestController {
 
 	 @Autowired
 	ApolegamyService apolegamyService;
+
 	 @ResponseBody
 	 @RequestMapping(value = "/dotest")
-	    public Object  newTest(HttpSession session) {
+	    public String  newTest(HttpSession session) {
 		 
-		 String ids ="0";
-		 List<Long> listids =APOservice.Transformation(ids);
+		System.out.println("进入页面！");
 		 
-		 List<Apolegamy> list = apolegamyService.findAll(listids);
-		 Double apoPrice = 0.0;
-		 
-			for (Apolegamy apolegamy : list) {
-				apoPrice += apolegamy.getPrice();
-			}
-		 
-			return ResultVOUtil.success(list);
+			return "NewFile";
 	    }
 	
 	 @RequestMapping(value = "/dotest02")

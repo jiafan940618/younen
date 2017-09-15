@@ -1,7 +1,9 @@
 package com.yn.service;
 
+import com.yn.dao.CommentDao;
 import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BillOrder;
+import com.yn.model.Comment;
 import com.yn.model.Order;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.yn.model.BillOrder;
-import com.yn.model.Order;
 
 
 /**
@@ -35,6 +28,9 @@ import com.yn.model.Order;
 public class OrderDetailService {
 
 	private Map<String, String> result;
+	
+	@Autowired
+	private CommentDao commentDao;
 	
 	@Autowired
 	private OrderService orderService;
@@ -276,6 +272,17 @@ public class OrderDetailService {
 
 		return result;
 	}
+	
+	/**
+	 * 并网评分
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public boolean pushComment(Comment comment) {
+		Comment save = commentDao.save(comment);
+		return save.getId() > 0;
+	}
 
 	/**
 	 * 用于计算需要支付的金额 :: 若已支付的金额大于需支付的金额--> -1 ||--> 需支付的金额
@@ -287,7 +294,7 @@ public class OrderDetailService {
 	 *            --> 利率
 	 * @return
 	 */
-	private Double calculatedNeedToPayMoney(Order order, Double interestRate) {
+	public Double calculatedNeedToPayMoney(Order order, Double interestRate) {
 		Double hadPayPrice = order.getHadPayPrice();// 已支付
 		Double totalPrice = order.getTotalPrice();// 总价
 		Double needToPay = totalPrice * interestRate;// 需要支付的金额

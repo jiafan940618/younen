@@ -68,6 +68,8 @@ public class WalletService {
 		return walletDao.findAll(spec);
 	} 
 	
+
+	
 	/**
      * 根据用户id查找钱包，如果该用户没有钱包就新建一个钱包
      */
@@ -80,4 +82,8 @@ public class WalletService {
 			save(wallet);
 		}
     }
+    
+    public Wallet findWalletByUser(Long userId) {
+		return walletDao.findByUserId(userId);
+	}
 }

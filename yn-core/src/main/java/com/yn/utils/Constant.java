@@ -35,7 +35,7 @@ public class Constant {
     public final static String CODE_FALSE = "短信发送失败";
     public final static String ADDRESS_LONG = "详细地址过长";
     
-    
+    public final static String PAY_WAY_NULL= "请选择支付方式!";
     
     /** 服务商的注册返回提示 */
     public final static String CITY_LONG = "服务城市名过长";

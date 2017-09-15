@@ -178,7 +178,7 @@ public class NewServerPlanService {
 	    
 	    /** 根据用户和服务商生成一个订单 */
 	    
-	    public Order getOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode){
+	    public Order getOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,String IpoMemo){
 	    	
 	    	Order order = new Order();
 	    	 /** 保存订单*/
@@ -205,10 +205,7 @@ public class NewServerPlanService {
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());
 	        
-	       /* if(null != newuser.getIpoMemo()){
-	        	order.setIpoMemo(newuser.getIpoMemo());
-	        }*/
-
+	        order.setIpoMemo(IpoMemo);
 	        
 	        order.setLinkPhone(user.getPhone());
 	        order.setPlanPrice(price);

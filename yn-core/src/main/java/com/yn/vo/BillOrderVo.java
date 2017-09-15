@@ -17,7 +17,25 @@ public class BillOrderVo extends QueryVo{
     private String remark;
 	private Integer status;
 	
+	private String channel;
 	
+	/** 余额*/
+	private Double balancePrice;
+	
+	
+	
+	public Double getBalancePrice() {
+		return balancePrice;
+	}
+	public void setBalancePrice(Double balancePrice) {
+		this.balancePrice = balancePrice;
+	}
+	public String getChannel() {
+		return channel;
+	}
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
 	public Long getId() {
 		return id;
 	}

@@ -355,7 +355,7 @@ public class OrderController {
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode());
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),null);
 		
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
@@ -399,6 +399,79 @@ public class OrderController {
 		return ResultVOUtil.success(map);
 	}
 	
+	
+	/** Ioc点击确定的接口*/
+	@ResponseBody
+	@RequestMapping(value = "/iocorderPrice")
+	public ResultData<Object> findIocordprice(HttpSession session,Integer capacity) {
+		NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
+		
+		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
+		
+		 List<Long>  listid=	(List<Long>) session.getAttribute("list");
+		 List<Apolegamy> list =  apolegamyService.findAll(listid);
+		 
+		Double apoPrice = 0.0;
+
+		for (Apolegamy apolegamy : list) {
+			apoPrice += apolegamy.getPrice();
+		}
+
+		Long planid =(Long) session.getAttribute("newserverplanid");
+		
+		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+		
+			newserverPlan.setMinPurchase(capacity);
+		
+		
+		User user02 = userservice.findByPhone(plan.getPhone());
+		// ** 添加订单*//*
+
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),newuser.getIpoMemo());
+		
+		// 取出订单号并添加
+		order.setOrderCode(plan.getOrderCode());
+		orderService.save(order);
+
+		Order order02 = new Order();
+		order02.setOrderCode(order.getOrderCode());
+
+		Order neworder = orderService.findOne(order02);
+
+		// ** 订单计划表*//*
+
+		Long id = newserverPlan.getId();
+
+		NewServerPlan serverPlan = newserverPlanService.findOne(id);
+
+		OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
+
+		OrderPlan orderPlan2 = new OrderPlan();
+		orderPlan2.setOrderId(orderPlan.getOrderId());
+
+		OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
+
+		order.setOrderPlanId(newOrdPlan.getId());
+
+		orderPlanService.save(orderPlan);
+
+		neworder.setOrderPlan(newOrdPlan);
+
+		 /** 添加电站*/
+		stationService.insertStation(neworder);
+		
+		APOservice.getapole(neworder, listid);
+
+		neworder.getUser().setPassword(null);
+		
+		Map<String, Long> map = new HashMap<String,Long>();
+		map.put("orderId", neworder.getId());
+		
+		 /** 传出电站的id*/ 
+		return ResultVOUtil.success(map);
+	}
+	
+	
 	/** 购买完成以后显示订单支付情况 */ /** @RequestParam("orderId") Long orderId*/
 	@ResponseBody
 	@RequestMapping(value = "/priceorder")
@@ -421,7 +494,7 @@ public class OrderController {
 	@RequestMapping(value="/OrderStatus")
 	public Object  giveStatus(@RequestParam("orderId") Long orderId){
 		
-	Order order =	orderService.findstatus(orderId);
+	Order order = orderService.findstatus(orderId);
 		
 		
 		return ResultVOUtil.success(order);
