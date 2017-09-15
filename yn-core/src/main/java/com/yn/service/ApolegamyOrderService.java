@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.yn.dao.ApolegamyOrderDao;
 import com.yn.model.ApolegamyOrder;
-import com.yn.model.ApolegamyServer;
 import com.yn.model.Order;
 import com.yn.utils.BeanCopy;
 
