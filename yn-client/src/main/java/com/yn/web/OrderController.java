@@ -153,6 +153,8 @@ public class OrderController {
 		Order findOne = orderService.findOne(order.getId());
 		Map<String, String> result = new HashMap<>();
 		Wallet wallet = walletService.findWalletByUser(orderVo.getUserId());
+		User findOne2 = userservice.findOne(orderVo.getUserId());
+		result.put("nickName", findOne2.getNickName());
 		switch (target) {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
