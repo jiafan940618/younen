@@ -20,6 +20,8 @@ public interface WalletDao extends JpaRepository<Wallet, Long>, JpaSpecification
     @Modifying
     @Query("update Wallet set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
-    
-    Wallet findByUserId(@Param("userid") Long userid);
+
+
+	Wallet findByUserId(@Param("userid") Long userid);
+
 }
