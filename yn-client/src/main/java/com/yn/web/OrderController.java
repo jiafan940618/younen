@@ -152,20 +152,26 @@ public class OrderController {
 		BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(order.getId());
 		Map<String, String> result = new HashMap<>();
+		Wallet wallet = walletService.findWalletByUser(orderVo.getUserId());
+		User findOne2 = userservice.findOne(orderVo.getUserId());
+		result.put("nickName", findOne2.getNickName());
 		switch (target) {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
 			break;
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
+			result.put("userBalance", wallet.getMoney().toString());
 			break;
 		case BUILDPAYMENT:
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
+			result.put("userBalance", wallet.getMoney().toString());
 			break;
 		case GRIDCONNECTEDPAYMENT:
 			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
 																		// -->
 																		// 报建状态
+			result.put("userBalance", wallet.getMoney().toString());
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
@@ -174,6 +180,7 @@ public class OrderController {
 			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
 																			// -->
 																			// 并网发电的线上支付
+			result.put("userBalance", wallet.getMoney().toString());
 			break;
 		case BUILDAPPLICATION:
 			result = orderDetailService.buildApplication(findOne);// 建设中 -->
@@ -194,27 +201,28 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
+	@RequestMapping(value = "/nextStep"/*, method = { RequestMethod.POST }*/)
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
 			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
 		Order order = new Order();
-		BeanCopy.copyProperties(orderVo, order);
-		Order findOne = orderService.findOne(order.getId());
+		// BeanCopy.copyProperties(orderVo, order);
+		Order findOne = orderService.findOne(orderVo.getId());
 		Map<String, String> result = new HashMap<>();
 		Double flag4Money = 0d;// 支付的钱
+		System.err.println(order.getApplyStepA());
 		// flag4ApplyStepA; //完成屋顶勘察预约的
 		// flag4ApplyStepB; //完成申请保健的
 		// flag4BuildStepA; //完成施工申请的
 		// 申请中的下一步
 		if (nextId == 1) {
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
-			result.put("flag4ApplyStepA", order.getApplyStepA() > 0 ? true + "" : false + "");
-			result.put("flag4ApplyStepB", order.getApplyStepB() > 0 ? true + "" : false + "");
+			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? true + "" : false + "");
+			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? true + "" : false + "");
 		} else { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("flag4BuildStepA", order.getBuildStepA() > 0 ? true + "" : false + "");
+			result.put("flag4BuildStepA", findOne.getBuildStepA() == 10 ? true + "" : false + "");
 		}
 		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
 		return ResultVOUtil.success(result);
@@ -411,7 +419,6 @@ public class OrderController {
 
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
-
 		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),null);
 		
 
@@ -456,37 +463,37 @@ public class OrderController {
 		/** 传出电站的id */
 		return ResultVOUtil.success(map);
 	}
-	
-	
+
 	/** Ioc点击确定的接口*/
+
 	@ResponseBody
 	@RequestMapping(value = "/iocorderPrice")
-	public ResultData<Object> findIocordprice(HttpSession session,Integer capacity) {
-		NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
-		
+	public ResultData<Object> findIocordprice(HttpSession session, Integer capacity) {
+		NewUserVo newuser = (NewUserVo) session.getAttribute("newuser");
+
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-		
-		 List<Long>  listid=	(List<Long>) session.getAttribute("list");
-		 List<Apolegamy> list =  apolegamyService.findAll(listid);
-		 
+
+		List<Long> listid = (List<Long>) session.getAttribute("list");
+		List<Apolegamy> list = apolegamyService.findAll(listid);
+
 		Double apoPrice = 0.0;
 
 		for (Apolegamy apolegamy : list) {
 			apoPrice += apolegamy.getPrice();
 		}
 
-		Long planid =(Long) session.getAttribute("newserverplanid");
-		
+		Long planid = (Long) session.getAttribute("newserverplanid");
+
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
-		
-			newserverPlan.setMinPurchase(capacity);
-		
-		
+
+		newserverPlan.setMinPurchase(capacity);
+
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),newuser.getIpoMemo());
-		
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
+				plan.getOrderCode(), newuser.getIpoMemo());
+
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
 		orderService.save(order);
@@ -515,17 +522,17 @@ public class OrderController {
 
 		neworder.setOrderPlan(newOrdPlan);
 
-		 /** 添加电站*/
+		/** 添加电站 */
 		stationService.insertStation(neworder);
-		
+
 		APOservice.getapole(neworder, listid);
 
 		neworder.getUser().setPassword(null);
-		
-		Map<String, Long> map = new HashMap<String,Long>();
+
+		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
-		
-		 /** 传出电站的id*/ 
+
+		/** 传出电站的id */
 		return ResultVOUtil.success(map);
 	}
 

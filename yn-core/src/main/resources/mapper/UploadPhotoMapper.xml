@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.UploadPhotoMapper">
+
+	<resultMap id="UploadMapper" type="com.yn.model.UploadPhoto">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="load_img" property="loadImg" jdbcType="VARCHAR"/>
+		<result column="server_id" property="serverId" jdbcType="INTEGER"/>
+		<result column="user_id" property="userId" jdbcType="INTEGER"/>
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="findPhoto" parameterType="com.yn.model.UploadPhoto" resultMap="UploadMapper">
+		select 
+		id,load_img 
+		from upload_photo 
+		
+		<trim prefix="WHERE" prefixOverrides="AND|OR">     
+        	<if test="null != serverId ">
+        		server_id = #{serverId}
+        	</if>
+        	<if test="null != userId ">
+        		 and user_id = #{userId}
+        	</if>
+   		 </trim>     
+	</select>
+
+</mapper>
