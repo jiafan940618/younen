@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
@@ -201,7 +203,7 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep"/*, method = { RequestMethod.POST }*/)
+	@RequestMapping(value = "/nextStep"/* , method = { RequestMethod.POST } */)
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
@@ -559,10 +561,103 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
 	public Object giveStatus(@RequestParam("orderId") Long orderId) {
-
 		Order order = orderService.findstatus(orderId);
-
 		return ResultVOUtil.success(order);
+	}
+
+	/**
+	 * 申请中
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/inApplication")
+	public Object inApplication(OrderVo orderVo) {
+		Order order = orderService.findOne(orderVo.getId());
+		Map<String, Object> jsonResult = new HashMap<>();
+		//取到相同的东西
+		jsonResult = wcnmlgbd(order);
+		// 独有的东西
+		// 预约状态 屋顶勘察
+		jsonResult.put("applyStepA", order.getApplyStepA().toString());
+		// 申请报建状态
+		jsonResult.put("applyStepB", order.getApplyStepB().toString());
+		return ResultVOUtil.success(jsonResult);
+	}
+
+	/**
+	 * 施工中
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/inConstruction")
+	public Object inConstruction(OrderVo orderVo) {
+		Map<String, Object> jsonResult = new HashMap<>();
+		Order order = orderService.findOne(orderVo.getId());
+		//取到相同的东西
+		jsonResult = wcnmlgbd(order);
+		// 独有的东西
+		// 施工中-施工申请状态
+		jsonResult.put("buildStepA", order.getBuildStepA().toString());
+		// 施工中-支付状态
+		jsonResult.put("buildIsPay", order.getBuildIsPay().toString());
+		// 施工中-施工状态
+		jsonResult.put("buildStepB", order.getBuildStepB().toString());
+		/* --=>方案设计=--> */
+		// 资质照片地址
+		// jsonResult.put("qualificationsImgUrl",
+		// order.getServer().getQualificationsImgUrl());
+		// 其他三种方案设计的图片
+		// --=> ? 暂无
+		return ResultVOUtil.success(jsonResult);
+	}
+
+	/**
+	 * 并网发电
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/inGridConnectedGeneration")
+	public Object inGridConnectedGeneration(OrderVo orderVo) {
+		Map<String, Object> jsonResult = new HashMap<>();
+		Order order = orderService.findOne(orderVo.getId());
+		//取到相同的东西
+		jsonResult = wcnmlgbd(order);
+		// 独有的东西
+		//暂无
+		return ResultVOUtil.success(jsonResult);
+	}
+
+	private Map<String, Object> wcnmlgbd(Order order) {
+		Map<String, Object> jsonResult = new HashMap<>();
+		// Set<BillOrder> billOrder = order.getBillOrder();
+		// String msg = "";
+		// int numCount = 0;
+		// 我，秦始皇，打钱。
+		// if (billOrder != null) {
+		// for (BillOrder billOrder2 : billOrder) {
+		// msg += billOrder2.getCreateDtm() + " 第" + (numCount++) + "次支付" +
+		// billOrder2.getMoney() + "<br/>";
+		// }
+		// }
+		// jsonResult.put("payCount", msg == "" ? "暂未支付记录" : msg);
+		// 打钱
+		List<BillOrder> billOrder = billOrderService.findByOrderId(order.getId());
+		List<String> say = billOrderService.getSay(billOrder);
+		jsonResult.put("payCount", say);
+		// 贷款进度
+		jsonResult.put("progressBar", order.getLoanStatus().toString());
+		// 计算进度条
+		// int progressBar = ((int) (order.getTotalPrice() /
+		// order.getHadPayPrice()))/10;
+		jsonResult.put("progressBar", (((int) (order.getTotalPrice() / order.getHadPayPrice())) / 10) + "");
+		// 支付状态
+		jsonResult.put("applyIsPay", order.getApplyIsPay().toString());
+		// 订单状态
+		jsonResult.put("status", order.getStatus().toString());
+		return jsonResult;
 	}
 
 }
