@@ -82,8 +82,10 @@ public class WalletService {
 			save(wallet);
 		}
     }
-    
-    public Wallet findWalletByUser(Long userId) {
+
+
+	public Wallet findWalletByUser(Long userId) {
+
 		return walletDao.findByUserId(userId);
 	}
 }
