@@ -201,7 +201,7 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
+	@RequestMapping(value = "/nextStep"/*, method = { RequestMethod.POST }*/)
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
@@ -211,17 +211,18 @@ public class OrderController {
 		Order findOne = orderService.findOne(orderVo.getId());
 		Map<String, String> result = new HashMap<>();
 		Double flag4Money = 0d;// 支付的钱
+		System.err.println(order.getApplyStepA());
 		// flag4ApplyStepA; //完成屋顶勘察预约的
 		// flag4ApplyStepB; //完成申请保健的
 		// flag4BuildStepA; //完成施工申请的
 		// 申请中的下一步
 		if (nextId == 1) {
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
-			result.put("flag4ApplyStepA", order.getApplyStepA() == 2 ? true + "" : false + "");
-			result.put("flag4ApplyStepB", order.getApplyStepB() == 2 ? true + "" : false + "");
+			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? true + "" : false + "");
+			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? true + "" : false + "");
 		} else { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("flag4BuildStepA", order.getBuildStepA() == 10 ? true + "" : false + "");
+			result.put("flag4BuildStepA", findOne.getBuildStepA() == 10 ? true + "" : false + "");
 		}
 		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
 		return ResultVOUtil.success(result);
