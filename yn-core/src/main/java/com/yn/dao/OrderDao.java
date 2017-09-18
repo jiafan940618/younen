@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yn.model.Order;
 
 public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
-    @Modifying
-    @Query("update Order set del=1,delDtm=(now()) where id = :id")
-    void delete(@Param("id") Long id);
-    
-    @Transactional
-    @Modifying
-    @Query("update Order set del=1,delDtm=(now()) where id in (:ids)")
+	@Modifying
+	@Query("update Order set del=1,delDtm=(now()) where id = :id")
+	void delete(@Param("id") Long id);
+
+	@Transactional
+	@Modifying
+	@Query("update Order set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
     @Query("SELECT COUNT(*) FROM Order u WHERE u.createDtm>=?1 AND u.createDtm<?2 AND u.del=0")
@@ -54,4 +54,5 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
   
   
     
+
 }
