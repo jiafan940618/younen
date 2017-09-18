@@ -1,13 +1,14 @@
 package com.yn.web;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,12 +30,11 @@ import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.enums.OrderDetailEnum;
 import com.yn.enums.ResultEnum;
-import com.yn.model.Order;
-import com.yn.service.OrderDetailService;
 import com.yn.model.Apolegamy;
 import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
 import com.yn.model.OrderPlan;
 import com.yn.model.UploadPhoto;
 import com.yn.model.User;
@@ -44,6 +43,7 @@ import com.yn.service.ApolegamyOrderService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.OrderDetailService;
 import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.OssService;
@@ -165,7 +165,7 @@ public class OrderController {
 		Order findOne = orderService.findOne(order.getId());
 		Map<String, String> result = new HashMap<>();
 		Wallet wallet = walletService.findWalletByUser(orderVo.getUserId());
-		User findOne2 = userservice.findOne(orderVo.getUserId());
+		User findOne2 = userservice.findOne(findOne.getUserId());
 		result.put("nickName", findOne2.getNickName());
 		switch (target) {
 		case LOANAPPLICATION:
@@ -173,17 +173,17 @@ public class OrderController {
 			break;
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case BUILDPAYMENT:
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case GRIDCONNECTEDPAYMENT:
 			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
 																		// -->
 																		// 报建状态
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
@@ -192,7 +192,7 @@ public class OrderController {
 			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
 																			// -->
 																			// 并网发电的线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case BUILDAPPLICATION:
 			result = orderDetailService.buildApplication(findOne);// 建设中 -->
@@ -213,15 +213,20 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep"/*, method = { RequestMethod.POST }*/)
+	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
 			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+		if (orderVo != null) {
+			if (orderVo.getId() == null) {
+				return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+			}
+		}
 		Order order = new Order();
 		// BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(orderVo.getId());
-		Map<String, String> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		Double flag4Money = 0d;// 支付的钱
 		System.err.println(order.getApplyStepA());
 		// flag4ApplyStepA; //完成屋顶勘察预约的
@@ -230,13 +235,20 @@ public class OrderController {
 		// 申请中的下一步
 		if (nextId == 1) {
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
-			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? true + "" : false + "");
-			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? true + "" : false + "");
+			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? 1 : 0);
+			result.put("applyStepBImgUrl",
+					findOne.getApplyStepBImgUrl() == null || findOne.getApplyStepBImgUrl().length() < 1 ? 0 : 1);
+			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
+			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
 		} else { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("flag4BuildStepA", findOne.getBuildStepA() == 10 ? true + "" : false + "");
+			result.put("buildIsPay", findOne.getBuildIsPay() == 1 ? 1 : 0);
+			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
+			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
 		}
-		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
+		result.put("flag4Money", flag4Money < 0 ? 1 : 0);
+		result.put("loanStatus", findOne.getLoanStatus());// 贷款状态
+		result.put("status", findOne.getStatus());// 订单状态
 		return ResultVOUtil.success(result);
 	}
 
@@ -578,9 +590,7 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
 	public Object giveStatus(@RequestParam("orderId") Long orderId) {
-
 		Order order = orderService.findstatus(orderId);
-
 		return ResultVOUtil.success(order);
 	}
 	
@@ -649,4 +659,103 @@ public class OrderController {
 	        return ResultVOUtil.success(finaltime);   
 	 }
 
-}
+	 /**
+		 * 申请中
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/inApplication")
+		public Object inApplication(OrderVo orderVo) {
+			Order order = orderService.findOne(orderVo.getId());
+			Map<String, Object> jsonResult = new HashMap<>();
+			// 取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			// 预约状态 屋顶勘察
+			jsonResult.put("applyStepA", order.getApplyStepA());
+			// 申请报建状态
+			jsonResult.put("applyStepB", order.getApplyStepB());
+			return ResultVOUtil.success(jsonResult);
+		}
+
+		/**
+		 * 施工中
+		 * 
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/inConstruction")
+		public Object inConstruction(OrderVo orderVo) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			Order order = orderService.findOne(orderVo.getId());
+			// 取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			// 施工中-施工申请状态
+			jsonResult.put("buildStepA", order.getBuildStepA());
+			// 施工中-支付状态
+			jsonResult.put("buildIsPay", order.getBuildIsPay());
+			// 施工中-施工状态
+			jsonResult.put("buildStepB", order.getBuildStepB());
+			/* --=>方案设计=--> */
+			// 资质照片地址
+			// jsonResult.put("qualificationsImgUrl",
+			// order.getServer().getQualificationsImgUrl());
+			// 其他三种方案设计的图片
+			// --=> ? 暂无
+			return ResultVOUtil.success(jsonResult);
+		}
+
+		/**
+		 * 并网发电
+		 * 
+		 * @return
+		 */
+		@ResponseBody
+		@RequestMapping(value = "/inGridConnectedGeneration")
+		public Object inGridConnectedGeneration(OrderVo orderVo) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			Order order = orderService.findOne(orderVo.getId());
+			// 取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			// 暂无
+			return ResultVOUtil.success(jsonResult);
+		}
+
+		private Map<String, Object> wcnmlgbd(Order order) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			// Set<BillOrder> billOrder = order.getBillOrder();
+			// String msg = "";
+			// int numCount = 0;
+			// 我，秦始皇，打钱。
+			// if (billOrder != null) {
+			// for (BillOrder billOrder2 : billOrder) {
+			// msg += billOrder2.getCreateDtm() + " 第" + (numCount++) + "次支付" +
+			// billOrder2.getMoney() + "<br/>";
+			// }
+			// }
+			// jsonResult.put("payCount", msg == "" ? "暂未支付记录" : msg);
+			// 打钱
+			List<BillOrder> billOrder = billOrderService.findByOrderId(order.getId());
+			List<String> say = billOrderService.getSay(billOrder);
+			jsonResult.put("payCount", say);
+			// 贷款进度
+			jsonResult.put("loanStatus", order.getLoanStatus());
+			// 计算进度条
+			Double a = order.getTotalPrice(), b = order.getHadPayPrice();
+			DecimalFormat df = new DecimalFormat("#.00");
+			if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
+				jsonResult.put("progressBar", 0.00);
+			} else {
+				jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
+			}
+			// 支付状态
+			jsonResult.put("applyIsPay", order.getApplyIsPay());
+			// 订单状态
+			jsonResult.put("status", order.getStatus());
+			return jsonResult;
+		}
+
+	}
+
