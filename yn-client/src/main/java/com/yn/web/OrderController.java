@@ -1,7 +1,8 @@
 package com.yn.web;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
@@ -21,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.enums.OrderDetailEnum;
@@ -32,6 +37,7 @@ import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
 import com.yn.model.OrderPlan;
+import com.yn.model.UploadPhoto;
 import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.ApolegamyOrderService;
@@ -40,9 +46,11 @@ import com.yn.service.BillOrderService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
+import com.yn.service.OssService;
 import com.yn.service.ServerPlanService;
 import com.yn.service.ServerService;
 import com.yn.service.StationService;
+import com.yn.service.UploadPhotoService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.utils.BeanCopy;
@@ -60,7 +68,10 @@ import com.yn.vo.re.ResultVOUtil;
 public class OrderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
-
+	@Autowired
+    private UserService userService;
+	@Autowired
+	private OssService oss;
 	@Autowired
 	OrderPlanService orderPlanService;
 	@Autowired
@@ -85,7 +96,8 @@ public class OrderController {
 	StationService stationService;
 	@Autowired
 	BillOrderService billOrderService;
-
+	@Autowired
+	UploadPhotoService uploadPhotoService;
 	@Autowired
 	OrderService ordService;
 	@Autowired
@@ -297,11 +309,9 @@ public class OrderController {
 		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
 
 		session.setAttribute("newPlanVo", newPlanVo);
-		/*
-		 * session.setAttribute("list", list);
-		 * session.setAttribute("newserverplanid", planid);
-		 */
-		// ResultVOUtil.newsuccess(newPlanVo, list01)
+		session.setAttribute("orderCode", newPlanVo.getOrderCode());
+		
+	
 		return ResultVOUtil.newsuccess(newPlanVo, list01);
 	}
 
@@ -399,7 +409,13 @@ public class OrderController {
 	public ResultData<Object> findOrderprice(HttpSession session) {
 		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
 		// Integer type = (Integer)session.getAttribute("type");
-
+		String orderCode =	(String) session.getAttribute("orderCode");
+		
+	Order orderSize =orderService.finByOrderCode(orderCode);
+	Map<String, Long> map = new HashMap<String, Long>();
+	 if(null == orderSize){
+	
+		
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
 		List<Long> listid = (List<Long>) session.getAttribute("list");
@@ -424,7 +440,7 @@ public class OrderController {
 
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
-		orderService.save(order);
+		orderService.newSave(order);
 
 		Order order02 = new Order();
 		order02.setOrderCode(order.getOrderCode());
@@ -457,11 +473,14 @@ public class OrderController {
 
 		neworder.getUser().setPassword(null);
 
-		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
 
 		/** 传出电站的id */
 		return ResultVOUtil.success(map);
+	 }
+	 map.put("orderId", orderSize.getId());
+	 
+	 return ResultVOUtil.success(map);
 	}
 
 	/** Ioc点击确定的接口*/
@@ -469,7 +488,7 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/iocorderPrice")
 	public ResultData<Object> findIocordprice(HttpSession session, Integer capacity) {
-		NewUserVo newuser = (NewUserVo) session.getAttribute("newuser");
+		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
@@ -564,5 +583,70 @@ public class OrderController {
 
 		return ResultVOUtil.success(order);
 	}
+	
+	
+	
+	/** 服务商上传营业执照等*/
+	 @RequestMapping(value="/userInfoUpload", method = {RequestMethod.POST})
+	 @ResponseBody
+	  public ResultData<Object> getupload(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
+		  request.setCharacterEncoding("UTF-8");
+		  String finaltime =null;
+		  
+		 String realpath = "/opt/UpaloadImg";
+		  /** 测试路径*/
+		//  String realpath ="D://Software//huo";
+		//创建一个通用的多部分解析器  
+
+		 CommonsMultipartResolver   multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext()); 
+	        //判断 request 是否有文件上传,即多部分请求  
+	        if(multipartResolver.isMultipart(request)){  
+	            //转换成多部分request 
+	        	MultipartHttpServletRequest	 multiRequest = (MultipartHttpServletRequest)request; 
+	            //取得request中的所有文件名  
+	            Iterator<String> iter = multiRequest.getFileNames();  
+	            while(iter.hasNext()){  
+	                //记录上传过程起始时的时间，用来计算上传时间  
+	                int pre = (int) System.currentTimeMillis();  
+	                //取得上传文件  
+	                MultipartFile file = multiRequest.getFile(iter.next());  
+	                
+	                ResultData<Object>  data =  userService.getresult(file);
+	                
+	                logger.info("--- ---- ----- ---- --- 返回的code为："+data.getCode());
+	                
+	                if(data.getCode() == 200){
+	                	 finaltime  =  oss.upload(file, realpath);
+
+	 	                /** 取得文件以后得把文件保存在本地路径*/
+	 	              
+		 	               if(finaltime.equals("101") ){
+		 	            	   return   ResultVOUtil.error(777, Constant.FILE_ERROR);
+		 	                }
+		 	               if(finaltime.equals("102") ){
+		 	            	   return   ResultVOUtil.error(777, Constant.FILE_NULL);
+		 	                }
+		 	                //记录上传该文件后的时间  
+		 	                int finaltime01 = (int) System.currentTimeMillis();  
+	                }else if(data.getCode() ==777){
+	                	return data;
+	                }
+	            }	
+	        }
+	        logger.info("上传的图片为：-- --- --- ----- --- --- ----"+finaltime);
+	       
+	        
+	    	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+	    	
+	    	UploadPhoto uploadPhoto = new UploadPhoto();
+	    	uploadPhoto.setLoadImg(finaltime);
+	    	uploadPhoto.setUserId(newuser.getId());
+	    	
+	    	  logger.info("添加用户的id为：-- --- --- ----- --- --- ----"+newuser.getId());
+
+	    	uploadPhotoService.save(uploadPhoto);
+	     
+	        return ResultVOUtil.success(finaltime);   
+	 }
 
 }

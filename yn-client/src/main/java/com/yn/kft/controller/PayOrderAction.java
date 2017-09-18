@@ -2,27 +2,18 @@ package com.yn.kft.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
 import com.yn.kftService.PyOrderService;
-import com.yn.kftentity.OrderPay;
 import com.yn.model.BillOrder;
 import com.yn.service.BillOrderService;
-import com.yn.service.OrderService;
 import com.yn.utils.HttpsClientUtil;
 import com.yn.utils.PropertyUtils;
-import com.yn.utils.RequestUtils;
 import com.yn.utils.SignUtil;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -130,8 +121,7 @@ public class PayOrderAction {
 
 				}else if(channel.equals("alipayApp")){
 					 /** 未授权*/
-					
-					
+
 				}
 				
 			}else{

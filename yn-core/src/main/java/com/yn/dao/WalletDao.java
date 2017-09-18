@@ -23,5 +23,11 @@ public interface WalletDao extends JpaRepository<Wallet, Long>, JpaSpecification
 
 
 	Wallet findByUserId(@Param("userid") Long userid);
+	
+	@Transactional
+	@Modifying
+	@Query("update Wallet set money=:#{#wallet.money},updateDtm=(now()) where id = :#{#wallet.id}")
+	void updatePrice(@Param("wallet") Wallet wallet);
+	
 
 }

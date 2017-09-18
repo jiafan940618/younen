@@ -99,11 +99,11 @@ public class OssService {
 //			res = uploadOss("img/" + operateName, operatePath);
 			res = uploadOss("img/" + operateName, path);
 		} else {
-			return "上传失败：上传的文件类型不符合要求,请上传PNG或者JPG格式的图片";
+			return "101";
 		}
 		if (res == 1)
 			return "http://oss.u-en.cn" + "/img/" + operateName;//res == 0 ? "上传失败" : "上传成功";
-		return  "上传失败";
+		return  "102";
 	}
 	
 	
@@ -114,18 +114,29 @@ public class OssService {
 		String accessKeyId = "qoKG4r6HsGejsBWH";
 		String accessKeySecret = "hWLfHm488gnSgu7hyh9V1EltLNv89v";
 
+		
 		OSSClient client = null;
+		logger.info("--- ---- ---- ---- --- ---- 进入异常外");
 		try {
+			logger.info("--- ---- ---- ---- --- ---- 进入异常内");
+			
 			client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+			logger.info("--- ---- ---- ---- --- ---- 第1步");
 			client.putObject("uen", key, new File(localFilePath));
+			logger.info("--- ---- ---- ---- --- ---- 第2步");
 			res = 1;
+			logger.info("--- ---- ---- ---- --- ---- "+res);
 		} catch (Exception e) {
-			System.out.println();
+			
+			 e.printStackTrace(System.out);
+		        throw e;
+		        
 		} finally {
 			try {
 				client.shutdown();
 			} catch (Exception e2) {
-				System.out.println();
+				e2.printStackTrace(System.out);
+			        throw e2;
 			}
 		}
 		System.out.println("done");

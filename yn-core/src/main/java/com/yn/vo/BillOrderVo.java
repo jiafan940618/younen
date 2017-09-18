@@ -1,5 +1,7 @@
 package com.yn.vo;
 
+import java.math.BigDecimal;
+
 import com.yn.domain.QueryVo;
 
 /**
@@ -13,23 +15,18 @@ public class BillOrderVo extends QueryVo{
     private Long dutyUserId;
     private String tradeNo;
 	private Integer payWay;
-    private Double money;
+    private BigDecimal money;
     private String remark;
 	private Integer status;
 	
 	private String channel;
 	
 	/** 余额*/
-	private Double balancePrice;
+	private BigDecimal balancePrice;
 	
 	
 	
-	public Double getBalancePrice() {
-		return balancePrice;
-	}
-	public void setBalancePrice(Double balancePrice) {
-		this.balancePrice = balancePrice;
-	}
+	
 	public String getChannel() {
 		return channel;
 	}
@@ -54,11 +51,18 @@ public class BillOrderVo extends QueryVo{
 	public void setPayWay(Integer payWay) {
 		this.payWay = payWay;
 	}
-	public Double getMoney() {
+	
+	public BigDecimal getMoney() {
 		return money;
 	}
-	public void setMoney(Double money) {
+	public void setMoney(BigDecimal money) {
 		this.money = money;
+	}
+	public BigDecimal getBalancePrice() {
+		return balancePrice;
+	}
+	public void setBalancePrice(BigDecimal balancePrice) {
+		this.balancePrice = balancePrice;
 	}
 	public String getRemark() {
 		return remark;

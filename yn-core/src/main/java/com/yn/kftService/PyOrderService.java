@@ -1,20 +1,23 @@
 package com.yn.kftService;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.yn.model.BillOrder;
+import com.yn.model.User;
+import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
+import com.yn.service.WalletService;
+import com.yn.utils.Constant;
 import com.yn.utils.HttpsClientUtil;
 import com.yn.utils.RequestUtils;
 import com.yn.utils.SignUtil;
+import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
 
@@ -25,6 +28,8 @@ public class PyOrderService {
 	private BillOrderService orderService;
 	@Autowired 
 	PyOrderService pyOrderService;
+	@Autowired
+	WalletService walletService;
 	
 	public Map<String, String> getOrder(Map paramMap,BillOrder orderPay,String channel){
 		
@@ -45,8 +50,8 @@ public class PyOrderService {
 		
 		param.put("timePaid", null);     /**订单支付时间 */
 		param.put("timeExpire", null);   /** 订单失效时间 */
-		param.put("extra", null);        /*** 扩展字段 */
-		
+	     /*** 扩展字段 */
+		param.put("notifyUrl", "http://localhost:9001/client/sign/doresult");
 		param.put("subject", null);    /** 商品标题 */ 
 		//过滤空值或null
 	
@@ -130,4 +135,29 @@ public class PyOrderService {
 		}
 		return null;
 	}
+	
+	
+	
+	/** 处理优能余额支付*/
+	public Object payBalance(BillOrderVo billOrderVo){
+		
+		Wallet wallet =	walletService.findWalletByUser(billOrderVo.getUserId());
+		/** 余额*/
+		BigDecimal balancePrice =	wallet.getMoney();
+	   
+		 /** 余额与支付的钱比较*/
+		if(balancePrice.compareTo(billOrderVo.getMoney()) == -1){
+			
+			return ResultVOUtil.error(777,Constant.MONEY_LITTLE);
+		}
+	 
+		BigDecimal money =balancePrice.subtract(billOrderVo.getMoney());
+
+		wallet.setMoney(money);
+		
+		walletService.updatePrice(wallet);
+		
+		return ResultVOUtil.success("支付成功！");
+	}
+	
 }

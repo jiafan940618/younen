@@ -310,18 +310,18 @@ public class UserService {
                  && !"gif".equals(fileExt)) {  
         	 logger.info(loghead + "上传失败:无效图片文件类型"); 
 
-             return ResultVOUtil.error(1001, "上传失败:无效图片文件类型");
+             return ResultVOUtil.error(777, "上传失败:无效图片文件类型");
          }  
          long fileSize = file.getSize();  
          logger.info(loghead + "fileInfo:fileName=" + fileName + "&fileSize=" + fileSize);  
          if (fileSize <= 0) {  
         	 logger.info(loghead + "上传失败:文件为空");  
         	
-             return ResultVOUtil.error(1002, "上传失败:文件为空");
+             return ResultVOUtil.error(777, "上传失败:文件为空");
          } else if (fileSize > (2 * 1024 * 1024)) {  
         	 logger.info(loghead + "上传失败:文件大小不能超过2M");
         
-             return ResultVOUtil.error(1003, "上传失败:文件大小不能超过2M");
+             return ResultVOUtil.error(777, "上传失败:文件大小不能超过2M");
          }
          
         

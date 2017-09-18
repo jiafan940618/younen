@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,42 +11,37 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.model.Apolegamy;
+import com.yn.kftService.PyOrderService;
+import com.yn.model.Order;
+import com.yn.model.Wallet;
 import com.yn.service.ApolegamyOrderService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
+import com.yn.service.WalletService;
+import com.yn.utils.Constant;
+import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
-@SpringBootTest
 @RequestMapping("/client/test")
 public class TestController {
 
 	
-	
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
-	@Autowired
-	StationService stationService;
-	
-	@Autowired
-	BillOrderService orderService;
-	
-	@Autowired
-	OrderService ordService;
-	@Autowired
-	ApolegamyOrderService APOservice;
 
-	 @Autowired
-	ApolegamyService apolegamyService;
-
+	@Autowired
+	private BillOrderService billorderService;
+	@Autowired 
+	PyOrderService pyOrderService;
+	@Autowired
+	OrderService orderService;
+	
 	 @ResponseBody
 	 @RequestMapping(value = "/dotest")
 	    public String  newTest(HttpSession session) {
@@ -59,19 +55,11 @@ public class TestController {
 	 @ResponseBody
 	    public Object someTest(HttpSession session) {
 		 
-		 List<Long> list =new ArrayList<Long>();
-			
-			Object  object= session.getAttribute("list");
-			if(object instanceof Integer){
-				
-				Integer num01	=(Integer)object;
+		 Order order =  orderService.finByOrderCode("woch170913224950");
+		 
+		System.out.println(order.getId()+"-- -- "+order.getOrderCode());
 
-			}else if(object instanceof List){
-			
-				list =(List<Long>)object;
-			}
-
-			return ResultVOUtil.success(null);
+			return ResultVOUtil.success(order);
 	    }
 	 
 	 /* Server server = new Server();

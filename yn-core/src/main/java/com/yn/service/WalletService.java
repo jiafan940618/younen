@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class WalletService {
 			walletDao.save(wallet);
 		}
 		System.out.println();
+	}
+	
+	
+	public void updatePrice(Wallet wallet){
+		
+		walletDao.updatePrice(wallet);
 	}
 
 	public void delete(Long id) {
@@ -78,7 +85,7 @@ public class WalletService {
     	wallet.setUserId(user.getId());
     	Wallet findOne = findOne(wallet);
     	if (findOne == null) {
-    		wallet.setMoney(0D);
+    		wallet.setMoney(BigDecimal.valueOf(0));
 			save(wallet);
 		}
     }

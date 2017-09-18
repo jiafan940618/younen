@@ -477,6 +477,7 @@ public class UserLoginController {
 	                MultipartFile file = multiRequest.getFile(iter.next());  
 	                
 	                ResultData<Object>  data =  userService.getresult(file);
+	              logger.info("----- - ----- --- 返回的号码为："+data.getCode());
 	                
 	                if(data.getCode() == 200){
 	                	 finaltime  =  oss.upload(file, realpath);
@@ -491,8 +492,7 @@ public class UserLoginController {
 		 	                }
 		 	                //记录上传该文件后的时间  
 		 	                int finaltime01 = (int) System.currentTimeMillis();  
-	                }
-	                if(data.getCode() ==777){
+	                }else  if(data.getCode() ==777){
 	                	return data;
 	                }
 	            }	

@@ -29,6 +29,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -300,8 +301,9 @@ public class ServerService {
 		newPlanVo.setId(newserverPlan.getId().intValue());
 		newPlanVo.setServerId(newserverPlan.getServerId().intValue());
 		newPlanVo.setMaterialJson(newserverPlan.getMaterialJson());
-		// newPlanVo.setUnitPrice(newserverPlan);
-		// newPlanVo.setImg_url(img_url);
+		
+		newPlanVo.setUnitPrice(BigDecimal.valueOf(newserverPlan.getUnitPrice()));
+		newPlanVo.setCapacity(num);
 		newPlanVo.setInvstername(newserverPlan.getInverter().getBrandName() + "   " + newserverPlan.getInverter().getModel());
 		newPlanVo.setBrandname(newserverPlan.getSolarPanel().getBrandName() + "   " + newserverPlan.getSolarPanel().getModel());
 		newPlanVo.setAllMoney(price);

@@ -96,4 +96,13 @@
 	
 	</select>
 	
+	
+	<select id="findOrderCode" parameterType="java.lang.String"  resultMap="BaseResultMap">
+		SELECT  o.id,o.order_code
+	 
+	  FROM t_order o  WHERE o.order_code =#{orderCode}
+	
+	</select>
+	
+	
 </mapper>

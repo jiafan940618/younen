@@ -50,7 +50,7 @@ public class Constant {
     /** 订单支付*/
     public final static String PUR_NULL = "千瓦时不能为空且小于";
     public final static String PRICE_ERROR = "网络错误，请重新提交";
-    
+    public final static String MONEY_LITTLE = "抱歉,你的当前余额不足,请先充值!";
     
     
     

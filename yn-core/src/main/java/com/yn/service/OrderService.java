@@ -67,6 +67,15 @@ public class OrderService {
 	   
 	return orderDao.findOrder(orderId);  
    }
+   
+   public Order finByOrderCode(String orderCode){
+	   
+	   return mapper.findOrderCode(orderCode);
+   }
+   
+   public void newSave(Order order) {
+	   orderDao.save(order);
+   }
 
     public void save(Order order) {
         if (order.getId() != null) {
