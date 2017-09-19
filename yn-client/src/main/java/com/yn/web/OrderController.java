@@ -743,6 +743,7 @@ public class OrderController {
 			// 贷款进度
 			jsonResult.put("loanStatus", order.getLoanStatus());
 			// 计算进度条
+			// order.getHadPayPrice()))/10;
 			Double a = order.getTotalPrice(), b = order.getHadPayPrice();
 			DecimalFormat df = new DecimalFormat("#.00");
 			if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {

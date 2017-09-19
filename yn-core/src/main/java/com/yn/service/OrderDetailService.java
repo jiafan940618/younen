@@ -229,19 +229,19 @@ public class OrderDetailService {
 		Double needToPay = calculatedNeedToPayMoney(order, BUILD_PAYMENT_SCALE);
 		if (needToPay < 0) {
 			// 修改状态 : 已支付、已申请、未开始
-			// order.setBuildIsPay(1);
-			// order.setBuildStepA(1);
-			// order.setBuildStepB(0);
+			 order.setBuildIsPay(1);
+			 order.setBuildStepA(1);
+			 order.setBuildStepB(0);
 			result.put("needToPay", "0");
 		} else {
 			result.put("needToPay", needToPay.toString());
-			// order.setBuildIsPay(0);
-			// order.setBuildStepA(0);
-			// order.setBuildStepB(0);
+			 order.setBuildIsPay(0);
+			 order.setBuildStepA(0);
+			 order.setBuildStepB(0);
 		}
 		// 更新状态 --> success：true
-		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		// result.put("updateOrderStauts", byCondition + "");
+		 boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		 result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
