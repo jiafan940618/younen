@@ -459,9 +459,9 @@ public class UserLoginController {
 		  request.setCharacterEncoding("UTF-8");
 		  String finaltime =null;
 		  
-		//  String realpath = "/opt/Test";
+		  String realpath = "/opt/Test";
 		  /** 测试路径*/
-	  String realpath ="D://Software//huo";
+	 // String realpath ="D://Software//huo";
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  

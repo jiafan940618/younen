@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +28,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.enums.OrderDetailEnum;
 import com.yn.enums.ResultEnum;
-import com.yn.model.Order;
-import com.yn.service.OrderDetailService;
 import com.yn.model.Apolegamy;
 import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
 import com.yn.model.OrderPlan;
 import com.yn.model.UploadPhoto;
 import com.yn.model.User;
@@ -49,6 +47,7 @@ import com.yn.service.ApolegamyOrderService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.OrderDetailService;
 import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.OssService;
@@ -178,17 +177,17 @@ public class OrderController {
 			break;
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case BUILDPAYMENT:
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case GRIDCONNECTEDPAYMENT:
 			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
 																		// -->
 																		// 报建状态
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
@@ -197,7 +196,7 @@ public class OrderController {
 			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
 																			// -->
 																			// 并网发电的线上支付
-			result.put("userBalance", wallet.getMoney().toString());
+			result.put("userBalance", wallet.getMoney() + "");
 			break;
 		case BUILDAPPLICATION:
 			result = orderDetailService.buildApplication(findOne);// 建设中 -->
@@ -218,7 +217,7 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep" , method = { RequestMethod.POST } )
+	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
 		
 		if(orderVo!=null){
@@ -230,6 +229,11 @@ public class OrderController {
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
 			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+		if (orderVo != null) {
+			if (orderVo.getId() == null) {
+				return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+			}
+		}
 		Order order = new Order();
 		// BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(orderVo.getId());
@@ -253,11 +257,10 @@ public class OrderController {
 			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
 			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
 		}
-		
-		
+
 		result.put("flag4Money", flag4Money < 0 ? 1 : 0);
-		result.put("loanStatus", findOne.getLoanStatus());//贷款状态
-		result.put("status", findOne.getStatus());//订单状态
+		result.put("loanStatus", findOne.getLoanStatus());// 贷款状态
+		result.put("status", findOne.getStatus());// 订单状态
 		return ResultVOUtil.success(result);
 	}
 
@@ -614,21 +617,56 @@ public class OrderController {
 	}
 	
 	
-	
+	//  public ResultData<Object> order_detail(@RequestParam("file_data") MultipartFile[]  file_data) throws UnsupportedEncodingException{
 	/** 服务商上传营业执照等*/
 	 @RequestMapping(value="/paydetail")
 	 @ResponseBody
-	  public ResultData<Object> order_detail(@RequestParam("file_data") MultipartFile[]  file_data) throws UnsupportedEncodingException{
+	  public ResultData<Object> order_detail(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
 		 
-		 
-		 logger.info("---- ---- ---- ---- - - ---- 上传图片");
-	
-		
-	         
-	         logger.info("--- -- - -- - - - - - -  结束!");
-	
-	       /* 
-	    	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+		 request.setCharacterEncoding("UTF-8");
+		  String finaltime =null;
+		 String realpath = "/opt/UpaloadImg";
+		  /** 测试路径*/
+	 // String realpath ="D://Software//huo";
+		//创建一个通用的多部分解析器  
+	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
+	        //判断 request 是否有文件上传,即多部分请求  
+	        if(multipartResolver.isMultipart(request)){  
+	            //转换成多部分request    
+	            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;  
+	            //取得request中的所有文件名  
+	            Iterator<String> iter = multiRequest.getFileNames();  
+	            while(iter.hasNext()){  
+	                //记录上传过程起始时的时间，用来计算上传时间  
+	                int pre = (int) System.currentTimeMillis();  
+	                //取得上传文件  
+	                MultipartFile file = multiRequest.getFile(iter.next());  
+	                
+	                ResultData<Object>  data =  userService.getresult(file);
+	              logger.info("----- - ----- --- 返回的号码为："+data.getCode());
+	                
+	                if(data.getCode() == 200){
+	                	 finaltime  =  oss.upload(file, realpath);
+
+	 	                /** 取得文件以后得把文件保存在本地路径*/
+	 	              
+		 	               if(finaltime.equals("101") ){
+		 	            	   return   ResultVOUtil.error(777, Constant.FILE_ERROR);
+		 	                }
+		 	               if(finaltime.equals("102") ){
+		 	            	   return   ResultVOUtil.error(777, Constant.FILE_NULL);
+		 	                }
+		 	                //记录上传该文件后的时间  
+		 	                int finaltime01 = (int) System.currentTimeMillis();  
+	                }else  if(data.getCode() ==777){
+	                	return data;
+	                }
+	            }	
+	        }
+	        
+	        logger.info("添加图片为：-- --- --- ----- --- --- ----"+finaltime);
+
+	    /*	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 	    	
 	    	UploadPhoto uploadPhoto = new UploadPhoto();
 	    	uploadPhoto.setLoadImg(finaltime);
@@ -637,7 +675,7 @@ public class OrderController {
 	    	  logger.info("添加用户的id为：-- --- --- ----- --- --- ----"+newuser.getId());
 
 	    	uploadPhotoService.save(uploadPhoto);*/
-	        return   ResultVOUtil.success(null);
+	        return   ResultVOUtil.success(finaltime);
 	 }
 		/**
 		 * 申请中
@@ -659,17 +697,20 @@ public class OrderController {
 			return ResultVOUtil.success(jsonResult);
 		}
 
+
 		/**
 		 * 施工中
 		 * 
 		 * @return
 		 */
-		@RequestMapping(value = "/inConstruction")
+
 		@ResponseBody
+		@RequestMapping(value = "/inConstruction")
 		public Object inConstruction(OrderVo orderVo) {
 			Map<String, Object> jsonResult = new HashMap<>();
 			Order order = orderService.findOne(orderVo.getId());
-			//取到相同的东西
+			// 取到相同的东西
+
 			jsonResult = wcnmlgbd(order);
 			// 独有的东西
 			// 施工中-施工申请状态
@@ -739,5 +780,5 @@ public class OrderController {
 			jsonResult.put("status", order.getStatus());
 			return jsonResult;
 		}
-
 }
+
