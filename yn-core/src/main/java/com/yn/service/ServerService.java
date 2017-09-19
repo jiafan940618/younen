@@ -94,7 +94,11 @@ public class ServerService {
 		return str;
 	}   
     
-    
+    public String getOrderCode(Long serverId){
+    	
+    	return toSerialCode(serverId, 4) + format.format(System.currentTimeMillis())
+		+ df1.format(rd.nextInt(9999));
+    }
 
     public Long findcityCount(String cityName){
     	
@@ -285,9 +289,7 @@ public class ServerService {
 	   Server server = findOne(newserverPlan.getServerId());
 	   NewPlanVo newPlanVo = new NewPlanVo();
 	   
-		String orderCode = toSerialCode(newserverPlan.getServerId(), 4) + format.format(System.currentTimeMillis())
-				+ df1.format(rd.nextInt(9999));
-		newPlanVo.setOrderCode(orderCode);
+	
 
 		/** 后面得加上该字段*/
 		newPlanVo.setWarPeriod(newserverPlan.getWarPeriod().intValue());

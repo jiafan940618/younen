@@ -235,6 +235,9 @@ public class NewServerPlanService {
 	        order.setApplyStepA(0);
 	        order.setApplyStepB(0);
 	        order.setLoanStatus(0);
+	        order.setBuildIsPay(0);
+	        order.setBuildStepA(0);
+	        order.setBuildStepB(0);
 	        /** 安装类型 默认为 0：居民*/
 	        order.setType(0);
 	       

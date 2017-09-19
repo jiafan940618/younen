@@ -55,11 +55,17 @@ public class TestController {
 	 @ResponseBody
 	    public Object someTest(HttpSession session) {
 		 
-		 Order order =  orderService.finByOrderCode("woch170913224950");
+		 String orderCode =	"zoti170918161576";
 		 
-		System.out.println(order.getId()+"-- -- "+order.getOrderCode());
+		  logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
+		  Order orderSize =orderService.finByOrderCode(orderCode);
+		  if(null == orderSize){
+			  System.out.println("对象为空");
+			  return ResultVOUtil.success("对象为空");
+		  }
 
-			return ResultVOUtil.success(order);
+
+			return ResultVOUtil.success(null);
 	    }
 	 
 	 /* Server server = new Server();

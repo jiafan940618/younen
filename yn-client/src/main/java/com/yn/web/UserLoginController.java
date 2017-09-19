@@ -453,15 +453,15 @@ public class UserLoginController {
 	 }
 	 
 	 /** 服务商上传资质等*/
-	 @RequestMapping(value="/moreupload", method = {RequestMethod.POST})
+	 @RequestMapping(value="/moreupload")
 	 @ResponseBody
 	  public ResultData<Object> getupload02(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
 		  request.setCharacterEncoding("UTF-8");
 		  String finaltime =null;
 		  
-		  String realpath = "/opt/Test";
+		//  String realpath = "/opt/Test";
 		  /** 测试路径*/
-		//  String realpath ="D://Software//huo";
+	  String realpath ="D://Software//huo";
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  
@@ -498,7 +498,7 @@ public class UserLoginController {
 	            }	
 	        }
 
-	       logger.info(finaltime);
+	       logger.info("---- ---- ----- ------- --- 上传的图片为："+finaltime);
 	        return ResultVOUtil.success(finaltime);   
 	 }
 	 

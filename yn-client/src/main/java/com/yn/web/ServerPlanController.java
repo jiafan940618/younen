@@ -40,6 +40,7 @@ import com.yn.service.OrderService;
 import com.yn.service.ProductionService;
 import com.yn.service.QualificationsServerService;
 import com.yn.service.ServerPlanService;
+import com.yn.service.ServerService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
@@ -76,7 +77,8 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     QualificationsServerService qualificationsServerService;
     @Autowired
     NewServerPlanService plan;
-    
+    @Autowired
+    ServerService serverService;
     @Autowired
     NewServerPlanService newserverPlanService;
     
@@ -179,12 +181,11 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
 	        	 logger.info("集合为： ------ ------ ------"+id);
 			}
         }
+        
+        String orderCode = serverService.getOrderCode(findOne.getServerId());
+        
+        session.setAttribute("orderCode", orderCode);
        session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
-      /* if(ids.size() == 0 ){
-    	   session.setAttribute("list", 0);
-       }else{
-    	   session.setAttribute("list", ids);
-       }*/
        session.setAttribute("list", ids);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
        session.setAttribute("userid", userVo.getUserid());

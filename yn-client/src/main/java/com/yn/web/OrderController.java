@@ -1,12 +1,16 @@
 package com.yn.web;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
@@ -167,7 +170,7 @@ public class OrderController {
 		Order findOne = orderService.findOne(order.getId());
 		Map<String, String> result = new HashMap<>();
 		Wallet wallet = walletService.findWalletByUser(orderVo.getUserId());
-		User findOne2 = userservice.findOne(orderVo.getUserId());
+		User findOne2 = userservice.findOne(findOne.getUserId());
 		result.put("nickName", findOne2.getNickName());
 		switch (target) {
 		case LOANAPPLICATION:
@@ -215,15 +218,22 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/nextStep"/* , method = { RequestMethod.POST } */)
+	@RequestMapping(value = "/nextStep" , method = { RequestMethod.POST } )
 	public Object nextStep(Integer nextId, OrderVo orderVo) {
+		
+		if(orderVo!=null){
+			if(orderVo.getId()==null){
+				return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
+			}
+		}
+
 		// 判断参数是否异常
 		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
 			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
 		Order order = new Order();
 		// BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(orderVo.getId());
-		Map<String, String> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		Double flag4Money = 0d;// 支付的钱
 		System.err.println(order.getApplyStepA());
 		// flag4ApplyStepA; //完成屋顶勘察预约的
@@ -232,13 +242,22 @@ public class OrderController {
 		// 申请中的下一步
 		if (nextId == 1) {
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
-			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? true + "" : false + "");
-			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? true + "" : false + "");
+			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? 1 : 0);
+			result.put("applyStepBImgUrl",
+					findOne.getApplyStepBImgUrl() == null || findOne.getApplyStepBImgUrl().length() < 1 ? 0 : 1);
+			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
+			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
 		} else { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("flag4BuildStepA", findOne.getBuildStepA() == 10 ? true + "" : false + "");
+			result.put("buildIsPay", findOne.getBuildIsPay() == 1 ? 1 : 0);
+			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
+			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
 		}
-		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
+		
+		
+		result.put("flag4Money", flag4Money < 0 ? 1 : 0);
+		result.put("loanStatus", findOne.getLoanStatus());//贷款状态
+		result.put("status", findOne.getStatus());//订单状态
 		return ResultVOUtil.success(result);
 	}
 
@@ -309,9 +328,13 @@ public class OrderController {
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
 		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
+		
+		String orderCode =	(String) session.getAttribute("orderCode");
+		
+		newPlanVo.setOrderCode(orderCode);
 
 		session.setAttribute("newPlanVo", newPlanVo);
-		session.setAttribute("orderCode", newPlanVo.getOrderCode());
+
 		
 	
 		return ResultVOUtil.newsuccess(newPlanVo, list01);
@@ -412,12 +435,13 @@ public class OrderController {
 		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
 		// Integer type = (Integer)session.getAttribute("type");
 		String orderCode =	(String) session.getAttribute("orderCode");
-		
+		 
+		  logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
 	Order orderSize =orderService.finByOrderCode(orderCode);
+
 	Map<String, Long> map = new HashMap<String, Long>();
-	 if(null == orderSize){
-	
-		
+	 if(null == orderSize ){
+	  logger.info("---- ---- ---- ------ ----- 开始生成订单");
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
 		List<Long> listid = (List<Long>) session.getAttribute("list");
@@ -476,10 +500,15 @@ public class OrderController {
 		neworder.getUser().setPassword(null);
 
 		map.put("orderId", neworder.getId());
-
+		
+		 logger.info("---- ---- ---- ------ ----- 生成订单成功！");
 		/** 传出电站的id */
 		return ResultVOUtil.success(map);
 	 }
+	 
+	 logger.info("---- ---- ---- ------ ----- 查询的订单号为："+orderSize.getOrderCode());
+	 logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
+	 
 	 map.put("orderId", orderSize.getId());
 	 
 	 return ResultVOUtil.success(map);
@@ -587,55 +616,18 @@ public class OrderController {
 	
 	
 	/** 服务商上传营业执照等*/
-	 @RequestMapping(value="/userInfoUpload", method = {RequestMethod.POST})
+	 @RequestMapping(value="/paydetail")
 	 @ResponseBody
-	  public ResultData<Object> getupload(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
-		  request.setCharacterEncoding("UTF-8");
-		  String finaltime =null;
-		  
-		 String realpath = "/opt/UpaloadImg";
-		  /** 测试路径*/
-		//  String realpath ="D://Software//huo";
-		//创建一个通用的多部分解析器  
-
-		 CommonsMultipartResolver   multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext()); 
-	        //判断 request 是否有文件上传,即多部分请求  
-	        if(multipartResolver.isMultipart(request)){  
-	            //转换成多部分request 
-	        	MultipartHttpServletRequest	 multiRequest = (MultipartHttpServletRequest)request; 
-	            //取得request中的所有文件名  
-	            Iterator<String> iter = multiRequest.getFileNames();  
-	            while(iter.hasNext()){  
-	                //记录上传过程起始时的时间，用来计算上传时间  
-	                int pre = (int) System.currentTimeMillis();  
-	                //取得上传文件  
-	                MultipartFile file = multiRequest.getFile(iter.next());  
-	                
-	                ResultData<Object>  data =  userService.getresult(file);
-	                
-	                logger.info("--- ---- ----- ---- --- 返回的code为："+data.getCode());
-	                
-	                if(data.getCode() == 200){
-	                	 finaltime  =  oss.upload(file, realpath);
-
-	 	                /** 取得文件以后得把文件保存在本地路径*/
-	 	              
-		 	               if(finaltime.equals("101") ){
-		 	            	   return   ResultVOUtil.error(777, Constant.FILE_ERROR);
-		 	                }
-		 	               if(finaltime.equals("102") ){
-		 	            	   return   ResultVOUtil.error(777, Constant.FILE_NULL);
-		 	                }
-		 	                //记录上传该文件后的时间  
-		 	                int finaltime01 = (int) System.currentTimeMillis();  
-	                }else if(data.getCode() ==777){
-	                	return data;
-	                }
-	            }	
-	        }
-	        logger.info("上传的图片为：-- --- --- ----- --- --- ----"+finaltime);
-	       
-	        
+	  public ResultData<Object> order_detail(@RequestParam("file_data") MultipartFile[]  file_data) throws UnsupportedEncodingException{
+		 
+		 
+		 logger.info("---- ---- ---- ---- - - ---- 上传图片");
+	
+		
+	         
+	         logger.info("--- -- - -- - - - - - -  结束!");
+	
+	       /* 
 	    	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 	    	
 	    	UploadPhoto uploadPhoto = new UploadPhoto();
@@ -644,104 +636,108 @@ public class OrderController {
 	    	
 	    	  logger.info("添加用户的id为：-- --- --- ----- --- --- ----"+newuser.getId());
 
-	    	uploadPhotoService.save(uploadPhoto);
-	     
-	        return ResultVOUtil.success(finaltime);   
+	    	uploadPhotoService.save(uploadPhoto);*/
+	        return   ResultVOUtil.success(null);
 	 }
+		/**
+		 * 申请中
+		 * 
+		 * @return
+		 */
+		@RequestMapping(value = "/inApplication")
+		@ResponseBody
+		public Object inApplication(OrderVo orderVo) {
+			Order order = orderService.findOne(orderVo.getId());
+			Map<String, Object> jsonResult = new HashMap<>();
+			//取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			// 预约状态 屋顶勘察
+			jsonResult.put("applyStepA", order.getApplyStepA());
+			// 申请报建状态
+			jsonResult.put("applyStepB", order.getApplyStepB());
+			return ResultVOUtil.success(jsonResult);
+		}
 
-	/**
-	 * 申请中
-	 * 
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/inApplication")
-	public Object inApplication(OrderVo orderVo) {
-		Order order = orderService.findOne(orderVo.getId());
-		Map<String, Object> jsonResult = new HashMap<>();
-		//取到相同的东西
-		jsonResult = wcnmlgbd(order);
-		// 独有的东西
-		// 预约状态 屋顶勘察
-		jsonResult.put("applyStepA", order.getApplyStepA().toString());
-		// 申请报建状态
-		jsonResult.put("applyStepB", order.getApplyStepB().toString());
-		return ResultVOUtil.success(jsonResult);
-	}
+		/**
+		 * 施工中
+		 * 
+		 * @return
+		 */
+		@RequestMapping(value = "/inConstruction")
+		@ResponseBody
+		public Object inConstruction(OrderVo orderVo) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			Order order = orderService.findOne(orderVo.getId());
+			//取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			// 施工中-施工申请状态
+			jsonResult.put("buildStepA", order.getBuildStepA());
+			// 施工中-支付状态
+			jsonResult.put("buildIsPay", order.getBuildIsPay());
+			// 施工中-施工状态
+			jsonResult.put("buildStepB", order.getBuildStepB());
+			/* --=>方案设计=--> */
+			// 资质照片地址
+			// jsonResult.put("qualificationsImgUrl",
+			// order.getServer().getQualificationsImgUrl());
+			// 其他三种方案设计的图片
+			// --=> ? 暂无
+			return ResultVOUtil.success(jsonResult);
+		}
 
-	/**
-	 * 施工中
-	 * 
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/inConstruction")
-	public Object inConstruction(OrderVo orderVo) {
-		Map<String, Object> jsonResult = new HashMap<>();
-		Order order = orderService.findOne(orderVo.getId());
-		//取到相同的东西
-		jsonResult = wcnmlgbd(order);
-		// 独有的东西
-		// 施工中-施工申请状态
-		jsonResult.put("buildStepA", order.getBuildStepA().toString());
-		// 施工中-支付状态
-		jsonResult.put("buildIsPay", order.getBuildIsPay().toString());
-		// 施工中-施工状态
-		jsonResult.put("buildStepB", order.getBuildStepB().toString());
-		/* --=>方案设计=--> */
-		// 资质照片地址
-		// jsonResult.put("qualificationsImgUrl",
-		// order.getServer().getQualificationsImgUrl());
-		// 其他三种方案设计的图片
-		// --=> ? 暂无
-		return ResultVOUtil.success(jsonResult);
-	}
+		/**
+		 * 并网发电
+		 * 
+		 * @return
+		 */
+		@RequestMapping(value = "/inGridConnectedGeneration")
+		@ResponseBody
+		public Object inGridConnectedGeneration(OrderVo orderVo) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			Order order = orderService.findOne(orderVo.getId());
+			//取到相同的东西
+			jsonResult = wcnmlgbd(order);
+			// 独有的东西
+			//暂无
+			return ResultVOUtil.success(jsonResult);
+		}
 
-	/**
-	 * 并网发电
-	 * 
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/inGridConnectedGeneration")
-	public Object inGridConnectedGeneration(OrderVo orderVo) {
-		Map<String, Object> jsonResult = new HashMap<>();
-		Order order = orderService.findOne(orderVo.getId());
-		//取到相同的东西
-		jsonResult = wcnmlgbd(order);
-		// 独有的东西
-		//暂无
-		return ResultVOUtil.success(jsonResult);
-	}
-
-	private Map<String, Object> wcnmlgbd(Order order) {
-		Map<String, Object> jsonResult = new HashMap<>();
-		// Set<BillOrder> billOrder = order.getBillOrder();
-		// String msg = "";
-		// int numCount = 0;
-		// 我，秦始皇，打钱。
-		// if (billOrder != null) {
-		// for (BillOrder billOrder2 : billOrder) {
-		// msg += billOrder2.getCreateDtm() + " 第" + (numCount++) + "次支付" +
-		// billOrder2.getMoney() + "<br/>";
-		// }
-		// }
-		// jsonResult.put("payCount", msg == "" ? "暂未支付记录" : msg);
-		// 打钱
-		List<BillOrder> billOrder = billOrderService.findByOrderId(order.getId());
-		List<String> say = billOrderService.getSay(billOrder);
-		jsonResult.put("payCount", say);
-		// 贷款进度
-		jsonResult.put("progressBar", order.getLoanStatus().toString());
-		// 计算进度条
-		// int progressBar = ((int) (order.getTotalPrice() /
-		// order.getHadPayPrice()))/10;
-		jsonResult.put("progressBar", (((int) (order.getTotalPrice() / order.getHadPayPrice())) / 10) + "");
-		// 支付状态
-		jsonResult.put("applyIsPay", order.getApplyIsPay().toString());
-		// 订单状态
-		jsonResult.put("status", order.getStatus().toString());
-		return jsonResult;
-	}
+		private Map<String, Object> wcnmlgbd(Order order) {
+			Map<String, Object> jsonResult = new HashMap<>();
+			// Set<BillOrder> billOrder = order.getBillOrder();
+			// String msg = "";
+			// int numCount = 0;
+			// 我，秦始皇，打钱。
+			// if (billOrder != null) {
+			// for (BillOrder billOrder2 : billOrder) {
+			// msg += billOrder2.getCreateDtm() + " 第" + (numCount++) + "次支付" +
+			// billOrder2.getMoney() + "<br/>";
+			// }
+			// }
+			// jsonResult.put("payCount", msg == "" ? "暂未支付记录" : msg);
+			// 打钱
+			List<BillOrder> billOrder = billOrderService.findByOrderId(order.getId());
+			List<String> say = billOrderService.getSay(billOrder);
+			jsonResult.put("payCount", say);
+			// 贷款进度
+			jsonResult.put("loanStatus", order.getLoanStatus());
+			// 计算进度条
+			// int progressBar = ((int) (order.getTotalPrice() /
+			// order.getHadPayPrice()))/10;
+			Double a=order.getTotalPrice(),b=order.getHadPayPrice();
+			DecimalFormat df = new DecimalFormat("#.00");
+			if(df.format(Double.valueOf((b/a))*100).equals(".00")){
+				jsonResult.put("progressBar", 0.00);
+			}else{
+				jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b/a))*100)));
+			}
+			// 支付状态
+			jsonResult.put("applyIsPay", order.getApplyIsPay());
+			// 订单状态
+			jsonResult.put("status", order.getStatus());
+			return jsonResult;
+		}
 
 }
