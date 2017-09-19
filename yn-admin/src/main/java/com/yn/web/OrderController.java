@@ -145,26 +145,34 @@ public class OrderController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/orderDetail", method = { RequestMethod.POST })
+	@RequestMapping(value = "/orderDetail"/*
+											 * , method = { RequestMethod.POST }
+											 */)
 	public Object orderDetail(OrderVo orderVo, OrderDetailEnum target) {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
-		Order findOne = orderService.findOne(order.getId());
-		Map<String, String> result = new HashMap<>();
+		Order findOne = orderService.findOne(orderVo.getId());
+		Map<String, Object> result = new HashMap<>();
+		Wallet wallet = walletService.findWalletByUser(findOne.getUserId());
+		User findOne2 = userservice.findOne(findOne.getUserId());
+		result.put("nickName", findOne2.getNickName());
 		switch (target) {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
 			break;
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
+			result.put("userBalance", wallet.getMoney());
 			break;
 		case BUILDPAYMENT:
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
+			result.put("userBalance", wallet.getMoney());
 			break;
 		case GRIDCONNECTEDPAYMENT:
 			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
 																		// -->
 																		// 报建状态
+			result.put("userBalance", wallet.getMoney());
 			break;
 		case SURVEYAPPOINTMENT:
 			result = orderDetailService.surveyAppointment(findOne);// 勘察预约
@@ -173,6 +181,7 @@ public class OrderController {
 			result = orderDetailService.gridConnectedApplication(findOne);// 并网申请
 																			// -->
 																			// 并网发电的线上支付
+			result.put("userBalance", wallet.getMoney());
 			break;
 		case BUILDAPPLICATION:
 			result = orderDetailService.buildApplication(findOne);// 建设中 -->
