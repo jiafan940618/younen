@@ -42,15 +42,14 @@ public class SignController {
 		@ResponseBody
 		@RequestMapping(value="/payonline")
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
-		public Object doOnline(HttpServletRequest request){
+		public Object doOnline(HttpServletRequest request,BillOrderVo billOrderVo){
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			BillOrderVo billOrderVo = new BillOrderVo();
+			/*BillOrderVo billOrderVo = new BillOrderVo();
 			billOrderVo.setChannel("alipayQR");
 			billOrderVo.setPayWay(2);
-			billOrderVo.setTradeNo("2017071014160552756");
-			
+			billOrderVo.setTradeNo("2017071014160552756");*/
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
@@ -64,15 +63,16 @@ public class SignController {
 			//String type ="2";
 			 //等于1是余额支付
 			if(billOrderVo.getPayWay()==1){
-				
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法1：");
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于2是支付宝支付	
 			}else if(billOrderVo.getPayWay()==2){
-				
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法2："+billOrderVo.getChannel());
 				
 				return pyOrderService.getMap(request, billOrderVo.getTradeNo(), billOrderVo.getChannel());
 				 //等于3是微信支付
 			}else if(billOrderVo.getPayWay()==3){
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法3："+billOrderVo.getChannel());
 				
 				return pyOrderService.getMap(request, billOrderVo.getTradeNo(), billOrderVo.getChannel());
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付

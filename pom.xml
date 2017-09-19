@@ -202,10 +202,15 @@
 					<source>1.8</source>
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
-					<!-- <compilerArgs>
+					 <compilerArgs>
 						<arg>-extdirs</arg>
 						<arg>yn-core/lib</arg>
-					</compilerArgs> -->
+					</compilerArgs>	
+					
+					<compilerArguments>
+				         <extdirs>src\main\webapp\WEB-INF\lib</extdirs>
+				      </compilerArguments>
+      
 				</configuration>
 			</plugin>
 		</plugins>

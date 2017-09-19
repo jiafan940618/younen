@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -623,11 +624,13 @@ public class OrderController {
 	 @ResponseBody
 	  public ResultData<Object> order_detail(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
 		 
+		
 		 request.setCharacterEncoding("UTF-8");
 		  String finaltime =null;
-		 String realpath = "/opt/UpaloadImg";
+		  
+		  String realpath = "/opt/UpaloadImg";
 		  /** 测试路径*/
-	 // String realpath ="D://Software//huo";
+		//  String realpath ="D://Software//huo";
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  
@@ -643,7 +646,6 @@ public class OrderController {
 	                MultipartFile file = multiRequest.getFile(iter.next());  
 	                
 	                ResultData<Object>  data =  userService.getresult(file);
-	              logger.info("----- - ----- --- 返回的号码为："+data.getCode());
 	                
 	                if(data.getCode() == 200){
 	                	 finaltime  =  oss.upload(file, realpath);
@@ -658,15 +660,15 @@ public class OrderController {
 		 	                }
 		 	                //记录上传该文件后的时间  
 		 	                int finaltime01 = (int) System.currentTimeMillis();  
-	                }else  if(data.getCode() ==777){
+	                }
+	                if(data.getCode() ==777){
 	                	return data;
 	                }
 	            }	
 	        }
-	        
 	        logger.info("添加图片为：-- --- --- ----- --- --- ----"+finaltime);
 
-	    /*	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+	    	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 	    	
 	    	UploadPhoto uploadPhoto = new UploadPhoto();
 	    	uploadPhoto.setLoadImg(finaltime);
@@ -674,7 +676,7 @@ public class OrderController {
 	    	
 	    	  logger.info("添加用户的id为：-- --- --- ----- --- --- ----"+newuser.getId());
 
-	    	uploadPhotoService.save(uploadPhoto);*/
+	    	uploadPhotoService.save(uploadPhoto);
 	        return   ResultVOUtil.success(finaltime);
 	 }
 		/**
