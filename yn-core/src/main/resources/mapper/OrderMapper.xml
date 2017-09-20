@@ -53,6 +53,8 @@
 		<result column="build_is_pay" property="buildIsPay" jdbcType="INTEGER" />
 		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
 		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
+		<result column="construction_status" property="constructionStatus"
+			jdbcType="VARCHAR" />
 
 	</resultMap>
 
@@ -92,17 +94,17 @@
 	<select id="findstatus" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		SELECT
-			o.loan_status,
-			o.apply_is_pay,
-			o.apply_stepa,
-			o.apply_stepb,
-			o.status,
-			o.apply_stepbimg_url,
-			o.build_is_pay,
-			o.build_stepa,
-			o.build_stepb,
-			o.grid_connected_is_pay,
-			o.grid_connected_stepa
+		o.loan_status,
+		o.apply_is_pay,
+		o.apply_stepa,
+		o.apply_stepb,
+		o.status,
+		o.apply_stepbimg_url,
+		o.build_is_pay,
+		o.build_stepa,
+		o.build_stepb,
+		o.grid_connected_is_pay,
+		o.grid_connected_stepa
 		FROM t_order o WHERE o.id =#{orderId}
 
 	</select>
@@ -112,9 +114,26 @@
 		resultMap="BaseResultMap">
 		SELECT o.id,o.order_code
 
-		FROM t_order o WHERE o.order_code =#{orderCode}
+		FROM t_order o WHERE o.order_code
+		=#{orderCode}
 
 	</select>
 
+	<update id="updateConstructionStatus" parameterType="com.yn.model.Order">
+		update t_order
+			<set>
+				construction_status = #{constructionStatus}
+			</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updateBuildStepB" parameterType="com.yn.model.Order">
+		update t_order
+			<set>
+				build_stepb = #{buildStepB}
+			</set>
+		where id = #{id}
+	</update>
+	
 
 </mapper>

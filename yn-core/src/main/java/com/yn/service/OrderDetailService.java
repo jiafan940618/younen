@@ -67,12 +67,12 @@ public class OrderDetailService {
 			} else {
 				result.put("needToPay", totalPrice);
 			}
-			// order.setLoanStatus(1);// 贷款申请中
-			// order.setStatus(0);// 订单申请中
+			 order.setLoanStatus(1);// 贷款申请中
+			 order.setStatus(0);// 订单申请中
 		}
 		// 更新状态 --> success：true
-		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		// result.put("updateOrderStauts", byCondition + "");
+		 boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		 result.put("updateOrderStauts", byCondition);
 		return result;
 	}
 

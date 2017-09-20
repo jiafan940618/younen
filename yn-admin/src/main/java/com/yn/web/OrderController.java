@@ -150,7 +150,7 @@ public class OrderController {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(order.getId());
-		Map<String, String> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		switch (target) {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请

@@ -18,4 +18,7 @@ public interface OrderMapper {
 	
 	Order findOrderCode(String orderCode);
 
+	int updateConstructionStatus(Order order);
+	
+	int updateBuildStepB(Order order);
 }

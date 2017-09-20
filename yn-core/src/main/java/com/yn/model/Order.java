@@ -95,6 +95,9 @@ public class Order extends IDomain implements Serializable {
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[并网发电-并网状态]{0:未申请,1:已申请,2:并网完成}'")
 	private Integer gridConnectedStepA;
 
+	@Column(insertable=false, columnDefinition = "VARCHAR(255)  COMMENT '[施工状态]'")
+	private String constructionStatus;
+	
 
     /**
      * 是否已读
@@ -488,4 +491,12 @@ public class Order extends IDomain implements Serializable {
     public void setIsRead(Integer isRead) {
         this.isRead = isRead;
     }
+
+	public String getConstructionStatus() {
+		return constructionStatus;
+	}
+
+	public void setConstructionStatus(String constructionStatus) {
+		this.constructionStatus = constructionStatus;
+	}
 }
