@@ -5,10 +5,13 @@ import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.Order;
+import com.yn.vo.re.ResultVOUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -67,12 +70,12 @@ public class OrderDetailService {
 			} else {
 				result.put("needToPay", totalPrice);
 			}
-			 order.setLoanStatus(1);// 贷款申请中
-			 order.setStatus(0);// 订单申请中
+			order.setLoanStatus(1);// 贷款申请中
+			order.setStatus(0);// 订单申请中
 		}
 		// 更新状态 --> success：true
-		 boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		 result.put("updateOrderStauts", byCondition);
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition);
 		return result;
 	}
 
@@ -92,7 +95,7 @@ public class OrderDetailService {
 			result.put("needToPay", needToPay);
 			// order.setApplyIsPay(0);// 未支付
 		}
-		
+
 		result.put("nickName", order.getUser().getNickName());
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
@@ -273,6 +276,29 @@ public class OrderDetailService {
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		// result.put("updateOrderStauts", byCondition + "");
+		/* --先判断是贷款还是线上支付的   以下是ios需要的-- */
+		// 贷款不成功,并网未支付 
+		boolean flag= true;
+		if (order.getGridConnectedIsPay() >0 && order.getLoanStatus() != 2) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getGridConnectedStepA() != 2) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getStatus() != 3) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getHadPayPrice() < order.getTotalPrice()) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		//可以发电、ios需要
+		if(flag){
+			result.put("isPowerGeneration", true);
+		}
 		return result;
 	}
 

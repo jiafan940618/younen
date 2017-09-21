@@ -174,7 +174,7 @@ public class OrderController {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
 			break;
-		
+
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
 			break;
@@ -243,15 +243,15 @@ public class OrderController {
 					findOne.getApplyStepBImgUrl() == null || findOne.getApplyStepBImgUrl().length() < 1 ? 0 : 1);
 			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
 			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
-		} else if(nextId==2) { // 施工中的下一步
+		} else if (nextId == 2) { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
 			result.put("buildIsPay", findOne.getBuildIsPay() == 1 ? 1 : 0);
 			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
 			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
-		}else{//进入并网发电、ios端
+		} else {// 进入并网发电、ios端
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("gridConnectedIsPay", findOne.getGridConnectedIsPay());//并网发电支付状态
-			result.put("gridConnectedStepA", findOne.getGridConnectedStepA());//并网发电并网状态
+			result.put("gridConnectedIsPay", findOne.getGridConnectedIsPay());// 并网发电支付状态
+			result.put("gridConnectedStepA", findOne.getGridConnectedStepA());// 并网发电并网状态
 		}
 
 		result.put("flag4Money", flag4Money < 0 ? 1 : 0);
@@ -284,10 +284,22 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/pushComment")
 	public Object pushComment(Comment comment) {
-		boolean stationRun = orderDetailService.pushComment(comment);
-		return ResultVOUtil.success(stationRun);
+		Long orderId = comment.getOrderId();
+		System.out.println(orderId+"-->orderId");
+		Order order = orderService.findOne(orderId);
+		//支付过的或者贷款的。
+		if(order.getLoanStatus()==2||order.getGridConnectedIsPay()==2){
+			//并网完成的。
+			if(order.getGridConnectedStepA()==2){
+				boolean stationRun = orderDetailService.pushComment(comment);
+				return ResultVOUtil.success(stationRun);
+			}else{
+				return ResultVOUtil.error(-1, "并网尚未完成。");
+			}
+		}
+		return ResultVOUtil.error(-1, "操作异常，请联系客服。");
 	}
-
+	
 	/** 订单详情 */
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
@@ -327,9 +339,9 @@ public class OrderController {
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
 		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
-		
-		String orderCode =	(String) session.getAttribute("orderCode");
-		
+
+		String orderCode = (String) session.getAttribute("orderCode");
+
 		newPlanVo.setOrderCode(orderCode);
 
 		session.setAttribute("newPlanVo", newPlanVo);
@@ -433,16 +445,15 @@ public class OrderController {
 	public ResultData<Object> findOrderprice(HttpSession session) {
 		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
 		// Integer type = (Integer)session.getAttribute("type");
-		String orderCode =	(String) session.getAttribute("orderCode");
-		 
-		  logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
-	Order orderSize =orderService.finByOrderCode(orderCode);
+		String orderCode = (String) session.getAttribute("orderCode");
 
-	Map<String, Long> map = new HashMap<String, Long>();
-	 if(null == orderSize ){
-	  logger.info("---- ---- ---- ------ ----- 开始生成订单");
-		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
+		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);
+		Order orderSize = orderService.finByOrderCode(orderCode);
 
+		Map<String, Long> map = new HashMap<String, Long>();
+		if (null == orderSize) {
+			logger.info("---- ---- ---- ------ ----- 开始生成订单");
+			NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
 			List<Long> listid = (List<Long>) session.getAttribute("list");
 			List<Apolegamy> list = apolegamyService.findAll(listid);
@@ -494,22 +505,22 @@ public class OrderController {
 
 			/** 添加电站 */
 			stationService.insertStation(neworder);
-			
+
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
 			logger.info("---- ---- ------ ----- ----- 添加结束！");
 			neworder.getUser().setPassword(null);
 
 			map.put("orderId", neworder.getId());
-		
-		 logger.info("---- ---- ---- ------ ----- 生成订单成功！");
-		/** 传出电站的id */
-		return ResultVOUtil.success(map);
-	 }
-	 
-	 logger.info("---- ---- ---- ------ ----- 查询的订单号为："+orderSize.getOrderCode());
-	 logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
-	 
+
+			logger.info("---- ---- ---- ------ ----- 生成订单成功！");
+			/** 传出电站的id */
+			return ResultVOUtil.success(map);
+		}
+
+		logger.info("---- ---- ---- ------ ----- 查询的订单号为：" + orderSize.getOrderCode());
+		logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
+
 		map.put("orderId", orderSize.getId());
 
 		return ResultVOUtil.success(map);
@@ -583,7 +594,6 @@ public class OrderController {
 
 		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
-		
 
 		/** 传出电站的id */
 		return ResultVOUtil.success(map);
@@ -607,6 +617,7 @@ public class OrderController {
 		return ResultVOUtil.newsuccess(order2, list);
 
 	}
+
 	/** 显示购买的状态 */
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
@@ -617,10 +628,10 @@ public class OrderController {
 		Order findOne = orderService.findOne(orderId);
 		// 进度条
 		Double a = findOne.getTotalPrice(), b = findOne.getHadPayPrice();
-		if(a==null){
+		if (a == null) {
 			a = 0d;
 		}
-		if(b==null){
+		if (b == null) {
 			b = 0d;
 		}
 		DecimalFormat df = new DecimalFormat("#.00");
@@ -642,67 +653,70 @@ public class OrderController {
 		return ResultVOUtil.success(jsonResult);
 	}
 
-	//  public ResultData<Object> order_detail(@RequestParam("file_data") MultipartFile[]  file_data) throws UnsupportedEncodingException{
-	/** 服务商上传营业执照等*/
-	 @RequestMapping(value="/paydetail")
-	 @ResponseBody
-	  public ResultData<Object> order_detail(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
-		 
-		
-		 request.setCharacterEncoding("UTF-8");
-		  String finaltime =null;
-		  
-		  String realpath = "/opt/UpaloadImg";
-		  /** 测试路径*/
-		//  String realpath ="D://Software//huo";
-		//创建一个通用的多部分解析器  
-	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
-	        //判断 request 是否有文件上传,即多部分请求  
-	        if(multipartResolver.isMultipart(request)){  
-	            //转换成多部分request    
-	            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;  
-	            //取得request中的所有文件名  
-	            Iterator<String> iter = multiRequest.getFileNames();  
-	            while(iter.hasNext()){  
-	                //记录上传过程起始时的时间，用来计算上传时间  
-	                int pre = (int) System.currentTimeMillis();  
-	                //取得上传文件  
-	                MultipartFile file = multiRequest.getFile(iter.next());  
-	                
-	                ResultData<Object>  data =  userService.getresult(file);
-	                
-	                if(data.getCode() == 200){
-	                	 finaltime  =  oss.upload(file, realpath);
+	// public ResultData<Object> order_detail(@RequestParam("file_data")
+	// MultipartFile[] file_data) throws UnsupportedEncodingException{
+	/** 服务商上传营业执照等 */
+	@RequestMapping(value = "/paydetail")
+	@ResponseBody
+	public ResultData<Object> order_detail(MultipartHttpServletRequest request, HttpSession session)
+			throws UnsupportedEncodingException {
 
-	 	                /** 取得文件以后得把文件保存在本地路径*/
-	 	              
-		 	               if(finaltime.equals("101") ){
-		 	            	   return   ResultVOUtil.error(777, Constant.FILE_ERROR);
-		 	                }
-		 	               if(finaltime.equals("102") ){
-		 	            	   return   ResultVOUtil.error(777, Constant.FILE_NULL);
-		 	                }
-		 	                //记录上传该文件后的时间  
-		 	                int finaltime01 = (int) System.currentTimeMillis();  
-	                }
-	                if(data.getCode() ==777){
-	                	return data;
-	                }
-	            }	
-	        }
-	        logger.info("添加图片为：-- --- --- ----- --- --- ----"+finaltime);
+		request.setCharacterEncoding("UTF-8");
+		String finaltime = null;
 
-	    	NewUserVo newuser = (NewUserVo) session.getAttribute("user");
-	    	
-	    	UploadPhoto uploadPhoto = new UploadPhoto();
-	    	uploadPhoto.setLoadImg(finaltime);
-	    	uploadPhoto.setUserId(newuser.getId());
-	    	
-	    	  logger.info("添加用户的id为：-- --- --- ----- --- --- ----"+newuser.getId());
+		String realpath = "/opt/UpaloadImg";
+		/** 测试路径 */
+		// String realpath ="D://Software//huo";
+		// 创建一个通用的多部分解析器
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
+				request.getSession().getServletContext());
+		// 判断 request 是否有文件上传,即多部分请求
+		if (multipartResolver.isMultipart(request)) {
+			// 转换成多部分request
+			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			// 取得request中的所有文件名
+			Iterator<String> iter = multiRequest.getFileNames();
+			while (iter.hasNext()) {
+				// 记录上传过程起始时的时间，用来计算上传时间
+				int pre = (int) System.currentTimeMillis();
+				// 取得上传文件
+				MultipartFile file = multiRequest.getFile(iter.next());
 
-	    	uploadPhotoService.save(uploadPhoto);
-	        return   ResultVOUtil.success(finaltime);
-	 }
+				ResultData<Object> data = userService.getresult(file);
+
+				if (data.getCode() == 200) {
+					finaltime = oss.upload(file, realpath);
+
+					/** 取得文件以后得把文件保存在本地路径 */
+
+					if (finaltime.equals("101")) {
+						return ResultVOUtil.error(777, Constant.FILE_ERROR);
+					}
+					if (finaltime.equals("102")) {
+						return ResultVOUtil.error(777, Constant.FILE_NULL);
+					}
+					// 记录上传该文件后的时间
+					int finaltime01 = (int) System.currentTimeMillis();
+				}
+				if (data.getCode() == 777) {
+					return data;
+				}
+			}
+		}
+		logger.info("添加图片为：-- --- --- ----- --- --- ----" + finaltime);
+
+		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+
+		UploadPhoto uploadPhoto = new UploadPhoto();
+		uploadPhoto.setLoadImg(finaltime);
+		uploadPhoto.setUserId(newuser.getId());
+
+		logger.info("添加用户的id为：-- --- --- ----- --- --- ----" + newuser.getId());
+
+		uploadPhotoService.save(uploadPhoto);
+		return ResultVOUtil.success(finaltime);
+	}
+
 	/**
 	 * 申请中
 	 * 
@@ -766,7 +780,7 @@ public class OrderController {
 		} else if (buildStepB == 10) {
 			jsonResult.put("buildStepB", "并网验收");
 		}
-//		jsonResult.put("buildStepB", order.getBuildStepB());
+		// jsonResult.put("buildStepB", order.getBuildStepB());
 		/* --=>方案设计=--> */
 		// 资质照片地址
 		// jsonResult.put("qualificationsImgUrl",
@@ -777,8 +791,7 @@ public class OrderController {
 	}
 
 	/**
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
-	 * 并网发电
+	 * >>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9 并网发电
 	 * 
 	 * @return
 	 */
@@ -816,53 +829,55 @@ public class OrderController {
 		// 计算进度条
 		// order.getHadPayPrice()))/10;
 		Double a = order.getTotalPrice(), b = order.getHadPayPrice();
-//		DecimalFormat df = new DecimalFormat("#.00");
-//		if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
-//			jsonResult.put("progressBar", 0.00);
-//		} else {
-//			jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
-//		}
-		jsonResult.put("progressBar", (int)((b/a)*10));
-		
+		// DecimalFormat df = new DecimalFormat("#.00");
+		// if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
+		// jsonResult.put("progressBar", 0.00);
+		// } else {
+		// jsonResult.put("progressBar",
+		// Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
+		// }
+		jsonResult.put("progressBar", (int) ((b / a) * 10));
+
 		// 支付状态
 		jsonResult.put("applyIsPay", order.getApplyIsPay());
 		// 订单状态
 		jsonResult.put("status", order.getStatus());
 		return jsonResult;
 	}
-	
+
 	/**
 	 * 修改施工中的状态
+	 * 
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateConstructionStatus")
-	public Object updateConstructionStatus(Order o,String target){
+	public Object updateConstructionStatus(Order o, String target) {
 		Order order = orderService.findOne(o.getId());
 		boolean falg = orderService.updateConstructionStatus(order, target);
-		if(falg){
+		if (falg) {
 			return ResultVOUtil.success();
-		}else {
-			return ResultVOUtil.error(-1,"修改失败");
+		} else {
+			return ResultVOUtil.error(-1, "修改失败");
 		}
-		  
+
 	}
-	
+
 	/**
 	 * 获取施工中的状态
+	 * 
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getConstructionStatus")
-	public Object getConstructionStatus(Order o){
+	public Object getConstructionStatus(Order o) {
 		Order order = orderService.findOne(o.getId());
-		if(order.getConstructionStatus()==null||order.getConstructionStatus().length()<1){
+		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 1) {
 			orderService.updateConstructionStatus(order, null);
 		}
-		Map<String,String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
+		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
 		jsonResult.put("serverImg", order.getServer().getBusinessLicenseImgUrl());
-		return  ResultVOUtil.success(jsonResult);
+		return ResultVOUtil.success(jsonResult);
 	}
-	
-	
+
 }
