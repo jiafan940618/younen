@@ -36,13 +36,9 @@
 		<result column="had_pay_price" property="hadPayPrice" jdbcType="DOUBLE" />
 
 		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
-<<<<<<< HEAD
+
 		<result column="construction_status" property="constructionStatus"
 			jdbcType="VARCHAR" />
-=======
-
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
-
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="apply_stepa" property="applyStepA" jdbcType="INTEGER" />
 		<result column="apply_stepb" property="applyStepB" jdbcType="INTEGER" />
@@ -58,15 +54,7 @@
 		<result column="build_is_pay" property="buildIsPay" jdbcType="INTEGER" />
 		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
 		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
-<<<<<<< HEAD
 		<result column="ipo_memo" property="ipoMemo" jdbcType="INTEGER" />
-	
-		
-=======
-		<result column="construction_status" property="constructionStatus"
-			jdbcType="VARCHAR" />
-
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
 	</resultMap>
 
 	<update id="updateByCondition" parameterType="com.yn.model.Order">
@@ -101,7 +89,6 @@
 		</set>
 		where id = #{id}
 	</update>
-<<<<<<< HEAD
 	
 	<select id="findstatus" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
@@ -117,45 +104,19 @@
 			o.build_stepb,
 			o.grid_connected_is_pay,
 			o.grid_connected_stepa
-=======
 
-	<select id="findstatus" parameterType="java.lang.Long"
-		resultMap="BaseResultMap">
-		SELECT
-		o.loan_status,
-		o.apply_is_pay,
-		o.apply_stepa,
-		o.apply_stepb,
-		o.status,
-		o.apply_stepbimg_url,
-		o.build_is_pay,
-		o.build_stepa,
-		o.build_stepb,
-		o.grid_connected_is_pay,
-		o.grid_connected_stepa
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
 		FROM t_order o WHERE o.id =#{orderId}
 
 	</select>
 
-<<<<<<< HEAD
+
 	
 	
 	<select id="findOrderCode" parameterType="java.lang.String"  resultMap="BaseResultMap">
 		SELECT  o.id,o.order_code
 	 
 	  FROM t_order o  WHERE o.order_code =#{orderCode}
-	
-=======
 
-	<select id="findOrderCode" parameterType="java.lang.String"
-		resultMap="BaseResultMap">
-		SELECT o.id,o.order_code
-
-		FROM t_order o WHERE o.order_code
-		=#{orderCode}
-
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
 	</select>
 
 	<update id="updateConstructionStatus" parameterType="com.yn.model.Order">
@@ -166,7 +127,7 @@
 		where id = #{id}
 	</update>
 	
-<<<<<<< HEAD
+
 	<update id="UpdateOrder" parameterType="com.yn.model.Order">
 		update t_order o
 		<set>
@@ -183,8 +144,7 @@
 		</set>
 		where o.id = #{id}
 	</update>
-	
-=======
+
 	<update id="updateBuildStepB" parameterType="com.yn.model.Order">
 		update t_order
 			<set>
@@ -192,7 +152,7 @@
 			</set>
 		where id = #{id}
 	</update>
->>>>>>> acff7fe167a97e3e4633487ebef19c2ade6de0e9
+
 	
 
 </mapper>
