@@ -69,10 +69,7 @@ public class Order extends IDomain implements Serializable {
 	private Double hadPayPrice;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[贷款状态]{0:未申请,1:申请中,2:申请成功,3:申请失败}'")
 	private Integer loanStatus;
-	@Column(insertable=false, columnDefinition = "VARCHAR(255)  COMMENT '[施工状态]'")
-	private String constructionStatus;
-	
-	
+
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电}'")
 	private Integer status;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[申请中-支付状态]{0:未支付,1:已支付}'")	
@@ -96,6 +93,9 @@ public class Order extends IDomain implements Serializable {
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[并网发电-并网状态]{0:未申请,1:已申请,2:并网完成}'")
 	private Integer gridConnectedStepA;
 
+	@Column(insertable=false, columnDefinition = "VARCHAR(255)  COMMENT '[施工状态]'")
+	private String constructionStatus;
+	
 
     /**
      * 是否已读
@@ -159,15 +159,6 @@ public class Order extends IDomain implements Serializable {
 		this.id = id;
 		this.orderCode = orderCode;
 		this.userId = userId;
-	}
-
-	
-	public String getConstructionStatus() {
-		return constructionStatus;
-	}
-
-	public void setConstructionStatus(String constructionStatus) {
-		this.constructionStatus = constructionStatus;
 	}
 
 	public String getIpoMemo() {
@@ -497,4 +488,12 @@ public class Order extends IDomain implements Serializable {
     public void setIsRead(Integer isRead) {
         this.isRead = isRead;
     }
+
+	public String getConstructionStatus() {
+		return constructionStatus;
+	}
+
+	public void setConstructionStatus(String constructionStatus) {
+		this.constructionStatus = constructionStatus;
+	}
 }
