@@ -1,5 +1,7 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yn.kftService.PyOrderService;
 import com.yn.kftService.SignService;
 import com.yn.model.Order;
+import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
+import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -29,16 +33,21 @@ public class TestController {
 	PyOrderService pyOrderService;
 	@Autowired
 	OrderService orderService;
+	@Autowired
+	BillOrderService billorderService;
+	
 	
 	 @ResponseBody
 	 @RequestMapping(value = "/dotest")
 	    public Object  newTest(HttpSession session,HttpServletRequest request) {
 
-		 /*	System.out.println("进入页面;");
-		 	
-		 	Object object = 	signService.findSign(request);*/
-	
-			return ResultVOUtil.success(null);
+		    BillOrderVo billOrderVo = new BillOrderVo();
+		    billOrderVo.setStatus(1);
+		    billOrderVo.setTradeNo("2017071014153758063");
+		  
+		    billorderService.UpdateBillorder(billOrderVo);
+		    
+			return ResultVOUtil.success("修改成功！");
 	    }
 	
 	 @RequestMapping(value = "/dotest02")

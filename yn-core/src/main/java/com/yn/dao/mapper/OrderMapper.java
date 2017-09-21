@@ -18,7 +18,7 @@ public interface OrderMapper {
 	
 	Order findOrderCode(String orderCode);
 	
-
-	
+    /** 根据传入状态修改相应订单状态*/
+	void UpdateOrder(Order order);
 
 }

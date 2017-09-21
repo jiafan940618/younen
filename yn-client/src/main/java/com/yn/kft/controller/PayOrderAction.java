@@ -58,12 +58,12 @@ public class PayOrderAction {
 		String outTradeNo=(String) request.getAttribute("outTradeNo");
 		String channel =(String)request.getAttribute("channel");
 		
-		Map paramMap = request.getParameterMap();
+		Map paramMap = new HashMap();
 
 		BillOrder orderPay = orderService.findByTradeNo(outTradeNo);
 
 		//获取参数
-	Map<String, String>  param=	pyOrderService.getOrder(paramMap, orderPay, channel);
+	Map<String, String>  param=	pyOrderService.getOrder( orderPay, channel);
 	
 	Map<String, String> filterMap = SignUtil.paraFilter(param);
 	//String channel = filterMap.get("channel");   /** 支付类型*/

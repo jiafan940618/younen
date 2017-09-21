@@ -41,7 +41,7 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     /** 根据订单号查找订单信息*/
      //,o.loan_status,o.apply_is_pay,o.apply_stepa,o.apply_stepb
     @Query(value="SELECT o.id,o.order_code,s.station_code,o.capacity,"+
-	 "o.total_price,o.had_pay_price,o.server_name FROM t_order o LEFT JOIN station s ON s.order_id = o.id  WHERE o.id =:orderId",nativeQuery=true)
+	 "o.total_price,o.had_pay_price,o.server_name,o.status FROM t_order o LEFT JOIN station s ON s.order_id = o.id  WHERE o.id =:orderId",nativeQuery=true)
     Object findOrder(@Param("orderId") Long orderId);
     
   @Query(value="SELECT o.link_man,o.link_phone,o.address_text,o.server_name,o.order_code, "+
@@ -52,7 +52,10 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
    
    Object getInfoOrder(@Param("orderId") Long orderId);
   
-  
+    
+  	@Query(value="SELECT o.id,o.status,o.had_pay_price FROM `bill_order`"
+  			+ " b LEFT JOIN t_order o ON b.order_id = o.id WHERE b.trade_no = :tradeNo ;",nativeQuery=true)
+  	Object FindByTradeNo(@Param("tradeNo") String tradeNo);
   
   
     

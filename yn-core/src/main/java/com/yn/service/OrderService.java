@@ -88,15 +88,34 @@ public class OrderService {
         }
     }
 
+    
     public void delete(Long id) {
         orderDao.delete(id);
 
         // 删除未读信息
         noticeService.delete(NoticeEnum.NEW_ORDER.getCode(), id);
-}
+    }
+
+	 public  Order FindByTradeNo(String tradeNo){
+		  
+		Object object = orderDao.FindByTradeNo(tradeNo);
+		
+		Object[] obj =(Object[])object;
+		 Integer id = (Integer)obj[0];
+		 Integer status = (Integer)obj[1];
+		 BigDecimal hadPayPrice = (BigDecimal)obj[2];
+		
+		 
+		 Order order = new Order();
+		 order.setId(id.longValue());
+		 order.setHadPayPrice(hadPayPrice.doubleValue());
+		 order.setStatus(status);
+		return order;	
+	  }
 
 	
-
+	 
+	 
 	public void deleteBatch(List<Long> id) {
 		orderDao.deleteBatch(id);
 	}
@@ -236,6 +255,7 @@ public class OrderService {
 		BigDecimal totalPrice = (BigDecimal) obj[4];
 		BigDecimal payPrice = (BigDecimal) obj[5];
 		String serverName = (String) obj[6];
+		Integer status = (Integer) obj[7];
 
 		Double speed = payPrice.doubleValue() / totalPrice.doubleValue();
 
@@ -251,7 +271,7 @@ public class OrderService {
 		orderVo.setHadPayPrice(payPrice.doubleValue());
 		orderVo.setSpeed(speed);
 		orderVo.setServerName(serverName);
-
+		orderVo.setStatus(status);
 		return orderVo;
 	}
 
@@ -297,5 +317,17 @@ public class OrderService {
 		return newPlanVo;
 	}
 
+	/** 根据订单记录号修改状态*/
+	
+	public void UpdateOrStatus(String tradeNo,Double money){
+		
+		Order order = FindByTradeNo(tradeNo);
+		
+		order.setHadPayPrice(order.getHadPayPrice()+money);
+		
+		mapper.UpdateOrder(order);
+	
+	}
+	
 
 }

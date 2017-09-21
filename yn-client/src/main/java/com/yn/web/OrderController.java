@@ -178,6 +178,7 @@ public class OrderController {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
 			break;
+		
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
 			result.put("userBalance", wallet.getMoney());
@@ -502,7 +503,11 @@ public class OrderController {
 			/** 添加电站 */
 			stationService.insertStation(neworder);
 			
-			
+			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
+			APOservice.getapole(neworder, listid);
+			logger.info("---- ---- ------ ----- ----- 添加结束！");
+			neworder.getUser().setPassword(null);
+
 			map.put("orderId", neworder.getId());
 		
 		 logger.info("---- ---- ---- ------ ----- 生成订单成功！");
@@ -586,6 +591,7 @@ public class OrderController {
 
 		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
+		
 
 		/** 传出电站的id */
 		return ResultVOUtil.success(map);
@@ -609,15 +615,131 @@ public class OrderController {
 		return ResultVOUtil.newsuccess(order2, list);
 
 	}
-
 	/** 显示购买的状态 */
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
 	public Object giveStatus(@RequestParam("orderId") Long orderId) {
 		Order order = orderService.findstatus(orderId);
-		return ResultVOUtil.success(order);
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
+		Integer loanStatus = order.getLoanStatus();
+		if (loanStatus == null || loanStatus < 1 || loanStatus == 0) {
+			jsonResult.put("loanStatus", "未申请");
+		} else if (loanStatus == 1) {
+			jsonResult.put("loanStatus", "申请中");
+		} else if (loanStatus == 2) {
+			jsonResult.put("loanStatus", "申请成功");
+		} else if (loanStatus == 3) {
+			jsonResult.put("loanStatus", "申请失败");
+		}
+		Order findOne = orderService.findOne(orderId);
+		// 进度条
+		Double a = findOne.getTotalPrice(), b = findOne.getHadPayPrice();
+		if(a==null){
+			a = 0d;
+		}
+		if(b==null){
+			b = 0d;
+		}
+//		DecimalFormat df = new DecimalFormat("#.00");
+//		if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
+//			jsonResult.put("progressBar", 0.00);
+//		} else {
+//			jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
+//		}
+		jsonResult.put("progressBar", (int)((b/a)*10));
+		Integer status = order.getStatus();
+		if (status == null || status < 1 || status == 0) {
+			jsonResult.put("status", "申请中");
+		} else if (status == 1) {
+			jsonResult.put("status", "施工中");
+		} else if (status == 2) {
+			jsonResult.put("status", "并网发电申请中");
+		} else if (status == 3) {
+			jsonResult.put("status", "并网发电");
+		}
+		Integer applyIsPay = order.getApplyIsPay();
+		if (applyIsPay == null || applyIsPay < 1 || applyIsPay == 0) {
+			jsonResult.put("applyIsPay", "未支付");
+		} else if (applyIsPay == 1) {
+			jsonResult.put("applyIsPay", "已支付");
+		}
+		Integer applyStepA = order.getApplyStepA();
+		if (applyStepA == null || applyStepA < 1 || applyStepA == 0) {
+			jsonResult.put("applyStepA", "未预约");
+		} else if (applyStepA == 1) {
+			jsonResult.put("applyStepA", "已预约");
+		} else if (applyStepA == 2) {
+			jsonResult.put("applyStepA", "勘察完成");
+		}
+		Integer applyStepB = order.getApplyStepB();
+		if (applyStepB == null || applyStepB < 1 || applyStepB == 0) {
+			jsonResult.put("applyStepB", "未申请");
+		} else if (applyStepB == 1) {
+			jsonResult.put("applyStepB", "已申请");
+		} else if (applyStepB == 2) {
+			jsonResult.put("applyStepB", "申请完成");
+		}
+		String applyStepBImgUrl = findOne.getApplyStepBImgUrl();
+		if (applyStepBImgUrl==null||applyStepBImgUrl.length()<1) {
+			jsonResult.put("applyStepBImgUrl", "未申请");
+		} else {
+			jsonResult.put("applyStepBImgUrl", "申请完成");
+		}
+		Integer buildIsPay = order.getBuildIsPay();
+		if (buildIsPay == null || buildIsPay < 1 || buildIsPay == 0) {
+			jsonResult.put("buildIsPay", "未支付");
+		} else if (buildIsPay == 1) {
+			jsonResult.put("buildIsPay", "已支付");
+		}
+		Integer buildStepA = order.getBuildStepA();
+		if (buildStepA == null || buildStepA < 1 || buildStepA == 0) {
+			jsonResult.put("buildStepA", "未申请");
+		} else if (buildStepA == 1) {
+			jsonResult.put("buildStepA", "已申请");
+		}
+		Integer buildStepB = order.getBuildStepB();
+		if (buildStepB == null || buildStepB < 1 || buildStepB == 0) {
+			jsonResult.put("buildStepB", "未开始");
+		} else if (buildStepB == 1) {
+			jsonResult.put("buildStepB", "材料进场");
+		} else if (buildStepB == 2) {
+			jsonResult.put("buildStepB", "基础建筑");
+		} else if (buildStepB == 3) {
+			jsonResult.put("buildStepB", "支架安装");
+		} else if (buildStepB == 4) {
+			jsonResult.put("buildStepB", "光伏板安装");
+		} else if (buildStepB == 5) {
+			jsonResult.put("buildStepB", "直流接线");
+		} else if (buildStepB == 6) {
+			jsonResult.put("buildStepB", "电箱逆变器");
+		} else if (buildStepB == 7) {
+			jsonResult.put("buildStepB", "汇流箱安装");
+		} else if (buildStepB == 8) {
+			jsonResult.put("buildStepB", "交流辅线");
+		} else if (buildStepB == 9) {
+			jsonResult.put("buildStepB", "防雷接地测试");
+		} else if (buildStepB == 10) {
+			jsonResult.put("buildStepB", "并网验收");
+		}
+		Integer gridConnectedIsPay = order.getGridConnectedIsPay();
+		if (gridConnectedIsPay == null || gridConnectedIsPay < 1 || gridConnectedIsPay == 0) {
+			jsonResult.put("gridConnectedIsPay", "未支付");
+		} else if (gridConnectedIsPay == 1) {
+			jsonResult.put("gridConnectedIsPay", "已支付");
+		}
+		Integer gridConnectedStepA = order.getGridConnectedStepA();
+		if (gridConnectedStepA == null || gridConnectedStepA < 1 || gridConnectedStepA == 0) {
+			jsonResult.put("gridConnectedStepA", "未申请");
+		} else if (gridConnectedStepA == 1) {
+			jsonResult.put("gridConnectedStepA", "已申请");
+		} else if (gridConnectedStepA == 2) {
+			jsonResult.put("gridConnectedStepA", "并网完成");
+		}
+
+		// return ResultVOUtil.success(order);
+		return ResultVOUtil.success(jsonResult);
 	}
-	
+
 	
 	//  public ResultData<Object> order_detail(@RequestParam("file_data") MultipartFile[]  file_data) throws UnsupportedEncodingException{
 	/** 服务商上传营业执照等*/
@@ -702,34 +824,6 @@ public class OrderController {
 	}
 
 	/**
-	 * 施工中
-	 * 
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/inConstruction")
-	public Object inConstruction(OrderVo orderVo) {
-		Map<String, Object> jsonResult = new HashMap<>();
-		Order order = orderService.findOne(orderVo.getId());
-		// 取到相同的东西
-		jsonResult = wcnmlgbd(order);
-		// 独有的东西
-		// 施工中-施工申请状态
-		jsonResult.put("buildStepA", order.getBuildStepA());
-		// 施工中-支付状态
-		jsonResult.put("buildIsPay", order.getBuildIsPay());
-		// 施工中-施工状态
-		jsonResult.put("buildStepB", order.getBuildStepB());
-		/* --=>方案设计=--> */
-		// 资质照片地址
-		// jsonResult.put("qualificationsImgUrl",
-		// order.getServer().getQualificationsImgUrl());
-		// 其他三种方案设计的图片
-		// --=> ? 暂无
-		return ResultVOUtil.success(jsonResult);
-	}
-
-	/**
 	 * 并网发电
 	 * 
 	 * @return
@@ -768,17 +862,73 @@ public class OrderController {
 		// 计算进度条
 		// order.getHadPayPrice()))/10;
 		Double a = order.getTotalPrice(), b = order.getHadPayPrice();
-		DecimalFormat df = new DecimalFormat("#.00");
-		if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
-			jsonResult.put("progressBar", 0.00);
-		} else {
-			jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
-		}
+//		DecimalFormat df = new DecimalFormat("#.00");
+//		if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
+//			jsonResult.put("progressBar", 0.00);
+//		} else {
+//			jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
+//		}
+		jsonResult.put("progressBar", (int)((b/a)*10));
+		
 		// 支付状态
 		jsonResult.put("applyIsPay", order.getApplyIsPay());
 		// 订单状态
 		jsonResult.put("status", order.getStatus());
 		return jsonResult;
 	}
+	
+	/**
+	 * 施工中
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/inConstruction")
+	public Object inConstruction(OrderVo orderVo) {
+		Map<String, Object> jsonResult = new HashMap<>();
+		Order order = orderService.findOne(orderVo.getId());
+		// 取到相同的东西
+		jsonResult = wcnmlgbd(order);
+		// 独有的东西
+		// 施工中-施工申请状态
+		jsonResult.put("buildStepA", order.getBuildStepA());
+		// 施工中-支付状态
+		jsonResult.put("buildIsPay", order.getBuildIsPay());
+		// 施工中-施工状态
+		Integer buildStepB = order.getBuildStepB();
+		if (buildStepB == null || buildStepB < 1 || buildStepB == 0) {
+			jsonResult.put("buildStepB", "未开始");
+		} else if (buildStepB == 1) {
+			jsonResult.put("buildStepB", "材料进场");
+		} else if (buildStepB == 2) {
+			jsonResult.put("buildStepB", "基础建筑");
+		} else if (buildStepB == 3) {
+			jsonResult.put("buildStepB", "支架安装");
+		} else if (buildStepB == 4) {
+			jsonResult.put("buildStepB", "光伏板安装");
+		} else if (buildStepB == 5) {
+			jsonResult.put("buildStepB", "直流接线");
+		} else if (buildStepB == 6) {
+			jsonResult.put("buildStepB", "电箱逆变器");
+		} else if (buildStepB == 7) {
+			jsonResult.put("buildStepB", "汇流箱安装");
+		} else if (buildStepB == 8) {
+			jsonResult.put("buildStepB", "交流辅线");
+		} else if (buildStepB == 9) {
+			jsonResult.put("buildStepB", "防雷接地测试");
+		} else if (buildStepB == 10) {
+			jsonResult.put("buildStepB", "并网验收");
+		}
+//		jsonResult.put("buildStepB", order.getBuildStepB());
+		/* --=>方案设计=--> */
+		// 资质照片地址
+		// jsonResult.put("qualificationsImgUrl",
+		// order.getServer().getQualificationsImgUrl());
+		// 其他三种方案设计的图片
+		// --=> ? 暂无
+		return ResultVOUtil.success(jsonResult);
+	}
+
+	
 
 }

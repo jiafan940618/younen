@@ -38,14 +38,12 @@ import com.yn.vo.ServerPlanVo;
 @Service
 public class NewServerPlanService {
 
-	
-	 @Autowired
-	    QualificationsServerService qualificationsServerService;
-	    @Autowired
-	    ApolegamyService apolegamyService;
-	    @Autowired
-	    OrderPlanService orderPlanService;
-
+	@Autowired
+    QualificationsServerService qualificationsServerService;
+    @Autowired
+    ApolegamyService apolegamyService;
+    @Autowired
+    OrderPlanService orderPlanService;
 	@Autowired
 	NewServerPlanDao planDao;
 

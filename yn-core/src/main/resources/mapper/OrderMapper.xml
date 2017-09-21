@@ -36,7 +36,8 @@
 		<result column="had_pay_price" property="hadPayPrice" jdbcType="DOUBLE" />
 
 		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
-		
+		<result column="construction_status" property="constructionStatus"
+			jdbcType="VARCHAR" />
 
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="apply_stepa" property="applyStepA" jdbcType="INTEGER" />
@@ -53,7 +54,9 @@
 		<result column="build_is_pay" property="buildIsPay" jdbcType="INTEGER" />
 		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
 		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
-
+		<result column="ipo_memo" property="ipoMemo" jdbcType="INTEGER" />
+	
+		
 	</resultMap>
 
 	<update id="updateByCondition" parameterType="com.yn.model.Order">
@@ -89,12 +92,24 @@
 		where id = #{id}
 	</update>
 	
-	<select id="findstatus" parameterType="java.lang.Long"  resultMap="BaseResultMap">
-		SELECT  o.loan_status,o.apply_is_pay,o.apply_stepa,o.apply_stepb 
-	 
-	  FROM t_order o  WHERE o.id =#{orderId}
-	
+	<select id="findstatus" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		SELECT
+			o.loan_status,
+			o.apply_is_pay,
+			o.apply_stepa,
+			o.apply_stepb,
+			o.status,
+			o.apply_stepbimg_url,
+			o.build_is_pay,
+			o.build_stepa,
+			o.build_stepb,
+			o.grid_connected_is_pay,
+			o.grid_connected_stepa
+		FROM t_order o WHERE o.id =#{orderId}
+
 	</select>
+
 	
 	
 	<select id="findOrderCode" parameterType="java.lang.String"  resultMap="BaseResultMap">
@@ -104,7 +119,22 @@
 	
 	</select>
 	
-	
+	<update id="UpdateOrder" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			<if test="status == 0">
+				o.apply_is_pay = 1,
+			</if>
+			<if test="status == 1">
+				o.build_is_pay = 1,
+			</if>
+			<if test="status == 2">
+				o.grid_connected_is_pay = 1,
+			</if>
+		  o.had_pay_price = #{hadPayPrice}
+		</set>
+		where o.id = #{id}
+	</update>
 	
 	
 </mapper>

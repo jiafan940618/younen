@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import com.yn.dao.BankCardDao;
 import com.yn.dao.BillOrderDao;
 import com.yn.dao.OrderDao;
+import com.yn.dao.mapper.BillOrderMapper;
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
 import com.yn.utils.BeanCopy;
@@ -33,6 +34,7 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
 import com.yn.utils.StringUtil;
+import com.yn.vo.BillOrderVo;
 
 @Service
 public class BillOrderService {
@@ -40,7 +42,8 @@ public class BillOrderService {
 	BillOrderDao billOrderDao;
 	@Autowired 
 	ServerPlanService serverPlanService;
-	
+	@Autowired 
+	BillOrderMapper mapper;
 	@Autowired
 	BankCardDao bankCardDao ;
 
@@ -72,8 +75,23 @@ public class BillOrderService {
 		} else {
 			billOrderDao.save(billOrder);
 		}
-		System.out.println();
 	}
+	
+	public void UpdateBillorder(BillOrderVo billorderVo){
+		
+		mapper.UpdateBillorder(billorderVo);
+	}
+	
+	public BillOrder findByTradeNoandstatus(String tradeNo ){
+		
+		return billOrderDao.findByTradeNoandstatus(tradeNo);	
+	}
+	
+	public void updateOrder(String tradeNo){
+		
+		billOrderDao.updateOrder(tradeNo);
+	}
+	
 
 	public void delete(Long id) {
 		billOrderDao.delete(id);
