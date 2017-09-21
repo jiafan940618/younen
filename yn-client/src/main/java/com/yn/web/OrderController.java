@@ -285,21 +285,21 @@ public class OrderController {
 	@RequestMapping(value = "/pushComment")
 	public Object pushComment(Comment comment) {
 		Long orderId = comment.getOrderId();
-		System.out.println(orderId+"-->orderId");
+		System.out.println(orderId + "-->orderId");
 		Order order = orderService.findOne(orderId);
-		//支付过的或者贷款的。
-		if(order.getLoanStatus()==2||order.getGridConnectedIsPay()==2){
-			//并网完成的。
-			if(order.getGridConnectedStepA()==2){
+		// 支付过的或者贷款的。
+		if (order.getLoanStatus() == 2 || order.getGridConnectedIsPay() == 2) {
+			// 并网完成的。
+			if (order.getGridConnectedStepA() == 2) {
 				boolean stationRun = orderDetailService.pushComment(comment);
 				return ResultVOUtil.success(stationRun);
-			}else{
+			} else {
 				return ResultVOUtil.error(-1, "并网尚未完成。");
 			}
 		}
 		return ResultVOUtil.error(-1, "操作异常，请联系客服。");
 	}
-	
+
 	/** 订单详情 */
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
@@ -829,14 +829,13 @@ public class OrderController {
 		// 计算进度条
 		// order.getHadPayPrice()))/10;
 		Double a = order.getTotalPrice(), b = order.getHadPayPrice();
-		// DecimalFormat df = new DecimalFormat("#.00");
-		// if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
-		// jsonResult.put("progressBar", 0.00);
-		// } else {
-		// jsonResult.put("progressBar",
-		// Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
-		// }
-		jsonResult.put("progressBar", (int) ((b / a) * 10));
+		DecimalFormat df = new DecimalFormat("#.00");
+		if (df.format(Double.valueOf((b / a)) * 100).equals(".00")) {
+			jsonResult.put("progressBar", 0.00);
+		} else {
+			jsonResult.put("progressBar", Double.parseDouble(df.format(Double.valueOf((b / a)) * 100)));
+		}
+		// jsonResult.put("progressBar", (int) ((b / a) * 10));
 
 		// 支付状态
 		jsonResult.put("applyIsPay", order.getApplyIsPay());
