@@ -23,8 +23,16 @@ public class BillOrderVo extends QueryVo{
 	private Integer payWay;    //那种支付方式
 	private String tradeNo;     //订单号
 	
+	private String description;   
 	
 	
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	public String getChannel() {
 		return channel;
 	}

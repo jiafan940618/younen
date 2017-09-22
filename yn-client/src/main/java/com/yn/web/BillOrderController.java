@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.dao.BillOrderDao;
-import com.yn.dao.OrderDao;
 import com.yn.model.BillOrder;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
@@ -26,11 +24,8 @@ public class BillOrderController {
     @Autowired
     BillOrderService billOrderService;
     @Autowired
-    BillOrderDao billOrderDao;
-    @Autowired
     OrderService orderService;
-    @Autowired
-    OrderDao orderDao;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -72,4 +67,7 @@ public class BillOrderController {
         Page<BillOrder> findAll = billOrderService.findAll(billOrder, orderStatus, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    
+    
 }

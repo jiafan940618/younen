@@ -35,6 +35,12 @@
 	  where b.trade_no = #{tradeNo}
 	</update>
 	
+	<insert id="InsertBillorder"  parameterType="com.yn.model.BillOrder" >
+		INSERT INTO bill_order 
+		(del,money,order_id,pay_way,STATUS,user_id,trade_no,duty_user_id) VALUES
+		 (#{del},#{money},#{orderId},#{payWay},#{status},#{userId},#{tradeNo},#{dutyUserId})
+	</insert>
+	
 	
 
 </mapper>

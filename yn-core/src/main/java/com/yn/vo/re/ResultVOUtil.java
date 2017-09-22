@@ -20,6 +20,8 @@ public class ResultVOUtil {
         return resultData;
     }
     
+
+    
     public static <T> ResultData<Object> newsuccess(Object object,List<T> list,List<T> newlist,T pro) {
         ResultData resultData = new ResultData();
         

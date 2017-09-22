@@ -242,6 +242,8 @@ public class OrderDetailService {
 			order.setBuildStepB(0);
 		}
 		// 更新状态 --> success：true
+		result.put("buildIsPay", order.getBuildIsPay());
+		result.put("buildStepB", order.getBuildStepB());
 		boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		result.put("updateOrderStauts", byCondition);
 		return result;
@@ -273,8 +275,32 @@ public class OrderDetailService {
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		// result.put("updateOrderStauts", byCondition + "");
+		/* --先判断是贷款还是线上支付的   以下是ios需要的-- */
+		// 贷款不成功,并网未支付 
+		boolean flag= true;
+		if (order.getGridConnectedIsPay() >0 && order.getLoanStatus() != 2) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getGridConnectedStepA() != 2) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getStatus() != 3) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		if (order.getHadPayPrice() < order.getTotalPrice()) {
+			flag = false;
+			result.put("isPowerGeneration", false);
+		}
+		//可以发电、ios需要
+		if(flag){
+			result.put("isPowerGeneration", true);
+		}
 		return result;
 	}
+
 
 	/**
 	 * 并网评分

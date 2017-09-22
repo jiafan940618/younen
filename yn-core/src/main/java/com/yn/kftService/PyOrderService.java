@@ -19,7 +19,7 @@ import com.yn.utils.Constant;
 import com.yn.utils.HttpsClientUtil;
 import com.yn.utils.RequestUtils;
 import com.yn.utils.SignUtil;
-
+import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
 
@@ -35,31 +35,33 @@ public class PyOrderService {
 	@Autowired
 	WalletService walletService;
 	
-	public Map<String, String> getOrder(BillOrder orderPay,String channel){
-		logger.info("进入方法的订单号："+orderPay.getTradeNo());
-		logger.info("进入方法的金额："+orderPay.getMoney());
-		logger.info("进入方法的类型："+channel);
+	public Map<String, String> getOrder(BillOrderVo billOrderVo){
+		logger.info("进入方法的订单号："+billOrderVo.getTradeNo());
+		logger.info("进入方法的金额："+billOrderVo.getMoney());
+		logger.info("进入方法的类型："+billOrderVo.getChannel());
+		logger.info("进入方法的字符串："+billOrderVo.getDescription());
+		
 		Map<String, String> param =new HashMap<String, String>();
 		param.put("tradeType", "cs.pay.submit");
 		param.put("version", "1.0");
 		 /** 测试mchid */
 		param.put("mchId", "000010000000000024");
 		
-		param.put("channel",channel);  /** 付款方式*/
+		param.put("channel",billOrderVo.getChannel());  /** 付款方式*/
 		param.put("body", "这是一个测试!");   /** 商品描述*/
 		param.put("terminalType","pc"); /** 终端类型*/
-		param.put("outTradeNo", orderPay.getTradeNo());    /** 订单号*/
+		param.put("outTradeNo", billOrderVo.getTradeNo());    /** 订单号*/
 
 		 //转换金额
-		String aomout = orderPay.getMoney().toString();
+		String aomout = billOrderVo.getMoney().toString();
 		param.put("amount", aomout);
-		param.put("description", "");   /** 附加数据*/
+		param.put("description", billOrderVo.getDescription());   /** 附加数据*/
 		
 		param.put("timePaid", null);     /**订单支付时间 */
 		param.put("timeExpire", null);   /** 订单失效时间 */
 	     /*** 扩展字段 */
 
-		param.put("notifyUrl", "http://ec619cc9.ngrok.io/client/sign/doresult");
+		param.put("notifyUrl", "http://test.u-en.cn/client/sign/doresult");
 		
 		param.put("subject", "这是测试商品1");    /** 商品标题 */ 
 		//过滤空值或null
@@ -68,16 +70,12 @@ public class PyOrderService {
 	}
 	
 	
-	public Object getMap(HttpServletRequest request,String outTradeNo,String channel){
-
-
-		BillOrder orderPay = orderService.findByTradeNo(outTradeNo);
-
+	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
 		//获取参数
-	Map<String, String>  param=	getOrder(orderPay, channel);
+	Map<String, String>  param=	getOrder(billOrderVo);
 	
 	Map<String, String> filterMap = SignUtil.paraFilter(param);
-	//String channel = filterMap.get("channel");   /** 支付类型*/
+	String channel = billOrderVo.getChannel();   /** 支付类型*/
 	//拼接
 	
 	String toSign = SignUtil.createSignPlainText(filterMap, true);
@@ -159,19 +157,19 @@ public class PyOrderService {
 	
 	
 	/** 处理优能余额支付*/
-	public Object payBalance(BillOrder billOrderVo){
+	public Object payBalance(BillOrderVo billOrderVo){
 		
 		Wallet wallet =	walletService.findWalletByUser(billOrderVo.getUserId());
 		/** 余额*/
 		BigDecimal balancePrice =	wallet.getMoney();
 	   
 		 /** 余额与支付的钱比较*/
-		if(balancePrice.compareTo(BigDecimal.valueOf(billOrderVo.getMoney())) == -1){
+		if(balancePrice.compareTo(billOrderVo.getMoney()) == -1){
 			
 			return ResultVOUtil.error(777,Constant.MONEY_LITTLE);
 		}
 	 
-		BigDecimal money =balancePrice.subtract(BigDecimal.valueOf(billOrderVo.getMoney()));
+		BigDecimal money =balancePrice.subtract(billOrderVo.getMoney());
 
 		wallet.setMoney(money);
 		
@@ -179,44 +177,5 @@ public class PyOrderService {
 		
 		return ResultVOUtil.success("支付成功！");
 	}
-	
-	
-	 /** 生成二维码接口*/
-	public String getCodeurl(Map<String, String> filterMap){
-		String retString = "";
-		String realPath ="http://test.kftpay.com.cn:3080/cloud/cloudplatform/api/trade.html";
-		String key="7f957562b40e4b0eaf5bc9ed4d1a78ca";
-		
-		//拼接
-		String toSign = SignUtil.createLinkString(filterMap);
-		
-		//生成签名sign
-		String sign = SignUtil.genSign(key, toSign);
-		filterMap.put("sign", sign);
-		//转为json串
-		String postStr = JSON.toJSONString(filterMap);
-		
-		//发送请求 
-		String returnStr = HttpsClientUtil.sendRequest(realPath,postStr,"application/json");
-		
-		//解析返回串
-		Map<String, String> returnMap = (Map<String, String>)JSON.parse(returnStr);
-		
-		//验签
-		if(SignUtil.validSign(returnMap, key)){
-			String returnCode = returnMap.get("returnCode");
-			String resultCode = returnMap.get("resultCode");
-			if(returnCode.equals("0")&&resultCode.equals("0")){
-				//请在微信客户端打开该url
-				retString = returnMap.get("codeUrl");
-			}else{
-				retString = returnMap.get("returnMsg") + returnMap.get("errCode") + returnMap.get("errCodeDes");
-			}
-		}else {
-			//do nothing
-		}
-		return retString;
-	}
-	
-	
+
 }

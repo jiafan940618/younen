@@ -23,7 +23,16 @@ public class ResultData<T> {
 		private T produ;
 		
 		
-	    
+
+
+		public Boolean getSuccess() {
+			return success;
+		}
+
+		public void setSuccess(Boolean success) {
+			this.success = success;
+		}
+
 		public List<T> getNewlist() {
 			return newlist;
 		}
@@ -48,15 +57,7 @@ public class ResultData<T> {
 			this.list = list;
 		}
 
-		public Boolean getSuccess() {
-	        return success;
-	    }
-
-	    public void setSuccess(Boolean success) {
-	        this.success = success;
-	    }
-
-	    public T getData() {
+		public T getData() {
 	        return data;
 	    }
 

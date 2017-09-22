@@ -53,6 +53,35 @@ public class SignUtil {
 
 		return result;
 	}
+	
+	public static Map<String, Object> paraFilter01(Map<String, Object> sArray) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		if (sArray == null || sArray.size() <= 0) {
+			return result;
+		}
+		DecimalFormat formater = new DecimalFormat("###0.00");
+		for (String key : sArray.keySet()) {
+			String finalValue = null;
+			Object value = sArray.get(key);
+			
+			if(value instanceof BigDecimal){
+				finalValue = formater.format(value);
+			}else {
+				finalValue = (String) value;
+			}
+			 
+			if (value == null || value.equals("")
+					|| key.equalsIgnoreCase("sign")) {
+				continue;
+			}
+			
+			result.put(key, finalValue);
+		}
+
+		return result;
+	}
+	
 
 	public static String createLinkString(Map<String, String> params) {
 		List<String> keys = new ArrayList<String>(params.keySet());
@@ -73,6 +102,28 @@ public class SignUtil {
 
 		return prestr;
 	}
+	
+	
+	public static String createLinkString01(Map<String, Object> params) {
+		List<String> keys = new ArrayList<String>(params.keySet());
+		Collections.sort(keys);
+
+		String prestr = "";
+
+		for (int i = 0; i < keys.size(); i++) {
+			String key = keys.get(i);
+			String value =(String) params.get(key);
+
+			if (i == keys.size() - 1) {// 拼接时，不包括最后一个&字符
+				prestr = prestr + key + "=" + value;
+			} else {
+				prestr = prestr + key + "=" + value + "&";
+			}
+		}
+
+		return prestr;
+	}
+	
 	
 public static String createSignPlainText(final Object dataInfo, final boolean isWithEmpty, final String... filters) {
   if (dataInfo instanceof String) {
@@ -138,6 +189,13 @@ public static String md5(String plainText) {
 public static boolean validSign(Map<String, String> map,String key){
 	String oldSign = map.get("sign");
 	String sign = genSign(key, createLinkString(paraFilter(map)));
+	return sign.equalsIgnoreCase(oldSign);
+}
+
+
+public static boolean validSign01(Map<String, Object> map,String key){
+	String oldSign =(String) map.get("sign");
+	String sign = genSign(key, createLinkString01(paraFilter01(map)));
 	return sign.equalsIgnoreCase(oldSign);
 }
 

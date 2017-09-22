@@ -41,13 +41,12 @@ public class TestController {
 	 @RequestMapping(value = "/dotest")
 	    public Object  newTest(HttpSession session,HttpServletRequest request) {
 
-		    BillOrderVo billOrderVo = new BillOrderVo();
-		    billOrderVo.setStatus(1);
-		    billOrderVo.setTradeNo("2017071014153758063");
-		  
-		    billorderService.UpdateBillorder(billOrderVo);
+ 
+		Order order = orderService.findOne(29l);
+		 
+		 billorderService.ChangeBillSta(order);
 		    
-			return ResultVOUtil.success("修改成功！");
+		return ResultVOUtil.success("修改成功！");
 	    }
 	
 	 @RequestMapping(value = "/dotest02")

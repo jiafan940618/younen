@@ -447,7 +447,7 @@ public class OrderController {
 	 if(null == orderSize ){
 	  logger.info("---- ---- ---- ------ ----- 开始生成订单");
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-
+		
 
 			List<Long> listid = (List<Long>) session.getAttribute("list");
 			List<Apolegamy> list = apolegamyService.findAll(listid);
@@ -521,78 +521,98 @@ public class OrderController {
 
 	}
 
-	/** Ioc点击确定的接口 */
+	/** Ios点击确定的接口 */
 
 	@ResponseBody
-	@RequestMapping(value = "/iocorderPrice")
-	public ResultData<Object> findIocordprice(HttpSession session, Integer capacity) {
+	@RequestMapping(value = "/iosorderPrice")
+	public ResultData<Object> findIocordprice(HttpSession session,@RequestParam("capacity") Integer capacity) {
 		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
-
-		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-
-		List<Long> listid = (List<Long>) session.getAttribute("list");
-		List<Apolegamy> list = apolegamyService.findAll(listid);
-
-		Double apoPrice = 0.0;
-
-		for (Apolegamy apolegamy : list) {
-			apoPrice += apolegamy.getPrice();
-		}
-
-		Long planid = (Long) session.getAttribute("newserverplanid");
-
-		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
-
-		newserverPlan.setMinPurchase(capacity);
-
-		User user02 = userservice.findByPhone(plan.getPhone());
-		// ** 添加订单*//*
-
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-				plan.getOrderCode(), newuser.getIpoMemo());
-
-		// 取出订单号并添加
-		order.setOrderCode(plan.getOrderCode());
-		orderService.save(order);
-
-		Order order02 = new Order();
-		order02.setOrderCode(order.getOrderCode());
-
-		Order neworder = orderService.findOne(order02);
-
-		// ** 订单计划表*//*
-
-		Long id = newserverPlan.getId();
-
-		NewServerPlan serverPlan = newserverPlanService.findOne(id);
-
-		OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
-
-		OrderPlan orderPlan2 = new OrderPlan();
-		orderPlan2.setOrderId(orderPlan.getOrderId());
-
-		OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
-
-		order.setOrderPlanId(newOrdPlan.getId());
-
-		orderPlanService.save(orderPlan);
-
-		neworder.setOrderPlan(newOrdPlan);
-
-		/** 添加电站 */
-		stationService.insertStation(neworder);
-
-		APOservice.getapole(neworder, listid);
-
-		neworder.getUser().setPassword(null);
-
-		Map<String, Long> map = new HashMap<String, Long>();
-		map.put("orderId", neworder.getId());
 		
+		logger.info("传递的装机容量 ： ----- ---- ----- ----- "+capacity);
+		String orderCode =	(String) session.getAttribute("orderCode");
+				 
+		logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
+			Order orderSize =orderService.finByOrderCode(orderCode);
 
-		/** 传出电站的id */
-		return ResultVOUtil.success(map);
-	}
+			Map<String, Long> map = new HashMap<String, Long>();
+			 if(null == orderSize ){
+			  logger.info("---- ---- ---- ------ ----- 开始生成订单");
+				NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
+				Double price =	plan.getUnitPrice().doubleValue()*capacity;
+				Double allMoney = 0.0;
+
+					List<Long> listid = (List<Long>) session.getAttribute("list");
+					List<Apolegamy> list = apolegamyService.findAll(listid);
+
+					Double apoPrice = 0.0;
+
+					for (Apolegamy apolegamy : list) {
+						apoPrice += apolegamy.getPrice();
+					}
+					allMoney = price+apoPrice;
+					  logger.info("---- ---- ---- ------ ----- 金额为"+allMoney);
+					Long planid = (Long) session.getAttribute("newserverplanid");
+
+					NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+
+					newserverPlan.setMinPurchase(plan.getNum());
+
+					User user02 = userservice.findByPhone(plan.getPhone());
+					// ** 添加订单*//*
+					Order order = newserverPlanService.getOrder(newserverPlan, user02, allMoney, apoPrice,
+							plan.getOrderCode(), newuser.getIpoMemo());
+
+					// 取出订单号并添加
+					order.setOrderCode(plan.getOrderCode());
+					orderService.newSave(order);
+
+					Order order02 = new Order();
+					order02.setOrderCode(order.getOrderCode());
+
+					Order neworder = orderService.findOne(order02);
+
+					// ** 订单计划表*//*
+
+					Long id = newserverPlan.getId();
+
+					NewServerPlan serverPlan = newserverPlanService.findOne(id);
+
+					OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
+
+					OrderPlan orderPlan2 = new OrderPlan();
+					orderPlan2.setOrderId(orderPlan.getOrderId());
+
+					OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
+
+					order.setOrderPlanId(newOrdPlan.getId());
+
+					orderPlanService.save(orderPlan);
+
+					neworder.setOrderPlan(newOrdPlan);
+
+					/** 添加电站 */
+					stationService.insertStation(neworder);
+					
+					logger.info("---- ---- ------ ----- ----- 开始添加记录表");
+					APOservice.getapole(neworder, listid);
+					logger.info("---- ---- ------ ----- ----- 添加结束！");
+					neworder.getUser().setPassword(null);
+
+					map.put("orderId", neworder.getId());
+				
+				 logger.info("---- ---- ---- ------ ----- 生成订单成功！");
+				/** 传出电站的id */
+				return ResultVOUtil.success(map);
+			 }
+			 
+			 logger.info("---- ---- ---- ------ ----- 查询的订单号为："+orderSize.getOrderCode());
+			 logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
+			 
+				map.put("orderId", orderSize.getId());
+
+				return ResultVOUtil.success(map);
+
+			}
 
 	/** 购买完成以后显示订单支付情况 */
 	/** @RequestParam("orderId") Long orderId */

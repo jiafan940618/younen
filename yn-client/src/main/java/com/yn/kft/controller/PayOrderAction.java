@@ -15,6 +15,7 @@ import com.yn.service.BillOrderService;
 import com.yn.utils.HttpsClientUtil;
 import com.yn.utils.PropertyUtils;
 import com.yn.utils.SignUtil;
+import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
 
@@ -61,9 +62,9 @@ public class PayOrderAction {
 		Map paramMap = new HashMap();
 
 		BillOrder orderPay = orderService.findByTradeNo(outTradeNo);
-
+		BillOrderVo billOrderVo = new BillOrderVo();
 		//获取参数
-	Map<String, String>  param=	pyOrderService.getOrder( orderPay, channel);
+	Map<String, String>  param=	pyOrderService.getOrder(billOrderVo);
 	
 	Map<String, String> filterMap = SignUtil.paraFilter(param);
 	//String channel = filterMap.get("channel");   /** 支付类型*/

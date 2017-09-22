@@ -94,6 +94,7 @@ public class ServerService {
 		return str;
 	}   
     
+	 /** 生成订单号*/
     public String getOrderCode(Long serverId){
     	
     	return toSerialCode(serverId, 4) + format.format(System.currentTimeMillis())

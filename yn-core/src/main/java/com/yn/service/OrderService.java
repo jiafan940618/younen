@@ -17,6 +17,8 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +41,9 @@ import com.yn.vo.OrderVo;
 
 @Service
 public class OrderService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+	
 	@Autowired
 	protected OrderDao orderDao;
 	@Autowired
@@ -332,7 +336,7 @@ public class OrderService {
 		order.setHadPayPrice(order.getHadPayPrice()+money);
 		
 		mapper.UpdateOrder(order);
-	
+		logger.info("----- ----- ---- ------ ----- --修改订单状态成功！");
 	}
 	
 

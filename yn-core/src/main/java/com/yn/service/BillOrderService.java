@@ -15,6 +15,8 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +29,10 @@ import com.yn.dao.BankCardDao;
 import com.yn.dao.BillOrderDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.mapper.BillOrderMapper;
+import com.yn.dao.mapper.OrderMapper;
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.model.Order;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
@@ -38,6 +42,9 @@ import com.yn.vo.BillOrderVo;
 
 @Service
 public class BillOrderService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BillOrderService.class);
+	
 	@Autowired
 	BillOrderDao billOrderDao;
 	@Autowired 
@@ -46,6 +53,8 @@ public class BillOrderService {
 	BillOrderMapper mapper;
 	@Autowired
 	BankCardDao bankCardDao ;
+	@Autowired 
+	OrderMapper ordermapper;
 
 	private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
@@ -61,6 +70,10 @@ public class BillOrderService {
 	
 	public BillOrder findOne(Long id) {
 		return billOrderDao.findOne(id);
+	}
+	
+	public void newsave(BillOrder billOrder) {
+		billOrderDao.save(billOrder);
 	}
 
 	public void save(BillOrder billOrder) {
@@ -78,6 +91,7 @@ public class BillOrderService {
 	}
 	
 	public void UpdateBillorder(BillOrderVo billorderVo){
+		logger.info("---- ----- ------ ---- 开始修改订单记录   00001");
 		
 		mapper.UpdateBillorder(billorderVo);
 	}
@@ -88,6 +102,8 @@ public class BillOrderService {
 	}
 	
 	public void updateOrder(String tradeNo){
+		
+		
 		
 		billOrderDao.updateOrder(tradeNo);
 	}
@@ -240,5 +256,44 @@ public class BillOrderService {
 		}
 		return list;
 	}
+	
+	/** 根据支付的金额改变订单的状态 status*/
+	
+	public void ChangeBillSta(Order order){
+		
+		Double speed = order.getHadPayPrice()/ order.getTotalPrice();
+		/*DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+		speed = Double.parseDouble(decimalFormat.format(speed)) * 100;*/
+		Integer status = 0;
+		if(speed > 0 && speed < 0.3){
+			status = 0;
+		}else if(speed > 0.3 && speed < 0.6 || speed == 0.3){	
+			status = 1;
+		}else if(speed > 0.6 && speed < 1 || speed == 0.6){
+			status = 2;
+		}else if(speed == 1){
+			status = 3;
+		}
+		
+		order.setStatus(status);
+
+		ordermapper.UpdateOrderStatus(order);
+	}
+	
+	/** 实现添加支付记录 表*/
+	public Integer changeChannel(String channel){
+		Integer payWay =0;
+		if(channel.equals("wxPubQR")){
+			payWay =2;
+			
+		}else if(channel.equals("alipayQR")){
+			payWay =3;
+		}
+		return payWay;
+	
+	}
+	
+	
+	
 	
 }

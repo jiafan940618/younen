@@ -24,4 +24,8 @@ public interface OrderMapper {
 	int updateConstructionStatus(Order order);
 	
 	int updateBuildStepB(Order order);
+	
+	/** 修改订单的进度  [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电}'")*/
+	void UpdateOrderStatus(Order order);
+	
 }
