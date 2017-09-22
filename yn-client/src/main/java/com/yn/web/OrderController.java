@@ -780,6 +780,7 @@ public class OrderController {
 		} else if (buildStepB == 10) {
 			jsonResult.put("buildStepB", "并网验收");
 		}
+		jsonResult.put("buildStepB4Num",buildStepB);
 		// jsonResult.put("buildStepB", order.getBuildStepB());
 		/* --=>方案设计=--> */
 		// 资质照片地址
@@ -875,7 +876,7 @@ public class OrderController {
 			orderService.updateConstructionStatus(order, null);
 		}
 		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
-		jsonResult.put("serverImg", order.getServer().getBusinessLicenseImgUrl());
+		jsonResult.put("serverImg", order.getServer().getCompanyLogo());
 		return ResultVOUtil.success(jsonResult);
 	}
 
