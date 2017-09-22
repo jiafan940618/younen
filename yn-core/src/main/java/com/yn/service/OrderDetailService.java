@@ -1,19 +1,19 @@
 package com.yn.service;
 
-import com.yn.dao.CommentDao;
-import com.yn.dao.mapper.OrderMapper;
-import com.yn.model.BillOrder;
-import com.yn.model.Comment;
-import com.yn.model.Order;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.yn.dao.CommentDao;
+import com.yn.model.BillOrder;
+import com.yn.model.Comment;
+import com.yn.model.Order;
 
 /**
  * 订单详情服务：为页面每一个按钮单独一个功能
@@ -28,6 +28,9 @@ public class OrderDetailService {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private BillOrderService billOrderService;
 
 	@Value("${APPLY_PAYMENT_SCALE}")
 	private Double APPLY_PAYMENT_SCALE;// 申请中 --> 需：30%
@@ -67,12 +70,12 @@ public class OrderDetailService {
 			} else {
 				result.put("needToPay", totalPrice);
 			}
-			 order.setLoanStatus(1);// 贷款申请中
-			 order.setStatus(0);// 订单申请中
+			order.setLoanStatus(1);// 贷款申请中
+			order.setStatus(0);// 订单申请中
 		}
 		// 更新状态 --> success：true
-		 boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		 result.put("updateOrderStauts", byCondition);
+		boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		result.put("updateOrderStauts", byCondition);
 		return result;
 	}
 
@@ -92,11 +95,11 @@ public class OrderDetailService {
 			result.put("needToPay", needToPay);
 			// order.setApplyIsPay(0);// 未支付
 		}
-		
 		result.put("nickName", order.getUser().getNickName());
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		// result.put("updateOrderStauts", byCondition + "");
+		//查看有没有生成订单记录
 		return result;
 	}
 
