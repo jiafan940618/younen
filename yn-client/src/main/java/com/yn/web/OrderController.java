@@ -644,7 +644,8 @@ public class OrderController {
 		jsonResult.put("applyIsPay", order.getApplyIsPay());
 		jsonResult.put("applyStepA", order.getApplyStepA());
 		jsonResult.put("applyStepB", order.getApplyStepB());
-		jsonResult.put("applyStepBImgUrl", findOne.getApplyStepBImgUrl());
+		jsonResult.put("applyStepBImgUrl",
+				findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0);
 		jsonResult.put("buildIsPay", order.getBuildIsPay());
 		jsonResult.put("buildStepA", order.getBuildIsPay());
 		jsonResult.put("buildStepB", order.getBuildStepB());
@@ -780,6 +781,7 @@ public class OrderController {
 		} else if (buildStepB == 10) {
 			jsonResult.put("buildStepB", "并网验收");
 		}
+		jsonResult.put("buildStepB4Num", buildStepB);
 		// jsonResult.put("buildStepB", order.getBuildStepB());
 		/* --=>方案设计=--> */
 		// 资质照片地址
@@ -846,14 +848,14 @@ public class OrderController {
 
 	/**
 	 * 修改施工中的状态
-	 * 
+	 *
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateConstructionStatus")
-	public Object updateConstructionStatus(Order o, String target) {
+	public Object updateConstructionStatus(Order o, Integer thisStauts,com.yn.vo.ResVo resVo) {
 		Order order = orderService.findOne(o.getId());
-		boolean falg = orderService.updateConstructionStatus(order, target);
+		boolean falg = orderService.updateConstructionStatus(order, thisStauts,resVo);
 		if (falg) {
 			return ResultVOUtil.success();
 		} else {
@@ -872,10 +874,13 @@ public class OrderController {
 	public Object getConstructionStatus(Order o) {
 		Order order = orderService.findOne(o.getId());
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 1) {
-			orderService.updateConstructionStatus(order, null);
+			orderService.updateConstructionStatus(order, 0,null);
 		}
-		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
-		jsonResult.put("serverImg", order.getServer().getBusinessLicenseImgUrl());
+		Map<String, String> jsonResult = 
+				(Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
+//		jsonResult.put("serverImg",
+//				order.getServer().getCompanyLogo() == null ? "" : order.getServer().getCompanyLogo());
+		System.out.println(order.getConstructionStatus());
 		return ResultVOUtil.success(jsonResult);
 	}
 

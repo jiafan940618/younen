@@ -2,8 +2,7 @@ package com.yn.service;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +35,8 @@ import com.yn.utils.JsonUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.OrderVo;
+import com.yn.vo.ResVo;
+import com.yn.vo.SVo2;
 
 @Service
 public class OrderService {
@@ -66,62 +67,59 @@ public class OrderService {
 
 		return mapper.findstatus(orderId);
 
-    }
-    
-   public Object findOrder(Long orderId){
-	   
-	return orderDao.findOrder(orderId);  
-   }
-   
-   public Order finByOrderCode(String orderCode){
-	   
-	   return mapper.findOrderCode(orderCode);
-   }
-   
-   public void newSave(Order order) {
-	   orderDao.save(order);
-   }
+	}
 
-    public void save(Order order) {
-        if (order.getId() != null) {
-            Order one = orderDao.findOne(order.getId());
-            try {
-                BeanCopy.beanCopy(order, one);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            orderDao.save(one);
-        } else {
-            orderDao.save(order);
-        }
-    }
+	public Object findOrder(Long orderId) {
 
-    
-    public void delete(Long id) {
-        orderDao.delete(id);
+		return orderDao.findOrder(orderId);
+	}
 
-        // 删除未读信息
-        noticeService.delete(NoticeEnum.NEW_ORDER.getCode(), id);
-    }
+	public Order finByOrderCode(String orderCode) {
 
-	 public  Order FindByTradeNo(String tradeNo){
-		  
+		return mapper.findOrderCode(orderCode);
+	}
+
+	public void newSave(Order order) {
+		orderDao.save(order);
+	}
+
+	public void save(Order order) {
+		if (order.getId() != null) {
+			Order one = orderDao.findOne(order.getId());
+			try {
+				BeanCopy.beanCopy(order, one);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			orderDao.save(one);
+		} else {
+			orderDao.save(order);
+		}
+	}
+
+	public void delete(Long id) {
+		orderDao.delete(id);
+
+		// 删除未读信息
+		noticeService.delete(NoticeEnum.NEW_ORDER.getCode(), id);
+	}
+
+	public Order FindByTradeNo(String tradeNo) {
+
 		Object object = orderDao.FindByTradeNo(tradeNo);
-		
-		Object[] obj =(Object[])object;
-		 Integer id = (Integer)obj[0];
-		 Integer status = (Integer)obj[1];
-		 BigDecimal hadPayPrice = (BigDecimal)obj[2];
-		
-		 
-		 Order order = new Order();
-		 order.setId(id.longValue());
-		 order.setHadPayPrice(hadPayPrice.doubleValue());
-		 order.setStatus(status);
-		return order;	
-	  }
 
- 
+		Object[] obj = (Object[]) object;
+		Integer id = (Integer) obj[0];
+		Integer status = (Integer) obj[1];
+		BigDecimal hadPayPrice = (BigDecimal) obj[2];
+
+		Order order = new Order();
+		order.setId(id.longValue());
+		order.setHadPayPrice(hadPayPrice.doubleValue());
+		order.setStatus(status);
+		return order;
+	}
+
 	public void deleteBatch(List<Long> id) {
 		orderDao.deleteBatch(id);
 	}
@@ -323,18 +321,17 @@ public class OrderService {
 		return newPlanVo;
 	}
 
-	/** 根据订单记录号修改状态*/
-	
-	public void UpdateOrStatus(String tradeNo,Double money){
-		
+	/** 根据订单记录号修改状态 */
+
+	public void UpdateOrStatus(String tradeNo, Double money) {
+
 		Order order = FindByTradeNo(tradeNo);
-		
-		order.setHadPayPrice(order.getHadPayPrice()+money);
-		
+
+		order.setHadPayPrice(order.getHadPayPrice() + money);
+
 		mapper.UpdateOrder(order);
-	
+
 	}
-	
 
 	/**
 	 * 获取施工进度的状态
@@ -346,21 +343,36 @@ public class OrderService {
 		return findOne(o.getId()).getConstructionStatus();
 	}
 
-	private String NOTBEGIN = "notBegin";// 未开始
-	private String MATERIALAPPROAC = "materialApproac";// 材料进场
-	private String FOUNDATIONBUILDING = "foundationBuilding";// 基础建筑
-	private String SUPPORTINSTALLATION = "supportInstallation";// 支架安装
-	private String PHOTOVOLTAICPANELINSTALLATION = "photovoltaicPanelInstallation";// 光伏板安装
-	private String DCCONNECTION = "DCConnection";// 直流接线
-	private String ELECTRICBOXINVERTER = "electricBoxInverter";// 电箱逆变器
-	private String BUSBOXINSTALLATION = "busBoxInstallation";// 汇流箱安装
-	private String ACLINE = "ACLine";// 交流辅线
-	private String LIGHTNINGPROTECTIONGROUNDINGTEST = "lightningProtectionGroundingTest";// 防雷接地测试
-	private String GRIDCONNECTEDACCEPTANCE = "gridConnectedAcceptance";// 并网验收
-	private String SUCCESS = "success";// 并网验收成功！走完最后一步
-	private String SERVER = "server";// 服务商
-	private String ORDERCODE = "orderCode";// 订单号
+	private static String NOTBEGIN = "notBegin";// 未开始
+	private static String MATERIALAPPROAC = "材料进场";// 材料进场
+	private static String FOUNDATIONBUILDING = "基础建筑";// 基础建筑
+	private static String SUPPORTINSTALLATION = "支架安装";// 支架安装
+	private static String PHOTOVOLTAICPANELINSTALLATION = "光伏板安装";// 光伏板安装
+	private static String DCCONNECTION = "直流接线";// 直流接线
+	private static String ELECTRICBOXINVERTER = "电箱逆变器";// 电箱逆变器
+	private static String BUSBOXINSTALLATION = "汇流箱安装";// 汇流箱安装
+	private static String ACLINE = "交流辅线";// 交流辅线
+	private static String LIGHTNINGPROTECTIONGROUNDINGTEST = "防雷接地测试";// 防雷接地测试
+	private static String GRIDCONNECTEDACCEPTANCE = "并网验收";// 并网验收
+	private static String SUCCESS = "success";// 并网验收成功！走完最后一步
+	private static String SERVER = "server";// 服务商
+	private static String ORDERCODE = "orderCode";// 订单号
 
+	/*
+	 * private String NOTBEGIN = "notBegin";// 未开始 private String
+	 * MATERIALAPPROAC = "materialApproac";// 材料进场 private String
+	 * FOUNDATIONBUILDING = "foundationBuilding";// 基础建筑 private String
+	 * SUPPORTINSTALLATION = "supportInstallation";// 支架安装 private String
+	 * PHOTOVOLTAICPANELINSTALLATION = "photovoltaicPanelInstallation";// 光伏板安装
+	 * private String DCCONNECTION = "DCConnection";// 直流接线 private String
+	 * ELECTRICBOXINVERTER = "electricBoxInverter";// 电箱逆变器 private String
+	 * BUSBOXINSTALLATION = "busBoxInstallation";// 汇流箱安装 private String ACLINE
+	 * = "ACLine";// 交流辅线 private String LIGHTNINGPROTECTIONGROUNDINGTEST =
+	 * "lightningProtectionGroundingTest";// 防雷接地测试 private String
+	 * GRIDCONNECTEDACCEPTANCE = "gridConnectedAcceptance";// 并网验收 private
+	 * String SUCCESS = "success";// 并网验收成功！走完最后一步 private String SERVER =
+	 * "server";// 服务商 private String ORDERCODE = "orderCode";// 订单号
+	 */
 	/**
 	 * 修改施工状态的进度 如果现在是<材料进场>，就选择为<材料进场>,<材料进场>已经完成的话，那么就是进入到<基础建筑>,此时应该点击<基础建筑>
 	 * 即进入到哪一步，就出发那个的事件。
@@ -368,10 +380,135 @@ public class OrderService {
 	 * @param o
 	 * @return
 	 */
-	public boolean updateConstructionStatus(Order o, String target) {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public boolean updateConstructionStatus(Order o,Integer thisStauts,ResVo resVo) {
+		Map<String, Object> bigMap = new HashMap<String, Object>();
 		Order order = findOne(o.getId());
-		String constructionStatus = order.getConstructionStatus();
+		List<Object> list1 = new ArrayList<Object>();
+		List<Object> list = new ArrayList<Object>();
+		SVo2 s = new SVo2();
+		ResVo rv = new ResVo();
+		s.setServerImg(order.getServer().getCompanyLogo());
+		s.setServerName(order.getServerName());
+		s.setOrderCode(order.getOrderCode());
+		list.add(s);
+		bigMap.put("Server", list);
+		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 100) {
+			rv.setContent("");
+			rv.setTarget("materialapproac");
+			rv.setTitle(MATERIALAPPROAC);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("foundationbuilding");
+			rv.setTitle(FOUNDATIONBUILDING);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("supportinstallation");
+			rv.setTitle(SUPPORTINSTALLATION);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("photovoltaicpanelinstallation");
+			rv.setTitle(PHOTOVOLTAICPANELINSTALLATION);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("dcconnection");
+			rv.setTitle(DCCONNECTION);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("electricboxinverter");
+			rv.setTitle(ELECTRICBOXINVERTER);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("busboxinstallation");
+			rv.setTitle(BUSBOXINSTALLATION);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("acline");
+			rv.setTitle(ACLINE);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("lightningprotectiongroundingtest");
+			rv.setTitle(LIGHTNINGPROTECTIONGROUNDINGTEST);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("gridconnectedacceptance");
+			rv.setTitle(GRIDCONNECTEDACCEPTANCE);
+			list1.add(rv);
+
+			rv = new ResVo();
+			rv.setContent("");
+			rv.setTarget("success");
+			rv.setTitle(SUCCESS);
+			list1.add(rv);
+
+			bigMap.put("ResVo", list1);
+			String obj2Json = JsonUtil.obj2Json(bigMap);
+			order.setConstructionStatus(obj2Json);
+			// update
+			order.setBuildStepB(0);
+			int stepB = mapper.updateBuildStepB(order);
+			int status = mapper.updateConstructionStatus(order);
+			System.out.println("stepB::"+stepB+"\tstatus"+status);
+			System.out.println(obj2Json);
+			return stepB > 0 && status > 0 ? true : false;
+		}
+		Map<String, Object> json2Obj = (Map<String, Object>) JsonUtil.json2Obj(order.getConstructionStatus());
+		List<Object> l = new ArrayList<Object>();
+		Map<String, Object> m1 = new HashMap<String, Object>();
+		Map<String, Object> m = new HashMap<String, Object>();
+		List<Object> obl = (List<Object>) json2Obj.get("ResVo");
+		for (Object object : obl) {
+			m = (Map<String, Object>) object;
+			if (m.get("target").equals(resVo.getTarget())) {
+				rv = new ResVo();
+				rv.setContent(resVo.getContent());
+				rv.setTarget(resVo.getTarget());
+				rv.setTitle(resVo.getTitle());
+			} else {
+				rv = new ResVo();
+				rv.setContent(m.get("content") + "");
+				rv.setTarget(m.get("target") + "");
+				rv.setTitle(m.get("title") + "");
+			}
+			l.add(rv);
+		}
+		order.setBuildStepB(thisStauts);
+		m1.put("Server", list);
+		m1.put("ResVo", l);
+		String obj2Json3 = JsonUtil.obj2Json(m1);
+		order.setConstructionStatus(obj2Json3);
+		int stepB = mapper.updateBuildStepB(order);
+		int status = mapper.updateConstructionStatus(order);
+		System.out.println("stepB::"+stepB+"\tstatus"+status);
+		System.out.println(obj2Json3);
+		return stepB > 0 && status > 0 ? true : false;
+		
+		
+		
+		
+		
+		
+		
+		
+		//////////////\\\\\\\\\\\\\\\
+		/*String constructionStatus = order.getConstructionStatus();
 		if (constructionStatus == null || constructionStatus.length() < 279) {// 针对没有这个状态的订单的操作
 			Map<String, Object> csMap = new HashMap<String, Object>();
 			csMap.put(NOTBEGIN, "未开始");
@@ -427,7 +564,7 @@ public class OrderService {
 						break;
 					} else if (target.equals(SUPPORTINSTALLATION)) {// 支架安装
 						System.out.println(map.get(FOUNDATIONBUILDING));
-						if (!map.get(FOUNDATIONBUILDING) .equals("当前正在进行")) {
+						if (!map.get(FOUNDATIONBUILDING).equals("当前正在进行")) {
 							return false;
 						}
 						order.setBuildStepB(2);
@@ -513,6 +650,105 @@ public class OrderService {
 		int status = mapper.updateConstructionStatus(order);
 		int b = mapper.updateBuildStepB(order);
 		System.out.println("修改状态结束！" + status + "\t" + b);
-		return status > 0 && b > 0 ? true : false;
+		return status > 0 && b > 0 ? true : false;*/
+		//////////////// 2017-9-22:\\\\\\\\\\\\\
+		//////////////// 2017-9-22:\\\\\\\\\\\\\
+		//////////////// 2017-9-22:\\\\\\\\\\\\\
+		//////////////// 2017-9-22:\\\\\\\\\\\\\
+		/*
+		 * Date date = new Date(); SimpleDateFormat sdf = new
+		 * SimpleDateFormat("yyyy-MM-dd"); String format = sdf.format(date);
+		 * Map<String, Object> bigMap = new HashMap<String, Object>();
+		 * List<Map<String, Object>> list = new ArrayList<Map<String,
+		 * Object>>(); Map<String, Object> sMap = new HashMap<String, Object>();
+		 * Map<String, Object> csMap = new HashMap<String, Object>();
+		 * sMap.put("serverImg", order.getServer().getCompanyLogo());
+		 * sMap.put(SERVER, order.getServer().getCompanyName());
+		 * sMap.put(ORDERCODE, order.getOrderCode()); bigMap.put("Server",
+		 * sMap); /////////// --|-|||^|^||||-|--\\\\\\\\\\\\\ if
+		 * (constructionStatus == null || constructionStatus.length() < 100) {
+		 * csMap.put("title", MATERIALAPPROAC); csMap.put("content", "");
+		 * csMap.put("isNow", 1); csMap.put("target", 1); list.add(csMap); csMap
+		 * = new HashMap<>(); csMap.put("title", FOUNDATIONBUILDING);
+		 * csMap.put("content", ""); csMap.put("isNow", 1); csMap.put("target",
+		 * 2); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
+		 * SUPPORTINSTALLATION); csMap.put("content", ""); csMap.put("isNow",
+		 * 1); csMap.put("target", 3); list.add(csMap); csMap = new HashMap<>();
+		 * csMap.put("title", PHOTOVOLTAICPANELINSTALLATION);
+		 * csMap.put("content", ""); csMap.put("isNow", 1); csMap.put("target",
+		 * 4); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
+		 * DCCONNECTION); csMap.put("content", ""); csMap.put("isNow", 1);
+		 * csMap.put("target", 5); list.add(csMap); csMap = new HashMap<>();
+		 * csMap.put("title", ELECTRICBOXINVERTER); csMap.put("content", "");
+		 * csMap.put("isNow", 0); csMap.put("target", 6); list.add(csMap); csMap
+		 * = new HashMap<>(); csMap.put("title", BUSBOXINSTALLATION);
+		 * csMap.put("content", ""); csMap.put("isNow", 0); csMap.put("target",
+		 * 7); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
+		 * ACLINE); csMap.put("content", ""); csMap.put("isNow", 0);
+		 * csMap.put("target", 8); list.add(csMap); csMap = new HashMap<>();
+		 * csMap.put("title", LIGHTNINGPROTECTIONGROUNDINGTEST);
+		 * csMap.put("content", ""); csMap.put("isNow", 0); csMap.put("target",
+		 * 9); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
+		 * GRIDCONNECTEDACCEPTANCE); csMap.put("content", "");
+		 * csMap.put("isNow", 0); csMap.put("target", 10); list.add(csMap);
+		 * bigMap.put("cs", list); System.out.println("我是空的。。。。。。。。");
+		 * order.setConstructionStatus(JsonUtil.obj2Json(bigMap));
+		 * System.out.println(order.getConstructionStatus()); int status =
+		 * mapper.updateConstructionStatus(order); return status > 0 ? true :
+		 * false; } else { if (target==1) { csMap.put("title", MATERIALAPPROAC);
+		 * csMap.put("content", format + "完成" + MATERIALAPPROAC);
+		 * csMap.put("isNow", 1); csMap.put("target", "materialApproac");
+		 * list.add(csMap); } else if(target>1){ csMap.put("title",
+		 * MATERIALAPPROAC); csMap.put("content", format + "完成" +
+		 * MATERIALAPPROAC); csMap.put("isNow", 1); csMap.put("target",
+		 * "materialApproac"); list.add(csMap); }
+		 * 
+		 * if (target.equals("foundationBuilding")) { csMap = new HashMap<>();
+		 * csMap.put("title", FOUNDATIONBUILDING); csMap.put("content", format +
+		 * "完成" + FOUNDATIONBUILDING); csMap.put("isNow", 1);
+		 * csMap.put("target", "foundationBuilding"); list.add(csMap); } else if
+		 * (target.equals("supportInstallation")) { csMap = new HashMap<>();
+		 * csMap.put("title", SUPPORTINSTALLATION); csMap.put("content", format
+		 * + "完成" + SUPPORTINSTALLATION); csMap.put("isNow", 1);
+		 * csMap.put("target", "supportInstallation"); list.add(csMap); } else
+		 * if (target.equals("photovoltaicPanelInstallation")) { csMap = new
+		 * HashMap<>(); csMap.put("title", PHOTOVOLTAICPANELINSTALLATION);
+		 * csMap.put("content", format + "完成" + PHOTOVOLTAICPANELINSTALLATION);
+		 * csMap.put("isNow", 1); csMap.put("target",
+		 * "photovoltaicPanelInstallation"); list.add(csMap); } else if
+		 * (target.equals("DCConnection")) { csMap = new HashMap<>();
+		 * csMap.put("title", DCCONNECTION); csMap.put("content", "");
+		 * csMap.put("isNow", 1); csMap.put("target", "DCConnection");
+		 * list.add(csMap); } else if (target.equals("electricBoxInverter")) {
+		 * csMap = new HashMap<>(); csMap.put("title", ELECTRICBOXINVERTER);
+		 * csMap.put("content", format + "完成" + ELECTRICBOXINVERTER);
+		 * csMap.put("isNow", 0); csMap.put("target", "electricBoxInverter");
+		 * list.add(csMap); } else if (target.equals("busBoxInstallation")) {
+		 * csMap = new HashMap<>(); csMap.put("title", BUSBOXINSTALLATION);
+		 * csMap.put("content", format + "完成" + BUSBOXINSTALLATION);
+		 * csMap.put("isNow", 0); csMap.put("target", "busBoxInstallation");
+		 * list.add(csMap); } else if (target.equals("ACLine")) { csMap = new
+		 * HashMap<>(); csMap.put("title", ACLINE); csMap.put("content", format
+		 * + "完成" + ACLINE); csMap.put("isNow", 0); csMap.put("target",
+		 * "ACLine"); list.add(csMap); } else if
+		 * (target.equals("lightningProtectionGroundingTest")) { csMap = new
+		 * HashMap<>(); csMap.put("title", LIGHTNINGPROTECTIONGROUNDINGTEST);
+		 * csMap.put("content", format + "完成" +
+		 * LIGHTNINGPROTECTIONGROUNDINGTEST); csMap.put("isNow", 0);
+		 * csMap.put("target", "lightningProtectionGroundingTest");
+		 * list.add(csMap); } else if (target.equals("gridConnectedAcceptance"))
+		 * { csMap = new HashMap<>(); csMap.put("title",
+		 * GRIDCONNECTEDACCEPTANCE); csMap.put("content", format + "完成" +
+		 * GRIDCONNECTEDACCEPTANCE); csMap.put("isNow", 0); csMap.put("target",
+		 * "gridConnectedAcceptance"); list.add(csMap); } bigMap.put("cs",
+		 * list); order.setConstructionStatus(JsonUtil.obj2Json(bigMap));
+		 * System.out.println(order.getConstructionStatus());
+		 */
+		// 更新操作。。。。。
+		/*
+		 * int status = mapper.updateConstructionStatus(order); int b =
+		 * mapper.updateBuildStepB(order);System.out.println("修改状态结束！"+status+
+		 * "\t"+b);return status>0&&b>0?true:false;
+		 */
 	}
 }
