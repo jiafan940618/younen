@@ -618,8 +618,6 @@ public class OrderController {
 				map.put("orderId", orderSize.getId());
 
 				return ResultVOUtil.success(map);
-
-
 			}
 
 	/** 购买完成以后显示订单支付情况 */

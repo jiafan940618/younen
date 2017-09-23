@@ -3,6 +3,7 @@ package com.yn.kftService;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -11,27 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.yn.model.BillOrder;
 import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
 import com.yn.service.WalletService;
 import com.yn.utils.Constant;
 import com.yn.utils.HttpsClientUtil;
-import com.yn.utils.RequestUtils;
 import com.yn.utils.SignUtil;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
-
 @Service
-public class PyOrderService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PyOrderService.class);
+public class TestOrderService {
+
+	private static final Logger logger = LoggerFactory.getLogger(TestOrderService.class);
 	
 	@Autowired
 	private BillOrderService orderService;
-	@Autowired 
-	PyOrderService pyOrderService;
 	@Autowired
 	WalletService walletService;
 	
@@ -40,15 +36,17 @@ public class PyOrderService {
 		logger.info("进入方法的金额："+billOrderVo.getMoney());
 		logger.info("进入方法的类型："+billOrderVo.getChannel());
 		logger.info("进入方法的字符串："+billOrderVo.getDescription());
+
+		logger.info("进入方法的mchId："+billOrderVo.getMchId());
 		
 		Map<String, String> param =new HashMap<String, String>();
 		param.put("tradeType", "cs.pay.submit");
 		param.put("version", "1.0");
 		 /** 测试mchid */
-		param.put("mchId", "000010000000000024");
+		param.put("mchId", billOrderVo.getMchId());
 		
 		param.put("channel",billOrderVo.getChannel());  /** 付款方式*/
-		param.put("body", "这是一个测试!");   /** 商品描述*/
+		param.put("body", "开发环境测试!");   /** 商品描述*/
 		param.put("terminalType","pc"); /** 终端类型*/
 		param.put("outTradeNo", billOrderVo.getTradeNo());    /** 订单号*/
 
@@ -61,7 +59,7 @@ public class PyOrderService {
 		param.put("timeExpire", null);   /** 订单失效时间 */
 	     /*** 扩展字段 */
 
-		param.put("notifyUrl", "http://test.u-en.cn/client/sign/doresult");
+		param.put("notifyUrl", "http://3ad9d9c5.ngrok.io/client/sign/doresult");
 		
 		param.put("subject", "这是测试商品1");    /** 商品标题 */ 
 		//过滤空值或null
@@ -71,8 +69,9 @@ public class PyOrderService {
 	
 	
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
-		String key = "7f957562b40e4b0eaf5bc9ed4d1a78ca";
-		String resultUrl ="http://test.kftpay.com.cn:3080/cloud/cloudplatform/api/trade.html";
+		
+		String key = billOrderVo.getKey();
+		String resultUrl = billOrderVo.getRequestUrl();
 		//获取参数
 	Map<String, String>  param=	getOrder(billOrderVo);
 	
@@ -100,7 +99,7 @@ public class PyOrderService {
 		Map<String, String> returnMap = (Map<String, String>)JSON.parse(returnStr);
 		Map<String, String> map = new HashMap<String, String>();
 		/** 验签 测试key */
-		if(SignUtil.validSign(filterMap,key)){
+		if(SignUtil.validSign(filterMap, key)){
 			
 			String returnCode = returnMap.get("returnCode");
 			logger.info("返回的returnCode：--- -- - -- - - - - - -- -"+returnCode);
@@ -110,8 +109,7 @@ public class PyOrderService {
 			   /** 如果数据返回正常*/
 			if(returnCode.equals("0") && resultCode.equals("0")){
 				//根据不同渠道类型做处理
-			
-				
+
 				if(channel.equals("wxPubQR")){
 				//	request.setAttribute("codeUrl", returnMap.get("codeUrl"));
 					System.out.println("支付的codeurl：----"+returnMap.get("codeUrl"));
@@ -177,5 +175,4 @@ public class PyOrderService {
 		
 		return ResultVOUtil.success("支付成功！");
 	}
-
 }

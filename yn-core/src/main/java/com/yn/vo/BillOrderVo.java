@@ -25,8 +25,56 @@ public class BillOrderVo extends QueryVo{
 	
 	private String description;   
 	
+	private String key;
+	
+	private String requestUrl;
+	
+	private String mchId;
+	
+	private String boby;
+	
+	private String subject;
+	
+	private String bankType;
 	
 	
+	
+	public String getBankType() {
+		return bankType;
+	}
+	public void setBankType(String bankType) {
+		this.bankType = bankType;
+	}
+	public String getBoby() {
+		return boby;
+	}
+	public void setBoby(String boby) {
+		this.boby = boby;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getRequestUrl() {
+		return requestUrl;
+	}
+	public void setRequestUrl(String requestUrl) {
+		this.requestUrl = requestUrl;
+	}
+	public String getMchId() {
+		return mchId;
+	}
+	public void setMchId(String mchId) {
+		this.mchId = mchId;
+	}
 	public String getDescription() {
 		return description;
 	}

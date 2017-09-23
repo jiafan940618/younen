@@ -1,0 +1,6 @@
+<project>   
+  <modelVersion>3.8.5</modelVersion>   
+  <groupId>com.lycheepay.gateway</groupId>   
+  <artifactId>gateway-client-3.8.5</artifactId>   
+  <version>3.8.5</version>   
+</project>

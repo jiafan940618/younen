@@ -79,6 +79,7 @@ public class SignController {
 				 //等于2是微信支付
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
 				
+				
 				return ""; 
 			}else if(billOrderVo.getPayWay()==5){//等于5是快付通支付
 				
@@ -148,7 +149,7 @@ public class SignController {
 			                	billOrderVo.setTradeNo(outTradeNo);
 			                	Integer payWay =billorderService.changeChannel(channel);
 			                	billOrderVo.setPayWay(payWay);
-			                	billOrderVo.setStatus(Integer.parseInt(status));
+			                	billOrderVo.setStatus(0);
 			                	billorderService.newsave(billOrderVo);
 			                	
 			                	/** 修改订单金额,及3步走，支付状态*/
@@ -169,7 +170,7 @@ public class SignController {
 			                	billOrderVo.setTradeNo(outTradeNo);
 			                	Integer payWay =billorderService.changeChannel(channel);
 			                	billOrderVo.setPayWay(payWay);
-			                	billOrderVo.setStatus(Integer.parseInt(status));
+			                	billOrderVo.setStatus(1);
 			                	billorderService.save(billOrderVo);
 		                		
 		                		return ResultVOUtil.error(777, "支付未成功!");
@@ -181,7 +182,7 @@ public class SignController {
 			                	billOrderVo.setTradeNo(outTradeNo);
 			                	Integer payWay =billorderService.changeChannel(channel);
 			                	billOrderVo.setPayWay(payWay);
-			                	billOrderVo.setStatus(Integer.parseInt(status));
+			                	billOrderVo.setStatus(2);
 			                	billorderService.newsave(billOrderVo);
 		                		return ResultVOUtil.error(777, "已冲正!");
 		                	}else if(resultMap.get("status").equals("04")){
@@ -230,16 +231,29 @@ public class SignController {
 		@RequestMapping(value="/selectSta")
 		public Object getorderCode(HttpSession session){
 			String tradeNo =(String) session.getAttribute("tradeNo");
-			
+			Map<String, Integer> map =  new HashMap<String, Integer>();
 			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
 			
 			BillOrder billOrder = billorderService.findByTradeNo(tradeNo);
 			
-			Map<String, Integer> map =  new HashMap<String, Integer>();
-			
-			map.put("status", billOrder.getStatus());
-			
+			if(null != billOrder){
+
+				map.put("status", billOrder.getStatus());
+			}
 			return	ResultVOUtil.success(map);
+		}
+		
+		
+		/*** 银联支付接口 */
+		@ResponseBody
+		@RequestMapping(value="/bankPay")
+		public  Object getBank(){
+			
+			
+			
+			
+			
+			return null;
 		}
 		
 		
