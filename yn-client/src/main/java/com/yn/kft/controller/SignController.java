@@ -2,6 +2,8 @@ package com.yn.kft.controller;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.yn.kftService.PyOrderService;
+import com.yn.kftService.SignService;
+import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
@@ -38,6 +43,12 @@ public class SignController {
 	private BillOrderService billorderService;
 	@Autowired
 	private PyOrderService pyOrderService;
+	@Autowired
+	private SignService signService;
+	@Autowired
+	BankCardService bankCardService;
+	
+	
 		//http://b2725326.ngrok.io/client/sign/payonline
 	 /** pc端*/
 		@ResponseBody
@@ -61,7 +72,7 @@ public class SignController {
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
 			logger.info("--- --- --- --- --- ---- --- 传递的支付方式为："+billOrderVo.getChannel());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
-			
+			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+billOrderVo.getMoney());
 			String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
 		
 			billOrderVo.setDescription(description);
@@ -69,19 +80,23 @@ public class SignController {
 			session.setAttribute("tradeNo", billOrderVo.getTradeNo());
 			 //等于1是余额支付
 			if(billOrderVo.getPayWay()==1){
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法1：");
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->1：");
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于3是支付宝支付	
 			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法2："+billOrderVo.getChannel());
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2："+billOrderVo.getChannel());
 			
 				return pyOrderService.getMap(request, billOrderVo);
 				 //等于2是微信支付
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
 				
-				
-				return ""; 
+				return signService.findSign(billOrderVo); 
 			}else if(billOrderVo.getPayWay()==5){//等于5是快付通支付
+				
+				
+			BankCard bankCard =	bankCardService.selectBank(billOrderVo.getUserId());
+				
 				
 				return ""; 
 			}
@@ -101,20 +116,20 @@ public class SignController {
 			logger.info("进入测试响应后台contrller ----- ------ --- --- --- ----- !");
 			
 			 try {
-		            InputStream inStream = request.getInputStream();
-		            int _buffer_size = 1024;
-		            
-		            if (inStream != null) {
-		                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		                byte[] tempBytes = new byte[_buffer_size];
-		                int count = -1;
-		                while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
-		                    outStream.write(tempBytes, 0, count);
-		                }
-		                tempBytes = null;
-		                outStream.flush();
-		                //将流转换成字符串
-		                String result = new String(outStream.toByteArray(), "UTF-8");
+				InputStream inStream = request.getInputStream();
+	            int _buffer_size = 1024;
+	            
+	            if (inStream != null) {
+	                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+	                byte[] tempBytes = new byte[_buffer_size];
+	                int count = -1;
+	                while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
+	                    outStream.write(tempBytes, 0, count);
+	                }
+	                tempBytes = null;
+	                outStream.flush();
+	                //将流转换成字符串
+	                String result = new String(outStream.toByteArray(), "UTF-8");
 		                
 		                System.out.println(result);
 		                //将字符串解析成XML
@@ -243,6 +258,46 @@ public class SignController {
 			return	ResultVOUtil.success(map);
 		}
 		
+		/** 银联响应接口*/
+		@ResponseBody
+		@RequestMapping(value="/doSucRep")
+		public Object getBoby(HttpServletRequest request) throws IOException{
+			 Map<String, Object> resultMap = new HashMap<String, Object>();
+			System.out.println(" ==== ==== ===============================================================================");
+			System.out.println("---------- ------ -- ----- 进入后台响应");
+			 File directory = new File("");// 参数为空
+			 String pfxPath=null;
+			try {
+				pfxPath = directory.getCanonicalPath();
+				 System.out.println("项目路径为：-- --- -- -- - - - - - -"+pfxPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			 System.out.println(pfxPath+"\\privateKey\\20KFT.cer");
+			 
+			 InputStream inStream = request.getInputStream();
+	         int _buffer_size = 1024;
+	         
+	         if (inStream != null) {
+	             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+	             byte[] tempBytes = new byte[_buffer_size];
+	             int count = -1;
+	             while ((count = inStream.read(tempBytes, 0, _buffer_size)) != -1) {
+	                 outStream.write(tempBytes, 0, count);
+	             }
+	             tempBytes = null;
+	             outStream.flush();
+	             //将流转换成字符串
+	             String result = new String(outStream.toByteArray(), "UTF-8");
+	             System.out.println(result);
+	             
+	             resultMap = (Map<String, Object>)JSON.parse(result); 
+	             
+	         }
+			System.out.println("---------- ------ -- ----- 结束后台响应");
+			System.out.println(" ==== ==== ===============================================================================");
+			return "进入测试";
+		}
 		
 		/*** 银联支付接口 */
 		@ResponseBody

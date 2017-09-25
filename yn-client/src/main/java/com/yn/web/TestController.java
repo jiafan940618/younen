@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yn.kftService.PyOrderService;
 import com.yn.kftService.SignService;
+import com.yn.model.BankCard;
 import com.yn.model.Order;
+import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.vo.BillOrderVo;
@@ -32,7 +34,7 @@ public class TestController {
 	@Autowired 
 	PyOrderService pyOrderService;
 	@Autowired
-	OrderService orderService;
+	BankCardService orderService;
 	@Autowired
 	BillOrderService billorderService;
 	
@@ -41,27 +43,17 @@ public class TestController {
 	 @RequestMapping(value = "/dotest")
 	    public Object  newTest(HttpSession session,HttpServletRequest request) {
 
- 
-		Order order = orderService.findOne(29l);
+		 BankCard vankCard = orderService.findOne(2l);
 		 
-		 billorderService.ChangeBillSta(order);
 		    
-		return ResultVOUtil.success("修改成功！");
+		return ResultVOUtil.success(vankCard);
 	    }
 	
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
 	    public Object someTest(HttpSession session) {
 		 
-		 String orderCode =	"zoti170918161576";
-		 
-		  logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
-		  Order orderSize =orderService.finByOrderCode(orderCode);
-		  if(null == orderSize){
-			  System.out.println("对象为空");
-			  return ResultVOUtil.success("对象为空");
-		  }
-
+		
 
 			return ResultVOUtil.success(null);
 	    }
