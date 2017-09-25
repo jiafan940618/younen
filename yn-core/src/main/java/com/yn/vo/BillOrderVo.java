@@ -10,17 +10,19 @@ import com.yn.domain.QueryVo;
 public class BillOrderVo extends QueryVo{
 	
 	private Long id;
-    private Long orderId;
     private Long dutyUserId;
     private String remark;
 	private Integer status;
 	/** 余额*/
 	private BigDecimal balancePrice;
 	
+	private Long orderId;
 	private Long userId;      //用户id
     private BigDecimal money;  //交易的金额
 	private String channel;     //微信与支付宝方式的代码
 	private Integer payWay;    //那种支付方式
+	
+	
 	private String tradeNo;     //订单号
 	
 	private String description;   

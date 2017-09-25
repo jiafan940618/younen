@@ -2,9 +2,11 @@ package com.yn.service;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,9 +44,9 @@ import com.yn.vo.SVo2;
 
 @Service
 public class OrderService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
-	
+
 	@Autowired
 	protected OrderDao orderDao;
 	@Autowired
@@ -386,11 +388,14 @@ public class OrderService {
 	 * @param o
 	 * @return
 	 */
-	public boolean updateConstructionStatus(Order o,Integer thisStauts,ResVo resVo) {
+	public boolean updateConstructionStatus(Order o, Integer thisStauts, ResVo resVo) {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String format = sdf.format(date);
 		Map<String, Object> bigMap = new HashMap<String, Object>();
 		Order order = findOne(o.getId());
-		List<Object> list1 = new ArrayList<Object>();
-		List<Object> list = new ArrayList<Object>();
+		List<Object> list1 = new LinkedList<Object>();
+		List<Object> list = new LinkedList<Object>();
 		SVo2 s = new SVo2();
 		ResVo rv = new ResVo();
 		s.setServerImg(order.getServer().getCompanyLogo());
@@ -399,70 +404,67 @@ public class OrderService {
 		list.add(s);
 		bigMap.put("Server", list);
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 100) {
-			rv.setContent("");
-			rv.setTarget("materialapproac");
-			rv.setTitle(MATERIALAPPROAC);
-			list1.add(rv);
+			System.out.println("没有数据，先填充。");
+			ResVo rv0 = new ResVo();
+			rv0.setContent(format + "-已完成-" + MATERIALAPPROAC);
+			rv0.setTarget("materialapproac");
+			rv0.setTitle(MATERIALAPPROAC);
+			list1.add(rv0);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("foundationbuilding");
-			rv.setTitle(FOUNDATIONBUILDING);
-			list1.add(rv);
+			ResVo rv1 = new ResVo(true);
+			rv1.setContent("当前正在执行");
+			rv1.setTarget("foundationbuilding");
+			rv1.setTitle(FOUNDATIONBUILDING);
+			rv1.setIsNow(true);
+			list1.add(rv1);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("supportinstallation");
-			rv.setTitle(SUPPORTINSTALLATION);
-			list1.add(rv);
+			ResVo rv2 = new ResVo();
+			rv2.setContent("");
+			rv2.setTarget("supportinstallation");
+			rv2.setTitle(SUPPORTINSTALLATION);
+			list1.add(rv2);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("photovoltaicpanelinstallation");
-			rv.setTitle(PHOTOVOLTAICPANELINSTALLATION);
-			list1.add(rv);
+			ResVo rv3 = new ResVo();
+			rv3.setContent("");
+			rv3.setTarget("photovoltaicpanelinstallation");
+			rv3.setTitle(PHOTOVOLTAICPANELINSTALLATION);
+			list1.add(rv3);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("dcconnection");
-			rv.setTitle(DCCONNECTION);
-			list1.add(rv);
+			ResVo rv4 = new ResVo();
+			rv4.setContent("");
+			rv4.setTarget("dcconnection");
+			rv4.setTitle(DCCONNECTION);
+			list1.add(rv4);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("electricboxinverter");
-			rv.setTitle(ELECTRICBOXINVERTER);
-			list1.add(rv);
+			ResVo rv5 = new ResVo();
+			rv5.setContent("");
+			rv5.setTarget("electricboxinverter");
+			rv5.setTitle(ELECTRICBOXINVERTER);
+			list1.add(rv5);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("busboxinstallation");
-			rv.setTitle(BUSBOXINSTALLATION);
-			list1.add(rv);
+			ResVo rv6 = new ResVo();
+			rv6.setContent("");
+			rv6.setTarget("busboxinstallation");
+			rv6.setTitle(BUSBOXINSTALLATION);
+			list1.add(rv6);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("acline");
-			rv.setTitle(ACLINE);
-			list1.add(rv);
+			ResVo rv7 = new ResVo();
+			rv7.setContent("");
+			rv7.setTarget("acline");
+			rv7.setTitle(ACLINE);
+			list1.add(rv7);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("lightningprotectiongroundingtest");
-			rv.setTitle(LIGHTNINGPROTECTIONGROUNDINGTEST);
-			list1.add(rv);
+			ResVo rv8 = new ResVo();
+			rv8.setContent("");
+			rv8.setTarget("lightningprotectiongroundingtest");
+			rv8.setTitle(LIGHTNINGPROTECTIONGROUNDINGTEST);
+			list1.add(rv8);
 
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("gridconnectedacceptance");
-			rv.setTitle(GRIDCONNECTEDACCEPTANCE);
-			list1.add(rv);
-
-			rv = new ResVo();
-			rv.setContent("");
-			rv.setTarget("success");
-			rv.setTitle(SUCCESS);
-			list1.add(rv);
+			ResVo rv9 = new ResVo();
+			rv9.setContent("");
+			rv9.setTarget("gridconnectedacceptance");
+			rv9.setTitle(GRIDCONNECTEDACCEPTANCE);
+			list1.add(rv9);
 
 			bigMap.put("ResVo", list1);
 			String obj2Json = JsonUtil.obj2Json(bigMap);
@@ -471,30 +473,51 @@ public class OrderService {
 			order.setBuildStepB(0);
 			int stepB = mapper.updateBuildStepB(order);
 			int status = mapper.updateConstructionStatus(order);
-			System.out.println("stepB::"+stepB+"\tstatus"+status);
+			System.out.println("stepB::" + stepB + "\tstatus" + status);
 			System.out.println(obj2Json);
 			return stepB > 0 && status > 0 ? true : false;
 		}
 		Map<String, Object> json2Obj = (Map<String, Object>) JsonUtil.json2Obj(order.getConstructionStatus());
-		List<Object> l = new ArrayList<Object>();
+		List<Object> l = new LinkedList<Object>();
 		Map<String, Object> m1 = new HashMap<String, Object>();
 		Map<String, Object> m = new HashMap<String, Object>();
 		List<Object> obl = (List<Object>) json2Obj.get("ResVo");
-		for (Object object : obl) {
-			m = (Map<String, Object>) object;
+		int flag = -999;
+		// String title = "";
+		// String content = "";
+		// String target = "";
+		Map<String, Object> m2 = new HashMap<String, Object>();
+		// int index = -999;
+		for (int i = 0; i < obl.size(); i++) {
+			m = (Map<String, Object>) obl.get(i);
+			System.err.println(m.get("target"));
+			rv = new ResVo();
 			if (m.get("target").equals(resVo.getTarget())) {
-				rv = new ResVo();
-				rv.setContent(resVo.getContent());
-				rv.setTarget(resVo.getTarget());
-				rv.setTitle(resVo.getTitle());
+				rv.setContent(format + "-已完成-" + resVo.getTitle());
+				rv.setTarget(m.get("target").toString());
+				rv.setTitle(m.get("title").toString());
+				rv.setIsNow(false);
+				flag = i;// 记录当前下标。方便修改下一条记录的content
+				System.out.println("当前的flag是：" + (flag + 1));
 			} else {
-				rv = new ResVo();
 				rv.setContent(m.get("content") + "");
 				rv.setTarget(m.get("target") + "");
 				rv.setTitle(m.get("title") + "");
 			}
+			if (!m.get("target").equals("gridconnectedacceptance")) {
+				if ((flag + 1) == i) {
+					String title = m.get("title").toString();
+					rv.setContent("当前正在执行");
+					rv.setTarget(m.get("target").toString());
+					rv.setTitle(title);
+					rv.setIsNow(true);
+					System.out.println(666666);
+					flag = -999;
+				}
+			}
 			l.add(rv);
 		}
+
 		order.setBuildStepB(thisStauts);
 		m1.put("Server", list);
 		m1.put("ResVo", l);
@@ -502,259 +525,10 @@ public class OrderService {
 		order.setConstructionStatus(obj2Json3);
 		int stepB = mapper.updateBuildStepB(order);
 		int status = mapper.updateConstructionStatus(order);
-		System.out.println("stepB::"+stepB+"\tstatus"+status);
-		System.out.println(obj2Json3);
+		// System.out.println("stepB::" + stepB + " \t status::" + status);
+		// System.out.println(obj2Json3.length());
+		// System.out.println(obj2Json3);
 		return stepB > 0 && status > 0 ? true : false;
-		
-		
-		
-		
-		
-		
-		
-		
-		//////////////\\\\\\\\\\\\\\\
-		/*String constructionStatus = order.getConstructionStatus();
-		if (constructionStatus == null || constructionStatus.length() < 279) {// 针对没有这个状态的订单的操作
-			Map<String, Object> csMap = new HashMap<String, Object>();
-			csMap.put(NOTBEGIN, "未开始");
-			csMap.put(MATERIALAPPROAC, " ");
-			csMap.put(FOUNDATIONBUILDING, " ");
-			csMap.put(SUPPORTINSTALLATION, " ");
-			csMap.put(PHOTOVOLTAICPANELINSTALLATION, " ");
-			csMap.put(DCCONNECTION, " ");
-			csMap.put(ELECTRICBOXINVERTER, " ");
-			csMap.put(BUSBOXINSTALLATION, " ");
-			csMap.put(ACLINE, " ");
-			csMap.put(LIGHTNINGPROTECTIONGROUNDINGTEST, " ");
-			csMap.put(GRIDCONNECTEDACCEPTANCE, " ");
-			csMap.put(SUCCESS, " ");
-			csMap.put(SERVER, order.getServer().getCompanyName());
-			csMap.put(ORDERCODE, order.getOrderCode());
-			constructionStatus = JsonUtil.obj2Json(csMap);
-			System.out.println(constructionStatus);
-			System.out.println("constructionStatus.length::" + constructionStatus.length());
-			order.setConstructionStatus(constructionStatus);
-			int status = mapper.updateConstructionStatus(order);
-			return status > 0 ? true : false;
-		}
-		//
-		if (constructionStatus != null && constructionStatus.length() > 278) {// 不是上面那个空的东西
-			System.out.println("开始修改状态！");
-			map = JsonUtil.parseJSON2Map(constructionStatus);
-			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String format = sdf.format(date);
-			// 0:未开始,1:材料进场,2:基础建筑,3:支架安装,4:光伏板安装,5:直流接线,6:电箱逆变器,7:汇流箱安装,8:交流辅线,9:防雷接地测试,10:并网验收
-			for (String key : map.keySet()) {
-				System.out.println("target::" + target + "\tkey::" + key);
-				if (key.equals(target)) {
-					// Object value = map.get(key);
-					if (target.equals(MATERIALAPPROAC)) {// 材料进场
-						// 获取支付、施工状态
-						if (order.getBuildIsPay() != 1 || order.getBuildStepA() != 1) {
-							return false;
-						}
-						order.setBuildStepB(0);
-						map.replace(NOTBEGIN, "正在施工");
-						map.replace(MATERIALAPPROAC, "当前正在进行");
-						break;
-					} else if (target.equals(FOUNDATIONBUILDING)) {// 基础建筑
-						System.out.println(map.get(MATERIALAPPROAC));
-						if (!map.get(MATERIALAPPROAC).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(1);
-						map.replace(MATERIALAPPROAC, format + "已完成材料进场");
-						map.replace(FOUNDATIONBUILDING, "当前正在进行");
-						break;
-					} else if (target.equals(SUPPORTINSTALLATION)) {// 支架安装
-						System.out.println(map.get(FOUNDATIONBUILDING));
-						if (!map.get(FOUNDATIONBUILDING).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(2);
-						map.replace(FOUNDATIONBUILDING, format + "已完成基础建筑");
-						map.replace(SUPPORTINSTALLATION, "当前正在进行");
-						break;
-					} else if (target.equals(PHOTOVOLTAICPANELINSTALLATION)) {// 光伏板安装
-						System.out.println(map.get(SUPPORTINSTALLATION));
-						if (!map.get(SUPPORTINSTALLATION).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(3);
-						map.replace(SUPPORTINSTALLATION, format + "已完成支架安装");
-						map.replace(PHOTOVOLTAICPANELINSTALLATION, "当前正在进行");
-						break;
-					} else if (target.equals(DCCONNECTION)) {// 直流接线
-						System.out.println(map.get(PHOTOVOLTAICPANELINSTALLATION));
-						if (!map.get(PHOTOVOLTAICPANELINSTALLATION).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(4);
-						map.replace(PHOTOVOLTAICPANELINSTALLATION, format + "已完成光伏板安装");
-						map.replace(DCCONNECTION, "当前正在进行");
-					} else if (target.equals(ELECTRICBOXINVERTER)) {// 电箱逆变器
-						System.out.println(map.get(PHOTOVOLTAICPANELINSTALLATION));
-						if (!map.get(PHOTOVOLTAICPANELINSTALLATION).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(5);
-						map.replace(DCCONNECTION, format + "已完成直流接线");
-						map.replace(ELECTRICBOXINVERTER, "当前正在进行");
-						break;
-					} else if (target.equals(BUSBOXINSTALLATION)) {// 汇流箱安装
-						System.out.println(map.get(ELECTRICBOXINVERTER));
-						if (!map.get(ELECTRICBOXINVERTER).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(6);
-						map.replace(ELECTRICBOXINVERTER, format + "已完成电箱逆变器");
-						map.replace(BUSBOXINSTALLATION, "当前正在进行");
-					} else if (target.equals(ACLINE)) {// 交流辅线
-						System.out.println(map.get(BUSBOXINSTALLATION));
-						if (!map.get(BUSBOXINSTALLATION).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(7);
-						map.replace(BUSBOXINSTALLATION, format + "已完成汇流箱安装");
-						map.replace(ACLINE, "当前正在进行");
-						break;
-					} else if (target.equals(LIGHTNINGPROTECTIONGROUNDINGTEST)) {// 防雷接地测试
-						System.out.println(map.get(ACLINE));
-						if (!map.get(ACLINE).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(8);
-						map.replace(ACLINE, format + "已完成交流辅线");
-						map.replace(LIGHTNINGPROTECTIONGROUNDINGTEST, "当前正在进行");
-						break;
-					} else if (target.equals(GRIDCONNECTEDACCEPTANCE)) {// 并网验收
-						System.out.println(map.get(LIGHTNINGPROTECTIONGROUNDINGTEST));
-						if (!map.get(LIGHTNINGPROTECTIONGROUNDINGTEST).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(9);
-						map.replace(LIGHTNINGPROTECTIONGROUNDINGTEST, format + "已完成防雷接地测试");
-						map.replace(GRIDCONNECTEDACCEPTANCE, "当前正在进行");
-					} else if (target.equals(SUCCESS)) {
-						System.out.println(map.get(GRIDCONNECTEDACCEPTANCE));
-						if (!map.get(GRIDCONNECTEDACCEPTANCE).equals("当前正在进行")) {
-							return false;
-						}
-						order.setBuildStepB(10);
-						map.replace(GRIDCONNECTEDACCEPTANCE, format + "已完成并网验收");
-						break;
-					}
-				}
-			}
-		}
-		constructionStatus = JsonUtil.obj2Json(map);
-		System.out.println(constructionStatus);
-		order.setConstructionStatus(constructionStatus);
-		// 更新操作。。。。。
-		int status = mapper.updateConstructionStatus(order);
-		int b = mapper.updateBuildStepB(order);
-		System.out.println("修改状态结束！" + status + "\t" + b);
-		return status > 0 && b > 0 ? true : false;*/
-		//////////////// 2017-9-22:\\\\\\\\\\\\\
-		//////////////// 2017-9-22:\\\\\\\\\\\\\
-		//////////////// 2017-9-22:\\\\\\\\\\\\\
-		//////////////// 2017-9-22:\\\\\\\\\\\\\
-		/*
-		 * Date date = new Date(); SimpleDateFormat sdf = new
-		 * SimpleDateFormat("yyyy-MM-dd"); String format = sdf.format(date);
-		 * Map<String, Object> bigMap = new HashMap<String, Object>();
-		 * List<Map<String, Object>> list = new ArrayList<Map<String,
-		 * Object>>(); Map<String, Object> sMap = new HashMap<String, Object>();
-		 * Map<String, Object> csMap = new HashMap<String, Object>();
-		 * sMap.put("serverImg", order.getServer().getCompanyLogo());
-		 * sMap.put(SERVER, order.getServer().getCompanyName());
-		 * sMap.put(ORDERCODE, order.getOrderCode()); bigMap.put("Server",
-		 * sMap); /////////// --|-|||^|^||||-|--\\\\\\\\\\\\\ if
-		 * (constructionStatus == null || constructionStatus.length() < 100) {
-		 * csMap.put("title", MATERIALAPPROAC); csMap.put("content", "");
-		 * csMap.put("isNow", 1); csMap.put("target", 1); list.add(csMap); csMap
-		 * = new HashMap<>(); csMap.put("title", FOUNDATIONBUILDING);
-		 * csMap.put("content", ""); csMap.put("isNow", 1); csMap.put("target",
-		 * 2); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
-		 * SUPPORTINSTALLATION); csMap.put("content", ""); csMap.put("isNow",
-		 * 1); csMap.put("target", 3); list.add(csMap); csMap = new HashMap<>();
-		 * csMap.put("title", PHOTOVOLTAICPANELINSTALLATION);
-		 * csMap.put("content", ""); csMap.put("isNow", 1); csMap.put("target",
-		 * 4); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
-		 * DCCONNECTION); csMap.put("content", ""); csMap.put("isNow", 1);
-		 * csMap.put("target", 5); list.add(csMap); csMap = new HashMap<>();
-		 * csMap.put("title", ELECTRICBOXINVERTER); csMap.put("content", "");
-		 * csMap.put("isNow", 0); csMap.put("target", 6); list.add(csMap); csMap
-		 * = new HashMap<>(); csMap.put("title", BUSBOXINSTALLATION);
-		 * csMap.put("content", ""); csMap.put("isNow", 0); csMap.put("target",
-		 * 7); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
-		 * ACLINE); csMap.put("content", ""); csMap.put("isNow", 0);
-		 * csMap.put("target", 8); list.add(csMap); csMap = new HashMap<>();
-		 * csMap.put("title", LIGHTNINGPROTECTIONGROUNDINGTEST);
-		 * csMap.put("content", ""); csMap.put("isNow", 0); csMap.put("target",
-		 * 9); list.add(csMap); csMap = new HashMap<>(); csMap.put("title",
-		 * GRIDCONNECTEDACCEPTANCE); csMap.put("content", "");
-		 * csMap.put("isNow", 0); csMap.put("target", 10); list.add(csMap);
-		 * bigMap.put("cs", list); System.out.println("我是空的。。。。。。。。");
-		 * order.setConstructionStatus(JsonUtil.obj2Json(bigMap));
-		 * System.out.println(order.getConstructionStatus()); int status =
-		 * mapper.updateConstructionStatus(order); return status > 0 ? true :
-		 * false; } else { if (target==1) { csMap.put("title", MATERIALAPPROAC);
-		 * csMap.put("content", format + "完成" + MATERIALAPPROAC);
-		 * csMap.put("isNow", 1); csMap.put("target", "materialApproac");
-		 * list.add(csMap); } else if(target>1){ csMap.put("title",
-		 * MATERIALAPPROAC); csMap.put("content", format + "完成" +
-		 * MATERIALAPPROAC); csMap.put("isNow", 1); csMap.put("target",
-		 * "materialApproac"); list.add(csMap); }
-		 * 
-		 * if (target.equals("foundationBuilding")) { csMap = new HashMap<>();
-		 * csMap.put("title", FOUNDATIONBUILDING); csMap.put("content", format +
-		 * "完成" + FOUNDATIONBUILDING); csMap.put("isNow", 1);
-		 * csMap.put("target", "foundationBuilding"); list.add(csMap); } else if
-		 * (target.equals("supportInstallation")) { csMap = new HashMap<>();
-		 * csMap.put("title", SUPPORTINSTALLATION); csMap.put("content", format
-		 * + "完成" + SUPPORTINSTALLATION); csMap.put("isNow", 1);
-		 * csMap.put("target", "supportInstallation"); list.add(csMap); } else
-		 * if (target.equals("photovoltaicPanelInstallation")) { csMap = new
-		 * HashMap<>(); csMap.put("title", PHOTOVOLTAICPANELINSTALLATION);
-		 * csMap.put("content", format + "完成" + PHOTOVOLTAICPANELINSTALLATION);
-		 * csMap.put("isNow", 1); csMap.put("target",
-		 * "photovoltaicPanelInstallation"); list.add(csMap); } else if
-		 * (target.equals("DCConnection")) { csMap = new HashMap<>();
-		 * csMap.put("title", DCCONNECTION); csMap.put("content", "");
-		 * csMap.put("isNow", 1); csMap.put("target", "DCConnection");
-		 * list.add(csMap); } else if (target.equals("electricBoxInverter")) {
-		 * csMap = new HashMap<>(); csMap.put("title", ELECTRICBOXINVERTER);
-		 * csMap.put("content", format + "完成" + ELECTRICBOXINVERTER);
-		 * csMap.put("isNow", 0); csMap.put("target", "electricBoxInverter");
-		 * list.add(csMap); } else if (target.equals("busBoxInstallation")) {
-		 * csMap = new HashMap<>(); csMap.put("title", BUSBOXINSTALLATION);
-		 * csMap.put("content", format + "完成" + BUSBOXINSTALLATION);
-		 * csMap.put("isNow", 0); csMap.put("target", "busBoxInstallation");
-		 * list.add(csMap); } else if (target.equals("ACLine")) { csMap = new
-		 * HashMap<>(); csMap.put("title", ACLINE); csMap.put("content", format
-		 * + "完成" + ACLINE); csMap.put("isNow", 0); csMap.put("target",
-		 * "ACLine"); list.add(csMap); } else if
-		 * (target.equals("lightningProtectionGroundingTest")) { csMap = new
-		 * HashMap<>(); csMap.put("title", LIGHTNINGPROTECTIONGROUNDINGTEST);
-		 * csMap.put("content", format + "完成" +
-		 * LIGHTNINGPROTECTIONGROUNDINGTEST); csMap.put("isNow", 0);
-		 * csMap.put("target", "lightningProtectionGroundingTest");
-		 * list.add(csMap); } else if (target.equals("gridConnectedAcceptance"))
-		 * { csMap = new HashMap<>(); csMap.put("title",
-		 * GRIDCONNECTEDACCEPTANCE); csMap.put("content", format + "完成" +
-		 * GRIDCONNECTEDACCEPTANCE); csMap.put("isNow", 0); csMap.put("target",
-		 * "gridConnectedAcceptance"); list.add(csMap); } bigMap.put("cs",
-		 * list); order.setConstructionStatus(JsonUtil.obj2Json(bigMap));
-		 * System.out.println(order.getConstructionStatus());
-		 */
-		// 更新操作。。。。。
-		/*
-		 * int status = mapper.updateConstructionStatus(order); int b =
-		 * mapper.updateBuildStepB(order);System.out.println("修改状态结束！"+status+
-		 * "\t"+b);return status>0&&b>0?true:false;
-		 */
+
 	}
 }

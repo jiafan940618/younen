@@ -4,7 +4,14 @@ import com.yn.domain.IDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+
+import org.hibernate.annotations.Where;
+
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 银行卡
@@ -30,10 +37,42 @@ public class BankCard extends IDomain implements Serializable {
     private Integer type;
     @Column(columnDefinition = "varchar(1) comment '[银行卡的编号]'")
     private String bankNum;
+    @Column(columnDefinition = "int(11) comment '[银行]'")
+    private Integer bankId;
+    @Column(columnDefinition = "varchar(255) comment '[协议号]'")
+    private String treatyId;
 
+    @OneToMany
+    @JoinColumn(name = "id", insertable = false, updatable = false)
+    private Set<BankCode> bankCode;
     
     
-    public String getBankNum() {
+    
+    public Integer getBankId() {
+		return bankId;
+	}
+
+	public void setBankId(Integer bankId) {
+		this.bankId = bankId;
+	}
+
+	public String getTreatyId() {
+		return treatyId;
+	}
+
+	public void setTreatyId(String treatyId) {
+		this.treatyId = treatyId;
+	}
+
+	public Set<BankCode> getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(Set<BankCode> bankCode) {
+		this.bankCode = bankCode;
+	}
+
+	public String getBankNum() {
 		return bankNum;
 	}
 

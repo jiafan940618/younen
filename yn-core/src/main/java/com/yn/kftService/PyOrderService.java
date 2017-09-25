@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.yn.model.BillOrder;
 import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
+import com.yn.service.OrderService;
 import com.yn.service.WalletService;
 import com.yn.utils.Constant;
 import com.yn.utils.HttpsClientUtil;
@@ -27,9 +28,10 @@ import com.yn.vo.re.ResultVOUtil;
 public class PyOrderService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PyOrderService.class);
-	
 	@Autowired
-	private BillOrderService orderService;
+	private  BillOrderService billOrderService;
+	@Autowired
+	private OrderService orderService;
 	@Autowired 
 	PyOrderService pyOrderService;
 	@Autowired
@@ -166,6 +168,7 @@ public class PyOrderService {
 		 /** 余额与支付的钱比较*/
 		if(balancePrice.compareTo(billOrderVo.getMoney()) == -1){
 			
+			
 			return ResultVOUtil.error(777,Constant.MONEY_LITTLE);
 		}
 	 
@@ -174,6 +177,21 @@ public class PyOrderService {
 		wallet.setMoney(money);
 		
 		walletService.updatePrice(wallet);
+		
+		BillOrder billOrder = new BillOrder();
+		billOrder.setOrderId(billOrderVo.getOrderId());
+		billOrder.setUserId(billOrderVo.getUserId());
+		billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+		billOrder.setTradeNo(billOrderVo.getTradeNo());
+    	billOrder.setPayWay(billOrderVo.getPayWay());
+    	billOrder.setStatus(0);
+    	billOrderService.newsave(billOrder);
+		
+		/** 修改订单金额,及3步走，支付状态*/
+    	orderService.UpdateOrStatus(billOrderVo.getTradeNo(), billOrderVo.getMoney().doubleValue());
+
+    	 /** 查询订单改变订单进度*/
+    	orderService.checkUpdateOrderStatus(orderService.findOne(billOrderVo.getOrderId()));
 		
 		return ResultVOUtil.success("支付成功！");
 	}

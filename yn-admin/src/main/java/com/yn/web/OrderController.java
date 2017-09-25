@@ -497,6 +497,26 @@ public class OrderController {
 	}
 	
 	
+
+	/**
+	 * 修改施工中的状态
+	 *
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateConstructionStatus")
+	public Object updateConstructionStatus(Order o, Integer thisStauts,com.yn.vo.ResVo resVo) {
+		Order order = orderService.findOne(o.getId());
+		System.err.println(order.getConstructionStatus());
+		boolean falg = orderService.updateConstructionStatus(order, thisStauts,resVo);
+		if (falg) {
+			return ResultVOUtil.success();
+		} else {
+			return ResultVOUtil.error(-1, "修改失败");
+		}
+
+	}
+	
 	
 
 }
