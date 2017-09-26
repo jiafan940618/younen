@@ -28,6 +28,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
+import com.yn.dao.mapper.OrderMapper;
 import com.yn.enums.OrderDetailEnum;
 import com.yn.enums.ResultEnum;
 import com.yn.model.Apolegamy;
@@ -105,6 +106,8 @@ public class OrderController {
 	ApolegamyOrderService APOservice;
 	@Autowired
 	ApolegamyService apolegamyService;
+	@Autowired
+	private OrderMapper orderMapper;
 
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
@@ -867,7 +870,7 @@ public class OrderController {
 		jsonResult.put("status", order.getStatus());
 		return jsonResult;
 	}
-
+	
 	/**
 	 * 修改施工中的状态
 	 *
@@ -875,9 +878,10 @@ public class OrderController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateConstructionStatus")
-	public Object updateConstructionStatus(Order o, Integer thisStauts,com.yn.vo.ResVo resVo) {
+	public Object updateConstructionStatus(Order o, Integer thisStauts, com.yn.vo.ResVo resVo) {
 		Order order = orderService.findOne(o.getId());
-		boolean falg = orderService.updateConstructionStatus(order, thisStauts,resVo);
+		System.err.println(order.getConstructionStatus());
+		boolean falg = orderService.updateConstructionStatus(order, thisStauts, resVo);
 		if (falg) {
 			return ResultVOUtil.success();
 		} else {
@@ -896,15 +900,96 @@ public class OrderController {
 	public Object getConstructionStatus(Order o) {
 		Order order = orderService.findOne(o.getId());
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 1) {
-			orderService.updateConstructionStatus(order, 0,null);
+			orderService.updateConstructionStatus(order, 0, null);
 		}
-
-		
-
-		Map<String, String> jsonResult = 
-				(Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
+		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
 		jsonResult.put("serverImg", order.getServer().getCompanyLogo());
 		return ResultVOUtil.success(jsonResult);
 	}
+
+	/**
+	 * 修改预约状态
+	 * 
+	 * @param o
+	 * @param isOk
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateSurveyappointment")
+	public Object updateSurveyappointment(Order o, Integer isOk) {
+		Order o1 = orderService.findOne(o.getId());
+		if (o1.getApplyIsPay() != 1) {
+			return ResultVOUtil.error(-1, "当前订单状态不能进行申请申请");
+		}
+		if (isOk == 1) {
+			Map<String, Object> jsonResult = new HashMap<String, Object>();
+			o1.setApplyStepA(1);
+			int condition = orderMapper.updateByCondition(o1);
+			Order order = orderService.findOne(o1.getId());
+			jsonResult.put("updateStauts", condition > 0 ? true : false);
+			jsonResult.put("status", order.getStatus());
+			jsonResult.put("applyIsPay", order.getApplyIsPay());
+			jsonResult.put("applyStepA", order.getApplyStepA());
+			return ResultVOUtil.success(jsonResult);
+		}
+		return ResultVOUtil.error(-1, "当前订单状态不能进行预约申请");
+	}
+
+	/**
+	 * 修改报建状态
+	 * 
+	 * @param o
+	 * @param isOk
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateGridConnectedPayment")
+	public Object updateGridConnectedPayment(Order o, Integer isOk) {
+		Order o1 = orderService.findOne(o.getId());
+		if (o1.getApplyIsPay() != 1) {
+			return ResultVOUtil.error(-1, "当前订单状态不能进行申请报建");
+		}
+		if (isOk == 1) {
+			Map<String, Object> jsonResult = new HashMap<String, Object>();
+			o1.setApplyStepB(1);
+			int condition = orderMapper.updateByCondition(o1);
+			Order order = orderService.findOne(o1.getId());
+			jsonResult.put("updateStauts", condition > 0 ? true : false);
+			jsonResult.put("status", order.getStatus());
+			jsonResult.put("applyIsPay", order.getApplyIsPay());
+			jsonResult.put("applyStepB", order.getApplyStepB());
+			return ResultVOUtil.success(jsonResult);
+		}
+		return ResultVOUtil.error(-1, "当前订单状态不能进行申请报建");
+	}
+
+	/**
+	 * 修改报建状态
+	 * 
+	 * @param o
+	 * @param isOk
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/applyBuild")
+	public Object applyBuild(Order o, Integer isOk) {
+		Order o1 = orderService.findOne(o.getId());
+		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
+			return ResultVOUtil.error(-1, "当前订单状态不能进行申请施工");
+		}
+		if (isOk == 1) {
+			Map<String, Object> jsonResult = new HashMap<String, Object>();
+			o1.setBuildStepA(1);
+			int condition = orderMapper.updateByCondition(o1);
+			Order order = orderService.findOne(o1.getId());
+			jsonResult.put("updateStauts", condition > 0 ? true : false);
+			jsonResult.put("status", order.getStatus());
+			jsonResult.put("buildIsPay", order.getBuildIsPay());
+			jsonResult.put("buildStepA", order.getBuildStepA());
+			return ResultVOUtil.success(jsonResult);
+		}
+		return ResultVOUtil.error(-1, "当前订单状态不能进行申请施工");
+	}
+
 
 }

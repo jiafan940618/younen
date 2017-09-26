@@ -42,7 +42,7 @@ public class OrderDetailService {
 	private Double GRIDCONNECTED_PAYMENT_SCALE;// 并网发电 --> 需：100%
 
 	@Value("${SURVEYAPPOINTMENTPAYMENT}")
-	private Double SURVEYAPPOINTMENTPAYMENT;// 勘察预约 --> 需：25%
+	private Double SURVEYAPPOINTMENTPAYMENT;// 勘察预约 --> 需：固定为5000
 
 	@Autowired
 	CommentDao commentDao;
@@ -183,12 +183,14 @@ public class OrderDetailService {
 	 */
 	public Map<String, Object> surveyAppointment(Order order) {
 		result = new HashMap<>();
-		Double needToPay = calculatedNeedToPayMoney(order, SURVEYAPPOINTMENTPAYMENT);
-		if (needToPay < 0) {
-			// order.setApplyStepA(1);// 已预约
+		// Double needToPay = calculatedNeedToPayMoney(order,
+		// SURVEYAPPOINTMENTPAYMENT);
+		Order one = orderService.findOne(order.getId());
+		Double hadPayPrice = one.getHadPayPrice();
+		if (hadPayPrice >= SURVEYAPPOINTMENTPAYMENT) {
 			result.put("needToPay", 0);
 		} else {
-			result.put("needToPay", needToPay);
+			result.put("needToPay", SURVEYAPPOINTMENTPAYMENT);
 		}
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
