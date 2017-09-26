@@ -66,7 +66,9 @@ public class SignService {
 			//** 页面同步通知地址,同步通知结果，后期测试*//*
 			//parameters.put("returnUrl", "http://10.36.160.29:8080/cashierDemo/returnUrl.jsp");
 			 /** 后台通知地址*/
-			parameters.put("notifyAddr", "http://1c396ba7.ngrok.io/client/sign/doresult");
+
+			parameters.put("notifyAddr", "http://client.u-en.cn/client/sign/doresult");
+
 			
 			parameters.put("customerType", "1");
 			//订单号

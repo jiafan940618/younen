@@ -34,8 +34,7 @@ public class PyOrderService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PyOrderService.class);
 	InitiativePayService service;
-	@Autowired
-	private BillOrderService billorderService;
+
 
 	@Autowired
 	private  BillOrderService billOrderService;
@@ -121,7 +120,7 @@ public class PyOrderService {
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(1);
-    	billorderService.newsave(billOrder);
+    	billOrderService.newsave(billOrder);
     	
 
     	try {

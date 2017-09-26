@@ -5,7 +5,16 @@ public class ResVo {
 	private String title;
 	private String content;
 	private String target;
+	private boolean isNow = false;
+
 	
+
+	public boolean getIsNow() {
+		return isNow;
+	}
+	public void setIsNow(boolean isNow) {
+		this.isNow = isNow;
+	}
 	public String getTitle() {
 		return title;
 	}
@@ -28,5 +37,12 @@ public class ResVo {
 	public String toString() {
 		return "ResVo [title=" + title + ", content=" + content + ", target=" + target + "]";
 	}
+	public ResVo(boolean isNow) {
+		this.isNow = isNow;
+	}
+	public ResVo() {
+		this.isNow = false;
+	}
+	
 	
 }

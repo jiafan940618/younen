@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import com.lycheepay.gateway.client.GBPService;
 import com.lycheepay.gateway.client.GatewayClientException;
@@ -30,13 +30,15 @@ import com.yn.service.BankCardService;
 import com.yn.vo.BillOrderVo;
 
 @Service
+
 public class KFTpayService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(KFTpayService.class);
-	
+
 	@Autowired
 	private  BankCardService bankCardService;
 	
+
 	private static KftService service;
 	private static GBPService gbpService;
    //2017092300132528
@@ -71,11 +73,13 @@ public class KFTpayService {
 	//快捷协议代扣协议申请(快捷协议代扣步骤1)
 		public  void treatyCollectApply(BillOrderVo billOrderVo) throws GatewayClientException {
 		BankCard bankCard =	bankCardService.selectBank(billOrderVo.getUserId());
-			
+
+
 			TreatyApplyDTO dto = new TreatyApplyDTO();
 			dto.setService("gbp_treaty_collect_apply");//接口名称，固定不变
 			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
 			dto.setMerchantId("2014030600048235");//替换成快付通提供的商户ID，测试生产不一样
+
 			dto.setOrderNo(billOrderVo.getTradeNo());//订单号同一个商户必须保证唯一
 			dto.setTreatyType("11");//11借计卡扣款  12信用卡扣款
 			dto.setNote("协议说明");//协议简要说明，可空
@@ -91,6 +95,7 @@ public class KFTpayService {
 			dto.setMobileNo(bankCard.getPhone());//银行预留手机号
 			dto.setCertificateType("0");//持卡人证件类型，0身份证
 			dto.setCertificateNo(bankCard.getIdCardNum());//证件号码
+
 //			dto.setCustCardValidDate("信用卡有效期");//可空，信用卡扣款时必填
 //			dto.setCustCardCvv2("信用卡cvv2");//可空，信用卡扣款时必填
 			System.out.println("请求信息为：" + dto.toString());
@@ -104,6 +109,7 @@ public class KFTpayService {
 		
 		//快捷协议代扣协议确定(快捷协议代扣步骤2)
 		public static void confirmTreatyCollectApply(TreatyApplyResultDTO resultdto,BankCard bankCard) throws GatewayClientException {
+
 			TreatyConfirmDTO dto = new TreatyConfirmDTO();
 			dto.setService("gbp_confirm_treaty_collect_apply");//接口名称，固定不变
 			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
@@ -113,13 +119,16 @@ public class KFTpayService {
 			dto.setAuthCode("145420");
 			dto.setHolderName(bankCard.getRealName());//持卡人姓名，与申请时一致
 			dto.setBankCardNo(bankCard.getIdCardNum());//银行卡号，与申请时一致
+
 			System.out.println("请求信息为：" + dto.toString());
 			TreatyConfirmResultDTO result = gbpService.confirmTreatyCollectApply(dto);//发往快付通验证并返回结果
 			System.out.println("响应信息为:" + result.toString());
 		}
 		//orderNo=2017082109302989566, status=1, treatyId=20170923035725
 		//快捷协议代扣(协议代扣步骤3)
+
 		public static void treatyCollect(TreatyConfirmResultDTO resultdto,BankCard bankCard) throws GatewayClientException {
+
 			TreatyCollectDTO dto = new TreatyCollectDTO();
 			dto.setService("gbp_treaty_collect");//接口名称，固定不变
 			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
@@ -132,6 +141,7 @@ public class KFTpayService {
 			dto.setHolderName(bankCard.getRealName());//持卡人姓名，与申请时一致
 			dto.setBankType("1051000");//客户银行账户行别;快付通定义的行别号,详情请看文档
 			dto.setBankCardNo(bankCard.getIdCardNum());//银行卡号，与申请时一致，本次交易中,从客户的哪张卡上扣钱
+
 			dto.setMerchantBankAccountNo("商户对公账号");//商户用于收款的银行账户,资金不落地模式时必填（重要参数）
 			System.out.println("请求信息为：" + dto.toString());
 			TreatyCollectResultDTO result = gbpService.treatyCollect(dto);//发往快付通验证并返回结果

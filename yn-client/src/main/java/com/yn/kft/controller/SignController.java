@@ -55,7 +55,10 @@ public class SignController {
 	
 	String cerPath="D://Software//test//20KFT.cer";
 	
+
 	
+		//http://b2725326.ngrok.io/client/sign/payonline
+
 	 /** pc端*/
 		@ResponseBody
 		@RequestMapping(value="/payonline")
@@ -78,6 +81,11 @@ public class SignController {
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
 			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+billOrderVo.getMoney());
 
+			String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
+		
+			billOrderVo.setDescription(description);
+
+
 			session.setAttribute("tradeNo", billOrderVo.getTradeNo());
 			 //等于1是余额支付
 			if(billOrderVo.getPayWay()==1){
@@ -85,6 +93,7 @@ public class SignController {
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于3是支付宝支付	
 			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
+
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2：");
 					
 				try {
@@ -92,6 +101,9 @@ public class SignController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2："+billOrderVo.getChannel());
+			
+
 				return pyOrderService.getMap(request, billOrderVo);
 				 //等于2是微信支付
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
@@ -149,6 +161,8 @@ public class SignController {
 
 		                String status =(String)request.getParameter("status");
 		                String amount =(String) request.getParameter("settlementAmount");
+			
+		          
 		                
 		                BillOrder billOrder =  billorderService.findByTradeNoandstatus(request.getParameter("orderNo"));
 		              
@@ -226,7 +240,9 @@ public class SignController {
 		@ResponseBody
 		@RequestMapping(value="/doSucRep")
 		public Object getBoby(HttpServletRequest request) throws IOException{
+
 			 Map<String, String> resultMap = new HashMap<String, String>();
+
 			System.out.println(" ==== ==== ===============================================================================");
 			System.out.println("---------- ------ -- ----- 进入后台响应");
 			 File directory = new File("");// 参数为空
@@ -274,8 +290,7 @@ public class SignController {
                 	return resultMap;
 					
 				}
-			 
-		
+
 			System.out.println("---------- ------ -- ----- 结束后台响应");
 			System.out.println(" ==== ==== ===============================================================================");
 			return "进入测试";

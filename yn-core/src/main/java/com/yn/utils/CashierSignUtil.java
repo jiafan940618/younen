@@ -35,7 +35,7 @@ public class CashierSignUtil {
 		String caPath="C:\\pfx\\";
 		//请求报文加签
 		sign(caPath+"pfx.pfx", "123456");
-		sign("kft123456");
+		sign01("kft123456");
 		//同步报文验签
 		verifySign(caPath+"pfx.cer");
 		//异步报文验签
@@ -70,26 +70,7 @@ public class CashierSignUtil {
 		}
 
 	}
-	
-	public static String sign(String pfxPath,String psw,Map<String, String> parameters) {
-		try {
-			SignProvider signProvider = new KeystoreSignProvider("PKCS12",pfxPath,
-					psw.toCharArray(), null, psw.toCharArray());
-			
-			param = parameters;
-			Map<String, String> signParameters = signParameters(signProvider,
-					parameters, null);
-			signatureInfo = signParameters.get("signatureInfo");
-			System.out.println(signatureInfo);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return signatureInfo;
-	}
-
-	
+		
 	/**
 	 * 异步回调验签
 	 * @param cerPath
@@ -178,7 +159,7 @@ public class CashierSignUtil {
 		}
 	}
 
-	public static String sign(String orderNo) {
+	public static String sign01(String orderNo) {
 		try {
 			
 			String pfxPath="C:\\pfx\\pfx.pfx";
@@ -268,6 +249,25 @@ public class CashierSignUtil {
 		}
 		return result;
 	}
+
+		
+		public static String sign(String pfxPath,String psw,Map<String, String> parameters) {
+			try {
+				SignProvider signProvider = new KeystoreSignProvider("PKCS12",pfxPath,
+						psw.toCharArray(), null, psw.toCharArray());
+				
+				param = parameters;
+				Map<String, String> signParameters = signParameters(signProvider,
+						parameters, null);
+				signatureInfo = signParameters.get("signatureInfo");
+				System.out.println(signatureInfo);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return signatureInfo;
+		}
 
 	/**
 	 * 对请求参数排序，并按照接口规范中所述"参数名=参数值"的模式用"&"字符拼接成字符串

@@ -43,10 +43,12 @@ public class TestController {
 	 @RequestMapping(value = "/dotest")
 	    public Object  newTest(HttpSession session,HttpServletRequest request) {
 
-		 billorderService.updateOrder("2017071014153758063");
+
+		 BankCard vankCard = orderService.findOne(2l);
 		 
 		    
-		return ResultVOUtil.success(null);
+		return ResultVOUtil.success(vankCard);
+
 	    }
 	
 	 @RequestMapping(value = "/dotest02")
