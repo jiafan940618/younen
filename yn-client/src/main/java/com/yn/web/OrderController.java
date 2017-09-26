@@ -535,93 +535,93 @@ public class OrderController {
 
 	@ResponseBody
 	@RequestMapping(value = "/iosorderPrice")
-	public ResultData<Object> findIocordprice(HttpSession session,@RequestParam("capacity") Integer capacity) {
+	public ResultData<Object> findIocordprice(HttpSession session, @RequestParam("capacity") Integer capacity) {
 		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
-		
-		logger.info("传递的装机容量 ： ----- ---- ----- ----- "+capacity);
-		String orderCode =	(String) session.getAttribute("orderCode");
-				 
-		logger.info("---- ---- ---- ------ ----- 保存的订单号为："+orderCode);
-			Order orderSize =orderService.finByOrderCode(orderCode);
 
-			Map<String, Long> map = new HashMap<String, Long>();
-			 if(null == orderSize ){
-			  logger.info("---- ---- ---- ------ ----- 开始生成订单");
-				NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-				Double price =	plan.getUnitPrice().doubleValue()*capacity;
-				Double allMoney = 0.0;
+		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
+		String orderCode = (String) session.getAttribute("orderCode");
 
-					List<Long> listid = (List<Long>) session.getAttribute("list");
-					List<Apolegamy> list = apolegamyService.findAll(listid);
+		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);
+		Order orderSize = orderService.finByOrderCode(orderCode);
 
-					Double apoPrice = 0.0;
+		Map<String, Long> map = new HashMap<String, Long>();
+		if (null == orderSize) {
+			logger.info("---- ---- ---- ------ ----- 开始生成订单");
+			NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
+			Double price = plan.getUnitPrice().doubleValue() * capacity;
+			Double allMoney = 0.0;
 
-					for (Apolegamy apolegamy : list) {
-						apoPrice += apolegamy.getPrice();
-					}
-					allMoney = price+apoPrice;
-					  logger.info("---- ---- ---- ------ ----- 金额为"+allMoney);
-					Long planid = (Long) session.getAttribute("newserverplanid");
+			List<Long> listid = (List<Long>) session.getAttribute("list");
+			List<Apolegamy> list = apolegamyService.findAll(listid);
 
-					NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+			Double apoPrice = 0.0;
 
-					newserverPlan.setMinPurchase(plan.getNum());
-
-					User user02 = userservice.findByPhone(plan.getPhone());
-					// ** 添加订单*//*
-					Order order = newserverPlanService.getOrder(newserverPlan, user02, allMoney, apoPrice,
-							plan.getOrderCode(), newuser.getIpoMemo());
-
-					// 取出订单号并添加
-					order.setOrderCode(plan.getOrderCode());
-					orderService.newSave(order);
-
-					Order order02 = new Order();
-					order02.setOrderCode(order.getOrderCode());
-
-					Order neworder = orderService.findOne(order02);
-
-					// ** 订单计划表*//*
-
-					Long id = newserverPlan.getId();
-
-					NewServerPlan serverPlan = newserverPlanService.findOne(id);
-
-					OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
-
-					OrderPlan orderPlan2 = new OrderPlan();
-					orderPlan2.setOrderId(orderPlan.getOrderId());
-
-					OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
-
-					order.setOrderPlanId(newOrdPlan.getId());
-
-					orderPlanService.save(orderPlan);
-
-					neworder.setOrderPlan(newOrdPlan);
-
-					/** 添加电站 */
-					stationService.insertStation(neworder);
-					
-					logger.info("---- ---- ------ ----- ----- 开始添加记录表");
-					APOservice.getapole(neworder, listid);
-					logger.info("---- ---- ------ ----- ----- 添加结束！");
-					neworder.getUser().setPassword(null);
-
-					map.put("orderId", neworder.getId());
-				
-				 logger.info("---- ---- ---- ------ ----- 生成订单成功！");
-				/** 传出电站的id */
-				return ResultVOUtil.success(map);
-			 }
-			 
-			 logger.info("---- ---- ---- ------ ----- 查询的订单号为："+orderSize.getOrderCode());
-			 logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
-			 
-				map.put("orderId", orderSize.getId());
-
-				return ResultVOUtil.success(map);
+			for (Apolegamy apolegamy : list) {
+				apoPrice += apolegamy.getPrice();
 			}
+			allMoney = price + apoPrice;
+			logger.info("---- ---- ---- ------ ----- 金额为" + allMoney);
+			Long planid = (Long) session.getAttribute("newserverplanid");
+
+			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+
+			newserverPlan.setMinPurchase(plan.getNum());
+
+			User user02 = userservice.findByPhone(plan.getPhone());
+			// ** 添加订单*//*
+			Order order = newserverPlanService.getOrder(newserverPlan, user02, allMoney, apoPrice, plan.getOrderCode(),
+					newuser.getIpoMemo());
+
+			// 取出订单号并添加
+			order.setOrderCode(plan.getOrderCode());
+			orderService.newSave(order);
+
+			Order order02 = new Order();
+			order02.setOrderCode(order.getOrderCode());
+
+			Order neworder = orderService.findOne(order02);
+
+			// ** 订单计划表*//*
+
+			Long id = newserverPlan.getId();
+
+			NewServerPlan serverPlan = newserverPlanService.findOne(id);
+
+			OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
+
+			OrderPlan orderPlan2 = new OrderPlan();
+			orderPlan2.setOrderId(orderPlan.getOrderId());
+
+			OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
+
+			order.setOrderPlanId(newOrdPlan.getId());
+
+			orderPlanService.save(orderPlan);
+
+			neworder.setOrderPlan(newOrdPlan);
+
+			/** 添加电站 */
+			stationService.insertStation(neworder);
+
+			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
+			APOservice.getapole(neworder, listid);
+			logger.info("---- ---- ------ ----- ----- 添加结束！");
+			neworder.getUser().setPassword(null);
+
+			map.put("orderId", neworder.getId());
+
+			logger.info("---- ---- ---- ------ ----- 生成订单成功！");
+			/** 传出电站的id */
+			return ResultVOUtil.success(map);
+		}
+
+		logger.info("---- ---- ---- ------ ----- 查询的订单号为：" + orderSize.getOrderCode());
+		logger.info("---- ---- ---- ------ ----- 订单已有,跳过添加！");
+
+		map.put("orderId", orderSize.getId());
+
+		return ResultVOUtil.success(map);
+	}
 
 	/** 购买完成以后显示订单支付情况 */
 	/** @RequestParam("orderId") Long orderId */
@@ -735,6 +735,11 @@ public class OrderController {
 		UploadPhoto uploadPhoto = new UploadPhoto();
 		uploadPhoto.setLoadImg(finaltime);
 		uploadPhoto.setUserId(newuser.getId());
+		String orderCode = (String) session.getAttribute("orderCode");
+		Order order = orderMapper.findOrderCode(orderCode);
+		order.setApplyStepBImgUrl(finaltime);
+		orderService.updateApplyStepBImgUrl(order);
+		
 
 		logger.info("添加用户的id为：-- --- --- ----- --- --- ----" + newuser.getId());
 
@@ -805,7 +810,7 @@ public class OrderController {
 		} else if (buildStepB == 10) {
 			jsonResult.put("buildStepB", "并网验收");
 		}
-		jsonResult.put("buildStepB4Num",buildStepB);
+		jsonResult.put("buildStepB4Num", buildStepB);
 
 		// jsonResult.put("buildStepB", order.getBuildStepB());
 		/* --=>方案设计=--> */
@@ -870,7 +875,7 @@ public class OrderController {
 		jsonResult.put("status", order.getStatus());
 		return jsonResult;
 	}
-	
+
 	/**
 	 * 修改施工中的状态
 	 *
@@ -991,5 +996,44 @@ public class OrderController {
 		return ResultVOUtil.error(-1, "当前订单状态不能进行申请施工");
 	}
 
+	/**
+	 * 设置贷款成功/失败
+	 * 
+	 * @param o
+	 * @param flag
+	 *            true：成功、false：失败
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setLoanStatusSuccessOrFaild")
+	public Object setLoanStatusSuccessOrFaild(Order o, Boolean flag) {
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
+		Order order = null;
+		if (o != null && flag != null)
+			order = orderService.findOne(o.getId());
+		else
+			return ResultVOUtil.error(-1, " Params can not be null ! ");
+		// 看看订单是不是在贷款申请中
+		if (order.getLoanStatus() == 0)
+			return ResultVOUtil.error(0, " The order did not apply for a loan ! ");
+		// 再看是不是已经贷款成功
+		if (order.getLoanStatus() ==2)
+			return ResultVOUtil.error(-2, " The order has been successfully made and can not be duplicated ! ");
+		// 或者说是失败的。
+		if(order.getLoanStatus()==3)
+			return ResultVOUtil.error(-3, " The order failed and the loan could not be renewed ! ");
+		if (flag) {
+			boolean isOk = orderService.updateLoanStatus(order, true);
+			jsonResult.put("setLoanStatus", true);// 修改成功！
+			jsonResult.put("updateLoanStatus", isOk);// 贷款成功！
+		} else {
+			boolean isOk = orderService.updateLoanStatus(order, false);
+			if (isOk)
+				jsonResult.put("setLoanStatus", true);// 修改成功！
+			else
+				jsonResult.put("setLoanStatus", false);// 贷款失败！
+		}
+		return ResultVOUtil.success(jsonResult);
+	}
 
 }

@@ -28,4 +28,15 @@ public interface OrderMapper {
 	/** 修改订单的进度  [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电}'")*/
 	void UpdateOrderStatus(Order order);
 	
+	/**
+	 * 修改贷款的状态。
+	 * @param order
+	 * @return
+	 */
+	int updateLoanStatus(Order order);
+
+
+	int updateApplyStepBImgUrl(Order order);
+
+
 }
