@@ -187,14 +187,14 @@ public static String md5(String plainText) {
 }
 
 public static boolean validSign(Map<String, String> map,String key){
-	String oldSign = map.get("sign");
+	String oldSign = map.get("signatureInfo");
 	String sign = genSign(key, createLinkString(paraFilter(map)));
 	return sign.equalsIgnoreCase(oldSign);
 }
 
 
 public static boolean validSign01(Map<String, Object> map,String key){
-	String oldSign =(String) map.get("sign");
+	String oldSign =(String) map.get("signatureInfo");
 	String sign = genSign(key, createLinkString01(paraFilter01(map)));
 	return sign.equalsIgnoreCase(oldSign);
 }

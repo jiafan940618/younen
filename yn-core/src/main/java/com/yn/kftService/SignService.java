@@ -1,4 +1,5 @@
 package com.yn.kftService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.kftentity.OrderPay;
+import com.yn.model.BillOrder;
+import com.yn.service.BillOrderService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -26,6 +29,8 @@ public class SignService {
 	
 	private final static String charset = "UTF-8";
 
+	@Autowired
+	private static BillOrderService billorderService;
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
 	
@@ -61,7 +66,7 @@ public class SignService {
 			//** 页面同步通知地址,同步通知结果，后期测试*//*
 			//parameters.put("returnUrl", "http://10.36.160.29:8080/cashierDemo/returnUrl.jsp");
 			 /** 后台通知地址*/
-			parameters.put("notifyAddr", "http://client.u-en.cn/client/sign/doresult");
+			parameters.put("notifyAddr", "http://1c396ba7.ngrok.io/client/sign/doresult");
 			
 			parameters.put("customerType", "1");
 			//订单号
@@ -94,6 +99,15 @@ public class SignService {
 			System.out.println(signatureInfo);
 			
 			parameters.put("signatureInfo", signatureInfo);
+			
+			BillOrder billOrder = new BillOrder();
+			billOrder.setOrderId(billOrderVo.getOrderId());
+			billOrder.setUserId(billOrderVo.getUserId());
+			billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+			billOrder.setTradeNo(billOrderVo.getTradeNo());
+	    	billOrder.setPayWay(billOrderVo.getPayWay());
+	    	billOrder.setStatus(1);
+	    	billorderService.newsave(billOrder);
 			
 		} catch (Exception e) {
 		

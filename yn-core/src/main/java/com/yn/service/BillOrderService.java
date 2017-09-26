@@ -102,9 +102,7 @@ public class BillOrderService {
 	}
 	
 	public void updateOrder(String tradeNo){
-		
-		
-		
+
 		billOrderDao.updateOrder(tradeNo);
 	}
 	

@@ -1,25 +1,30 @@
 package com.yn.kftService;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.lycheepay.gateway.client.GatewayClientException;
+import com.lycheepay.gateway.client.InitiativePayService;
+import com.lycheepay.gateway.client.dto.initiativepay.ActiveScanPayReqDTO;
+import com.lycheepay.gateway.client.dto.initiativepay.ActiveScanPayRespDTO;
+import com.lycheepay.gateway.client.security.KeystoreSignProvider;
+import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.model.BillOrder;
 import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.WalletService;
 import com.yn.utils.Constant;
-import com.yn.utils.HttpsClientUtil;
-import com.yn.utils.RequestUtils;
-import com.yn.utils.SignUtil;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -28,6 +33,10 @@ import com.yn.vo.re.ResultVOUtil;
 public class PyOrderService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PyOrderService.class);
+	InitiativePayService service;
+	@Autowired
+	private BillOrderService billorderService;
+
 	@Autowired
 	private  BillOrderService billOrderService;
 	@Autowired
@@ -37,123 +46,100 @@ public class PyOrderService {
 	@Autowired
 	WalletService walletService;
 	
-	public Map<String, String> getOrder(BillOrderVo billOrderVo){
-		logger.info("进入方法的订单号："+billOrderVo.getTradeNo());
-		logger.info("进入方法的金额："+billOrderVo.getMoney());
-		logger.info("进入方法的类型："+billOrderVo.getChannel());
-		logger.info("进入方法的字符串："+billOrderVo.getDescription());
-		
-		Map<String, String> param =new HashMap<String, String>();
-		param.put("tradeType", "cs.pay.submit");
-		param.put("version", "1.0");
-		 /** 测试mchid */
-		param.put("mchId", "000010000000000024");
-		
-		param.put("channel",billOrderVo.getChannel());  /** 付款方式*/
-		param.put("body", "这是一个测试!");   /** 商品描述*/
-		param.put("terminalType","pc"); /** 终端类型*/
-		param.put("outTradeNo", billOrderVo.getTradeNo());    /** 订单号*/
+	public static final String WX_BANK_NO = "0000001";
+	public static final String ZFB_BANK_NO = "0000002";
+	public static final String YL_BANK_NO = "0000003";
 
-		 //转换金额
-		String aomout = billOrderVo.getMoney().toString();
-		param.put("amount", aomout);
-		param.put("description", billOrderVo.getDescription());   /** 附加数据*/
-		
-		param.put("timePaid", null);     /**订单支付时间 */
-		param.put("timeExpire", null);   /** 订单失效时间 */
-	     /*** 扩展字段 */
-
-		param.put("notifyUrl", "http://test.u-en.cn/client/sign/doresult");
-		
-		param.put("subject", "这是测试商品1");    /** 商品标题 */ 
-		//过滤空值或null
+	static	String terminalIp = "192.168.0.104";
+	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
+	static String currency = "CNY";
+	static 	String tradeName = "商品描述001";
+	static String remark = "remark";
+	static String operatorId = "operatorId";
+	static	String storeId = "storeId";
+	static	String terminalId = "49000002";
 	
-		return param;
+	
+	@Before
+	public  void init() throws Exception {
+		// 初始化证书
+		String merchantIp = "192.168.0.104";
+		// 证书类型、证书路径、证书密码、别名、证书容器密码
+		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", "D:/Software/test/pfx.pfx", "123456".toCharArray(), null,
+				"123456".toCharArray());
+		// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
+		service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
+		service.setHttpPort(6443);
+		// 设置的交易连接超时时间要大于0小于2分钟,单位:秒.0表示不超时,一直等待,默认30秒
+		service.setConnectionTimeoutSeconds(1 * 60);
+		// 设置的交易响应超时时间,要大于0小于10分钟,单位:秒.0表示不超时,一直等待,默认5分钟,ps：对应获取对账文件这个应该设长一点时间
+		service.setResponseTimeoutSeconds(10 * 60);
 	}
 	
-	
+	@Test
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
-		String key = "7f957562b40e4b0eaf5bc9ed4d1a78ca";
-		String resultUrl ="http://test.kftpay.com.cn:3080/cloud/cloudplatform/api/trade.html";
-		//获取参数
-	Map<String, String>  param=	getOrder(billOrderVo);
-	
-	Map<String, String> filterMap = SignUtil.paraFilter(param);
-	String channel = billOrderVo.getChannel();   /** 支付类型*/
-	//拼接
-	
-	String toSign = SignUtil.createSignPlainText(filterMap, true);
-	/** 生成签名sign 测试key：7f957562b40e4b0eaf5bc9ed4d1a78ca
-	 * 生产：key：详见conf.properties
-	 ** */
-	String sign = SignUtil.genSign(key, toSign);
-	filterMap.put("sign", sign);
-	
-	//转为json串
-	String postStr = JSON.toJSONString(filterMap);
-		/** 发送请求 测试requestUrl：http://test.kftpay.com.cn:3080/cloud/cloudplatform/api/trade.html 
-		 * 生产url：https://jhpay.kftpay.com.cn/cloud/cloudplatform/api/trade.html
-		 * */
-		String returnStr = HttpsClientUtil.sendRequest(resultUrl,postStr,"application/json");
+		ActiveScanPayReqDTO reqDTO = new ActiveScanPayReqDTO();
+		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号
+		reqDTO.setService("kpp_zdsm_pay");//接口名称，固定不变
+		reqDTO.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+		reqDTO.setMerchantId("2017062300091037");//替换成快付通提供的商户ID，测试生产不一样
+		// reqDTO.setSecMerchantId(secMerchantId)//二级商户ID 可空
+		reqDTO.setOrderNo(billOrderVo.getTradeNo());//交易编号 
+		reqDTO.setTerminalIp(terminalIp);//APP和网页支付提交用户端ip，主扫支付填调用付API的机器IP
+		reqDTO.setNotifyUrl(notifyUrl);//必须可直接访问的url，不能携带参数
+		reqDTO.setAmount(billOrderVo.getMoney().toString());//此次交易的具体金额,单位:分,不支持小数点
+		reqDTO.setCurrency(currency);//币种
+		reqDTO.setTradeName(tradeName);//商品描述,简要概括此次交易的内容.可能会在用户App上显示
+		reqDTO.setRemark(remark);//商品详情 可空
 		
-		logger.info(returnStr);
+			Date currentTime = new Date();
+		   SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+		   String dateString = formatter.format(currentTime);
 		
-		//解析返回串
-		Map<String, String> returnMap = (Map<String, String>)JSON.parse(returnStr);
-		Map<String, String> map = new HashMap<String, String>();
-		/** 验签 测试key */
-		if(SignUtil.validSign(filterMap,key)){
-			
-			String returnCode = returnMap.get("returnCode");
-			logger.info("返回的returnCode：--- -- - -- - - - - - -- -"+returnCode);
-			
-			String resultCode = returnMap.get("resultCode");
-			logger.info("返回的resultCode：---- --- -- - - - --"+resultCode);
-			   /** 如果数据返回正常*/
-			if(returnCode.equals("0") && resultCode.equals("0")){
-				//根据不同渠道类型做处理
-			
-				
-				if(channel.equals("wxPubQR")){
-				//	request.setAttribute("codeUrl", returnMap.get("codeUrl"));
-					System.out.println("支付的codeurl：----"+returnMap.get("codeUrl"));
-					map.put("codeUrl", returnMap.get("codeUrl"));
-					request.setAttribute("map", returnMap);
-					 return	 ResultVOUtil.success(map);
-						  // ResultVOUtil.success(map);
-					//展示二维码，请商户调用第三方库将code_url生成二维码图片
-				}else if(channel.equals("wxApp")){
-					System.out.println("支付的payCode：----"+returnMap.get("payCode"));
-					request.setAttribute("map", map);
-					
-					map.put("payCode", returnMap.get("payCode"));
-					//请商户调用sdk控件发起支付
-					/** request.setAttribute("payCode", returnMap.get("payCode"));*/
-					 return	 ResultVOUtil.success(map);
-				}else if(channel.equals("alipayQR")){
-					//展示二维码，请商户调用第三方库将code_url生成二维码图片
-					System.out.println("支付的codeurl：----"+returnMap.get("codeUrl"));
-					
-					map.put("codeUrl", returnMap.get("codeUrl"));
-
-					  return	 ResultVOUtil.success(map);
-				}else if(channel.equals("alipayApp")){
-					 /** 未授权*/
-	
-				}
-				
-			}else{
-				
-				logger.info("返回响应结果：--- ---- ---- -- --- --"+returnMap.get("errCodeDes"));
-				map.put("errCodeDes", returnMap.get("errCodeDes"));
-				
-			   return	 ResultVOUtil.success(map);
-			}
-		}else {
-			/****do nothing***/
-			 return	map;
+		reqDTO.setTradeTime(dateString);;//商户方交易时间 注意此时间取值一般为商户方系统时间而非快付通生成此时间 20120927185643
+		if(billOrderVo.getPayWay() == 2){
+			reqDTO.setBankNo(WX_BANK_NO);//支付渠道   微信渠道:0000001 支付宝渠道：0000002 银联：0000003 
+		}else if(billOrderVo.getPayWay() == 3){
+			reqDTO.setBankNo(ZFB_BANK_NO);
+		}else if(billOrderVo.getPayWay() == 4){
+			reqDTO.setBankNo(YL_BANK_NO);
 		}
-		return null;
+		reqDTO.setOperatorId(operatorId);//商户操作员编号 可空
+		reqDTO.setStoreId(storeId);//商户门店编号 可空
+		reqDTO.setIsS0("0");//是否是S0支付是否是S0支付，1：是；0：否。默认否。如果是S0支付，金额会实时付给商户。需经快付通审核通过后才可开展此业务。如果无此业务权限，此参数为1，则返回失败。 可空 
+		reqDTO.setIsGuarantee("0");//是否担保交易,1:是，0:否
+		reqDTO.setIsSplit("0");//是否分账交易,1:是，0：否 ，
+		//分账详情，如果是否分账交易为是，该字段为必填，格式如下:
+		//reqDTO.setSplitInfo("[{\"merchantId\":\"2017072600081986\",\"amount\":\"1\",\"remark\":\"有线电视费\"},{\"merchantId\":\"2017073100082105\",\"amount\":\"1\",\"remark\":\"宽带费\"}]");
+		ActiveScanPayRespDTO resp = new ActiveScanPayRespDTO();
+		
+		/** 保存订单*/
+		BillOrder billOrder = new BillOrder();
+		billOrder.setOrderId(billOrderVo.getOrderId());
+		billOrder.setUserId(billOrderVo.getUserId());
+		billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+		billOrder.setTradeNo(billOrderVo.getTradeNo());
+    	billOrder.setPayWay(billOrderVo.getPayWay());
+    	billOrder.setStatus(1);
+    	billorderService.newsave(billOrder);
+    	
+
+    	try {
+			resp = service.activeScanPay(reqDTO);
+			System.out.println("主扫支付响应：" + JSON.toJSONString(resp));
+			System.out.println("主扫支付响应----- ---- CodeUrl：" + resp.getCodeUrl());
+			System.out.println("主扫支付响应----- ---- Status：" + resp.getStatus());
+			if(Integer.parseInt(resp.getStatus()) != 7){
+				logger.info("------ ----- ----- ------错误码："+resp.getErrorCode());
+				logger.info("------ ----- ----- ------错误信息："+resp.getFailureDetails());
+				return ResultVOUtil.error(777,resp.getFailureDetails());
+			}
+    	} catch (GatewayClientException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}	
+			
+		return  ResultVOUtil.success(resp);
 	}
 	
 	
