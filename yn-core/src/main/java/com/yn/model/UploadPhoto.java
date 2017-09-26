@@ -19,7 +19,9 @@ public class UploadPhoto extends IDomain implements Serializable{
 	private Long serverId;
 	@Column(columnDefinition = "int(10) comment '[用户id]'")
 	private Long userId;
-	
+
+	@Column(columnDefinition = "int(10) comment '[订单id]'")
+	private Long orderId;
 	
 	public String getLoadImg() {
 		return loadImg;
@@ -38,6 +40,12 @@ public class UploadPhoto extends IDomain implements Serializable{
 	}
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+	public Long getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 
 	

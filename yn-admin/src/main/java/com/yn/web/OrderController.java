@@ -55,7 +55,7 @@ import com.yn.vo.re.ResultVOUtil;
 @RestController
 @RequestMapping("/client/order")
 public class OrderController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
 	@Autowired
@@ -87,9 +87,9 @@ public class OrderController {
 	OrderService ordService;
 	@Autowired
 	ApolegamyOrderService APOservice;
-	 @Autowired
+	@Autowired
 	ApolegamyService apolegamyService;
-	
+
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
 	public Object findOne(Long id) {
@@ -132,8 +132,6 @@ public class OrderController {
 		return ResultVOUtil.success(findAll);
 	}
 
-
-
 	/**
 	 * 点击订单详情页各个按钮出发同一个接口，但调用不同的函数处理
 	 * 
@@ -160,7 +158,7 @@ public class OrderController {
 		case LOANAPPLICATION:
 			result = orderDetailService.loanApplication(findOne);// 贷款申请
 			break;
-		
+
 		case APPLYPAYMENT:
 			result = orderDetailService.applyPayment(findOne);// 申请中线上支付
 			break;
@@ -196,7 +194,6 @@ public class OrderController {
 		return ResultVOUtil.success(result);
 	}
 
-	
 	/**
 	 * 订单详情页面的两个下一步
 	 * 
@@ -260,133 +257,127 @@ public class OrderController {
 	/** 订单详情 */
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
-	public Object LookOrder(HttpSession session,Integer OrderCode) {
+	public Object LookOrder(HttpSession session, Integer OrderCode) {
 
-		/*Integer num =100;
-		Long userid = 3L;
-		  List<Long>  list = new LinkedList<Long>();
-	    list.add(12L);
-	    list.add(13L);
-	    list.add(16L);
-	    Double price =11000.00;
-    	Long planid =1L;
-		*/
-	Integer num =(Integer)session.getAttribute("num");
-	Long userid = (Long) session.getAttribute("userid");
+		/*
+		 * Integer num =100; Long userid = 3L; List<Long> list = new
+		 * LinkedList<Long>(); list.add(12L); list.add(13L); list.add(16L);
+		 * Double price =11000.00; Long planid =1L;
+		 */
+		Integer num = (Integer) session.getAttribute("num");
+		Long userid = (Long) session.getAttribute("userid");
 
-	List<Long> list=(List<Long>) session.getAttribute("list");
+		List<Long> list = (List<Long>) session.getAttribute("list");
 
-    Double price = (Double)session.getAttribute("price");
-   	Long planid =(Long) session.getAttribute("newserverplanid");
-    	
-    	User user= userservice.findOne(userid);
-    	 	logger.info("num为:--- --- ---- ------------"+num);
-	        logger.info("方案的id为： ------ ------ ----"+planid);
-	        logger.info("用户的id为：  ------ ------ ----"+userid);
-	        logger.info("总的金额为： ------ ------ ------"+price);
-    	
-    	 List<Apolegamy> list01 =  apolegamyService.findAll(list);
-    	 
-    	 Double apoPrice = 0.0;
+		Double price = (Double) session.getAttribute("price");
+		Long planid = (Long) session.getAttribute("newserverplanid");
 
-	         for (Apolegamy apolegamy : list01) {
-	        	 apoPrice += apolegamy.getPrice();
-			 }
+		User user = userservice.findOne(userid);
+		logger.info("num为:--- --- ---- ------------" + num);
+		logger.info("方案的id为： ------ ------ ----" + planid);
+		logger.info("用户的id为：  ------ ------ ----" + userid);
+		logger.info("总的金额为： ------ ------ ------" + price);
 
-        Double serPrice = price + apoPrice;
+		List<Apolegamy> list01 = apolegamyService.findAll(list);
+
+		Double apoPrice = 0.0;
+
+		for (Apolegamy apolegamy : list01) {
+			apoPrice += apolegamy.getPrice();
+		}
+
+		Double serPrice = price + apoPrice;
 
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
 		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
-		
+
 		session.setAttribute("newPlanVo", newPlanVo);
-		/*session.setAttribute("list", list);
-		session.setAttribute("newserverplanid", planid);*/
- 
+		/*
+		 * session.setAttribute("list", list);
+		 * session.setAttribute("newserverplanid", planid);
+		 */
+
 		return ResultVOUtil.newsuccess(newPlanVo, list01);
 	}
-	
+
 	/** 订单详情状态 */
 	@ResponseBody
 	@RequestMapping(value = "/ingorder")
-	public Object LookOrder1(HttpSession session,@RequestParam("orderId") Long OrderId) {
-		
+	public Object LookOrder1(HttpSession session, @RequestParam("orderId") Long OrderId) {
+
 		Object object = ordService.getInformOrder(OrderId);
-		 
+
 		NewPlanVo newPlanVo = ordService.getVoNewPlan(object);
-		
+
 		String ids = newPlanVo.getIds();
-		
-		List<Long> listids =APOservice.Transformation(ids);
-		
+
+		List<Long> listids = APOservice.Transformation(ids);
+
 		List<Apolegamy> list = apolegamyService.findAll(listids);
-		
-			return ResultVOUtil.newsuccess(newPlanVo, list);
+
+		return ResultVOUtil.newsuccess(newPlanVo, list);
 	}
-	
-	
+
 	/** 修改电站信息 */
 	@RequestMapping(value = "/updateInfo")
 	@ResponseBody
 	public Object udatestation(UserVo userVo, HttpSession session) {
-		 User user01 = new User();
-		 
-	        BeanCopy.copyProperties(userVo, user01);
+		User user01 = new User();
 
-	        logger.info("地址为：----------- "+user01.getAddressText());
-	        logger.info("电话为：----------- "+user01.getPhone());
-	        logger.info("用户名为：----------- "+user01.getUserName());
-		
-		if(null == user01.getAddressText()){
+		BeanCopy.copyProperties(userVo, user01);
+
+		logger.info("地址为：----------- " + user01.getAddressText());
+		logger.info("电话为：----------- " + user01.getPhone());
+		logger.info("用户名为：----------- " + user01.getUserName());
+
+		if (null == user01.getAddressText()) {
 			logger.info("--- ---- --- --- -- 地址不能为空");
-			
+
 			return ResultVOUtil.error(777, Constant.ADRESS_NULL);
 		}
-		if(user01.getAddressText().length()>40){
-			
+		if (user01.getAddressText().length() > 40) {
+
 			return ResultVOUtil.error(777, Constant.ADDRESS_LONG);
 		}
-		
-		if(null == user01.getPhone()){
+
+		if (null == user01.getPhone()) {
 			logger.info("--- ---- --- --- -- 电话不能为空");
-			
+
 			return ResultVOUtil.error(777, Constant.PHONE_NULL);
 		}
-		
-		if(!PhoneFormatCheckUtils.isPhoneLegal(user01.getPhone())){
+
+		if (!PhoneFormatCheckUtils.isPhoneLegal(user01.getPhone())) {
 			logger.info("--- ---- --- --- -- 请输入正确的电话格式");
 			return ResultVOUtil.error(777, Constant.PHONE_ERROR);
 		}
-		
-		if(null == user01.getUserName()){
+
+		if (null == user01.getUserName()) {
 			logger.info("--- ---- --- --- -- 联系人不能为空");
 			return ResultVOUtil.error(777, Constant.USERNAME_NULL);
 		}
-		if(user01.getUserName().length()>12){
+		if (user01.getUserName().length() > 12) {
 			logger.info("--- ---- --- --- -- 联系人字符不能超过12位");
 			return ResultVOUtil.error(777, Constant.USERNAME_LONG);
 		}
-		
-		
+
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
-		NewUserVo newuser = (NewUserVo)session.getAttribute("user");
-		
-		 /** 前端页面地址的参数*/
+		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+
+		/** 前端页面地址的参数 */
 		newuser.setFullAddressText(user01.getAddressText());
-		
+
 		newuser.setPhone(user01.getPhone());
 		newuser.setUserName(user01.getUserName());
-		Long userid =(Long) session.getAttribute("userid");
-		User user=   userservice.findOne(userid);
-		   
-		   user.setFullAddressText(user01.getAddressText());
-		   user.setPhone(user01.getPhone());
-		   user.setUserName(user01.getUserName());
-		   
-		   userservice.updateUser(user);
-		
-		
+		Long userid = (Long) session.getAttribute("userid");
+		User user = userservice.findOne(userid);
+
+		user.setFullAddressText(user01.getAddressText());
+		user.setPhone(user01.getPhone());
+		user.setUserName(user01.getUserName());
+
+		userservice.updateUser(user);
 
 		plan.setAddress(user01.getAddressText());
 		plan.setPhone(user01.getPhone());
@@ -402,30 +393,31 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/orderPrice")
 	public ResultData<Object> findOrderprice(HttpSession session) {
-		NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
-	//	Integer type = (Integer)session.getAttribute("type");
-		
+		NewUserVo newuser = (NewUserVo) session.getAttribute("newuser");
+		// Integer type = (Integer)session.getAttribute("type");
+
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
-			
-		 List<Long>  listid=	(List<Long>) session.getAttribute("list");
-		 List<Apolegamy> list =  apolegamyService.findAll(listid);
-		 
+
+		List<Long> listid = (List<Long>) session.getAttribute("list");
+		List<Apolegamy> list = apolegamyService.findAll(listid);
+
 		Double apoPrice = 0.0;
 
 		for (Apolegamy apolegamy : list) {
 			apoPrice += apolegamy.getPrice();
 		}
 
-		Long planid =(Long) session.getAttribute("newserverplanid");
-		
+		Long planid = (Long) session.getAttribute("newserverplanid");
+
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 		newserverPlan.setMinPurchase(plan.getNum());
-		
+
 		User user02 = userservice.findByPhone(plan.getPhone());
 		// ** 添加订单*//*
 
-		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,plan.getOrderCode(),null);
-		
+		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
+				plan.getOrderCode(), null);
+
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
 		orderService.save(order);
@@ -454,49 +446,47 @@ public class OrderController {
 
 		neworder.setOrderPlan(newOrdPlan);
 
-		 /** 添加电站*/
+		/** 添加电站 */
 		stationService.insertStation(neworder);
-		
+
 		APOservice.getapole(neworder, listid);
 
 		neworder.getUser().setPassword(null);
-		
-		Map<String, Long> map = new HashMap<String,Long>();
+
+		Map<String, Long> map = new HashMap<String, Long>();
 		map.put("orderId", neworder.getId());
-		
-		 /** 传出电站的id*/ 
+
+		/** 传出电站的id */
 		return ResultVOUtil.success(map);
 	}
-	
-	/** 购买完成以后显示订单支付情况 */ /** @RequestParam("orderId") Long orderId*/
+
+	/** 购买完成以后显示订单支付情况 */
+	/** @RequestParam("orderId") Long orderId */
 	@ResponseBody
 	@RequestMapping(value = "/priceorder")
-	public Object giveorder(@RequestParam("orderId") Long orderId){
+	public Object giveorder(@RequestParam("orderId") Long orderId) {
 
 		Object order = orderService.findOrder(orderId);
-		
+
 		OrderVo order2 = orderService.getinfoOrder(order);
-		   
-	List<BillOrder> billOrder =	billOrderService.findByOrderId(orderId);
-		
-   List<String> list =	billOrderService.getSay(billOrder);
-  
-			return ResultVOUtil.newsuccess(order2, list);
+
+		List<BillOrder> billOrder = billOrderService.findByOrderId(orderId);
+
+		List<String> list = billOrderService.getSay(billOrder);
+
+		return ResultVOUtil.newsuccess(order2, list);
 
 	}
-	
-	 /** 显示购买的状态*/
+
+	/** 显示购买的状态 */
 	@ResponseBody
-	@RequestMapping(value="/OrderStatus")
-	public Object  giveStatus(@RequestParam("orderId") Long orderId){
-		
-	Order order =	orderService.findstatus(orderId);
-		
-		
+	@RequestMapping(value = "/OrderStatus")
+	public Object giveStatus(@RequestParam("orderId") Long orderId) {
+
+		Order order = orderService.findstatus(orderId);
+
 		return ResultVOUtil.success(order);
 	}
-	
-	
 
 	/**
 	 * 修改施工中的状态
@@ -505,10 +495,10 @@ public class OrderController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateConstructionStatus")
-	public Object updateConstructionStatus(Order o, Integer thisStauts,com.yn.vo.ResVo resVo) {
+	public Object updateConstructionStatus(Order o, Integer thisStauts, com.yn.vo.ResVo resVo) {
 		Order order = orderService.findOne(o.getId());
 		System.err.println(order.getConstructionStatus());
-		boolean falg = orderService.updateConstructionStatus(order, thisStauts,resVo);
+		boolean falg = orderService.updateConstructionStatus(order, thisStauts, resVo);
 		if (falg) {
 			return ResultVOUtil.success();
 		} else {
@@ -516,7 +506,45 @@ public class OrderController {
 		}
 
 	}
-	
-	
+
+	/**
+	 * 设置贷款成功/失败
+	 * 
+	 * @param o
+	 * @param flag
+	 *            true：成功、false：失败
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/setLoanStatusSuccessOrFaild")
+	public Object setLoanStatusSuccessOrFaild(Order o, Boolean flag) {
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
+		Order order = null;
+		if (o != null && flag != null)
+			order = orderService.findOne(o.getId());
+		else
+			return ResultVOUtil.error(-1, " Params can not be null ! ");
+		// 看看订单是不是在贷款申请中
+		if (order.getLoanStatus() == 0)
+			return ResultVOUtil.error(0, " The order did not apply for a loan ! ");
+		// 再看是不是已经贷款成功
+		if (order.getLoanStatus() == 2)
+			return ResultVOUtil.error(-2, " The order has been successfully made and can not be duplicated ! ");
+		// 或者说是失败的。
+		if (order.getLoanStatus() == 3)
+			return ResultVOUtil.error(-3, " The order failed and the loan could not be renewed ! ");
+		if (flag) {
+			boolean isOk = orderService.updateLoanStatus(order, true);
+			jsonResult.put("setLoanStatus", true);// 修改成功！
+			jsonResult.put("updateLoanStatus", isOk);// 贷款成功！
+		} else {
+			boolean isOk = orderService.updateLoanStatus(order, false);
+			if (isOk)
+				jsonResult.put("setLoanStatus", true);// 修改成功！
+			else
+				jsonResult.put("setLoanStatus", false);// 贷款失败！
+		}
+		return ResultVOUtil.success(jsonResult);
+	}
 
 }
