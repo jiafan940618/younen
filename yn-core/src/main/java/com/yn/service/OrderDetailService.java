@@ -28,7 +28,7 @@ public class OrderDetailService {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private BillOrderService billOrderService;
 
@@ -42,7 +42,7 @@ public class OrderDetailService {
 	private Double GRIDCONNECTED_PAYMENT_SCALE;// 并网发电 --> 需：100%
 
 	@Value("${SURVEYAPPOINTMENTPAYMENT}")
-	private Double SURVEYAPPOINTMENTPAYMENT;// 勘察预约 --> 需：25%
+	private Double SURVEYAPPOINTMENTPAYMENT;// 勘察预约 --> 需：固定为5000
 
 	@Autowired
 	CommentDao commentDao;
@@ -55,13 +55,11 @@ public class OrderDetailService {
 	 */
 	public Map<String, Object> loanApplication(Order order) {
 		result = new HashMap<>();
+		order = orderService.findOne(order.getId());
 		if (order != null) {
 			double alreadyPaid = 0;// 已支付过的
-			Set<BillOrder> billOrder = order.getBillOrder();
-			if (billOrder != null) {// 检查有没有用过其他方式支付
-				for (BillOrder billOrder2 : billOrder) {
-					alreadyPaid += billOrder2.getMoney();
-				}
+			if (order.getHadPayPrice() != null) {
+				alreadyPaid = order.getHadPayPrice();
 			}
 			Double totalPrice = order.getTotalPrice();// 总价
 			if (alreadyPaid >= 1) {// 不是第一次。。。
@@ -99,7 +97,7 @@ public class OrderDetailService {
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		// result.put("updateOrderStauts", byCondition + "");
-		//查看有没有生成订单记录
+		// 查看有没有生成订单记录
 		return result;
 	}
 
@@ -183,12 +181,14 @@ public class OrderDetailService {
 	 */
 	public Map<String, Object> surveyAppointment(Order order) {
 		result = new HashMap<>();
-		Double needToPay = calculatedNeedToPayMoney(order, SURVEYAPPOINTMENTPAYMENT);
-		if (needToPay < 0) {
-			// order.setApplyStepA(1);// 已预约
+		// Double needToPay = calculatedNeedToPayMoney(order,
+		// SURVEYAPPOINTMENTPAYMENT);
+		Order one = orderService.findOne(order.getId());
+		Double hadPayPrice = one.getHadPayPrice();
+		if (hadPayPrice >= SURVEYAPPOINTMENTPAYMENT) {
 			result.put("needToPay", 0);
 		} else {
-			result.put("needToPay", needToPay);
+			result.put("needToPay", SURVEYAPPOINTMENTPAYMENT);
 		}
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
@@ -278,10 +278,10 @@ public class OrderDetailService {
 		// 更新状态 --> success：true
 		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
 		// result.put("updateOrderStauts", byCondition + "");
-		/* --先判断是贷款还是线上支付的   以下是ios需要的-- */
-		// 贷款不成功,并网未支付 
-		boolean flag= true;
-		if (order.getGridConnectedIsPay() >0 && order.getLoanStatus() != 2) {
+		/* --先判断是贷款还是线上支付的 以下是ios需要的-- */
+		// 贷款不成功,并网未支付
+		boolean flag = true;
+		if (order.getGridConnectedIsPay() > 0 && order.getLoanStatus() != 2) {
 			flag = false;
 			result.put("isPowerGeneration", false);
 		}
@@ -297,13 +297,12 @@ public class OrderDetailService {
 			flag = false;
 			result.put("isPowerGeneration", false);
 		}
-		//可以发电、ios需要
-		if(flag){
+		// 可以发电、ios需要
+		if (flag) {
 			result.put("isPowerGeneration", true);
 		}
 		return result;
 	}
-
 
 	/**
 	 * 并网评分

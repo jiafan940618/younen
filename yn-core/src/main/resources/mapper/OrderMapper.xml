@@ -157,7 +157,23 @@
 		update t_order o set o.status =#{status} where o.id =#{id}
 	</update>
 
-	
-	
+	<update id="updateLoanStatus" parameterType="com.yn.model.Order">
+		update t_order o 
+			<set>
+				loan_status = #{loanStatus,jdbcType=INTEGER}
+				<if test="hadPayPrice != null">
+					,had_pay_price = #{hadPayPrice}
+				</if>
+			</set>
+				
+		where o.id = #{id}
+	</update>
+	<update id="updateApplyStepBImgUrl" parameterType="com.yn.model.Order">
+		update t_order o 
+			<set>
+				apply_stepbimg_url = #{applyStepBImgUrl,jdbcType=INTEGER}
+			</set>
+		where o.id = #{id}
+	</update>
 
 </mapper>

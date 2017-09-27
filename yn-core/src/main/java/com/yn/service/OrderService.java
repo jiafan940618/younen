@@ -532,4 +532,30 @@ public class OrderService {
 		return stepB > 0 && status > 0 ? true : false;
 
 	}
+
+	/**
+	 * 修改贷款的状态
+	 * 
+	 * @param o
+	 * @param flag
+	 *            true：设置成贷款成功、false：设置为贷款失败.
+	 * @return
+	 */
+	public boolean updateLoanStatus(Order o, boolean flag) {
+		Order order = findOne(o.getId());
+		if(flag){
+			order.setLoanStatus(2);//cheng gong ..
+			Double totalPrice = order.getTotalPrice();
+			order.setHadPayPrice(totalPrice);//贷款成功就让订单需支付的钱=着条订单的总价-->相等于用户支付满钱了。
+		}else{
+			order.setHadPayPrice(null);//不修改金额
+			order.setLoanStatus(3);// shi bai ..
+		}
+		int status = mapper.updateLoanStatus(order);
+		return status > 0 ? true : false;
+	}
+
+	public boolean updateApplyStepBImgUrl(Order order) {
+		return mapper.updateApplyStepBImgUrl(order)>0?true:false;
+	}
 }
