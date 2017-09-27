@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 @Service
@@ -99,6 +100,11 @@ public class ServerService {
     	
     	return toSerialCode(serverId, 4) + format.format(System.currentTimeMillis())
 		+ df1.format(rd.nextInt(9999));
+    }
+    
+    public String getOrderNo(Long serverId){
+    	
+    	return toSerialCode(serverId, 4)+(System.currentTimeMillis()-110)+ df1.format(rd.nextInt(9999));
     }
 
     public Long findcityCount(String cityName){

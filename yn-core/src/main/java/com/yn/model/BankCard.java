@@ -35,20 +35,60 @@ public class BankCard extends IDomain implements Serializable {
     private String accountName;
     @Column(columnDefinition = "int(1) comment '[是否已经认证]{0:个人账户,1:工商账户}'")
     private Integer type;
-    @Column(columnDefinition = "varchar(1) comment '[银行卡的编号]'")
-    private String bankNum;
+   
+    
     @Column(columnDefinition = "int(11) comment '[银行]'")
     private Integer bankId;
     @Column(columnDefinition = "varchar(255) comment '[协议号]'")
     private String treatyId;
+    
+    @Column(columnDefinition = "varchar(255) comment '[快付通绑定银行卡订单号]'")
+    private String orderNo;
+    @Column(columnDefinition = "varchar(10) comment '[11、借记卡  12、信用卡]'")
+    private String treatyType;
+    @Column(columnDefinition = "int(1) comment '[0、存折 1、借记 2、贷记]'")
+    private int bank_card_type;
+    
 
     @OneToMany
     @JoinColumn(name = "id", insertable = false, updatable = false)
     private Set<BankCode> bankCode;
     
+
     
-    
-    public Integer getBankId() {
+    public BankCard() {}
+
+	public BankCard(String treatyId, String orderNo) {
+		super();
+		this.treatyId = treatyId;
+		this.orderNo = orderNo;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getTreatyType() {
+		return treatyType;
+	}
+
+	public void setTreatyType(String treatyType) {
+		this.treatyType = treatyType;
+	}
+
+	public int getBank_card_type() {
+		return bank_card_type;
+	}
+
+	public void setBank_card_type(int bank_card_type) {
+		this.bank_card_type = bank_card_type;
+	}
+
+	public Integer getBankId() {
 		return bankId;
 	}
 
@@ -72,13 +112,6 @@ public class BankCard extends IDomain implements Serializable {
 		this.bankCode = bankCode;
 	}
 
-	public String getBankNum() {
-		return bankNum;
-	}
-
-	public void setBankNum(String bankNum) {
-		this.bankNum = bankNum;
-	}
 
 	public Long getUserId() {
         return userId;

@@ -64,10 +64,10 @@ public class SignService {
 			parameters.put("merchantId", "2014030600048235");
 			parameters.put("callerIp", "192.168.0.104");
 			//** 页面同步通知地址,同步通知结果，后期测试*//*
-			//parameters.put("returnUrl", "http://10.36.160.29:8080/cashierDemo/returnUrl.jsp");
+			parameters.put("returnUrl", "http://test.u-en.cn/client/sign/bankPay");
 			 /** 后台通知地址*/
 
-			parameters.put("notifyAddr", "http://client.u-en.cn/client/sign/doresult");
+			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doresult");
 
 			
 			parameters.put("customerType", "1");
@@ -96,7 +96,7 @@ public class SignService {
 			//parameters.put("merchantLogoUrl", "");
 			parameters.put("cashierStyle", "1");
 		
-			String signatureInfo =	CashierSignUtil.sign(pfxPath+"\\privateKey\\pfx.pfx", "123456",parameters);
+			String signatureInfo =	CashierSignUtil.sign(pfxPath+"/privateKey/pfx.pfx", "123456",parameters);
 			
 			System.out.println(signatureInfo);
 			

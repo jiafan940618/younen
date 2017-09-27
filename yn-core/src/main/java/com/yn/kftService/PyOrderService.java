@@ -1,12 +1,12 @@
 package com.yn.kftService;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,8 @@ public class PyOrderService {
 	public static final String ZFB_BANK_NO = "0000002";
 	public static final String YL_BANK_NO = "0000003";
 
-	static	String terminalIp = "192.168.0.104";
-	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
+	static	String terminalIp = "120.76.98.74";
+	static	String notifyUrl = "http://test.u-en.cn/client/sign/doresult";
 	static String currency = "CNY";
 	static 	String tradeName = "商品描述001";
 	static String remark = "remark";
@@ -59,12 +59,21 @@ public class PyOrderService {
 	static	String terminalId = "49000002";
 	
 	
-	@Before
 	public  void init() throws Exception {
 		// 初始化证书
-		String merchantIp = "192.168.0.104";
+		String merchantIp = "120.76.98.74";
 		// 证书类型、证书路径、证书密码、别名、证书容器密码
-		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", "D:/Software/test/pfx.pfx", "123456".toCharArray(), null,
+		   String pfxPath=null;
+			try {
+				 File directory = new File("");// 参数为空
+				pfxPath = directory.getCanonicalPath()+"/privateKey/pfx.pfx";
+				 System.out.println("项目路径为：-- --- -- -- - - - - - -"+pfxPath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", pfxPath, "123456".toCharArray(), null,
 				"123456".toCharArray());
 		// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
 		service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
@@ -75,7 +84,7 @@ public class PyOrderService {
 		service.setResponseTimeoutSeconds(10 * 60);
 	}
 	
-	@Test
+
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
 		ActiveScanPayReqDTO reqDTO = new ActiveScanPayReqDTO();
 		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号
@@ -106,8 +115,8 @@ public class PyOrderService {
 		reqDTO.setOperatorId(operatorId);//商户操作员编号 可空
 		reqDTO.setStoreId(storeId);//商户门店编号 可空
 		reqDTO.setIsS0("0");//是否是S0支付是否是S0支付，1：是；0：否。默认否。如果是S0支付，金额会实时付给商户。需经快付通审核通过后才可开展此业务。如果无此业务权限，此参数为1，则返回失败。 可空 
-		reqDTO.setIsGuarantee("0");//是否担保交易,1:是，0:否
-		reqDTO.setIsSplit("0");//是否分账交易,1:是，0：否 ，
+		//reqDTO.setIsGuarantee("0");//是否担保交易,1:是，0:否
+		//reqDTO.setIsSplit("0");//是否分账交易,1:是，0：否 ，
 		//分账详情，如果是否分账交易为是，该字段为必填，格式如下:
 		//reqDTO.setSplitInfo("[{\"merchantId\":\"2017072600081986\",\"amount\":\"1\",\"remark\":\"有线电视费\"},{\"merchantId\":\"2017073100082105\",\"amount\":\"1\",\"remark\":\"宽带费\"}]");
 		ActiveScanPayRespDTO resp = new ActiveScanPayRespDTO();

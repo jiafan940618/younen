@@ -209,13 +209,14 @@ public class BillOrderService {
 	
 	 /** 根据订单号,拿到用户id找到银行卡*/
 	
-	public void getbankCard(String tradeNo){
+	public void getbankCard01(String tradeNo){
 		
 		BillOrder billOrder =	billOrderDao.findByTradeNo(tradeNo);
 		
-		BankCard bankCard =bankCardDao.selectBank(billOrder.getUserId());
+		BankCard bankCard = new BankCard();
+		//BankCard bankCard =bankCardDao.selectBank(billOrder.getUserId());
 		
-		bankCard.getBankNum();
+		//bankCard.getBankNum();
 	
 	}
 	

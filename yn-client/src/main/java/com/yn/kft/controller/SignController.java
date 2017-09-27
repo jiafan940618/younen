@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,10 +52,7 @@ public class SignController {
 	private SignService signService;
 	@Autowired
 	BankCardService bankCardService;
-	
-	private String key="7f957562b40e4b0eaf5bc9ed4d1a78ca";
-	
-	String cerPath="D://Software//test//20KFT.cer";
+
 	
 
 	
@@ -63,16 +62,20 @@ public class SignController {
 		@ResponseBody
 		@RequestMapping(value="/payonline")
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
-		public Object doOnline(HttpServletRequest request,HttpSession session){
+		public Object doOnline(HttpServletRequest request,HttpSession session,BillOrderVo billOrderVo){
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			BillOrderVo billOrderVo = new BillOrderVo();
+			/*BillOrderVo billOrderVo = new BillOrderVo();
 			billOrderVo.setOrderId(1L);
-			billOrderVo.setPayWay(4);
+			billOrderVo.setPayWay(2);
 			billOrderVo.setUserId(3L);
-			BigDecimal money = BigDecimal.valueOf(1);
-			billOrderVo.setMoney(money);
+			BigDecimal money = BigDecimal.valueOf(0.01);*/
+			BigDecimal xmoney = BigDecimal.valueOf(100);
+			DecimalFormat   df   =new DecimalFormat("#");
+			
+			System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
+			billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
@@ -111,11 +114,9 @@ public class SignController {
 				
 				return signService.findSign(billOrderVo); 
 			}else if(billOrderVo.getPayWay()==5){//等于5是快付通支付
-				
-				
-			BankCard bankCard =	bankCardService.selectBank(billOrderVo.getUserId());
-				
-				
+	
+			List<BankCard>  list=	bankCardService.selectBank(billOrderVo.getUserId());
+
 				return ""; 
 			}
 
@@ -128,7 +129,7 @@ public class SignController {
 		public Object getSignresult(HttpServletRequest request,HttpServletResponse response){
 			
 			 Map<String, Object> resultMap = new HashMap<String, Object>();
-		logger.info("=============================================================================");
+			logger.info("=============================================================================");
 			logger.info("进入测试响应后台contrller ----- ------ --- --- --- ----- !");
 			
 			logger.info("传过来的sign为：----- ----- ----- ------"+request.getParameter("signatureInfo"));
@@ -142,7 +143,7 @@ public class SignController {
 			logger.info("传过来的errorCode为：----- ----- ----- ------"+request.getParameter("errorCode"));
 			logger.info("传过来的failureDetails为：----- ----- ----- ------"+request.getParameter("failureDetails"));
 			logger.info("传过来的channelNo为：----- ----- ----- ------"+request.getParameter("channelNo"));
-			logger.info("传过来的statusDesc为：----- ----- ----- ------"+request.getParameter("statusDesc"));
+			logger.info("传过来的statusDesc为：----- ----- ----- ------"+request.getParameter("reconStatus"));
 			
 			 Map<String, String> map = new HashMap<String, String>();
 			 
@@ -156,17 +157,26 @@ public class SignController {
 			/* map.put("failureDetails", request.getParameter("failureDetails"));
 			 map.put("errorCode", request.getParameter("errorCode"));*/
 			 map.put("callerIp", request.getParameter("callerIp"));
+			 map.put("reconStatus", request.getParameter("reconStatus"));
 			
-		                String orderNo =(String) resultMap.get("outTradeNo");
+			 String orderNo =(String) request.getParameter("orderNo");
 
-		                String status =(String)request.getParameter("status");
-		                String amount =(String) request.getParameter("settlementAmount");
-			
-		          
+             String status =(String)request.getParameter("status");
+             String amount =(String) request.getParameter("settlementAmount");
+             	
+             String pfxPath=null;
+ 			try {
+ 				 File directory = new File("");// 参数为空
+ 				pfxPath = directory.getCanonicalPath()+"/privateKey/20KFT.cer";
+ 				 System.out.println("项目路径为：-- --- -- -- - - - - - -"+pfxPath);
+ 			} catch (IOException e) {
+ 				// TODO Auto-generated catch block
+ 				e.printStackTrace();
+ 			}
+            
+           
+             Boolean result = CashierSignUtil.verifySign_2(pfxPath, map, request.getParameter("signatureInfo"));
 		                
-		                BillOrder billOrder =  billorderService.findByTradeNoandstatus(request.getParameter("orderNo"));
-		              
-		               Boolean result = CashierSignUtil.verifySign_2(cerPath, map, request.getParameter("signatureInfo"));
 			                
 		               if(result){
 		                		
@@ -180,7 +190,8 @@ public class SignController {
 				                	billorderService.updateOrder(orderNo);
 				                	/** 修改订单金额,及3步走，支付状态*/
 				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
-
+				                	
+				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 				                	 /** 查询订单改变订单进度*/
 				                	orderService.checkUpdateOrderStatus(orderService.findOne(billOrder.getOrderId()));
 				                	
@@ -211,12 +222,7 @@ public class SignController {
 		            	   return ResultVOUtil.error(777, "支付未成功!");
 		               }   		
 			          
-		        //如果失败返回错误，微信会再次发送支付信息
-			//logger.info("支付失败!----响应后台contrller ----- ------ --- --- --- ----- !");
-	
-		//	logger.info("=============================================================================");
-			
-	//	return ResultVOUtil.error(777, "支付失败!");
+
 		}
 	
 		/** 定时查询订单号*/

@@ -1,5 +1,7 @@
 package com.yn.vo;
 
+import javax.persistence.Column;
+
 /**
  * 银行卡
  */
@@ -15,7 +17,57 @@ public class BankCardVo {
 	private String accountName;
 	private Integer type;
 	
+	private String bankNo;
 	
+	private Integer bankId;
+
+	private String treatyId;
+	    
+	private String orderNo;
+
+	private String treatyType;
+
+	private int bank_card_type;
+	      
+	    
+	    
+	    
+	    public String getBankNo() {
+			return bankNo;
+		}
+		public void setBankNo(String bankNo) {
+			this.bankNo = bankNo;
+		}
+		public Integer getBankId() {
+			return bankId;
+		}
+		public void setBankId(Integer bankId) {
+			this.bankId = bankId;
+		}
+		public String getTreatyId() {
+			return treatyId;
+		}
+		public void setTreatyId(String treatyId) {
+			this.treatyId = treatyId;
+		}
+		public String getOrderNo() {
+			return orderNo;
+		}
+		public void setOrderNo(String orderNo) {
+			this.orderNo = orderNo;
+		}
+		public String getTreatyType() {
+			return treatyType;
+		}
+		public void setTreatyType(String treatyType) {
+			this.treatyType = treatyType;
+		}
+		public int getBank_card_type() {
+			return bank_card_type;
+		}
+		public void setBank_card_type(int bank_card_type) {
+			this.bank_card_type = bank_card_type;
+		}
 	public Long getId() {
 		return id;
 	}

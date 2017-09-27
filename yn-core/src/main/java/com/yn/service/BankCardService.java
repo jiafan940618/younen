@@ -1,5 +1,7 @@
 package com.yn.service;
 
+import static org.mockito.Mockito.ignoreStubs;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +69,37 @@ public class BankCardService {
 		return bankCardDao.findAll(spec);
 	} 
 	
-	public BankCard selectBank(Long userId){
+	public List<BankCard> selectBank(Long userId){
 		
 		return bankCardDao.selectBank(userId); 
 	 }
+	
+	public BankCard findByBankcard(String treatyIds){
+		
+		return bankCardDao.findByTreatyId02(treatyIds);
+	}
+	
+	public BankCard findByTreatyId(String treatyIds){
+		
+		Object object = bankCardDao.findByTreatyId(treatyIds);
+		Object[] obj = (Object[])object;
+		BankCard bankCard = new BankCard();
+		
+		String realName =(String)obj[0];
+		String bankCardNum =(String)obj[1];
+		String treatyId =(String)obj[2];
+		String bankNo =(String)obj[3];
+		
+		bankCard.setRealName(realName);
+		bankCard.setBankCardNum(bankCardNum);
+		bankCard.setTreatyId(treatyId);
+		bankCard.setOrderNo(bankNo);
+		
+		return bankCard;	
+		
+	}
+	
+
+	
 	
 }

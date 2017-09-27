@@ -23,7 +23,15 @@ public interface BankCardDao extends JpaRepository<BankCard, Long>, JpaSpecifica
     
     
     /** 根据用户id查询出银行卡的编号*/
-    @Query("select b from BankCard b where userId = :userId ")
-    BankCard selectBank(@Param("userId") Long userId);
+    @Query("select b from BankCard b where b.userId = :userId  and b.del=0")
+   List<BankCard>  selectBank(@Param("userId") Long userId);
+    
+    
+    @Query(value="SELECT b.real_name,b.bank_card_num,b.treaty_id ,c.bank_no  "
+    		+ " FROM bank_card b LEFT JOIN bank_code c ON b.bank_id =c.id WHERE b.treaty_id =:treatyId AND b.del =0",nativeQuery=true)
+    Object findByTreatyId (@Param("treatyId") String treatyId);
+    
+    @Query("select new BankCard(treatyId,orderNo) from BankCard  where treatyId =:treatyId  and del=0")
+    BankCard  findByTreatyId02(@Param("treatyId") String treatyId);
     
 }

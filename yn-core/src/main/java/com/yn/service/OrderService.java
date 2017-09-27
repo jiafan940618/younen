@@ -332,8 +332,9 @@ public class OrderService {
 	public void UpdateOrStatus(String tradeNo, Double money) {
 
 		Order order = FindByTradeNo(tradeNo);
-
-		order.setHadPayPrice(order.getHadPayPrice() + money);
+		
+		logger.info("----- ------ ------修改的金额为"+money/100);
+		order.setHadPayPrice(order.getHadPayPrice() + money/100);
 
 		mapper.UpdateOrder(order);
 
