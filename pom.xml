@@ -37,6 +37,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<!-- <exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -53,18 +59,21 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency> -->
 		<dependency>
 			<groupId>com.aliyun.oss</groupId>
 			<artifactId>aliyun-sdk-oss</artifactId>
 			<version>2.2.1</version>
 		</dependency>
-		
-		 <dependency>
+
+		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.7</version>
-		</dependency> 
+		</dependency>
 
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -132,86 +141,87 @@
 			<artifactId>guava</artifactId>
 			<version>19.0-rc1</version>
 		</dependency>
-		
+
 		<!-- tomcat的支持 -->
-			<dependency>  
-		        <groupId>org.webjars</groupId>  
-		         <artifactId>jquery</artifactId>  
-		         <version>2.1.4</version>  
-		     </dependency>  
-		<dependency>  
-			<groupId>org.apache.tomcat.embed</groupId>  
-			<artifactId>tomcat-embed-jasper</artifactId>  
-			<scope>provided</scope>  
-		</dependency>  
-     	 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-             <scope>provided</scope>  
-        </dependency> 
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>2.1.4</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
 		</dependency>
-     	<dependency>
-           <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-             <scope>provided</scope>
-        </dependency>
-        
-         <!-- 静态页面的访问 -->
-         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        
-         <!-- servelt依赖包 -->
-         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
-         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-             <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-	 <dependency>
-            <groupId>com.yuntongxun</groupId>
-            <artifactId>CCP_REST_SDK_JAVA_v2.7r</artifactId>
-            <version>2.7</version>
-        </dependency>  
-        
-          <dependency>
-            <groupId>com.lycheepay.gateway</groupId>
-            <artifactId>gateway-client-3.8.8</artifactId>
-            <version>3.8.8</version>
-        </dependency>  
-</dependencies>
+		<!-- 静态页面的访问 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<!-- servelt依赖包 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.yuntongxun</groupId>
+			<artifactId>CCP_REST_SDK_JAVA_v2.7r</artifactId>
+			<version>2.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lycheepay.gateway</groupId>
+			<artifactId>gateway-client-3.8.8</artifactId>
+			<version>3.8.8</version>
+		</dependency>
+
+	</dependencies>
 	<build>
-	 <pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-					 <compilerArgs>
-						<arg>-extdirs</arg>
-						<arg>yn-core/lib</arg>
-					</compilerArgs>	
-					
-					<compilerArguments>
-				         <extdirs>src\main\webapp\WEB-INF\lib</extdirs>
-				      </compilerArguments>
-      
-				</configuration>
-			</plugin>
-		</plugins>
-		 </pluginManagement>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+						<compilerArgs>
+							<arg>-extdirs</arg>
+							<arg>yn-core/lib</arg>
+						</compilerArgs>
+
+						<compilerArguments>
+							<extdirs>src\main\webapp\WEB-INF\lib</extdirs>
+						</compilerArguments>
+
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 

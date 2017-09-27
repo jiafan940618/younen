@@ -31,7 +31,7 @@ public interface BankCardDao extends JpaRepository<BankCard, Long>, JpaSpecifica
     		+ " FROM bank_card b LEFT JOIN bank_code c ON b.bank_id =c.id WHERE b.treaty_id =:treatyId AND b.del =0",nativeQuery=true)
     Object findByTreatyId (@Param("treatyId") String treatyId);
     
-    @Query("select new BankCard(treatyId,orderNo) from BankCard  where treatyId =:treatyId  and del=0")
+    @Query("select new BankCard(id,treatyId,orderNo) from BankCard  where treatyId =:treatyId  and del=0")
     BankCard  findByTreatyId02(@Param("treatyId") String treatyId);
     
 }

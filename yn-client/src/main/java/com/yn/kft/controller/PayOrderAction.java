@@ -1,25 +1,21 @@
 package com.yn.kft.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.lycheepay.gateway.client.GatewayClientException;
-import com.lycheepay.gateway.client.KftBaseService;
 import com.lycheepay.gateway.client.dto.gbp.TreatyApplyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
 import com.yn.kftService.KFTpayService;
 import com.yn.model.BankCard;
-import com.yn.model.City;
+import com.yn.model.BankCode;
 import com.yn.service.BankCardService;
+import com.yn.service.BankCodeService;
 import com.yn.service.ServerService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
@@ -35,6 +31,8 @@ public class PayOrderAction {
 	private static final Logger logger = LoggerFactory.getLogger(PayOrderAction.class);
 	
 	@Autowired
+	private BankCodeService bankCodeService;
+	@Autowired
 	private BankCardService bankCardService;
 	@Autowired
 	private KFTpayService kftpayService;
@@ -45,53 +43,92 @@ public class PayOrderAction {
 	/** 使用快通支付*/
 	@ResponseBody
 	@RequestMapping(value="/bind")
-	public  Object getBindIng(BillOrderVo billOrderVo,BankCardVo bankCardVo){
-		logger.info("----- ----- ------- ------ ----");
+	public  Object getBindIng(BillOrderVo billOrderVo){
+		
 		List<BankCard> list = new ArrayList<BankCard>();
-		
-    if(null!=bankCardVo.getUserId()){
-		
-		 list =bankCardService.selectBank(bankCardVo.getUserId());
-		
-			if(list.size()==0){
-				logger.info("----- ----- ------- ------ ----- ------ 该用户没有绑定银行卡");
-				return ResultVOUtil.error(777, Constant.BANK_CODE_ERROR);
-			}
-			return ResultVOUtil.success(list);
-	}
-	
-    if (null!=bankCardVo.getTreatyId() || bankCardVo.getTreatyId().equals("") ){
-    	
-    	try {
-    		kftpayService.init();
-    		
-    		BankCard bankCard=bankCardService.findByTreatyId(bankCardVo.getTreatyId());	
-    		
-			kftpayService.treatyCollect(billOrderVo,bankCard);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
 
+	    if(null!=billOrderVo.getUserId()){
+			
+			 list =bankCardService.selectBank(billOrderVo.getUserId());
+			
+				if(list.size()==0){
+					logger.info("----- ----- ------- ------ ----- ------ 该用户没有绑定银行卡");
+					return ResultVOUtil.error(777, Constant.BANK_CODE_ERROR);
+				}
+				return ResultVOUtil.success(list);
+		}
+	
+   
 		return ResultVOUtil.success(null);
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/bindIng")
+	public  Object getdIng(BillOrderVo billOrderVo,BankCardVo bankCardVo){
+		/** 测试数据*/
+		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
+		/*billOrderVo.setOrderId(1L);
+		billOrderVo.setUserId(3L);
+		BigDecimal xmoney = BigDecimal.valueOf(100);
+		billOrderVo.setMoney(xmoney);
+		bankCardVo.setTreatyId("20170927035820");*/
+		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
+		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
+		logger.info("======= ========= ======== =======传递的TradeNo:"+billOrderVo.getTradeNo());
+		logger.info("======= ========= ======== =======传递的amount:"+billOrderVo.getMoney());
+		
+		logger.info("======= ========= ======== =======传递的协议号TreatyId:"+bankCardVo.getTreatyId());
+		
+		
+		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
+		 if (null!=bankCardVo.getTreatyId() || bankCardVo.getTreatyId().equals("") ){
+		    	
+		    	try {
+		    		kftpayService.init();
+		    		
+		    		BankCard bankCard=bankCardService.findByTreatyId(bankCardVo.getTreatyId());	
+		    		
+		    		return	kftpayService.treatyCollect(billOrderVo,bankCard);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+
+		
+		logger.info("=========== =============== =========== 没有该协议号!");
+		
+		return ResultVOUtil.error(777, "没有协议号!");
+	}
+	
+	
 	
 	/** 绑定银行卡，接收俩个方法*/
 	@ResponseBody
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
+		/** 测试数据*/
+		/*bankCardVo.setBankId(5);
 		bankCardVo.setUserId(3L);
-		bankCardVo.setBankCardNum("62179020000008778945");
+		bankCardVo.setBankCardNum("6217902000000879543");
 		bankCardVo.setTreatyType("11");
-		bankCardVo.setRealName("不知道");
+		bankCardVo.setRealName("不知道001");
 		bankCardVo.setPhone("13124733745");
 		bankCardVo.setIdCardNum("500382199401185412");
 		bankCardVo.setBankNo("1051000");
-		bankCardVo.setType(0);
+		bankCardVo.setType(1);*/
+		logger.info("======= ========= ======== =======传递的UserId:"+bankCardVo.getUserId());
+		logger.info("======= ========= ======== =======传递的BankCardNum:"+bankCardVo.getBankCardNum());
+		logger.info("======= ========= ======== =======传递的TreatyType:"+bankCardVo.getTreatyType());
+		logger.info("======= ========= ======== =======传递的RealName:"+bankCardVo.getRealName());
+		logger.info("======= ========= ======== =======传递的Phone:"+bankCardVo.getPhone());
+		logger.info("======= ========= ======== =======传递的IdCardNum:"+bankCardVo.getIdCardNum());
+		logger.info("======= ========= ======== =======传递的BankNo:"+bankCardVo.getBankNo());
+		logger.info("======= ========= ======== =======传递的bankId:"+bankCardVo.getBankId());
+		logger.info("======= ========= ======== =======传递的Type:"+bankCardVo.getType());
 		
 	String orderNo = serverService.getOrderNo(bankCardVo.getUserId());
-		
+		logger.info("======= ========= ======== =======传递的orderNo:"+orderNo);
 	bankCardVo.setOrderNo(orderNo);
 		try {
 			kftpayService.init();
@@ -99,9 +136,9 @@ public class PayOrderAction {
 			TreatyApplyResultDTO resultdto = kftpayService.treatyCollectApply(bankCardVo);
 			
 			if(resultdto.getStatus()==2){
-				logger.info("========= =========== ========== ========= 该协议号已存在，银行卡已绑定");
+				logger.info("========= =========== ========== ========="+resultdto.getFailureDetails());
 				
-				return ResultVOUtil.error(777, "该银行卡已绑定!");
+				return ResultVOUtil.error(777, resultdto.getFailureDetails());
 			}
 			
 			if(resultdto.getStatus()!=1){
@@ -129,7 +166,7 @@ public class PayOrderAction {
 			e.printStackTrace();
 		}
 	
-		return ResultVOUtil.success(null);
+		return ResultVOUtil.success("绑定银行卡成功!");
 	}
 	
 
@@ -142,22 +179,35 @@ public class PayOrderAction {
 	@ResponseBody
 	@RequestMapping(value="/selectCard")
 	public Object getdelete(BankCardVo bankCardVo){
+		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
 		
-	BankCard bankCard= bankCardService.findByBankcard(bankCardVo.getTreatyId());
 	
-	Object object =null;
+	 if (null!=bankCardVo.getTreatyId() || bankCardVo.getTreatyId().equals("") ){
+		 BankCard bankCard= bankCardService.findByBankcard(bankCardVo.getTreatyId());
+			
+			Object object =null;
 		try {
 			kftpayService.init();
-			kftpayService.cancelTreatyInfo(bankCard);
+			object=	kftpayService.cancelTreatyInfo(bankCard);
 			
+			return object;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return bankCardService;
+	 }
+	return ResultVOUtil.error(777, "没有协议号,解绑失败!");
+		
 	}
 	
-	
-	
+	/*** 展示银行*/
+	@ResponseBody
+	@RequestMapping(value="/selectCode")
+	public Object getBankCode(BankCode bankCode){
+		
+		List<BankCode> list = bankCodeService.findAll(bankCode);
+		
+		return ResultVOUtil.success(list);
+	}
 	
 	
 	

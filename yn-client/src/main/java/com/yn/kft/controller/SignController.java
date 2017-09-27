@@ -71,11 +71,9 @@ public class SignController {
 			billOrderVo.setPayWay(2);
 			billOrderVo.setUserId(3L);
 			BigDecimal money = BigDecimal.valueOf(0.01);*/
-			BigDecimal xmoney = BigDecimal.valueOf(100);
-			DecimalFormat   df   =new DecimalFormat("#");
 			
-			System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
-			billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
+			
+			
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
@@ -96,7 +94,12 @@ public class SignController {
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于3是支付宝支付	
 			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
-
+				
+				BigDecimal xmoney = BigDecimal.valueOf(100);
+				DecimalFormat   df   =new DecimalFormat("#");
+				
+				System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
+				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2：");
 					
 				try {
@@ -113,11 +116,6 @@ public class SignController {
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
 				
 				return signService.findSign(billOrderVo); 
-			}else if(billOrderVo.getPayWay()==5){//等于5是快付通支付
-	
-			List<BankCard>  list=	bankCardService.selectBank(billOrderVo.getUserId());
-
-				return ""; 
 			}
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<configuration debug="false" scan="false" scanPeriod="1 hours"><!-- 'milliseconds','seconds','minutes' and 'hours' -->
+	<contextName>TH</contextName>
+	<!-- 控制台输出日志 -->
+	<appender name="STDOUT" class="org.soofa.logback.core.ConsoleAppender">
+		<!-- <encoder class="org.soofa.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>TESTLOG %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder> -->
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<logger name="org.soofa" additivity="false" level="WARN" />
+
+</configuration>

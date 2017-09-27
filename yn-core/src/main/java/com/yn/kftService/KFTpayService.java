@@ -1,13 +1,9 @@
 package com.yn.kftService;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,10 +170,9 @@ public class KFTpayService {
 			billOrder.setUserId(billOrderVo.getUserId());
 			billOrder.setMoney(billOrderVo.getMoney().doubleValue());
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
-	    	billOrder.setPayWay(billOrderVo.getPayWay());
+	    	billOrder.setPayWay(5);
 	  
-	    	
-			
+
 			if(result.getStatus()==1){
 				billOrder.setStatus(0);
 				billOrderService.newsave(billOrder);
@@ -219,6 +214,7 @@ public class KFTpayService {
 			CancelTreatyResultDTO result = gbpService.cancelTreatyInfo(dto);//发往快付通验证并返回结果
 			System.out.println("响应信息为:" + result.toString());
 			if(result.getStatus()==1){
+				bankCardService.delete(bankCard.getId());
 				
 				return ResultVOUtil.success("解绑成功!");
 			}else{
