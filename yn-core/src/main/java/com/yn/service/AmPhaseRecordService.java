@@ -14,43 +14,44 @@ import com.yn.utils.RepositoryUtil;
 
 @Service
 public class AmPhaseRecordService {
-    @Autowired
-    AmPhaseRecordDao amPhaseRecordDao;
+	
+	@Autowired
+	AmPhaseRecordDao amPhaseRecordDao;
 
-    public AmPhaseRecord findOne(Long id) {
-        return amPhaseRecordDao.findOne(id);
-    }
+	public AmPhaseRecord findOne(Long id) {
+		return amPhaseRecordDao.findOne(id);
+	}
 
-    public void save(AmPhaseRecord amPhaseRecord) {
-        amPhaseRecordDao.save(amPhaseRecord);
-    }
+	public void save(AmPhaseRecord amPhaseRecord) {
+		amPhaseRecordDao.save(amPhaseRecord);
+	}
 
-    public void delete(Long id) {
-        amPhaseRecordDao.delete(id);
-    }
-    
-    public void deleteBatch(List<Long> id) {
+	public void delete(Long id) {
+		amPhaseRecordDao.delete(id);
+	}
+
+	public void deleteBatch(List<Long> id) {
 		amPhaseRecordDao.deleteBatch(id);
 	}
 
-    public AmPhaseRecord findOne(AmPhaseRecord amPhaseRecord) {
-        Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
-        AmPhaseRecord findOne = amPhaseRecordDao.findOne(spec);
-        return findOne;
-    }
+	public AmPhaseRecord findOne(AmPhaseRecord amPhaseRecord) {
+		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
+		AmPhaseRecord findOne = amPhaseRecordDao.findOne(spec);
+		return findOne;
+	}
 
-    public List<AmPhaseRecord> findAll(List<Long> list) {
-        return amPhaseRecordDao.findAll(list);
-    }
+	public List<AmPhaseRecord> findAll(List<Long> list) {
+		return amPhaseRecordDao.findAll(list);
+	}
 
-    public Page<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord, Pageable pageable) {
-        Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
-        Page<AmPhaseRecord> findAll = amPhaseRecordDao.findAll(spec, pageable);
-        return findAll;
-    }
+	public Page<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord, Pageable pageable) {
+		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
+		Page<AmPhaseRecord> findAll = amPhaseRecordDao.findAll(spec, pageable);
+		return findAll;
+	}
 
-    public List<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord) {
-        Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
-        return amPhaseRecordDao.findAll(spec);
-    }
+	public List<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord) {
+		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
+		return amPhaseRecordDao.findAll(spec);
+	}
 }
