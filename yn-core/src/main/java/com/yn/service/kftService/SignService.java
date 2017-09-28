@@ -1,4 +1,4 @@
-package com.yn.kftService;
+package com.yn.service.kftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +30,13 @@ public class SignService {
 	private final static String charset = "UTF-8";
 
 	@Autowired
-	private static BillOrderService billorderService;
+	private  BillOrderService billorderService;
+	
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
 	
 	//request
-	public static Object  findSign(BillOrderVo billOrderVo){
+	public  Object  findSign(BillOrderVo billOrderVo){
 		 //** 银行卡编号*//*
 		 billOrderVo.setBankType("1051000");
 		 billOrderVo.setBoby("交易名称0002");
@@ -55,19 +56,19 @@ public class SignService {
 		}
 		try {
 
-			parameters.put("productNo", "1FA00AAA");
+			parameters.put("productNo", "2ACB0BAA");
 			parameters.put("service", "proxy_onlineBank_direct_service");
 			parameters.put("version", "1.0.0-TEST");
 			parameters.put("language", "BG");
 			parameters.put("signatureAlgorithm", "RSA");
 			//** 2014030600048235*//*
-			parameters.put("merchantId", "2014030600048235");
+			parameters.put("merchantId", "2017062300091037");
 			parameters.put("callerIp", "192.168.0.104");
 			//** 页面同步通知地址,同步通知结果，后期测试*//*
-			parameters.put("returnUrl", "http://test.u-en.cn/client/sign/bankPay");
+			//parameters.put("returnUrl", "http://test.u-en.cn/client/sign/bankPay");
 			 /** 后台通知地址*/
 
-			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doresult");
+			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doSucRep");
 
 			
 			parameters.put("customerType", "1");
@@ -109,7 +110,7 @@ public class SignService {
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
 	    	billOrder.setPayWay(billOrderVo.getPayWay());
 	    	billOrder.setStatus(1);
-	    	billorderService.newsave(billOrder);
+	    	billorderService.save(billOrder);
 			
 		} catch (Exception e) {
 		

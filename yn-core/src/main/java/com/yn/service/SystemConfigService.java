@@ -1,12 +1,15 @@
 package com.yn.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -100,4 +103,21 @@ public class SystemConfigService {
         Specification<SystemConfig> spec = RepositoryUtil.getSpecification(systemConfig);
         return systemConfigDao.findAll(spec);
     }
+   
+   public  Map<String,String> getlist(){
+	   List<SystemConfig> list = systemConfigDao.getlist();
+	   Map<String,String> map = new HashMap<String,String>(); 
+		map.put("sqm_electric", list.get(0).getPropertyValue());
+		map.put("watt_price", list.get(1).getPropertyValue());
+		map.put("area_capacity_per", list.get(2).getPropertyValue());
+		map.put("country_subsidy", list.get(3).getPropertyValue());
+		map.put("country_subsidy_year", list.get(4).getPropertyValue());
+		map.put("damping_rate", list.get(5).getPropertyValue());
+		map.put("plant_trees_prm", list.get(6).getPropertyValue());
+		map.put("CO2_prm", list.get(7).getPropertyValue());
+		map.put("SO_prm", list.get(8).getPropertyValue());
+    	
+    	return map;
+    }
+
 }

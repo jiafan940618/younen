@@ -20,4 +20,10 @@ public interface InverterDao extends JpaRepository<Inverter, Long>, JpaSpecifica
 	@Modifying
 	@Query("update Inverter set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+	
+	
+	@Query(value="SELECT DISTINCT(brand_id),brand_name FROM inverter ORDER BY brand_id ASC ",nativeQuery=true)
+	List<Object> getinverter();
+	
+	
 }

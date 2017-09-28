@@ -118,12 +118,36 @@ public class OrderService {
 		Integer id = (Integer) obj[0];
 		Integer status = (Integer) obj[1];
 		BigDecimal hadPayPrice = (BigDecimal) obj[2];
-
+		BigDecimal totalPrice = (BigDecimal) obj[3];
+		
+			
 		Order order = new Order();
 		order.setId(id.longValue());
 		order.setHadPayPrice(hadPayPrice.doubleValue());
 		order.setStatus(status);
+		order.setTotalPrice(totalPrice.doubleValue());
 		return order;
+	}
+	
+	/** 根据现有的金额,改变订单状态*/
+	public void givePrice(Order order){
+		
+		Double num =order.getHadPayPrice()/order.getTotalPrice();
+		
+		
+		Integer status = order.getStatus();
+		if(0< num && num < 0.3){
+			status =0;
+		}else if(0.3<= num && num < 0.6){
+			status= 1;
+		}else if(0.6<= num && num < 0.1){
+			status= 2;
+		}else if(num == 1){
+			status= 3;
+		}
+		order.setStatus(status);
+		
+		mapper.UpdateOrderStatus(order);
 	}
 
 	public void deleteBatch(List<Long> id) {

@@ -1,4 +1,4 @@
-package com.yn.kftService;
+package com.yn.service.kftService;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,7 +182,7 @@ public class KFTpayService {
 				logger.info("============ ============= ============== ========="+result.getFailureDetails());
 				billOrder.setRemark(result.getFailureDetails());
 				billOrder.setStatus(1);
-				billOrderService.newsave(billOrder);
+				billOrderService.save(billOrder);
 				
 			  return ResultVOUtil.error(777, result.getFailureDetails());
 			}	

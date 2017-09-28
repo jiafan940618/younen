@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.lycheepay.gateway.client.dto.gbp.TreatyApplyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
-import com.yn.kftService.KFTpayService;
 import com.yn.model.BankCard;
 import com.yn.model.BankCode;
 import com.yn.service.BankCardService;
 import com.yn.service.BankCodeService;
 import com.yn.service.ServerService;
+import com.yn.service.kftService.CheckBankCard;
+import com.yn.service.kftService.IdcardUtil;
+import com.yn.service.kftService.KFTpayService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.vo.BankCardVo;
@@ -29,6 +31,10 @@ import com.yn.vo.re.ResultVOUtil;
 public class PayOrderAction {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayOrderAction.class);
+	@Autowired
+	CheckBankCard checkBankcard;
+	@Autowired
+	IdcardUtil idcardUtil;
 	
 	@Autowired
 	private BankCodeService bankCodeService;
@@ -45,7 +51,7 @@ public class PayOrderAction {
 	@RequestMapping(value="/bind")
 	public  Object getBindIng(BillOrderVo billOrderVo){
 		
-		List<BankCard> list = new ArrayList<BankCard>();
+		List<BankCardVo> list = new ArrayList<BankCardVo>();
 
 	    if(null!=billOrderVo.getUserId()){
 			
@@ -57,8 +63,7 @@ public class PayOrderAction {
 				}
 				return ResultVOUtil.success(list);
 		}
-	
-   
+
 		return ResultVOUtil.success(null);
 	}
 	
@@ -95,28 +100,28 @@ public class PayOrderAction {
 				}
 		    }
 
-		
 		logger.info("=========== =============== =========== 没有该协议号!");
 		
 		return ResultVOUtil.error(777, "没有协议号!");
 	}
 	
-	
-	
+	/*bankCardVo.setBankId(5);
+	bankCardVo.setUserId(3L);
+	bankCardVo.setBankCardNum("6217902000000879543");
+	bankCardVo.setTreatyType("11");
+	bankCardVo.setRealName("不知道001");
+	bankCardVo.setPhone("13124733745");
+	bankCardVo.setIdCardNum("500382199401185412");
+	bankCardVo.setBankNo("1051000");
+	bankCardVo.setType(1);*/
+		
 	/** 绑定银行卡，接收俩个方法*/
 	@ResponseBody
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
 		/** 测试数据*/
-		/*bankCardVo.setBankId(5);
-		bankCardVo.setUserId(3L);
-		bankCardVo.setBankCardNum("6217902000000879543");
-		bankCardVo.setTreatyType("11");
-		bankCardVo.setRealName("不知道001");
-		bankCardVo.setPhone("13124733745");
-		bankCardVo.setIdCardNum("500382199401185412");
-		bankCardVo.setBankNo("1051000");
-		bankCardVo.setType(1);*/
+		
+		
 		logger.info("======= ========= ======== =======传递的UserId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的BankCardNum:"+bankCardVo.getBankCardNum());
 		logger.info("======= ========= ======== =======传递的TreatyType:"+bankCardVo.getTreatyType());
@@ -126,6 +131,37 @@ public class PayOrderAction {
 		logger.info("======= ========= ======== =======传递的BankNo:"+bankCardVo.getBankNo());
 		logger.info("======= ========= ======== =======传递的bankId:"+bankCardVo.getBankId());
 		logger.info("======= ========= ======== =======传递的Type:"+bankCardVo.getType());
+		
+		
+		if(null == bankCardVo.getBankCardNum() || bankCardVo.getBankCardNum().equals("") ){
+			return ResultVOUtil.error(777, "银行卡号不能为空!");//Constant
+		}
+		if(null == bankCardVo.getTreatyType() || bankCardVo.getTreatyType().equals("") ){
+			return ResultVOUtil.error(777, "请选择信用卡或银行卡!");//Constant
+		}
+		if(null == bankCardVo.getRealName() || bankCardVo.getRealName().equals("") ){
+			return ResultVOUtil.error(777, "真实姓名不能为空!");//Constant
+		}
+		if(null == bankCardVo.getPhone() || bankCardVo.getPhone().equals("") ){
+			return ResultVOUtil.error(777, Constant.PHONE_NULL);//Constant
+		}
+		if(null == bankCardVo.getIdCardNum() || bankCardVo.getIdCardNum().equals("") ){
+			return ResultVOUtil.error(777, "身份证号不能为空!");//Constant
+		}
+		if(null == bankCardVo.getBankNo() || bankCardVo.getBankNo().equals("") ){
+			return ResultVOUtil.error(777, "请选择银行!");//Constant
+		}
+		if(!checkBankcard.checkBankCard(bankCardVo.getBankCardNum())){
+			
+			return ResultVOUtil.error(777, "抱歉,银行卡号有误,请确定您的卡号是否正确!");
+		}
+		
+		if(!idcardUtil.isIdcard(bankCardVo.getIdCardNum())){
+			
+			return ResultVOUtil.error(777, "抱歉,您的身份证号有误!");
+		}
+		
+		
 		
 	String orderNo = serverService.getOrderNo(bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的orderNo:"+orderNo);
@@ -148,25 +184,27 @@ public class PayOrderAction {
 			}
 
 			TreatyConfirmResultDTO configdto=	kftpayService.confirmTreatyCollectApply(resultdto, bankCardVo);
-			//[orderNo=8oud15064778614372975, status=1, treatyId=20170927035821, failureDetails=null, errorCode=null]
+			
 			if(configdto.getStatus()!=1){
 				logger.info("========= =========== ========== ========="+ configdto.getFailureDetails());
 				
 				return ResultVOUtil.error(777, configdto.getFailureDetails());
+			}else{
+				bankCardVo.setTreatyId(configdto.getTreatyId());
+				
+				BankCard bankCard = new BankCard();
+			    BeanCopy.copyProperties(bankCardVo, bankCard);
+				
+			    bankCardService.save(bankCard);
+				return ResultVOUtil.success("绑定银行卡成功!");
 			}
-			
-			bankCardVo.setTreatyId(configdto.getTreatyId());
-			
-			BankCard bankCard = new BankCard();
-		    BeanCopy.copyProperties(bankCardVo, bankCard);
-			
-		    bankCardService.save(bankCard);
-		    
+   
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return ResultVOUtil.error(777, "绑定银行卡失败!");
 	
-		return ResultVOUtil.success("绑定银行卡成功!");
+		
 	}
 	
 

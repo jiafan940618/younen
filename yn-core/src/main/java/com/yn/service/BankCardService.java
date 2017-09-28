@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.yn.dao.BankCardDao;
 import com.yn.model.BankCard;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.BankCardVo;
 
 @Service
 public class BankCardService {
@@ -66,9 +68,34 @@ public class BankCardService {
 		return bankCardDao.findAll(spec);
 	} 
 	
-	public List<BankCard> selectBank(Long userId){
+	public List<BankCardVo> selectBank(Long userId){
+		List<BankCardVo> Banklist = new LinkedList<BankCardVo>();
 		
-		return bankCardDao.selectBank(userId); 
+	List<Object> list =	bankCardDao.selectBank(userId); 
+		 for (Object object : list) {
+			Object[] obj =(Object[])object;
+		
+			BankCardVo bankCardVo = new BankCardVo();
+			
+			String treatyId =(String)obj[0];
+			String bankName =(String)obj[1];
+			String bankCardNum =(String)obj[2];
+			
+			bankCardVo.setTreatyId(treatyId);
+			bankCardVo.setBankName(bankName);
+			
+			int length =bankCardNum.length();
+			
+			bankCardNum = bankCardNum.substring(0, 4)+"******"+bankCardNum.substring(length-4, length);
+			
+			
+			bankCardVo.setBankCardNum(bankCardNum);
+			
+			Banklist.add(bankCardVo);
+		}
+		
+		return Banklist;
+				
 	 }
 	
 	public BankCard findByBankcard(String treatyIds){

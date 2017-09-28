@@ -20,4 +20,8 @@ public interface SubsidyDao extends JpaRepository<Subsidy, Long>, JpaSpecificati
     @Modifying
     @Query("update Subsidy set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Query("select s from  Subsidy s where s.cityId =:#{#subsidy.cityId} and s.type=:#{#subsidy.type}")
+   	List<Subsidy> selectSubsidy(@Param("subsidy") Subsidy subsidy);
+    
 }

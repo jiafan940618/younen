@@ -73,7 +73,7 @@ public class BillOrderService {
 	}
 	
 	public void newsave(BillOrder billOrder) {
-		billOrderDao.save(billOrder);
+		mapper.InsertBillorder(billOrder);
 	}
 
 	public void save(BillOrder billOrder) {

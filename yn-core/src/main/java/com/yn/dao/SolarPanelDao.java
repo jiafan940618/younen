@@ -20,4 +20,8 @@ public interface SolarPanelDao extends JpaRepository<SolarPanel, Long>, JpaSpeci
 	@Modifying
 	@Query("update SolarPanel set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+	
+	@Query(value="SELECT DISTINCT(brand_id),brand_name FROM solar_panel ORDER BY brand_id ASC ",nativeQuery=true)
+	List<Object> getsolar();
+	
 }

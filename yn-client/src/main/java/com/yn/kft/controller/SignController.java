@@ -1,14 +1,14 @@
 package com.yn.kft.controller;
 
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,22 +16,21 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.fastjson.JSON;
-import com.yn.kftService.PyOrderService;
-import com.yn.kftService.SignService;
-import com.yn.model.BankCard;
+
 import com.yn.model.BillOrder;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.kftService.PyOrderService;
+import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
-import com.yn.utils.SignUtil;
+
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -56,8 +55,8 @@ public class SignController {
 	
 
 	
-		//http://b2725326.ngrok.io/client/sign/payonline
-
+		//http://2e93431d.ngrok.io/client/sign/payonline
+       //http://localhost/younen/html/project/online_apply.html
 	 /** pc端*/
 		@ResponseBody
 		@RequestMapping(value="/payonline")
@@ -66,14 +65,11 @@ public class SignController {
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			/*BillOrderVo billOrderVo = new BillOrderVo();
 			billOrderVo.setOrderId(1L);
-			billOrderVo.setPayWay(2);
+			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);
-			BigDecimal money = BigDecimal.valueOf(0.01);*/
-			
-			
-			
+		
+
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
@@ -114,6 +110,11 @@ public class SignController {
 				 //等于2是微信支付
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
+				BigDecimal xmoney = BigDecimal.valueOf(100);
+				DecimalFormat   df   =new DecimalFormat("#");
+				
+				System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
+				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 				
 				return signService.findSign(billOrderVo); 
 			}
@@ -174,13 +175,10 @@ public class SignController {
             
            
              Boolean result = CashierSignUtil.verifySign_2(pfxPath, map, request.getParameter("signatureInfo"));
-		                
-			                
+	   
 		               if(result){
 		                		
 		                		if(request.getParameter("status").equals("1")){
-			                		
-
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --订单号为： "+orderNo);
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount);
 				                	
@@ -191,7 +189,7 @@ public class SignController {
 				                	
 				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 				                	 /** 查询订单改变订单进度*/
-				                	orderService.checkUpdateOrderStatus(orderService.findOne(billOrder.getOrderId()));
+				                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
 				                	
 				                	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
 
@@ -246,22 +244,28 @@ public class SignController {
 		public Object getBoby(HttpServletRequest request) throws IOException{
 
 			 Map<String, String> resultMap = new HashMap<String, String>();
-
 			System.out.println(" ==== ==== ===============================================================================");
 			System.out.println("---------- ------ -- ----- 进入后台响应");
 			 File directory = new File("");// 参数为空
 			 String pfxPath=null;
 			try {
-				pfxPath = directory.getCanonicalPath();
+				pfxPath = directory.getCanonicalPath()+"/privateKey/20KFT.cer";
 				 System.out.println("项目路径为：-- --- -- -- - - - - - -"+pfxPath);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			 System.out.println(pfxPath+"\\privateKey\\20KFT.cer");
+			 
 			 
 			String orderNo = request.getParameter("orderNo");
 			String amount = request.getParameter("amount");
-			 
+			logger.info("-- --- ---- -- --- - - - - - - - - --订单号为： "+orderNo);
+        	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount); 
+        	logger.info("-- --- ---- -- --- - - - - - - - - --status为： "+request.getParameter("status")); 
+        	logger.info("-- --- ---- -- --- - - - - - - - - --statusDesc为： "+request.getParameter("statusDesc")); 
+        	logger.info("-- --- ---- -- --- - - - - - - - - --callerIp为： "+request.getParameter("callerIp")); 
+        	logger.info("-- --- ---- -- --- - - - - - - - - --language为： "+ request.getParameter("language")); 
+        	if(request.getParameter("status").equals("1")){
+        	
 			 Map<String, String> parameters = new HashMap<String, String>();
 				parameters.put("amount", request.getParameter("amount"));
 				parameters.put("orderNo", request.getParameter("orderNo"));
@@ -283,41 +287,44 @@ public class SignController {
                 	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
 
                 	 /** 查询订单改变订单进度*/
-                	orderService.checkUpdateOrderStatus(orderService.findOne(billOrder.getOrderId()));
+                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
                 	
                 	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
-      
                 	resultMap.put("status", "1");
                 	resultMap.put("message", "");
                 	resultMap.put("orderNo",orderNo);
 
                 	return resultMap;
-					
 				}
-
+        	}
+        		logger.info("---- --------- ------------ -------- "+request.getParameter("message"));
+        		resultMap.put("message","支付失败!"+ request.getParameter("message"));
+        		
 			System.out.println("---------- ------ -- ----- 结束后台响应");
 			System.out.println(" ==== ==== ===============================================================================");
-			return "进入测试";
+			
+			return resultMap;
 		}
 		
 		/*** 银联支付前端响应接口 */
-		@ResponseBody
+		/*@ResponseBody
 		@RequestMapping(value="/bankPay")
-		public  Object getBank(HttpSession session){
-			
-			String tradeNo =(String) session.getAttribute("tradeNo");
+		public  Object getBank(HttpServletRequest request){
+			logger.info("===== =========== ========== ====="+request.getParameter("status"));
+			String tradeNo =(String) request.getParameter("orderNo");
 			Map<String, Integer> map =  new HashMap<String, Integer>();
 			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
 			
 			BillOrder billOrder = billorderService.findByTradeNo(tradeNo);
 			
 			if(null != billOrder){
+				logger.info("订单的状态为：--- ---- -- - -- - - -- - - - -"+billOrder.getStatus());
 
 				map.put("status", billOrder.getStatus());
 			}
 			return	ResultVOUtil.success(map);
 
-		}
+		}*/
 		
 		
 }

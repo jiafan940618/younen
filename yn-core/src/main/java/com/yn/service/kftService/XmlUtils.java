@@ -1,4 +1,4 @@
-package com.yn.kftService;
+package com.yn.service.kftService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
