@@ -382,9 +382,14 @@ public class OrderService {
 	 * "server";// 服务商 private String ORDERCODE = "orderCode";// 订单号
 	 */
 	/**
-	 * 修改施工状态的进度 如果现在是<材料进场>，就选择为<材料进场>,<材料进场>已经完成的话，那么就是进入到<基础建筑>,此时应该点击<基础建筑>
-	 * 即进入到哪一步，就出发那个的事件。
-	 * 
+	 * 修改施工状态的进度：如果现在是<材料进场>已完成，就选择为<材料进场>
+	 * 即完成哪一步，就触发那个的事件。
+	 * 后期完善可将部分冗余代码删除或提取。
+	 * bugs：
+	 * 	1、如果手动更新，存在漏更问题。
+	 * 		eg：后台最新施工进度为3，但可能某一步骤施工进度较快，
+	 * 			先达到了4(发出更新指令，但由于人工操作，后台未能及时处理)，
+	 * 			不久又到了5，此时会再次发出更新指令，但是4的进度还未更新-->存在覆盖问题，4的进度会为null。
 	 * @param o
 	 * @return
 	 */
@@ -405,17 +410,17 @@ public class OrderService {
 		bigMap.put("Server", list);
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 100) {
 			System.out.println("没有数据，先填充。");
-			ResVo rv0 = new ResVo();
-			rv0.setContent(format + "-已完成-" + MATERIALAPPROAC);
+			ResVo rv0 = new ResVo(true);
+			rv0.setContent("当前正在执行");
 			rv0.setTarget("materialapproac");
 			rv0.setTitle(MATERIALAPPROAC);
+			rv0.setIsNow(true);
 			list1.add(rv0);
 
-			ResVo rv1 = new ResVo(true);
-			rv1.setContent("当前正在执行");
+			ResVo rv1 = new ResVo();
+			rv1.setContent("");
 			rv1.setTarget("foundationbuilding");
 			rv1.setTitle(FOUNDATIONBUILDING);
-			rv1.setIsNow(true);
 			list1.add(rv1);
 
 			ResVo rv2 = new ResVo();

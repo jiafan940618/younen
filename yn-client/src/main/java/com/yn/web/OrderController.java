@@ -905,9 +905,18 @@ public class OrderController {
 	@RequestMapping(value = "/getConstructionStatus")
 	public Object getConstructionStatus(Order o) {
 		Order order = orderService.findOne(o.getId());
+		if (order.getBuildStepA() != 1) {
+			//return ResultVOUtil.success(new HashMap<String, Object>().put("reason", "您还未申请施工。请先申请再来操作。"));
+			return ResultVOUtil.success();
+		}
+		if (order.getBuildIsPay() != 1) {
+			//return ResultVOUtil.success(new HashMap<String, Object>().put("reason", "您还未支付施工金额。请先支付再来操作。"));
+			return ResultVOUtil.success();
+		}
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 1) {
 			orderService.updateConstructionStatus(order, 0, null);
 		}
+		order = orderService.findOne(o.getId());
 		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
 		jsonResult.put("serverImg", order.getServer().getCompanyLogo());
 		return ResultVOUtil.success(jsonResult);
