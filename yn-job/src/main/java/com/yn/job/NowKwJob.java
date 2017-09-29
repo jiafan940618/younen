@@ -10,10 +10,9 @@ import com.yn.model.Ammeter;
 import com.yn.model.Station;
 import com.yn.service.AmmeterService;
 import com.yn.service.StationService;
-import org.springframework.stereotype.Component;
 
 
-/**
+/** 
  * 更新电站的实时功率
  */
 //@Component
