@@ -7,6 +7,6 @@ import com.yn.model.SystemConfig;
 @Mapper
 public interface SystemConfigMapper {
 
-    SystemConfig select(Long id);
+	SystemConfig select(Long id);
 
 }
