@@ -921,35 +921,8 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/updateSurveyappointment")
 	public Object updateSurveyappointment(Order o, Integer isOk) {
-		Order o1 = orderService.findOne(o.getId());
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getApplyStepA() == 1) {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "已申请预约，不能重复进行");
-				return ResultVOUtil.success(jsonResult);
-			} else if (o1.getApplyStepA() == 2) {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "已勘察完成，不能重复进行");
-				return ResultVOUtil.success(jsonResult);
-			}
-			o1.setApplyStepA(1);
-			int condition = orderMapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("isOk", false);
-		jsonResult.put("reason", "当前订单状态不能进行预约申请");
+		jsonResult = orderService.checkSurv(o,isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -964,39 +937,7 @@ public class OrderController {
 	@RequestMapping(value = "/updateGridConnectedPayment")
 	public Object updateGridConnectedPayment(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		Order o1 = orderService.findOne(o.getId());
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("reason", "当前订单未支付,请先支付。");
-			jsonResult.put("isOk", false);
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
-				jsonResult.put("reason", "请先上传报建时所需要的材料。");
-				jsonResult.put("isOk", false);
-			} else {
-				if (o1.getApplyStepB() == 1) {
-					jsonResult.put("reason", "已申请报建或者正在进行，不能重复申请");
-					jsonResult.put("isOk", false);
-					return ResultVOUtil.success(jsonResult);
-				} else if (o1.getApplyStepB() == 2) {
-					jsonResult.put("reason", "申请已完成，不能重复申请");
-					jsonResult.put("isOk", false);
-					return ResultVOUtil.success(jsonResult);
-				}
-				o1.setApplyStepB(1);
-				int condition = orderMapper.updateByCondition(o1);
-				if (condition > 0) {
-					jsonResult.put("isOk", true);
-				} else {
-					jsonResult.put("reason", "系统错误，请联系管理员。");
-					jsonResult.put("isOk", false);
-				}
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("reason", "当前订单状态不能进行申请施工。");
-		jsonResult.put("isOk", false);
+		jsonResult = orderService.checkGrid(o, isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -1011,37 +952,13 @@ public class OrderController {
 	@RequestMapping(value = "/applyBuild")
 	public Object applyBuild(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		Order o1 = orderService.findOne(o.getId());
-		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getBuildStepA() == 1) {
-				jsonResult.put("reason", "已申请施工，不能重复申请");
-				jsonResult.put("isOk", false);
-				return ResultVOUtil.success(jsonResult);
-			}
-			o1.setBuildStepA(1);
-			int condition = orderMapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-				jsonResult.put("isOk", false);
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("reason", "当前订单状态不能进行申请施工");
-		jsonResult.put("isOk", false);
+		jsonResult = orderService.checkApply(o,isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
 	/**
 	 * 设置贷款成功/失败
-	 * 
-	 * @param o
+	 * @param o 
 	 * @param flag
 	 *            true：成功、false：失败
 	 * @return
