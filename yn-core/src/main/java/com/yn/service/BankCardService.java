@@ -31,7 +31,7 @@ public class BankCardService {
 				BeanCopy.beanCopy(bankCard, one);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			} 
 			bankCardDao.save(one);
 		} else {
 			bankCardDao.save(bankCard);
@@ -80,16 +80,19 @@ public class BankCardService {
 			String treatyId =(String)obj[0];
 			String bankName =(String)obj[1];
 			String bankCardNum =(String)obj[2];
+			String phone =(String)obj[3];
+			String imgUrl =(String)obj[4];
 			
 			bankCardVo.setTreatyId(treatyId);
 			bankCardVo.setBankName(bankName);
-			
+			bankCardVo.setImg_url(imgUrl);
 			int length =bankCardNum.length();
 			
 			bankCardNum = bankCardNum.substring(0, 4)+"******"+bankCardNum.substring(length-4, length);
 			
-			
+			bankCardVo.setPhone(phone);
 			bankCardVo.setBankCardNum(bankCardNum);
+	
 			
 			Banklist.add(bankCardVo);
 		}

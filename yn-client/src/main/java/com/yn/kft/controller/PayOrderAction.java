@@ -1,14 +1,15 @@
 package com.yn.kft.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.lycheepay.gateway.client.dto.gbp.TreatyApplyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
 import com.yn.model.BankCard;
@@ -151,17 +152,14 @@ public class PayOrderAction {
 		if(null == bankCardVo.getBankNo() || bankCardVo.getBankNo().equals("") ){
 			return ResultVOUtil.error(777, "请选择银行!");//Constant
 		}
-		if(!checkBankcard.checkBankCard(bankCardVo.getBankCardNum())){
-			
-			return ResultVOUtil.error(777, "抱歉,银行卡号有误,请确定您的卡号是否正确!");
-		}
-		
 		if(!idcardUtil.isIdcard(bankCardVo.getIdCardNum())){
 			
 			return ResultVOUtil.error(777, "抱歉,您的身份证号有误!");
 		}
-		
-		
+		if(!checkBankcard.checkBankCard(bankCardVo.getBankCardNum())){
+			
+			return ResultVOUtil.error(777, "抱歉,银行卡号有误,请确定您的卡号是否正确!");
+		}
 		
 	String orderNo = serverService.getOrderNo(bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的orderNo:"+orderNo);
@@ -237,6 +235,18 @@ public class PayOrderAction {
 		
 	}
 	
+	
+	
+	/** 根据userid查找绑定银行卡*/
+	@ResponseBody
+	@RequestMapping(value="/selectbank")
+	public Object getbank(BillOrderVo billOrderVo){
+		logger.info("---------- ------------ --------查找的userId:"+billOrderVo.getUserId());
+		
+		List<BankCardVo> list =bankCardService.selectBank(billOrderVo.getUserId());
+	
+		return ResultVOUtil.success(list);
+	}	
 	/*** 展示银行*/
 	@ResponseBody
 	@RequestMapping(value="/selectCode")

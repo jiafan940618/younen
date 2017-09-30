@@ -1,7 +1,5 @@
 package com.yn.vo;
 
-import javax.persistence.Column;
-
 /**
  * 银行卡
  */
@@ -29,10 +27,16 @@ public class BankCardVo {
 
 	private int bank_card_type;
 	      
+	 private String img_url;   
 	    
 	    
-	    
-	    public String getBankNo() {
+	    public String getImg_url() {
+	    	return img_url;
+	    }
+	    public void setImg_url(String img_url) {
+	    	this.img_url = img_url;
+	    }
+		public String getBankNo() {
 			return bankNo;
 		}
 		public void setBankNo(String bankNo) {
