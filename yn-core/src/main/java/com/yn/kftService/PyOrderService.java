@@ -106,8 +106,8 @@ public class PyOrderService {
 		reqDTO.setOperatorId(operatorId);//商户操作员编号 可空
 		reqDTO.setStoreId(storeId);//商户门店编号 可空
 		reqDTO.setIsS0("0");//是否是S0支付是否是S0支付，1：是；0：否。默认否。如果是S0支付，金额会实时付给商户。需经快付通审核通过后才可开展此业务。如果无此业务权限，此参数为1，则返回失败。 可空 
-		reqDTO.setIsGuarantee("0");//是否担保交易,1:是，0:否
-		reqDTO.setIsSplit("0");//是否分账交易,1:是，0：否 ，
+		//reqDTO.setIsGuarantee("0");//是否担保交易,1:是，0:否
+		//reqDTO.setIsSplit("0");//是否分账交易,1:是，0：否 ，
 		//分账详情，如果是否分账交易为是，该字段为必填，格式如下:
 		//reqDTO.setSplitInfo("[{\"merchantId\":\"2017072600081986\",\"amount\":\"1\",\"remark\":\"有线电视费\"},{\"merchantId\":\"2017073100082105\",\"amount\":\"1\",\"remark\":\"宽带费\"}]");
 		ActiveScanPayRespDTO resp = new ActiveScanPayRespDTO();
