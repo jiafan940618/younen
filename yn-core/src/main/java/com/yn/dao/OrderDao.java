@@ -53,7 +53,7 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
    Object getInfoOrder(@Param("orderId") Long orderId);
   
     
-  	@Query(value="SELECT o.id,o.status,o.had_pay_price FROM `bill_order`"
+  	@Query(value="SELECT o.id,o.status,o.had_pay_price,o.total_price FROM `bill_order`"
   			+ " b LEFT JOIN t_order o ON b.order_id = o.id WHERE b.trade_no = :tradeNo ;",nativeQuery=true)
   	Object FindByTradeNo(@Param("tradeNo") String tradeNo);
 

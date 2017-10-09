@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -329,7 +327,7 @@ public class OrderController {
 		logger.info("num为:--- --- ---- ------------" + num);
 		logger.info("方案的id为： ------ ------ ----" + planid);
 		logger.info("用户的id为：  ------ ------ ----" + userid);
-		logger.info("总的金额为： ------ ------ ------" + price);
+		logger.info("方案项目的金额为： ------ ------ ------" + price);
 
 		List<Apolegamy> list01 = apolegamyService.findAll(list);
 
@@ -905,18 +903,9 @@ public class OrderController {
 	@RequestMapping(value = "/getConstructionStatus")
 	public Object getConstructionStatus(Order o) {
 		Order order = orderService.findOne(o.getId());
-		if (order.getBuildStepA() != 1) {
-			//return ResultVOUtil.success(new HashMap<String, Object>().put("reason", "您还未申请施工。请先申请再来操作。"));
-			return ResultVOUtil.success();
-		}
-		if (order.getBuildIsPay() != 1) {
-			//return ResultVOUtil.success(new HashMap<String, Object>().put("reason", "您还未支付施工金额。请先支付再来操作。"));
-			return ResultVOUtil.success();
-		}
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 1) {
 			orderService.updateConstructionStatus(order, 0, null);
 		}
-		order = orderService.findOne(o.getId());
 		Map<String, String> jsonResult = (Map<String, String>) JsonUtil.json2Obj(order.getConstructionStatus());
 		jsonResult.put("serverImg", order.getServer().getCompanyLogo());
 		return ResultVOUtil.success(jsonResult);
@@ -932,35 +921,8 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/updateSurveyappointment")
 	public Object updateSurveyappointment(Order o, Integer isOk) {
-		Order o1 = orderService.findOne(o.getId());
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getApplyStepA() == 1) {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "已申请预约，不能重复进行");
-				return ResultVOUtil.success(jsonResult);
-			} else if (o1.getApplyStepA() == 2) {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "已勘察完成，不能重复进行");
-				return ResultVOUtil.success(jsonResult);
-			}
-			o1.setApplyStepA(1);
-			int condition = orderMapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("isOk", false);
-		jsonResult.put("reason", "当前订单状态不能进行预约申请");
+		jsonResult = orderService.checkSurv(o,isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -975,39 +937,7 @@ public class OrderController {
 	@RequestMapping(value = "/updateGridConnectedPayment")
 	public Object updateGridConnectedPayment(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		Order o1 = orderService.findOne(o.getId());
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("reason", "当前订单未支付,请先支付。");
-			jsonResult.put("isOk", false);
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
-				jsonResult.put("reason", "请先上传报建时所需要的材料。");
-				jsonResult.put("isOk", false);
-			} else {
-				if (o1.getApplyStepB() == 1) {
-					jsonResult.put("reason", "已申请报建或者正在进行，不能重复申请");
-					jsonResult.put("isOk", false);
-					return ResultVOUtil.success(jsonResult);
-				} else if (o1.getApplyStepB() == 2) {
-					jsonResult.put("reason", "申请已完成，不能重复申请");
-					jsonResult.put("isOk", false);
-					return ResultVOUtil.success(jsonResult);
-				}
-				o1.setApplyStepB(1);
-				int condition = orderMapper.updateByCondition(o1);
-				if (condition > 0) {
-					jsonResult.put("isOk", true);
-				} else {
-					jsonResult.put("reason", "系统错误，请联系管理员。");
-					jsonResult.put("isOk", false);
-				}
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("reason", "当前订单状态不能进行申请施工。");
-		jsonResult.put("isOk", false);
+		jsonResult = orderService.checkGrid(o, isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -1022,37 +952,13 @@ public class OrderController {
 	@RequestMapping(value = "/applyBuild")
 	public Object applyBuild(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		Order o1 = orderService.findOne(o.getId());
-		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
-			return ResultVOUtil.success(jsonResult);
-		}
-		if (isOk == 1) {
-			if (o1.getBuildStepA() == 1) {
-				jsonResult.put("reason", "已申请施工，不能重复申请");
-				jsonResult.put("isOk", false);
-				return ResultVOUtil.success(jsonResult);
-			}
-			o1.setBuildStepA(1);
-			int condition = orderMapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-				jsonResult.put("isOk", false);
-			}
-			return ResultVOUtil.success(jsonResult);
-		}
-		jsonResult.put("reason", "当前订单状态不能进行申请施工");
-		jsonResult.put("isOk", false);
+		jsonResult = orderService.checkApply(o,isOk);
 		return ResultVOUtil.success(jsonResult);
 	}
 
 	/**
 	 * 设置贷款成功/失败
-	 * 
-	 * @param o
+	 * @param o 
 	 * @param flag
 	 *            true：成功、false：失败
 	 * @return
@@ -1070,10 +976,12 @@ public class OrderController {
 		if (order.getLoanStatus() == 0)
 			return ResultVOUtil.error(0, " The order did not apply for a loan ! ");
 		// 再看是不是已经贷款成功
+
 		if (order.getLoanStatus() == 2)
 			return ResultVOUtil.error(-2, " The order has been successfully made and can not be duplicated ! ");
 		// 或者说是失败的。
 		if (order.getLoanStatus() == 3)
+
 			return ResultVOUtil.error(-3, " The order failed and the loan could not be renewed ! ");
 		if (flag) {
 			boolean isOk = orderService.updateLoanStatus(order, true);

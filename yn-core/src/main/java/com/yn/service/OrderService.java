@@ -118,12 +118,36 @@ public class OrderService {
 		Integer id = (Integer) obj[0];
 		Integer status = (Integer) obj[1];
 		BigDecimal hadPayPrice = (BigDecimal) obj[2];
-
+		BigDecimal totalPrice = (BigDecimal) obj[3];
+		
+			
 		Order order = new Order();
 		order.setId(id.longValue());
 		order.setHadPayPrice(hadPayPrice.doubleValue());
 		order.setStatus(status);
+		order.setTotalPrice(totalPrice.doubleValue());
 		return order;
+	}
+	
+	/** 根据现有的金额,改变订单状态*/
+	public void givePrice(Order order){
+		
+		Double num =order.getHadPayPrice()/order.getTotalPrice();
+		
+		
+		Integer status = order.getStatus();
+		if(0< num && num < 0.3){
+			status =0;
+		}else if(0.3<= num && num < 0.6){
+			status= 1;
+		}else if(0.6<= num && num < 0.1){
+			status= 2;
+		}else if(num == 1){
+			status= 3;
+		}
+		order.setStatus(status);
+		
+		mapper.UpdateOrderStatus(order);
 	}
 
 	public void deleteBatch(List<Long> id) {
@@ -332,8 +356,9 @@ public class OrderService {
 	public void UpdateOrStatus(String tradeNo, Double money) {
 
 		Order order = FindByTradeNo(tradeNo);
-
-		order.setHadPayPrice(order.getHadPayPrice() + money);
+		
+		logger.info("----- ------ ------修改的金额为"+money/100);
+		order.setHadPayPrice(order.getHadPayPrice() + money/100);
 
 		mapper.UpdateOrder(order);
 
@@ -382,14 +407,9 @@ public class OrderService {
 	 * "server";// 服务商 private String ORDERCODE = "orderCode";// 订单号
 	 */
 	/**
-	 * 修改施工状态的进度：如果现在是<材料进场>已完成，就选择为<材料进场>
-	 * 即完成哪一步，就触发那个的事件。
-	 * 后期完善可将部分冗余代码删除或提取。
-	 * bugs：
-	 * 	1、如果手动更新，存在漏更问题。
-	 * 		eg：后台最新施工进度为3，但可能某一步骤施工进度较快，
-	 * 			先达到了4(发出更新指令，但由于人工操作，后台未能及时处理)，
-	 * 			不久又到了5，此时会再次发出更新指令，但是4的进度还未更新-->存在覆盖问题，4的进度会为null。
+	 * 修改施工状态的进度 如果现在是<材料进场>，就选择为<材料进场>,<材料进场>已经完成的话，那么就是进入到<基础建筑>,此时应该点击<基础建筑>
+	 * 即进入到哪一步，就出发那个的事件。
+	 * 
 	 * @param o
 	 * @return
 	 */
@@ -410,17 +430,17 @@ public class OrderService {
 		bigMap.put("Server", list);
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 100) {
 			System.out.println("没有数据，先填充。");
-			ResVo rv0 = new ResVo(true);
-			rv0.setContent("当前正在执行");
+			ResVo rv0 = new ResVo();
+			rv0.setContent(format + "-已完成-" + MATERIALAPPROAC);
 			rv0.setTarget("materialapproac");
 			rv0.setTitle(MATERIALAPPROAC);
-			rv0.setIsNow(true);
 			list1.add(rv0);
 
-			ResVo rv1 = new ResVo();
-			rv1.setContent("");
+			ResVo rv1 = new ResVo(true);
+			rv1.setContent("当前正在执行");
 			rv1.setTarget("foundationbuilding");
 			rv1.setTitle(FOUNDATIONBUILDING);
+			rv1.setIsNow(true);
 			list1.add(rv1);
 
 			ResVo rv2 = new ResVo();
@@ -561,5 +581,156 @@ public class OrderService {
 
 	public boolean updateApplyStepBImgUrl(Order order) {
 		return mapper.updateApplyStepBImgUrl(order)>0?true:false;
+	}
+
+	public Map<String, Object> checkSurv(Order o,Integer isOk) {
+		Order o1 = findOne(o.getId());
+		Map<String,Object> jsonResult = new HashMap<String,Object>();
+		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+			jsonResult.put("isOk", true);
+			o1.setApplyStepA(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+			}
+			return jsonResult;
+		}else{
+			jsonResult.put("loanStatus", false);
+		}
+		if (o1.getApplyIsPay() != 1) {
+			jsonResult.put("isOk", false);
+			jsonResult.put("applyIsPay", false);
+			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
+			return jsonResult;
+		}else{
+			jsonResult.put("applyStepA", true);//支付成功。
+		}
+		if (isOk == 1) {
+			if (o1.getApplyStepA() == 1) {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "已申请预约，不能重复进行");
+				return jsonResult;
+			} else if (o1.getApplyStepA() == 2) {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "已勘察完成，不能重复进行");
+				return jsonResult;
+			}
+			o1.setApplyStepA(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+			}
+			return jsonResult;
+		}
+		jsonResult.put("isOk", false);
+		jsonResult.put("reason", "当前订单状态不能进行预约申请");
+		return jsonResult;
+	}
+
+	public Map<String, Object> checkGrid(Order o, Integer isOk) {
+		Map<String, Object> jsonResult = new HashMap<String,Object>();
+		Order o1 = findOne(o.getId());
+		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+			jsonResult.put("isOk", true);
+			o1.setApplyStepB(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+			}
+			return jsonResult;
+		}else{
+			jsonResult.put("loanStatus", false);
+		}
+		if (o1.getApplyIsPay() != 1) {
+			jsonResult.put("applyStepA", false);
+			jsonResult.put("reason", "当前订单未支付,请先支付。");
+			jsonResult.put("isOk", false);
+			return jsonResult;
+		}else{
+			jsonResult.put("applyStepA", true);//支付成功。
+		}
+		if (isOk == 1) {
+			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+				jsonResult.put("reason", "请先上传报建时所需要的材料。");
+				jsonResult.put("isOk", false);
+			} else {
+				if (o1.getApplyStepB() == 1) {
+					jsonResult.put("reason", "已申请报建或者正在进行，不能重复申请");
+					jsonResult.put("isOk", false);
+					return jsonResult;
+				} else if (o1.getApplyStepB() == 2) {
+					jsonResult.put("reason", "申请已完成，不能重复申请");
+					jsonResult.put("isOk", false);
+					return jsonResult;
+				}
+				o1.setApplyStepB(1);
+				int condition = mapper.updateByCondition(o1);
+				if (condition > 0) {
+					jsonResult.put("isOk", true);
+				} else {
+					jsonResult.put("reason", "系统错误，请联系管理员。");
+					jsonResult.put("isOk", false);
+				}
+			}
+			return jsonResult;
+		}
+		jsonResult.put("reason", "当前订单状态不能进行申请施工。");
+		jsonResult.put("isOk", false);
+		return jsonResult;
+	}
+
+	public Map<String, Object> checkApply(Order o, Integer isOk) {
+		Map<String, Object> jsonResult = new HashMap<String,Object>();
+		Order o1 = findOne(o.getId());
+		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+			jsonResult.put("isOk", true);
+			o1.setApplyStepB(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+			}
+			return jsonResult;
+		}else{
+			jsonResult.put("loanStatus", false);
+		}
+		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
+			jsonResult.put("isOk", false);
+			jsonResult.put("buildIsPay", false);
+			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
+			return jsonResult;
+		}else{
+			jsonResult.put("buildIsPay", true);
+		}
+		if (isOk == 1) {
+			if (o1.getBuildStepA() == 1) {
+				jsonResult.put("reason", "已申请施工，不能重复申请");
+				jsonResult.put("isOk", false);
+				return jsonResult;
+			}
+			o1.setBuildStepA(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+				jsonResult.put("isOk", false);
+			}
+			return jsonResult;
+		}
+		jsonResult.put("reason", "当前订单状态不能进行申请施工");
+		jsonResult.put("isOk", false);
+		return null;
 	}
 }
