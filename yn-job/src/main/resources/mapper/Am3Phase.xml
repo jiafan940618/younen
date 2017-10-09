@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.cmy.Am3PhaseDao">
+
+	<resultMap id="Am3PhaseMapper" type="com.yn.model.Am3Phase">
+		<id column="row_id" property="rowId" jdbcType="INTEGER" />
+		<result column="c_addr" property="cAddr" jdbcType="INTEGER" />
+		<result column="i_addr" property="iAddr" jdbcType="INTEGER" />
+		<result column="d_addr" property="dAddr" jdbcType="INTEGER" />
+		<result column="d_type" property="dType" jdbcType="INTEGER" />
+		<result column="w_addr" property="wAddr" jdbcType="INTEGER" />
+		<result column="meter_time" property="meterTime" jdbcType="INTEGER" />
+		<result column="meter_state" property="meterState" jdbcType="VARCHAR" />
+		<result column="volt_change" property="voltChange" jdbcType="INTEGER" />
+		<result column="current_change" property="currentChange"
+			jdbcType="INTEGER" />
+		<result column="frequency" property="frequency" jdbcType="DOUBLE" />
+		<result column="a_volt" property="aVolt" jdbcType="DOUBLE" />
+		<result column="b_volt" property="bVolt" jdbcType="DOUBLE" />
+		<result column="c_volt" property="cVolt" jdbcType="DOUBLE" />
+		<result column="ab_volt" property="abVolt" jdbcType="DOUBLE" />
+		<result column="bc_volt" property="bcVolt" jdbcType="DOUBLE" />
+		<result column="ca_volt" property="caVolt" jdbcType="DOUBLE" />
+		<result column="a_current" property="aCurrent" jdbcType="DOUBLE" />
+		<result column="b_current" property="bCurrent" jdbcType="DOUBLE" />
+		<result column="c_current" property="cCurrent" jdbcType="DOUBLE" />
+		<result column="kw" property="kw" jdbcType="DOUBLE" />
+		<result column="a_kw" property="aKw" jdbcType="DOUBLE" />
+		<result column="b_kw" property="bKw" jdbcType="DOUBLE" />
+		<result column="c_kw" property="cKw" jdbcType="DOUBLE" />
+		<result column="kvar" property="kvar" jdbcType="DOUBLE" />
+		<result column="a_kvar" property="aKvar" jdbcType="DOUBLE" />
+		<result column="b_kvar" property="bKvar" jdbcType="DOUBLE" />
+		<result column="c_kvar" property="cKvar" jdbcType="DOUBLE" />
+		<result column="kva" property="kva" jdbcType="DOUBLE" />
+		<result column="a_kva" property="aKva" jdbcType="DOUBLE" />
+		<result column="b_kva" property="bKva" jdbcType="DOUBLE" />
+		<result column="c_kva" property="cKva" jdbcType="DOUBLE" />
+		<result column="power_factor" property="powerFactor" jdbcType="DOUBLE" />
+		<result column="a_power_factor" property="aPowerFactor"
+			jdbcType="DOUBLE" />
+		<result column="b_power_factor" property="bPowerFactor"
+			jdbcType="DOUBLE" />
+		<result column="c_power_factor" property="cPowerFactor"
+			jdbcType="DOUBLE" />
+		<result column="current_zero" property="currentZero" jdbcType="DOUBLE" />
+		<result column="kwh_total" property="kwhTotal" jdbcType="DOUBLE" />
+		<result column="kwh" property="kwh" jdbcType="DOUBLE" />
+		<result column="kwh_rev" property="kwhRev" jdbcType="DOUBLE" />
+		<result column="kvarh1" property="kvarh1" jdbcType="DOUBLE" />
+		<result column="kvarh2" property="kvarh2" jdbcType="DOUBLE" />
+		<result column="a_kwh_total" property="aKwhTotal" jdbcType="DOUBLE" />
+		<result column="b_kwh_total" property="bKwhTotal" jdbcType="DOUBLE" />
+		<result column="c_kwh_total" property="cKwhTotal" jdbcType="DOUBLE" />
+	</resultMap>
+
+
+
+	<select id="findAllAm3Phase" resultMap="Am3PhaseMapper"
+		parameterType="java.lang.String">
+		select * from am_3phase_${sqlNowData} where
+		meter_time <![CDATA[ >= ]]>
+		${startDtm}
+		and meter_time <![CDATA[ <= ]]>
+		${endDtm}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.SystemConfigMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.SystemConfig">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="property_key" property="propertyKey" jdbcType="VARCHAR" />
+		<result column="property_value" property="propertyValue"
+			jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,property_key,property_value,remark,create_dtm
+	</sql>
+
+	<select id="select" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from system_config
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+
+</mapper>

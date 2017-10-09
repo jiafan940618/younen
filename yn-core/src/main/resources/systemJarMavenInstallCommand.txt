@@ -1,0 +1,10 @@
+﻿本地jar添加到本地maven库
+
+// taobao-sdk-java-auto_1455552377940-20170613.jar
+mvn install:install-file -Dfile=taobao-sdk-java-auto_1455552377940-20170613.jar -DgroupId=com.taobao -DartifactId=taobao-sdk-java-auto_1455552377940 -Dversion=20170613 -Dpackaging=jar
+
+// 容联
+mvn install:install-file -Dfile=CCP_REST_SDK_JAVA_v2.7r.jar -DgroupId=com.yuntongxun -DartifactId=CCP_REST_SDK_JAVA_v2.7r -Dversion=2.7 -Dpackaging=jar
+
+// 快付通
+mvn install:install-file -Dfile=gateway-client-3.8.5.jar -DgroupId=com.lycheepay -DartifactId=gateway-client -Dversion=3.8.5 -Dpackaging=jar

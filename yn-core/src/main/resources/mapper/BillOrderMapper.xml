@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.BillOrderMapper">
+
+	<resultMap id="billorderMap" type="com.yn.model.BillOrder">
+		<id column="id" property="id"></id>
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="money" property="money" jdbcType="DOUBLE" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="duty_user_id" property="dutyUserId" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<update id="UpdateBillorder" parameterType="com.yn.vo.BillOrderVo">
+		update bill_order b 
+		<set>
+			<if test="status == 1 ">
+				b.status = 1,
+			</if>
+			<if test="status == 2 ">
+				b.status = 0,
+			</if>
+			<if test="status == 3 ">
+				b.status = 2,
+			</if>
+		
+		</set>
+	  where b.trade_no = #{tradeNo}
+	</update>
+	
+	<insert id="InsertBillorder"  parameterType="com.yn.model.BillOrder" >
+		INSERT INTO bill_order 
+		(del,money,order_id,pay_way,STATUS,user_id,trade_no,duty_user_id) VALUES
+		 (#{del},#{money},#{orderId},#{payWay},#{status},#{userId},#{tradeNo},#{dutyUserId})
+	</insert>
+	
+	
+
+</mapper>
