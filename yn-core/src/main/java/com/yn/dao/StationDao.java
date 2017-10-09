@@ -2,6 +2,7 @@ package com.yn.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,4 +48,11 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     
     @Query("select COALESCE(sum(s.capacity),0) from Station s WHERE s.serverId=?1 AND s.del=0")
     double sumCapacity(Long serverId);
+    
+    List<Station> findByUserId(long userid);
+    
+    List<Station> findAll();
+    
+    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.id=?1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+    List<Map<Object,Object>> findUserCapacity(Long stationId);
 }

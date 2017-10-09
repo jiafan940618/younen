@@ -2,6 +2,7 @@ package com.yn.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,4 +47,7 @@ public interface TemStationDao extends JpaRepository<TemStation, Long>, JpaSpeci
     List<TemStation> findByServerIdAndTypeAndCreateDtmBetween(Long serverId, Integer type, Date start, Date end);
 
     List<TemStation> findByStationIdAndTypeAndCreateDtmBetween(Long stationId, Integer type, Date start, Date end);
+
+    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM TemStation t WHERE t.stationId=?1 AND type=1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+    List<Map<Object,Object>> sumMonthKwh(Long stationId);
 }

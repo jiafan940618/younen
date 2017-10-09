@@ -3,10 +3,14 @@ package com.yn.service;
 import com.yn.dao.TemStationDao;
 import com.yn.domain.EachHourTemStation;
 import com.yn.enums.AmmeterTypeEnum;
+import com.yn.model.Station;
 import com.yn.model.TemStation;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -282,5 +286,35 @@ public class TemStationService {
         return lastYearKwh;
     }
 
+    /**
+     * 用户发电量
+     *
+     * @param stations
+     * @return
+     */
+	public Map<Object, Object> monthKwh(List<Station> stations){
+    	Map<Object, Object> objectMap = new HashMap<>();
+    	
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	
+    	for (Station station : stations) {
+    		List<Map<Object, Object>> list=temStationDao.sumMonthKwh(station.getId());
+           if (!list.isEmpty()) {
+	          lists.addAll(list);
+			}
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			}else{
+				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+				objectMap.put(map.get("create_dtm"), (Object)kwh);
+			}
+    		
+    	}
+    	return objectMap;
+    }
 
 }

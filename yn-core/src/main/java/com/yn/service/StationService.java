@@ -378,5 +378,69 @@ public class StationService {
      
      save(station);
     }
+    
+    /**
+     * 用户的所有电站信息
+     */
+    public Map<String, Object> stationByUser(List<Station> stations){
+    	Map<String, Object> objectMap = new HashMap<>();
+    	double  egt=0;
+    	double nowKw=0;
+    	double plantTreesPrm=0;
+    	double CO2Prm=0;
+    	double capacity=0;
+    	double efficiency=0;
+    	for(Station station2 :stations){
+    		// 相当于植树
+         plantTreesPrm=plantTreesPrm+Double.valueOf(systemConfigService.get("plant_trees_prm"));
+            // 相当于减排二氧化碳
+         CO2Prm =CO2Prm+ Double.valueOf(systemConfigService.get("CO2_prm"));
+            //发电功率
+         nowKw=nowKw+station2.getNowKw();
+            //发电总量
+         egt=egt+station2.getElectricityGenerationTol();
+            //装机容量
+         capacity=capacity+station2.getCapacity();
+    	}
+    	 if (capacity>nowKw) {
+        	 //发电效率（百分比）
+       	  efficiency=(nowKw/capacity)*100;
+		 }
+    	objectMap.put("plantTreesPrm",(int) NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
+    	objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt)/1000);
+    	objectMap.put("nowKw",nowKw);
+    	objectMap.put("egt", egt);
+    	objectMap.put("efficiency", (int)efficiency);
+    	return objectMap;
+    }
+    
+    /**
+     * 用户的装机容量
+     * 
+     */
+    public Map<Object, Object> checkCapacity(List<Station> stations){
+    	Map<Object, Object> objectMap=new HashMap<>();
+    	
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	for (Station station : stations) {
+    		List<Map<Object, Object>> list=stationDao.findUserCapacity(station.getId());
+           if (!list.isEmpty()) {
+	          lists.addAll(list);
+			}
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("capacity"));
+			}else{
+				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
+				objectMap.put(map.get("create_dtm"), (Object)kwh);
+			}
+    		
+    	}
+    	
+    	return objectMap;
+    }
 
 }

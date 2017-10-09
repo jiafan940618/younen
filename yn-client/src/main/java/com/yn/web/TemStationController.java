@@ -1,8 +1,15 @@
 package com.yn.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import com.yn.vo.re.ResultVOUtil;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,17 +22,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.StationDao;
 import com.yn.domain.EachHourTemStation;
+import com.yn.model.Station;
 import com.yn.model.TemStation;
+import com.yn.service.StationService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.TemStationVo;
+import com.yn.vo.UserVo;
 
 @RestController
 @RequestMapping("/client/temStation")
 public class TemStationController {
-    @Autowired
+	@Autowired
     TemStationService temStationService;
+    @Autowired
+    StationService stationService;
+    @Autowired
+    StationDao stationDao;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -81,4 +96,25 @@ public class TemStationController {
         return ResultVOUtil.success(todayKwhByStationId);
     }
     
+    /**
+     * 根据用户查找每月的发电量
+     * @return
+     */
+    @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object monthKwh(HttpSession session,Station station) {
+    	 UserVo userVo=(UserVo)session.getAttribute("user");
+    	 Map<Object, Object> monthKwh=new HashMap<>();
+    	 if (userVo!=null) {
+    		 station.setUserId(userVo.getUserid());
+			List<Station> stations=stationDao.findByUserId(station.getUserId());
+			monthKwh=temStationService.monthKwh(stations);
+			
+		} else {
+			List<Station> stations=stationDao.findAll();
+			monthKwh=temStationService.monthKwh(stations);
+		}
+        
+        return ResultVOUtil.success(monthKwh);
+    }
 }

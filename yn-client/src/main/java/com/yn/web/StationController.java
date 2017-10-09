@@ -1,9 +1,16 @@
 package com.yn.web;
 
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.yn.vo.re.ResultVOUtil;
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +34,7 @@ import com.yn.service.SystemConfigService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.StationVo;
+import com.yn.vo.UserVo;
 
 @RestController
 @RequestMapping("/client/station")
@@ -111,6 +119,44 @@ public class StationController {
 		return ResultVOUtil.success(map);
 	}
     
-    
+    /**
+	 * web 查询用户的所有电站信息
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
+	public Object runningStation(HttpSession session,Station station) {
+		
+	    UserVo userVo=(UserVo)session.getAttribute("user");
+	    Map<String, Object> stationByUser=new HashMap<>();
+	    if (userVo!=null) {
+	    	station.setUserId(userVo.getUserid());
+			List<Station> stations=stationDao.findByUserId(station.getUserId());
+			stationByUser = stationService.stationByUser(stations);
+		    }else{
+		    List<Station> stations=stationDao.findAll();
+		    stationByUser = stationService.stationByUser(stations);
+		    }
+		return ResultVOUtil.success(stationByUser);
+	}
+	
+	/**
+	 * web 查询用户的装机容量
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkCapacity",method = {RequestMethod.POST, RequestMethod.GET})
+    public Object checkCapacity(HttpSession session,Station station) {
+		
+	    UserVo userVo=(UserVo)session.getAttribute("user");
+	    Map<Object, Object> capacityAll=new HashMap<>();
+	    if (userVo!=null) {
+	    	station.setUserId(userVo.getUserid());
+			List<Station> stations=stationDao.findByUserId(station.getUserId());
+			capacityAll = stationService.checkCapacity(stations);
+		    }else{
+		    List<Station> stations=stationDao.findAll();
+		    capacityAll = stationService.checkCapacity(stations);
+		    }
+		return ResultVOUtil.success(capacityAll);
+	}
     
 }
