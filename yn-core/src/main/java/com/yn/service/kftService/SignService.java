@@ -27,16 +27,15 @@ import com.yn.vo.re.ResultVOUtil;
 @Service
 public class SignService {
 	
-	private final static String charset = "UTF-8";
+	private final  static String charset = "UTF-8";
 
 	@Autowired
-	private  BillOrderService billorderService;
-	
+	private static BillOrderService billorderService;
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
 	
 	//request
-	public  Object  findSign(BillOrderVo billOrderVo){
+	public static Object  findSign(BillOrderVo billOrderVo){
 		 //** 银行卡编号*//*
 		 billOrderVo.setBankType("1051000");
 		 billOrderVo.setBoby("交易名称0002");
@@ -56,19 +55,19 @@ public class SignService {
 		}
 		try {
 
-			parameters.put("productNo", "2ACB0BAA");
+			parameters.put("productNo", "1FA00AAA");
 			parameters.put("service", "proxy_onlineBank_direct_service");
 			parameters.put("version", "1.0.0-TEST");
 			parameters.put("language", "BG");
 			parameters.put("signatureAlgorithm", "RSA");
 			//** 2014030600048235*//*
-			parameters.put("merchantId", "2017062300091037");
+			parameters.put("merchantId", "2014030600048235");
 			parameters.put("callerIp", "192.168.0.104");
 			//** 页面同步通知地址,同步通知结果，后期测试*//*
-			//parameters.put("returnUrl", "http://test.u-en.cn/client/sign/bankPay");
+			//parameters.put("returnUrl", "http://10.36.160.29:8080/cashierDemo/returnUrl.jsp");
 			 /** 后台通知地址*/
 
-			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doSucRep");
+			parameters.put("notifyAddr", "http://client.u-en.cn/client/sign/doresult");
 
 			
 			parameters.put("customerType", "1");
@@ -97,7 +96,7 @@ public class SignService {
 			//parameters.put("merchantLogoUrl", "");
 			parameters.put("cashierStyle", "1");
 		
-			String signatureInfo =	CashierSignUtil.sign(pfxPath+"/privateKey/pfx.pfx", "123456",parameters);
+			String signatureInfo =	CashierSignUtil.sign(pfxPath+"\\privateKey\\pfx.pfx", "123456",parameters);
 			
 			System.out.println(signatureInfo);
 			
@@ -110,7 +109,7 @@ public class SignService {
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
 	    	billOrder.setPayWay(billOrderVo.getPayWay());
 	    	billOrder.setStatus(1);
-	    	billorderService.save(billOrder);
+	    	billorderService.newsave(billOrder);
 			
 		} catch (Exception e) {
 		

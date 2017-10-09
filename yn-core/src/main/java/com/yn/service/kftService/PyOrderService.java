@@ -1,12 +1,12 @@
 package com.yn.service.kftService;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,8 @@ public class PyOrderService {
 	public static final String ZFB_BANK_NO = "0000002";
 	public static final String YL_BANK_NO = "0000003";
 
-	static	String terminalIp = "120.76.98.74";
-	static	String notifyUrl = "http://test.u-en.cn/client/sign/doresult";
+	static	String terminalIp = "192.168.0.104";
+	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
 	static String currency = "CNY";
 	static 	String tradeName = "商品描述001";
 	static String remark = "remark";
@@ -59,21 +59,12 @@ public class PyOrderService {
 	static	String terminalId = "49000002";
 	
 	
+	@Before
 	public  void init() throws Exception {
 		// 初始化证书
-		String merchantIp = "120.76.98.74";
+		String merchantIp = "192.168.0.104";
 		// 证书类型、证书路径、证书密码、别名、证书容器密码
-		   String pfxPath=null;
-			try {
-				 File directory = new File("");// 参数为空
-				pfxPath = directory.getCanonicalPath()+"/privateKey/pfx.pfx";
-				 System.out.println("项目路径为：-- --- -- -- - - - - - -"+pfxPath);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", pfxPath, "123456".toCharArray(), null,
+		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", "D:/Software/test/pfx.pfx", "123456".toCharArray(), null,
 				"123456".toCharArray());
 		// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
 		service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
@@ -84,7 +75,7 @@ public class PyOrderService {
 		service.setResponseTimeoutSeconds(10 * 60);
 	}
 	
-
+	@Test
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
 		ActiveScanPayReqDTO reqDTO = new ActiveScanPayReqDTO();
 		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号

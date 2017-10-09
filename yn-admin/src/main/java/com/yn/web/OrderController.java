@@ -1,40 +1,25 @@
 package com.yn.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
+import com.yn.domain.OrderDetailAccounts;
+import com.yn.enums.NoticeEnum;
 import com.yn.enums.OrderDetailEnum;
-import com.yn.enums.ResultEnum;
-import com.yn.model.Order;
-import com.yn.service.OrderDetailService;
 import com.yn.model.Apolegamy;
 import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
 import com.yn.model.OrderPlan;
+import com.yn.model.Server;
 import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.ApolegamyOrderService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.BillOrderService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.NoticeService;
+import com.yn.service.OrderDetailService;
 import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerPlanService;
@@ -42,6 +27,7 @@ import com.yn.service.ServerService;
 import com.yn.service.StationService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
@@ -52,12 +38,30 @@ import com.yn.vo.OrderVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 @RestController
-@RequestMapping("/client/order")
+@RequestMapping("/server/order")
 public class OrderController {
-
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
-
+	@Autowired
+	ApolegamyService apolegamyService;
+	@Autowired
+	NoticeService noticeService;
 	@Autowired
 	OrderPlanService orderPlanService;
 	@Autowired
@@ -79,21 +83,28 @@ public class OrderController {
 	@Autowired
 	OrderDetailService orderDetailService;
 	@Autowired
-	StationService stationService;
-	@Autowired
-	BillOrderService billOrderService;
-
-	@Autowired
 	OrderService ordService;
 	@Autowired
 	ApolegamyOrderService APOservice;
+
 	@Autowired
-	ApolegamyService apolegamyService;
+	BillOrderService billOrderService;
+	@Autowired
+	StationService stationService;
 
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
 	public Object findOne(Long id) {
 		Order findOne = orderService.findOne(id);
+
+		// 更新记录为已读
+		if (findOne != null) {
+			Long userId = SessionCache.instance().getUserId();
+			if (userId != null) {
+				noticeService.update2Read(NoticeEnum.NEW_ORDER.getCode(), id, userId);
+			}
+		}
+
 		return ResultVOUtil.success(findOne);
 	}
 
@@ -129,6 +140,19 @@ public class OrderController {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
 		Page<Order> findAll = orderService.findAll(order, pageable);
+
+		// 判断是否已读
+		Long userId = SessionCache.instance().getUserId();
+		if (userId != null) {
+			List<Order> content = findAll.getContent();
+			for (Order one : content) {
+				Boolean isNew = noticeService.findIsNew(NoticeEnum.NEW_ORDER.getCode(), one.getId(), userId);
+				if (isNew) {
+					one.setIsRead(NoticeEnum.UN_READ.getCode());
+				}
+			}
+		}
+
 		return ResultVOUtil.success(findAll);
 	}
 
@@ -195,50 +219,15 @@ public class OrderController {
 	}
 
 	/**
-	 * 订单详情页面的两个下一步
-	 * 
+	 * 账目明细
+	 *
 	 * @return
 	 */
+	@RequestMapping(value = "/detailAccounts", method = { RequestMethod.POST })
 	@ResponseBody
-	@RequestMapping(value = "/nextStep", method = { RequestMethod.POST })
-	public Object nextStep(Integer nextId, OrderVo orderVo) {
-		// 判断参数是否异常
-		if (nextId == null || nextId <= 0 || nextId >= 3 || orderVo == null)
-			return ResultVOUtil.error(ResultEnum.PARAMS_ERROR);
-		Order order = new Order();
-		BeanCopy.copyProperties(orderVo, order);
-		Order findOne = orderService.findOne(order.getId());
-		Map<String, String> result = new HashMap<>();
-		Double flag4Money = 0d;// 支付的钱
-		// flag4ApplyStepA; //完成屋顶勘察预约的
-		// flag4ApplyStepB; //完成申请保健的
-		// flag4BuildStepA; //完成施工申请的
-		// 申请中的下一步
-		if (nextId == 1) {
-			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
-			result.put("flag4ApplyStepA", order.getApplyStepA() > 0 ? true + "" : false + "");
-			result.put("flag4ApplyStepB", order.getApplyStepB() > 0 ? true + "" : false + "");
-		} else { // 施工中的下一步
-			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
-			result.put("flag4BuildStepA", order.getBuildStepA() > 0 ? true + "" : false + "");
-		}
-		result.put("flag4Money", flag4Money < 0 ? true + "" : false + "");
-		return ResultVOUtil.success(result);
-	}
-
-	/**
-	 * 根据用户id查询余额
-	 * 
-	 * @param user
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/getBalance", method = { RequestMethod.POST })
-	public Object getBalance(User user) {
-		Wallet wallet = walletService.findWalletByUser(user.getId());
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("userBalance", wallet.getMoney().toString());
-		return ResultVOUtil.success(map);
+	public Object detailAccounts(Long serverId) {
+		OrderDetailAccounts detailAccounts = orderService.detailAccounts(serverId);
+		return ResultVOUtil.success(detailAccounts);
 	}
 
 	/**
@@ -257,48 +246,44 @@ public class OrderController {
 	/** 订单详情 */
 	@ResponseBody
 	@RequestMapping(value = "/seeOrder")
-	public Object LookOrder(HttpSession session, Integer OrderCode) {
+	public Object LookOrder(HttpSession session) {
 
-		/*
-		 * Integer num =100; Long userid = 3L; List<Long> list = new
-		 * LinkedList<Long>(); list.add(12L); list.add(13L); list.add(16L);
-		 * Double price =11000.00; Long planid =1L;
-		 */
-		Integer num = (Integer) session.getAttribute("num");
-		Long userid = (Long) session.getAttribute("userid");
-
-		List<Long> list = (List<Long>) session.getAttribute("list");
-
-		Double price = (Double) session.getAttribute("price");
-		Long planid = (Long) session.getAttribute("newserverplanid");
-
+		// Long userid = (Long) session.getAttribute("userid");
+		Long userid = 3L;
 		User user = userservice.findOne(userid);
-		logger.info("num为:--- --- ---- ------------" + num);
-		logger.info("方案的id为： ------ ------ ----" + planid);
-		logger.info("用户的id为：  ------ ------ ----" + userid);
-		logger.info("总的金额为： ------ ------ ------" + price);
+		// List<Long> list= (List<Long>) session.getAttribute("list");
+		// Double price = (Double)session.getAttribute("price");
+		// Long planid = (Long) session.getAttribute("newserverplanid");
+		List<Long> list = new LinkedList<Long>();
+		list.add(12L);
+		list.add(13L);
+		list.add(16L);
 
-		List<Apolegamy> list01 = apolegamyService.findAll(list);
-
-		Double apoPrice = 0.0;
-
-		for (Apolegamy apolegamy : list01) {
-			apoPrice += apolegamy.getPrice();
-		}
-
-		Double serPrice = price + apoPrice;
+		Double price = 5000.00;
+		Long planid = 1L;
 
 		NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
-		NewPlanVo newPlanVo = serverService.getPlan(newserverPlan, user, num, serPrice, apoPrice, price);
+		NewPlanVo newPlanVo = new NewPlanVo();
+
+		Server server = serverService.findOne(newserverPlan.getServerId());
+
+		newPlanVo.setCompanyName(server.getCompanyName());
+		newPlanVo.setPhone(user.getPhone());
+		newPlanVo.setUserName(user.getUserName());
+		newPlanVo.setAddress(user.getAddressText());
+		newPlanVo.setId(newserverPlan.getId().intValue());
+		newPlanVo.setServerId(newserverPlan.getServerId().intValue());
+		newPlanVo.setMaterialJson(newserverPlan.getMaterialJson());
+		newPlanVo.setInvstername(
+				newserverPlan.getInverter().getBrandName() + "   " + newserverPlan.getInverter().getModel());
+		newPlanVo.setBrandname(
+				newserverPlan.getSolarPanel().getBrandName() + "   " + newserverPlan.getSolarPanel().getModel());
+		newPlanVo.setAllMoney(price);
 
 		session.setAttribute("newPlanVo", newPlanVo);
-		/*
-		 * session.setAttribute("list", list);
-		 * session.setAttribute("newserverplanid", planid);
-		 */
 
-		return ResultVOUtil.newsuccess(newPlanVo, list01);
+		return ResultVOUtil.success(newPlanVo);
 	}
 
 	/** 订单详情状态 */
@@ -460,6 +445,17 @@ public class OrderController {
 		return ResultVOUtil.success(map);
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/looking")
+	public ResultData<Object> findOrderprice1(HttpSession session) {
+
+		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
+
+		// required=false
+
+		return null;
+	}
+
 	/** 购买完成以后显示订单支付情况 */
 	/** @RequestParam("orderId") Long orderId */
 	@ResponseBody
@@ -546,6 +542,5 @@ public class OrderController {
 		}
 		return ResultVOUtil.success(jsonResult);
 	}
-
 
 }
