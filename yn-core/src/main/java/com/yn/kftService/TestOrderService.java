@@ -1,4 +1,4 @@
-package com.yn.service.kftService;
+package com.yn.kftService;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

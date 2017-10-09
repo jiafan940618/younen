@@ -1,19 +1,18 @@
 package com.yn.service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.BankCardDao;
 import com.yn.model.BankCard;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
-import com.yn.vo.BankCardVo;
 
 @Service
 public class BankCardService {
@@ -31,7 +30,7 @@ public class BankCardService {
 				BeanCopy.beanCopy(bankCard, one);
 			} catch (Exception e) {
 				e.printStackTrace();
-			} 
+			}
 			bankCardDao.save(one);
 		} else {
 			bankCardDao.save(bankCard);
@@ -68,65 +67,9 @@ public class BankCardService {
 		return bankCardDao.findAll(spec);
 	} 
 	
-	public List<BankCardVo> selectBank(Long userId){
-		List<BankCardVo> Banklist = new LinkedList<BankCardVo>();
+	public BankCard selectBank(Long userId){
 		
-	List<Object> list =	bankCardDao.selectBank(userId); 
-		 for (Object object : list) {
-			Object[] obj =(Object[])object;
-		
-			BankCardVo bankCardVo = new BankCardVo();
-			
-			String treatyId =(String)obj[0];
-			String bankName =(String)obj[1];
-			String bankCardNum =(String)obj[2];
-			String phone =(String)obj[3];
-			String imgUrl =(String)obj[4];
-			
-			bankCardVo.setTreatyId(treatyId);
-			bankCardVo.setBankName(bankName);
-			bankCardVo.setImg_url(imgUrl);
-			int length =bankCardNum.length();
-			
-			bankCardNum = bankCardNum.substring(0, 4)+"******"+bankCardNum.substring(length-4, length);
-			
-			bankCardVo.setPhone(phone);
-			bankCardVo.setBankCardNum(bankCardNum);
-	
-			
-			Banklist.add(bankCardVo);
-		}
-		
-		return Banklist;
-				
+		return bankCardDao.selectBank(userId); 
 	 }
-	
-	public BankCard findByBankcard(String treatyIds){
-		
-		return bankCardDao.findByTreatyId02(treatyIds);
-	}
-	
-	public BankCard findByTreatyId(String treatyIds){
-		
-		Object object = bankCardDao.findByTreatyId(treatyIds);
-		Object[] obj = (Object[])object;
-		BankCard bankCard = new BankCard();
-		
-		String realName =(String)obj[0];
-		String bankCardNum =(String)obj[1];
-		String treatyId =(String)obj[2];
-		String bankNo =(String)obj[3];
-		
-		bankCard.setRealName(realName);
-		bankCard.setBankCardNum(bankCardNum);
-		bankCard.setTreatyId(treatyId);
-		bankCard.setOrderNo(bankNo);
-		
-		return bankCard;	
-		
-	}
-	
-
-	
 	
 }

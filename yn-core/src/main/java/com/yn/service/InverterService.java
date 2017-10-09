@@ -1,6 +1,5 @@
 package com.yn.service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.yn.dao.InverterDao;
 import com.yn.model.Inverter;
-import com.yn.model.SolarPanel;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
 
@@ -40,30 +38,6 @@ public class InverterService {
 
 	public void delete(Long id) {
 		inverterDao.delete(id);
-	}
-	
-	
-	public List<Inverter> getinverter(){
-		
-		
-		List<Inverter> solarList = new LinkedList<Inverter>();
-    	
-		List<Object> list=	inverterDao.getinverter();
-    	
-    	for (Object object : list) {
-    		Inverter inverter = new Inverter();
-			Object[] obj =(Object[])object;
-			
-			Integer brandId =(Integer)obj[0];
-			String brandName =(String)obj[0];
-			
-			inverter.setBrandId(brandId);
-			inverter.setBrandName(brandName);
-			solarList.add(inverter);
-		}
-		
-		
-		return solarList;
 	}
 
 	public void deleteBatch(List<Long> id) {

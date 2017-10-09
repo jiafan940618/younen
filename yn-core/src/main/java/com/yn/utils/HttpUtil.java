@@ -1,15 +1,11 @@
 package com.yn.utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -20,8 +16,8 @@ import javax.net.ssl.TrustManager;
 /**
  * 通用工具类
  * 
- * @author Allen
- * @date 2017-9-28
+ * @author liufeng
+ * @date 2013-10-17
  */
 public class HttpUtil {
 
@@ -31,12 +27,9 @@ public class HttpUtil {
 	/**
 	 * 发送https请求
 	 * 
-	 * @param requestUrl
-	 *            请求地址
-	 * @param requestMethod
-	 *            请求方式（GET、POST）
-	 * @param outputStr
-	 *            提交的数据
+	 * @param requestUrl 请求地址
+	 * @param requestMethod 请求方式（GET、POST）
+	 * @param outputStr 提交的数据
 	 * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值)
 	 */
 	public static String httpsRequest(String requestUrl, String requestMethod, String outputStr) {
@@ -51,7 +44,7 @@ public class HttpUtil {
 			URL url = new URL(requestUrl);
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 			conn.setSSLSocketFactory(ssf);
-
+			
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
@@ -92,13 +85,12 @@ public class HttpUtil {
 	/**
 	 * 获取接口访问凭证
 	 * 
-	 * @param appid
-	 *            凭证
-	 * @param appsecret
-	 *            密钥
+	 * @param appid 凭证
+	 * @param appsecret 密钥
 	 * @return
 	 */
-
+	
+	
 	/**
 	 * URL编码（utf-8）
 	 * 
@@ -114,12 +106,11 @@ public class HttpUtil {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 根据内容类型判断文件扩展名
 	 * 
-	 * @param contentType
-	 *            内容类型
+	 * @param contentType 内容类型
 	 * @return
 	 */
 	public static String getFileExt(String contentType) {
@@ -135,39 +126,5 @@ public class HttpUtil {
 		else if ("video/mpeg4".equals(contentType))
 			fileExt = ".mp4";
 		return fileExt;
-	}
-
-	public static String doGet(String requestUrl) {
-		URL url;
-		HttpURLConnection conn;
-		StringBuffer resultBuffer;
-		String tempLine;
-		try {
-			url = new URL(requestUrl);
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-			conn.setInstanceFollowRedirects(true);
-			conn.setRequestProperty("content-type", "text/html");
-			conn.connect();
-
-			InputStream is = conn.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-			BufferedReader br = new BufferedReader(isr);
-
-			resultBuffer = new StringBuffer();
-			while ((tempLine = br.readLine()) != null) {
-				resultBuffer.append(tempLine);
-			}
-			br.close();
-			is.close();
-
-			return resultBuffer.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-
 	}
 }

@@ -19,9 +19,9 @@ import com.yn.service.AmPhaseService;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
-@RequestMapping("/client/job")
-public class JobController {
-	private Logger logger = Logger.getLogger(JobController.class);
+@RequestMapping("/client/aprJob")
+public class AmPhaseRecordJobController {
+	private Logger logger = Logger.getLogger(AmPhaseRecordJobController.class);
 
 	@Autowired
 	private AmPhaseService amPhaseService;
@@ -29,7 +29,7 @@ public class JobController {
 	@Autowired
 	private AmPhaseRecordService amPhaseRecordService;
 
-	/**
+	/** 
 	 * 模拟测试。两个数据源。
 	 * 
 	 * @return
@@ -58,7 +58,8 @@ public class JobController {
 	 * 读旧表，插新表
 	 * @return
 	 */
-	@RequestMapping("/simulationGAndI")
+	@RequestMapping("/simulationAPRGAndI")
+	//@RequestMapping("/job")
 	public @ResponseBody Object simulationGAndI() {
 		Map<String,Object> jsonResult = new HashMap<String,Object>();
 		List<Am1Phase> am1Phases = amPhaseService.findAllAm1Phase();

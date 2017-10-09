@@ -1,6 +1,10 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,9 +23,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.Apolegamy;
+import com.yn.model.ApolegamyServer;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
+import com.yn.model.OrderPlan;
 import com.yn.model.ProductionDetail;
+import com.yn.model.Qualifications;
+import com.yn.model.QualificationsServer;
 import com.yn.model.ServerPlan;
+import com.yn.model.User;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.NewServerPlanService;
@@ -37,6 +47,7 @@ import com.yn.utils.Constant;
 import com.yn.utils.ResultData;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServerPlanVo;
+import com.yn.vo.PriceVo;
 import com.yn.vo.ServerPlanVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.UserVo;
@@ -116,9 +127,9 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     /** 处理金额*/
     @ResponseBody
     @RequestMapping(value = "/findPlan")
-    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> checkedId,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
+    public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> ids,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
 
-    	for (Long long1 : checkedId) {
+    	for (Long long1 : ids) {
 			logger.info("id串为：-------- ----- ----- ---- "+long1);
 		}
     	
@@ -144,7 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         Double AllMoney = utilprice * minpurchase;
          /*** 计算备选项目价格*/
         
-        List<Apolegamy> list =  apolegamyService.findAll(checkedId);
+        List<Apolegamy> list =  apolegamyService.findAll(ids);
         
         Double apoPrice = 0.0;
  
@@ -165,8 +176,8 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         logger.info("方案的id为： ------ ------ ------"+newserverPlanVo.getId());
         logger.info("用户的id为： ------ ------ ------"+userVo.getUserid());
         logger.info("总的金额为： ------ ------ ------"+(AllMoney+apoPrice));
-        if(checkedId.size() !=0 ){
-	        for (Long id : checkedId) {
+        if(ids.size() !=0 ){
+	        for (Long id : ids) {
 	        	 logger.info("集合为： ------ ------ ------"+id);
 			}
         }
@@ -175,7 +186,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         
         session.setAttribute("orderCode", orderCode);
        session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
-       session.setAttribute("list", checkedId);
+       session.setAttribute("list", ids);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
        session.setAttribute("userid", userVo.getUserid());
        session.setAttribute("price", AllMoney);
@@ -191,7 +202,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         //	ServerPlanVo serverPlanVo
         logger.info("传过来的serverId为：-- ---- --- ---- "+ServerVo.getServerId());
             NewServerPlan serverPlan = new NewServerPlan();
-            serverPlan.setServerId(Long.valueOf(ServerVo.getServerId()));
+            serverPlan.setServerId(8L);
 
            List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
            

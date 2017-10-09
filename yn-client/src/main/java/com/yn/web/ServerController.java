@@ -34,14 +34,11 @@ import com.yn.dao.ProvinceDao;
 import com.yn.dao.UserDao;
 import com.yn.model.City;
 import com.yn.model.Devide;
-import com.yn.model.Inverter;
 import com.yn.model.Province;
 import com.yn.model.Server;
-import com.yn.model.SolarPanel;
 import com.yn.model.User;
 import com.yn.model.newPage;
 import com.yn.service.DevideService;
-import com.yn.service.InverterService;
 import com.yn.service.ServerService;
 import com.yn.service.SolarPanelSerice;
 import com.yn.service.UserService;
@@ -63,8 +60,6 @@ public class ServerController {
 	private static final Logger logger = LoggerFactory.getLogger(ServerController.class);
 	@Autowired
 	SolarPanelSerice solarService;
-	@Autowired
-	InverterService inverterService;
 	@Autowired
 	private DevideService devideService;
 	@Autowired
@@ -461,17 +456,6 @@ public class ServerController {
 		
 		return ResultVOUtil.success(page);
 	}
-   
-   /** 加载品牌*/
-   @ResponseBody
-   @RequestMapping(value = "/select_all")
-   public ResultData<Object> selectByExample(String parentId, newPage<Devide> page, HttpServletRequest request){
-	   
-	List<Inverter> inverter =   inverterService.getinverter();
-	List<SolarPanel> solar =  solarService.getsolar();
-	   
-	return ResultVOUtil.newsuccess(inverter, solar);   
-   }
    
    /**
     * 页面加载型号

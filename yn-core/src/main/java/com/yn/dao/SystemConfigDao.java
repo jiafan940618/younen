@@ -22,9 +22,4 @@ public interface SystemConfigDao extends JpaRepository<SystemConfig, Long>, JpaS
 	void deleteBatch(@Param("ids") List<Long> ids);
     
     SystemConfig findByPropertyKey(String propertyKey);
-     //2,3,4,15,16,17,29,30,31
-    @Query("SELECT s FROM SystemConfig s WHERE s.id IN (2,3,4,15,16,17,29,30,31)")
-    List<SystemConfig> getlist();
-    
-    
 }

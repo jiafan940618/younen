@@ -73,7 +73,7 @@ public class BillOrderService {
 	}
 	
 	public void newsave(BillOrder billOrder) {
-		mapper.InsertBillorder(billOrder);
+		billOrderDao.save(billOrder);
 	}
 
 	public void save(BillOrder billOrder) {
@@ -209,14 +209,13 @@ public class BillOrderService {
 	
 	 /** 根据订单号,拿到用户id找到银行卡*/
 	
-	public void getbankCard01(String tradeNo){
+	public void getbankCard(String tradeNo){
 		
 		BillOrder billOrder =	billOrderDao.findByTradeNo(tradeNo);
 		
-		BankCard bankCard = new BankCard();
-		//BankCard bankCard =bankCardDao.selectBank(billOrder.getUserId());
+		BankCard bankCard =bankCardDao.selectBank(billOrder.getUserId());
 		
-		//bankCard.getBankNum();
+		bankCard.getBankNum();
 	
 	}
 	

@@ -63,10 +63,4 @@ public class BankCardController {
         Page<BankCard> findAll = bankCardService.findAll(bankCard, pageable);
         return ResultVOUtil.success(findAll);
     }
-    
-    
-    
-    
-    
-    
 }

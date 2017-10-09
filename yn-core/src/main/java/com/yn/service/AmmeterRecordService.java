@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.yn.dao.AmmeterRecordDao;
@@ -25,7 +27,7 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 
 @Service
-public class AmmeterRecordService { 
+public class AmmeterRecordService {
     @Autowired
     AmmeterRecordDao ammeterRecordDao;
 

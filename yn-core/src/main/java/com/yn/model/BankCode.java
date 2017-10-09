@@ -19,10 +19,6 @@ public class BankCode implements Serializable {
 	private String bankNo;
 	 @Column(columnDefinition = "varchar(255) comment '[银行名称]'")
 	private String bankName;
-	 
-	 @Column(columnDefinition = "varchar(255) comment '[银行图标]'")
-	private String imgUrl;
-	 
 
 	public Long getId() {
 		return id;
@@ -46,14 +42,6 @@ public class BankCode implements Serializable {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
-	}
-
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String imgUrl) {
-		this.imgUrl = imgUrl;
 	}
 	
 	

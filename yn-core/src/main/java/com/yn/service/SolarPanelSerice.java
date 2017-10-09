@@ -2,7 +2,6 @@ package com.yn.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.ServerDao;
-import com.yn.dao.SolarPanelDao;
-import com.yn.model.SolarPanel;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.SolarPanelVo;
 
@@ -21,8 +18,7 @@ public class SolarPanelSerice {
 	@Autowired
 	private ServerDao serverdao;
 	
-	@Autowired
-	private SolarPanelDao solarPanelDao;
+	
 	
 	  public  List<Object> findObject( Integer start, Integer limit){
 	    	
@@ -43,27 +39,6 @@ public class SolarPanelSerice {
 	    public  List<Object> findquaObject(List<Long> ids){
 	    	
 	    	return serverdao.findquaObject(ids);
-	    }
-	    
-	    public List<SolarPanel> getsolar(){
-	    	
-	    	List<SolarPanel> solarList = new LinkedList<SolarPanel>();
-	    	
-	    	List<Object> list =solarPanelDao.getsolar();
-	    	
-	    	for (Object object : list) {
-	    		SolarPanel solarPanel = new SolarPanel();
-				Object[] obj =(Object[])object;
-				
-				Integer brandId =(Integer)obj[0];
-				String brandName =(String)obj[0];
-				
-				solarPanel.setBrandId(brandId);
-				solarPanel.setBrandName(brandName);
-				solarList.add(solarPanel);
-			}
-	    	
-	    	return	solarList;
 	    }
 	    
 	    

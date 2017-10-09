@@ -713,6 +713,7 @@ public class OrderController {
 				ResultData<Object> data = userService.getresult(file);
 
 				if (data.getCode() == 200) {
+					
 					finaltime = oss.upload(file, realpath);
 
 					/** 取得文件以后得把文件保存在本地路径 */
@@ -748,7 +749,6 @@ public class OrderController {
 		uploadPhotoService.save(uploadPhoto);
 		return ResultVOUtil.success(finaltime);
 	}
-
 	/**
 	 * 申请中
 	 * 
