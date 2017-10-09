@@ -4,11 +4,9 @@ package com.yn.kft.controller;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.model.BillOrder;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
@@ -30,7 +27,6 @@ import com.yn.service.kftService.PyOrderService;
 import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
-
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -52,9 +48,6 @@ public class SignController {
 	@Autowired
 	BankCardService bankCardService;
 
-	
-
-	
 		//http://2e93431d.ngrok.io/client/sign/payonline
        //http://localhost/younen/html/project/online_apply.html
 	 /** pc端*/
@@ -65,9 +58,9 @@ public class SignController {
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			billOrderVo.setOrderId(1L);
+		/*	billOrderVo.setOrderId(1L);
 			billOrderVo.setPayWay(4);
-			billOrderVo.setUserId(3L);
+			billOrderVo.setUserId(3L);*/
 		
 
 			/** 手机端是微信app支付*/  /** wxApp*/

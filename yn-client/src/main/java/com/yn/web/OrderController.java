@@ -2,6 +2,7 @@ package com.yn.web;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -448,9 +449,9 @@ public class OrderController {
 	public ResultData<Object> findOrderprice(HttpSession session) {
 		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
 		// Integer type = (Integer)session.getAttribute("type");
-
+			//zolh171009099150
 		String orderCode = (String) session.getAttribute("orderCode");
-
+		
 		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);
 		Order orderSize = orderService.finByOrderCode(orderCode);
 
@@ -536,6 +537,8 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/iosorderPrice")
 	public ResultData<Object> findIocordprice(HttpSession session, @RequestParam("capacity") Integer capacity) {
+		capacity =13;
+		
 		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 
 		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
@@ -550,8 +553,8 @@ public class OrderController {
 			NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 			Double price = plan.getUnitPrice().doubleValue() * capacity;
 			Double allMoney = 0.0;
-
-			List<Long> listid = (List<Long>) session.getAttribute("list");
+			List<Long> listid =(List<Long>) session.getAttribute("list");
+			listid.add(12L);
 			List<Apolegamy> list = apolegamyService.findAll(listid);
 
 			Double apoPrice = 0.0;
@@ -899,6 +902,7 @@ public class OrderController {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping(value = "/getConstructionStatus")
 	public Object getConstructionStatus(Order o) {

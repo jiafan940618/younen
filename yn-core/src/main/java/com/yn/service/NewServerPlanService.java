@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +39,7 @@ import com.yn.vo.ServerPlanVo;
 
 @Service
 public class NewServerPlanService {
-
+	private static final Logger logger = LoggerFactory.getLogger(NewServerPlanService.class);
 	@Autowired
     QualificationsServerService qualificationsServerService;
     @Autowired
@@ -186,11 +188,33 @@ public class NewServerPlanService {
 	        
 	         /** 找到服务费率*/
 	        Long serverid = newserverPlan.getServerId();
+	        logger.info("---- ------ ----- -----serverid: "+serverid);
 	        Server server = serverDao.findServer(serverid);
 	        Double factorage =   server.getFactorage();
 	         
 	        /** 订单id*/
 	        Long order_planid = newserverPlan.getId();
+	   
+	        logger.info("---- ------ ----- -----factorage: "+factorage);
+	        logger.info("---- ------ ----- -----order_planid: "+order_planid);
+	        logger.info("---- ------ ----- -----newserverPlan.getWarPeriod().intValue(): "+newserverPlan.getWarPeriod().intValue());
+	        logger.info("---- ------ ----- -----user.getProvinceId(): "+user.getProvinceId());
+	        logger.info("---- ------ ----- -----user.getProvinceText(): "+user.getProvinceText());
+	        logger.info("---- ------ ----- -----server.getCompanyName(): "+server.getCompanyName());
+	        logger.info("---- ------ ----- -----user.getAddressText(): "+user.getAddressText());
+	        logger.info("---- ------ ----- -----user.getCityId(): "+user.getCityId());
+	        logger.info("---- ------ ----- -----user.getCityText(): "+user.getCityText());
+	        logger.info("---- ------ ----- -----user.getUserName(): "+user.getUserName());
+	        logger.info("---- ------ ----- -----user.getPhone(): "+user.getPhone());
+	        logger.info("---- ------ ----- -----price: "+price);
+	        logger.info("---- ------ ----- -----server.getCompanyName(): "+server.getCompanyName());
+	        logger.info("---- ------ ----- -----orderCode: "+orderCode);
+	        logger.info("---- ------ ----- -----user.getId(): "+user.getId());
+	        logger.info("---- ------ ----- -----newserverPlan.getServerId(): "+newserverPlan.getServerId());
+	        logger.info("---- ------ ----- -----apoPrice: "+apoPrice);
+	        logger.info("---- ------ ----- -----price * factorage: "+price * factorage);
+	        logger.info("---- ------ ----- -----装机容量: "+newserverPlan.getMinPurchase().toString());
+	        logger.info("---- ------ ----- -----IpoMemo: "+IpoMemo);
 	         /** 保修期*/
 	        order.setWarPeriod(newserverPlan.getWarPeriod().intValue());
 	       // order.setCapacity(newserverPlan.getCapacity());
@@ -202,9 +226,10 @@ public class NewServerPlanService {
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());
-	        
-	        order.setIpoMemo(IpoMemo);
-	        
+	        if(null != IpoMemo && !IpoMemo.equals("")){
+	        	  order.setIpoMemo(IpoMemo);	
+	        }
+
 	        order.setLinkPhone(user.getPhone());
 	        order.setPlanPrice(price);
 	        order.setServerName(server.getCompanyName());

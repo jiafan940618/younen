@@ -3,6 +3,7 @@ package com.yn.service;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -587,10 +588,10 @@ public class OrderService {
 		Order o1 = findOne(o.getId());
 		Map<String,Object> jsonResult = new HashMap<String,Object>();
 		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
 			o1.setApplyStepA(1);
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", true);
 			} else {
 				jsonResult.put("isOk", false);
@@ -606,7 +607,7 @@ public class OrderService {
 			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
 			return jsonResult;
 		}else{
-			jsonResult.put("applyStepA", true);//支付成功。
+			jsonResult.put("applyIsPay", true);//支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
@@ -637,10 +638,10 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String,Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", true);
 			} else {
 				jsonResult.put("isOk", false);
@@ -692,10 +693,10 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String,Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", true);
 			} else {
 				jsonResult.put("isOk", false);
