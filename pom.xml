@@ -60,6 +60,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>com.aliyun.oss</groupId>
 			<artifactId>aliyun-sdk-oss</artifactId>
@@ -70,6 +71,12 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.7</version>
 		</dependency>
+		
+		 <dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.7</version>
+		</dependency> 
 
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -109,6 +116,8 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.2</version>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -142,6 +151,23 @@
 			<version>2.1.4</version>
 		</dependency>
 
+		
+		<!-- tomcat的支持 -->
+			<dependency>  
+		        <groupId>org.webjars</groupId>  
+		         <artifactId>jquery</artifactId>  
+		         <version>2.1.4</version>  
+		     </dependency>  
+		<dependency>  
+			<groupId>org.apache.tomcat.embed</groupId>  
+			<artifactId>tomcat-embed-jasper</artifactId>  
+			<scope>provided</scope>  
+		</dependency>  
+     	 <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+             <scope>provided</scope>  
+        </dependency> 
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -192,31 +218,33 @@
 
 	</dependencies>
 
+	
+
+
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-						<encoding>UTF-8</encoding>
-						<compilerArgs>
-							<arg>-extdirs</arg>
-							<arg>yn-core/lib</arg>
-						</compilerArgs>
-
-						<compilerArguments>
-							<extdirs>src\main\webapp\WEB-INF\lib</extdirs>
-						</compilerArguments>
-
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+	 <pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					 <compilerArgs>
+						<arg>-extdirs</arg>
+						<arg>yn-core/lib</arg>
+					</compilerArgs>	
+					
+					<compilerArguments>
+				         <extdirs>src\main\webapp\WEB-INF\lib</extdirs>
+				      </compilerArguments>
+      
+				</configuration>
+			</plugin>
+		</plugins>
+		 </pluginManagement>
 	</build>
-
 
 
 </project>
