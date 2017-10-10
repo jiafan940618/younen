@@ -202,8 +202,9 @@ public class NewServerPlanService {
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());
-	        
-	        order.setIpoMemo(IpoMemo);
+	        if(null != IpoMemo && !IpoMemo.equals("")){
+	        	 order.setIpoMemo(IpoMemo);
+	        }
 	        
 	        order.setLinkPhone(user.getPhone());
 	        order.setPlanPrice(price);

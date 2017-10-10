@@ -64,4 +64,6 @@ public class SolarPanelService {
 		Specification<SolarPanel> spec = RepositoryUtil.getSpecification(solarPanel);
 		return solarPanelDao.findAll(spec);
 	}
+	
+	
 }

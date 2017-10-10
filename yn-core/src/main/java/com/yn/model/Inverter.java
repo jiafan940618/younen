@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import com.yn.domain.IDomain;
 
@@ -14,6 +16,10 @@ import com.yn.domain.IDomain;
 
 @Entity
 public class Inverter extends IDomain implements Serializable {
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "int(11) comment '[id]'")
+    private Long id;
 	@Column(columnDefinition = "int(3) comment '[品牌编号]'")
 	private Integer brandId;
 	@Column(columnDefinition = "varchar(255) comment '[品牌名]'")
@@ -31,8 +37,21 @@ public class Inverter extends IDomain implements Serializable {
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
 	private Double boardYear;
 	
-	
-	
+	public Inverter() {}
+
+	public Inverter(Long id, String model) {
+		this.id = id;
+		this.model = model;
+	}
+
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Integer getBrandId() {
 		return brandId;

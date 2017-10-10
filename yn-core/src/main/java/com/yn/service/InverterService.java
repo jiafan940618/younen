@@ -90,4 +90,11 @@ public class InverterService {
 		Specification<Inverter> spec = RepositoryUtil.getSpecification(inverter);
 		return inverterDao.findAll(spec);
 	}
+	
+	   public	List<Inverter> selectInverter(Long brandId){
+			
+				int brand_id = brandId.intValue();
+				
+				return inverterDao.selectInverter(brand_id);
+			}
 }

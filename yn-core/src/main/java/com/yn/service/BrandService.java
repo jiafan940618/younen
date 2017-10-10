@@ -64,4 +64,10 @@ public class BrandService {
 		Specification<Brand> spec = RepositoryUtil.getSpecification(brand);
 		return brandDao.findAll(spec);
 	}
+	public List<Brand> selectBrand(String type){
+		
+		return brandDao.selectBrand(type);
+	}
+	
+	
 }

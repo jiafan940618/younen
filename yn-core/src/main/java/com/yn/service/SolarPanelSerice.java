@@ -135,4 +135,15 @@ public class SolarPanelSerice {
 	    	
 			return listqua;
 	    }
+	 
+	    
+	    public  List<SolarPanel> selectSolarPanel(Long brandId){
+	    	
+	    	int brand_id = brandId.intValue();
+	    	
+			return solarPanelDao.selectSolarPanel(brand_id);
+	    }
+   
+	    
+	    
 }

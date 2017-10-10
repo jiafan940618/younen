@@ -4,14 +4,10 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.lycheepay.gateway.client.GatewayClientException;
 import com.lycheepay.gateway.client.InitiativePayService;
@@ -59,7 +55,7 @@ public class PyOrderService {
 	static	String terminalId = "49000002";
 	
 	
-	@Before
+
 	public  void init() throws Exception {
 		// 初始化证书
 		String merchantIp = "192.168.0.104";
@@ -74,8 +70,7 @@ public class PyOrderService {
 		// 设置的交易响应超时时间,要大于0小于10分钟,单位:秒.0表示不超时,一直等待,默认5分钟,ps：对应获取对账文件这个应该设长一点时间
 		service.setResponseTimeoutSeconds(10 * 60);
 	}
-	
-	@Test
+
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
 		ActiveScanPayReqDTO reqDTO = new ActiveScanPayReqDTO();
 		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号

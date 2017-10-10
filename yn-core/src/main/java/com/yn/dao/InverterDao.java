@@ -25,5 +25,9 @@ public interface InverterDao extends JpaRepository<Inverter, Long>, JpaSpecifica
 	@Query(value="SELECT DISTINCT(brand_id),brand_name FROM inverter ORDER BY brand_id ASC ",nativeQuery=true)
 	List<Object> getinverter();
 	
+	@Transactional
+	@Modifying
+	@Query(" select new Inverter(id,model) from Inverter i where i.brandId = :brandId and i.del =0 ")
+	List<Inverter> selectInverter(@Param("brandId") Integer brandId);
 	
 }

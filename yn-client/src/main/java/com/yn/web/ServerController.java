@@ -32,6 +32,7 @@ import com.yn.dao.CityDao;
 import com.yn.dao.DevideDao;
 import com.yn.dao.ProvinceDao;
 import com.yn.dao.UserDao;
+import com.yn.model.Brand;
 import com.yn.model.City;
 import com.yn.model.Devide;
 import com.yn.model.Inverter;
@@ -40,6 +41,7 @@ import com.yn.model.Server;
 import com.yn.model.SolarPanel;
 import com.yn.model.User;
 import com.yn.model.newPage;
+import com.yn.service.BrandService;
 import com.yn.service.DevideService;
 import com.yn.service.InverterService;
 import com.yn.service.ServerService;
@@ -66,7 +68,7 @@ public class ServerController {
 	@Autowired
 	InverterService inverterService;
 	@Autowired
-	private DevideService devideService;
+	private BrandService brandService;
 	@Autowired
     private UserService userService;
 	@Autowired
@@ -235,7 +237,7 @@ public class ServerController {
      * 第一步
      * 1、添加服务商电话的参数放在一起处理
      * */
-/*   @ResponseBody
+   @ResponseBody
  	@RequestMapping(value = "/checkCode")
  	public ResultData<Object> checkCode(String code,String phone,HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
  	  
@@ -244,14 +246,14 @@ public class ServerController {
  	  
  	  if( null== phone || phone.equals("")){  
  		 logger.info("--- -- --- 电话不能为空！");
- 		 return ResultDataVoUtil.error(777, Constant.PHONE_NULL);
+ 		 return ResultVOUtil.error(777, Constant.PHONE_NULL);
  	  }
  	  
  	  Server serverPh = serverService.findOne(server);
  	  
  	  if(null!=serverPh){
  		 logger.info("--- --- -- - 电话号码已存在！");
- 		 return ResultDataVoUtil.error(777, Constant.PHONE_EXIST);
+ 		 return ResultVOUtil.error(777, Constant.PHONE_EXIST);
  	  }
  	 
 
@@ -260,7 +262,7 @@ public class ServerController {
  		Long codeTime = (Long)httpSession.getAttribute("code4serverTime");
  		if (codeTime==null) {
  			 logger.info(" --- ---- 短信验证不能为空！");
- 			return ResultDataVoUtil.error(777, Constant.CODE_NULL);
+ 			return ResultVOUtil.error(777, Constant.CODE_NULL);
  		}
  		
  		Long spaceTime = System.currentTimeMillis() - codeTime;
@@ -268,24 +270,24 @@ public class ServerController {
  			httpSession.setAttribute("code4registerTime",null);
  			 logger.info("---- -- -- -短信验证码已失效！");
  			
- 			return ResultDataVoUtil.error(777, Constant.CODE_AGAIN);
+ 			return ResultVOUtil.error(777, Constant.CODE_AGAIN);
  		}
  		
  		
  		if(StringUtils.isEmpty(code4serverReg)){
  			 logger.info(" -- --- ---- 短信验证不能为空！");
  			
- 			return ResultDataVoUtil.error(777, Constant.CODE_NULL);
+ 			return ResultVOUtil.error(777, Constant.CODE_NULL);
  		}
  		if(!code4serverReg.equals(code)){
  			 logger.info(" --- ---- 短信验证码已失效！");
  			
- 			return ResultDataVoUtil.error(777, Constant.CODE_AGAIN);
+ 			return ResultVOUtil.error(777, Constant.CODE_AGAIN);
  		}
  		
 
- 		return ResultDataVoUtil.success(null);
- 	}*/
+ 		return ResultVOUtil.success(null);
+ 	}
     
    /**
     * 服务商的短信请求
@@ -346,8 +348,7 @@ public class ServerController {
 	@RequestMapping(value = "/register_Server")
 	public ResultData<Object> register2(String server,HttpServletRequest request, HttpServletResponse response,
 			HttpSession httpSession) {
-		ResultData<Object> resultData = new ResultData<Object>();
-		
+	
 		ServerVo serverVo = JSON.parseObject(server, ServerVo.class);
 		/** 此时这里的参数与前端页面对应，测试再说，同时服务商的电话，定为法人代表电话*/
 		serverVo.setPassword(MD5Util.GetMD5Code(serverVo.getPassword()));
@@ -438,29 +439,22 @@ public class ServerController {
     * */
    
    @ResponseBody
-	@RequestMapping(value = "/select_inverter")
-	public ResultData<Object> selectByExample(String parentId, newPage<Devide> page, HttpServletRequest request,
-			HttpServletResponse response, HttpSession httpSession) {
-	   Devide deviceType = new Devide();
-	   
-	   Long long1 = Long.parseLong(parentId);
-	   deviceType.setParentId(long1);
-	   
-		if (page.getExample() == null) {
-			page.setExample(deviceType);
-		}
-		
-		logger.info("传来的值为 ： ------ --------- -------"+deviceType.getParentId());
-			List<Devide> selectByExample = devideService.selectDevice(deviceType);
+  	@RequestMapping(value = "/select_inverter")
+  	public ResultData<Object> selectByExample(String parentId, newPage<Brand> page, HttpServletRequest request,
+  			HttpServletResponse response, HttpSession httpSession) {
 
-			for (Devide devide : selectByExample) {
-				logger.info("品牌： ***"+devide.getDevideBrand()+" -- -- "+ devide.getId());
-			}
-			
-			page.setList(selectByExample);
-		
-		return ResultVOUtil.success(page);
-	}
+  		logger.info("传来的值为 ： ------ --------- -------"+parentId);
+  		
+  				List<Brand> selectByExample = brandService.selectBrand(parentId);
+  	
+  				for (Brand devide : selectByExample) {
+  					logger.info("品牌： ***"+devide.getBrandName()+" -- -- "+ devide.getId());
+  				}
+
+  	
+  		return ResultVOUtil.success(selectByExample);
+
+  	}
    
    /** 加载品牌*/
    @ResponseBody
@@ -477,23 +471,30 @@ public class ServerController {
     * 页面加载型号
     * */
    @ResponseBody
-  	@RequestMapping(value = "/select_solar")
-  	public ResultData<Object> selectBysolar(Devide deviceType, newPage<Devide> page, HttpServletRequest request,
-  			HttpServletResponse response, HttpSession httpSession) {
-  		if (page.getExample() == null) {
-  			page.setExample(deviceType);
-  		}
-  		
-  		List<Devide> selectByExample = devideService.selectBatch(deviceType);
-  		
-  		for (Devide devide : selectByExample) {
-  			logger.info("型号： ***"+devide.getDevideModel()+" -- -- "+ devide.getId());
-		}
-  		
-  		page.setList(selectByExample);
-  		
-  		return ResultVOUtil.success(page);
-  	}
+ 	@RequestMapping(value = "/select_solar")
+ 	public ResultData<Object> selectBysolar(Devide deviceType, newPage page, HttpServletRequest request,
+ 			HttpServletResponse response, HttpSession httpSession) {
+	   //0:电池板,1:逆变器,2:其他材料
+	   //1、电池板 3、逆变器
+	   logger.info("传来的类型的值为 ： ------ --------- -------"+deviceType.getType());
+	   logger.info("传来的型号的值为 ： ------ --------- -------"+deviceType.getParentId());
+	   
+	   Long id =deviceType.getParentId();
+	   if(deviceType.getType() == 0){
+		   List<Inverter> list = inverterService.selectInverter(id);
+		   
+		   return ResultVOUtil.success(list);
+		   
+	   }else if(deviceType.getType() == 1){
+		   List<SolarPanel> listpanel =   solarService.selectSolarPanel(id);
+		   
+		   return ResultVOUtil.success(listpanel);
+	   }
+	   
+
+ 		return ResultVOUtil.success(null);
+
+ 	}
    
    
    /**

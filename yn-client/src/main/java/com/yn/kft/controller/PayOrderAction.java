@@ -121,17 +121,15 @@ public class PayOrderAction {
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
 		/** 测试数据*/
-		
-		
-		logger.info("======= ========= ======== =======传递的UserId:"+bankCardVo.getUserId());
-		logger.info("======= ========= ======== =======传递的BankCardNum:"+bankCardVo.getBankCardNum());
-		logger.info("======= ========= ======== =======传递的TreatyType:"+bankCardVo.getTreatyType());
-		logger.info("======= ========= ======== =======传递的RealName:"+bankCardVo.getRealName());
-		logger.info("======= ========= ======== =======传递的Phone:"+bankCardVo.getPhone());
-		logger.info("======= ========= ======== =======传递的IdCardNum:"+bankCardVo.getIdCardNum());
-		logger.info("======= ========= ======== =======传递的BankNo:"+bankCardVo.getBankNo());
-		logger.info("======= ========= ======== =======传递的bankId:"+bankCardVo.getBankId());
-		logger.info("======= ========= ======== =======传递的Type:"+bankCardVo.getType());
+		logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
+		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());
+		logger.info("======= ========= ======== =======传递的卡类型(11、借计卡扣款  12、信用卡扣款):treatyType:"+bankCardVo.getTreatyType());
+		logger.info("======= ========= ======== =======传递的真实姓名:realName:"+bankCardVo.getRealName());
+		logger.info("======= ========= ======== =======传递的电话号码:phone:"+bankCardVo.getPhone());
+		logger.info("======= ========= ======== =======传递的身份证号:idCardNum:"+bankCardVo.getIdCardNum());
+		logger.info("======= ========= ======== =======传递的银行的行号:bankNo:"+bankCardVo.getBankNo());
+		logger.info("======= ========= ======== =======传递的用户选择的银行id:bankId:"+bankCardVo.getBankId());
+		logger.info("======= ========= ======== =======传递的类型(1、个人账户):Type:"+bankCardVo.getType());
 		
 		
 		if(null == bankCardVo.getBankCardNum() || bankCardVo.getBankCardNum().equals("") ){

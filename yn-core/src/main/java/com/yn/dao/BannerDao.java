@@ -20,4 +20,8 @@ public interface BannerDao extends JpaRepository<Banner, Long>, JpaSpecification
     @Modifying
     @Query("update Banner set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    @Modifying
+    @Query("select new Banner(id,imgUrl,linkUrl)  from Banner  where del = 0 and isShow = 0")
+    List<Banner> selectBanner();
 }

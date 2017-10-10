@@ -1,6 +1,9 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,4 +66,13 @@ public class BannerController {
         Page<Banner> findAll = bannerService.findAll(banner, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    @ResponseBody
+    @RequestMapping(value = "/selectBanner")
+    public Object selectBanner() {
+
+    List<Banner> list =	bannerService.selectBanner();
+
+        return ResultVOUtil.success(list);
+    } 
 }

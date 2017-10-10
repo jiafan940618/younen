@@ -64,4 +64,9 @@ public class BannerService {
         Specification<Banner> spec = RepositoryUtil.getSpecification(banner);
         return bannerDao.findAll(spec);
     }
+    
+	 public List<Banner> selectBanner(){
+	    	
+			return bannerDao.selectBanner();
+	    }
 }

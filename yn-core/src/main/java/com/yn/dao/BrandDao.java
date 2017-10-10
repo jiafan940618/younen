@@ -20,4 +20,9 @@ public interface BrandDao extends JpaRepository<Brand, Long>, JpaSpecificationEx
 	@Modifying
 	@Query("update Brand set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+	
+	 @Modifying
+	    @Query("SELECT b from Brand b where b.type = :type and b.del = 0 ")
+		List<Brand> selectBrand(@Param("type") String type);
+	
 }
