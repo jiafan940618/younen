@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.yn.dao.cmy.Am1PhaseDao">
+<mapper namespace="com.yn.dao.job.Am1PhaseDao">
 
 	<resultMap id="Am1PhaseMapper" type="com.yn.model.Am1Phase">
 		<id column="row_id" property="rowId" jdbcType="INTEGER" />
@@ -29,7 +29,8 @@
 
 	<select id="findAllAm1Phase" resultMap="Am1PhaseMapper"
 		parameterType="java.lang.String">
-		select * from am_1phase_${sqlNowData} where
+		select * from am_1phase_${sqlNowData}
+		where
 		meter_time <![CDATA[ >= ]]>
 		${startDtm}
 		and meter_time <![CDATA[ <= ]]>
