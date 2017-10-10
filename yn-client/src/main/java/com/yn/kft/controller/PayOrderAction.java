@@ -22,6 +22,7 @@ import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
+import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.BankCardVo;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -120,6 +121,16 @@ public class PayOrderAction {
 	@ResponseBody
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
+		
+		bankCardVo.setBankCardNum("6212262201023557228");
+		bankCardVo.setBankId(5);
+		bankCardVo.setBankNo("1051000");
+		bankCardVo.setIdCardNum("410526199307147372");
+		bankCardVo.setPhone("18317829893");
+		bankCardVo.setRealName("bankCardVo");
+		bankCardVo.setTreatyType("11"); 
+		
+		bankCardVo.setUserId(1L);
 		/** 测试数据*/
 		logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());
@@ -158,6 +169,11 @@ public class PayOrderAction {
 			
 			return ResultVOUtil.error(777, "抱歉,银行卡号有误,请确定您的卡号是否正确!");
 		}
+		if(!PhoneFormatCheckUtils.isPhoneLegal(bankCardVo.getPhone())){
+			
+			return ResultVOUtil.error(777, "抱歉,您的手机号有误!");
+		}
+		
 		
 	String orderNo = serverService.getOrderNo(bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的orderNo:"+orderNo);

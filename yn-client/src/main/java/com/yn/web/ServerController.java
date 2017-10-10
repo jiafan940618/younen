@@ -383,17 +383,49 @@ public class ServerController {
 		 if(null != log && !log.equals("")){
 			 server01.setCompanyLogo(log);
 		 }
+		 logger.info("--- ---- ---- ---- ---- ---- --- registeredDtm "+server01.getRegisteredDtm());
+		logger.info("--- ---- ---- ---- ---- ---- --- companyemail "+serverVo.getEmail());
+		logger.info("--- ---- ---- ---- ---- ---- --- password "+serverVo.getPassword());
+		logger.info("--- ---- ---- ---- ---- ---- --- 公司名称：companyName "+server01.getCompanyName());
+		logger.info("--- ---- ---- ---- ---- ---- --- 公司地址：companyAddress "+server01.getCompanyAddress());
+		logger.info("--- ---- ---- ---- ---- ---- --- 注册资金：registeredCapital "+server01.getRegisteredCapital());
+		logger.info("--- ---- ---- ---- ---- ---- --- 法定代表人：legalPerson "+server01.getLegalPerson());
+		logger.info("--- ---- ---- ---- ---- ---- --- 法定代表人电话：legalPersonPhone "+server01.getLegalPersonPhone());
+		logger.info("--- ---- ---- ---- ---- ---- --- 业务员电话：salesmanPhone "+server01.getSalesmanPhone());
+		logger.info("--- ---- ---- ---- ---- ---- --- 公司资产：companyAssets "+server01.getCompanyAssets());
+		logger.info("--- ---- ---- ---- ---- ---- --- 资质证明：aptitude "+server01.getAptitude());
+		logger.info("--- ---- ---- ---- ---- ---- --- 一年的营业额 ：oneYearTurnover "+server01.getOneYearTurnover());
+		logger.info("--- ---- ---- ---- ---- ---- --- {0:不接受该结算方式,1:三个月,2:六个月}-bankDraft "+server01.getBankDraft());
+		logger.info("--- ---- ---- ---- ---- ---- --- EPC 总承包集成工程实施能力]{0:否,1:是}：hadEpc "+server01.getHadEpc());
+		logger.info("--- ---- ---- ---- ---- ---- --- serverCityText "+server01.getServerCityText());
+		logger.info("--- ---- ---- ---- ---- ---- --- serverCityIds "+server01.getServerCityIds());
+		logger.info("--- ---- ---- ---- ---- ---- --- 最大施工人数:maxNumberOfBuilder "+server01.getMaxNumberOfBuilder());
+		logger.info("--- ---- ---- ---- ---- ---- --- 装机容量：tolCapacityOfYn "+serverVo.getTolCapacityOfYn());
+		logger.info("--- ---- ---- ---- ---- ---- --- 营业执照图片地址：businessLicenseImgUrl "+server01.getBusinessLicenseImgUrl());
+		logger.info("--- ---- ---- ---- ---- ---- --- 资质照片地址：qualificationsImgUrl "+server01.getQualificationsImgUrl());
+		logger.info("--- ---- ---- ---- ---- ---- --- 设计工程费用：designPrice "+server01.getDesignPrice());
+		logger.info("--- ---- ---- ---- ---- ---- --- 市场价格 20KW（含）以下   元/瓦:priceaRing "+server01.getPriceaRing());
+		logger.info("--- ---- ---- ---- ---- ---- --- 市场价格 20KW以上  元/瓦:pricebRing "+server01.getPricebRing());
+		logger.info("--- ---- ---- ---- ---- ---- --- sqmElectric "+serverVo.getSqmElectric());
+		logger.info("--- ---- ---- ---- ---- ---- --- 项目负责人：personInCharge "+serverVo.getPersonInCharge());
 		
-		 System.out.println(serverVo.getServerCityIds());
-		 System.out.println(serverVo.getServerCityText());
-		 System.out.println(serverVo.getCompanyEmail());
-		 /*User user =new User();
+		 User user =new User();
+		 user.setEmail(serverVo.getEmail());
+		 user.setAddressText(serverVo.getCompanyAddress());
+		 user.setPassword(serverVo.getPassword());
+		 user.setPhone(serverVo.getPhone());
 		 
-		 serverVo.getPhone(); 
+		 userservice.save(user);
+		 
+		 User user2=	 userservice.findByPhone(user.getPhone());
+		 
+		/* serverVo.getPhone(); 
 		 serverVo.getPassword();
 		 serverVo.getEmail();
 		 serverVo.getServerCityIds(); //服务城市ID
 		 serverVo.getServerCityText(); //服务城市*/
+		server01.setUserId(user2.getId());
+		 
 		serverService.save(server01);
 		httpSession.setAttribute("server", server01);
 

@@ -31,6 +31,9 @@ public class Server extends IDomain implements Serializable {
     private String companyAddress;
     @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[公司资产 元]'")
     private Double companyAssets;
+    @Column( columnDefinition = "decimal(12,2) comment '[注册资金 元]'")
+    private Double registeredCapital;
+    
     @Column(columnDefinition = "datetime comment '[注册时间]'")
     private Date registeredDtm;
     @Column(columnDefinition = "varchar(255) comment '[法定代表人]'")
@@ -41,8 +44,6 @@ public class Server extends IDomain implements Serializable {
     private String personInCharge;
     @Column(columnDefinition = "varchar(255) comment '[业务员电话]'")
     private String salesmanPhone;
-
-
     @Column(columnDefinition = "varchar(255) comment '[资质证明]'")
     private String aptitude;
     @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[近一年的营业额 元]'")
@@ -79,8 +80,7 @@ public class Server extends IDomain implements Serializable {
     private String serverCityText;
     @Column(insertable = false, columnDefinition = "int(1) default 0 comment '[是否已经认证]{0:未认证,1:已认证}'")
     private Integer type;
-
-
+   
     /**
      * 是否已读
      */
@@ -128,7 +128,15 @@ public class Server extends IDomain implements Serializable {
 		this.factorage = factorage;
 	}
 
+	
 
+	public Double getRegisteredCapital() {
+		return registeredCapital;
+	}
+
+	public void setRegisteredCapital(Double registeredCapital) {
+		this.registeredCapital = registeredCapital;
+	}
 
 	public Long getId() {
 		return id;

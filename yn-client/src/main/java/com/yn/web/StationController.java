@@ -1,6 +1,7 @@
 package com.yn.web;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.StationVo;
 import com.yn.vo.UserVo;
 
@@ -126,10 +128,10 @@ public class StationController {
 	@RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
 	public Object runningStation(HttpSession session,Station station) {
 		
-	    UserVo userVo=(UserVo)session.getAttribute("user");
+		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
 	    Map<String, Object> stationByUser=new HashMap<>();
 	    if (userVo!=null) {
-	    	station.setUserId(userVo.getUserid());
+	    	station.setUserId(userVo.getId());
 			List<Station> stations=stationDao.findByUserId(station.getUserId());
 			stationByUser = stationService.stationByUser(stations);
 		    }else{
@@ -146,10 +148,10 @@ public class StationController {
 	@RequestMapping(value = "/checkCapacity",method = {RequestMethod.POST, RequestMethod.GET})
     public Object checkCapacity(HttpSession session,Station station) {
 		
-	    UserVo userVo=(UserVo)session.getAttribute("user");
-	    Map<Object, Object> capacityAll=new HashMap<>();
+		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+	    List<Map<Object, Object>> capacityAll=new ArrayList<>();
 	    if (userVo!=null) {
-	    	station.setUserId(userVo.getUserid());
+	    	station.setUserId(userVo.getId());
 			List<Station> stations=stationDao.findByUserId(station.getUserId());
 			capacityAll = stationService.checkCapacity(stations);
 		    }else{

@@ -39,10 +39,18 @@ public class City extends IDomain implements Serializable{
 	public void setCityText(String cityText) {
 		this.cityText = cityText;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public Long getProvinceId() {
 		return provinceId;
 	}
 	public void setProvinceId(Long provinceId) {
 		this.provinceId = provinceId;
 	}
+	
+	
 }

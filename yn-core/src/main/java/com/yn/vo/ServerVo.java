@@ -46,8 +46,10 @@ public class ServerVo extends QueryVo {
     private String serverCityText;
     private Integer type;
     
+    private String email;
+    private Double registeredCapital;
     private String serverId;
-    
+    private String sqmElectric;
     private String password;
     private String phone;
 
@@ -57,7 +59,32 @@ public class ServerVo extends QueryVo {
     private List<Devide> device;
     
     
-    public String getServerId() {
+    
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSqmElectric() {
+		return sqmElectric;
+	}
+
+	public void setSqmElectric(String sqmElectric) {
+		this.sqmElectric = sqmElectric;
+	}
+
+	public Double getRegisteredCapital() {
+		return registeredCapital;
+	}
+
+	public void setRegisteredCapital(Double registeredCapital) {
+		this.registeredCapital = registeredCapital;
+	}
+
+	public String getServerId() {
 		return serverId;
 	}
 

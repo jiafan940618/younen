@@ -406,8 +406,10 @@ public class StationService {
         	 //发电效率（百分比）
        	  efficiency=(nowKw/capacity)*100;
 		 }
+    	 DecimalFormat df=new DecimalFormat(".##");
+    	String co2prm=df.format(NumberUtil.accurateToTwoDecimal(CO2Prm * egt)/1000);
     	objectMap.put("plantTreesPrm",(int) NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
-    	objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt)/1000);
+    	objectMap.put("CO2Prm", co2prm);
     	objectMap.put("nowKw",nowKw);
     	objectMap.put("egt", egt);
     	objectMap.put("efficiency", (int)efficiency);
@@ -418,10 +420,11 @@ public class StationService {
      * 用户的装机容量
      * 
      */
-    public Map<Object, Object> checkCapacity(List<Station> stations){
+    public List<Map<Object,Object>> checkCapacity(List<Station> stations){
     	Map<Object, Object> objectMap=new HashMap<>();
     	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
     	List<Map<Object, Object>> lists=new ArrayList<>();
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
     	for (Station station : stations) {
     		List<Map<Object, Object>> list=stationDao.findUserCapacity(station.getId());
            if (!list.isEmpty()) {
@@ -442,9 +445,13 @@ public class StationService {
     	Object[] key = objectMap.keySet().toArray();
     	Arrays.sort(key);
     	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
     		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("capacity", objectMap.get(key[i]));
+    		listsMap.add(listMap);
         	}
-    	return linkHashMap;
+    	return listsMap;
+    	
     }
-
 }

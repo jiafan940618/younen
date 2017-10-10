@@ -5,7 +5,6 @@ import com.yn.vo.re.ResultVOUtil;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -92,10 +91,12 @@ public class SubsidyController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/monishouyi")
-	public Object findByType(Subsidy subsidy, String sqm, Page<Subsidy> page) {
+	public Object findByType(Subsidy subsidy, String sqm, com.yn.model.Page<Subsidy> page) {
 		ResultData<Object> resultData = new ResultData<Object>();
-		
-	Map<String, String> map = systemConfigService.getlist();
+		/*subsidy.setCityId(119L);
+		subsidy.setType(1);
+		sqm = "20";*/
+		Map<String, String> map = systemConfigService.getlist();
 
 		DecimalFormat df = new DecimalFormat("#0.00");
 
