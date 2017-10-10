@@ -293,8 +293,8 @@ public class TemStationService {
      * @return
      */
 	public Map<Object, Object> monthKwh(List<Station> stations){
-    	Map<Object, Object> objectMap = new HashMap<>();
-    	
+    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
     	List<Map<Object, Object>> lists=new ArrayList<>();
     	
     	for (Station station : stations) {
@@ -314,6 +314,12 @@ public class TemStationService {
 			}
     		
     	}
+    	Object[] key = objectMap.keySet().toArray();
+    	Arrays.sort(key);
+    	for (int i = 0; i < key.length; i++) { 
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+        	}
+    	
     	return objectMap;
     }
 

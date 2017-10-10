@@ -383,7 +383,7 @@ public class StationService {
      * 用户的所有电站信息
      */
     public Map<String, Object> stationByUser(List<Station> stations){
-    	Map<String, Object> objectMap = new HashMap<>();
+    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
     	double  egt=0;
     	double nowKw=0;
     	double plantTreesPrm=0;
@@ -420,7 +420,7 @@ public class StationService {
      */
     public Map<Object, Object> checkCapacity(List<Station> stations){
     	Map<Object, Object> objectMap=new HashMap<>();
-    	
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
     	List<Map<Object, Object>> lists=new ArrayList<>();
     	for (Station station : stations) {
     		List<Map<Object, Object>> list=stationDao.findUserCapacity(station.getId());
@@ -439,8 +439,12 @@ public class StationService {
 			}
     		
     	}
-    	
-    	return objectMap;
+    	Object[] key = objectMap.keySet().toArray();
+    	Arrays.sort(key);
+    	for (int i = 0; i < key.length; i++) { 
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+        	}
+    	return linkHashMap;
     }
 
 }
