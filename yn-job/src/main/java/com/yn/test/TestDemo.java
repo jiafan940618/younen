@@ -18,8 +18,8 @@ public class TestDemo {
 		String endDtm = DateUtil.formatDate(thisHourSpace, DateUtil.yyMMddHHmmss);
 		System.out.println(startDtm);
 		System.out.println(endDtm);
-		//AmPhaseService aps = new AmPhaseService();
-		//aps.findAllAm1Phase();
-		//aps.findAllAm3Phase();
+		// AmPhaseService aps = new AmPhaseService();
+		// aps.findAllAm1Phase();
+		// aps.findAllAm3Phase();
 	}
 }

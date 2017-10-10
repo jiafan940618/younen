@@ -29,12 +29,12 @@
 
 	<select id="findAllAm1Phase" resultMap="Am1PhaseMapper"
 		parameterType="java.lang.String">
-		select * from am_1phase_${sqlNowData} 
-		 where 
-		meter_time <![CDATA[ >= ]]> 
-		${startDtm}  
-		and meter_time <![CDATA[ <= ]]> 
-		${endDtm} 
+		select * from am_1phase_${sqlNowData}
+		where
+		meter_time <![CDATA[ >= ]]>
+		${startDtm}
+		and meter_time <![CDATA[ <= ]]>
+		${endDtm}
 	</select>
 
 
