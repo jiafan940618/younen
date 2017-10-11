@@ -1,6 +1,10 @@
 package com.yn.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.TemStationYearDao;
+import com.yn.model.Station;
 import com.yn.model.TemStationYear;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
@@ -63,5 +68,44 @@ public class TemStationYearService {
     public List<TemStationYear> findAll(TemStationYear temStationYear) {
         Specification<TemStationYear> spec = RepositoryUtil.getSpecification(temStationYear);
         return temStationYearDao.findAll(spec);
+    }
+    
+    /**
+     * 用户每月发电量
+     *
+     * @param stations
+     * @return
+     */
+	public List<Map<Object,Object>> monthKwh(List<Station> stations){
+    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+    	for (Station station : stations) {
+    		List<Map<Object, Object>> list=temStationYearDao.sumMonthKwh(station.getId());
+           if (!list.isEmpty()) {
+	          lists.addAll(list);
+			}
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			}else{
+				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+				objectMap.put(map.get("create_dtm"), (Object)kwh);
+			}
+    		
+    	}
+    	Object[] key = objectMap.keySet().toArray();
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("capacity", objectMap.get(key[i]));
+    		listsMap.add(listMap);
+        	}
+    	return listsMap;
     }
 }

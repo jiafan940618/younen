@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.yn.model.TemStation;
 import com.yn.service.StationService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.TemStationVo;
 import com.yn.vo.UserVo;
 
@@ -103,11 +105,17 @@ public class TemStationController {
     @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object monthKwh(HttpSession session,Station station) {
-    	 UserVo userVo=(UserVo)session.getAttribute("user");
-    	 Map<Object, Object> monthKwh=new HashMap<>();
+    	NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+    	 List<Map<Object, Object>> monthKwh=new ArrayList<>();
+    	
     	 if (userVo!=null) {
-    		 station.setUserId(userVo.getUserid());
-			List<Station> stations=stationDao.findByUserId(station.getUserId());
+    		 station.setUserId(userVo.getId());
+    		 if (stationDao.findByUserId(station.getUserId())!=null) {
+    		List<Station> stations=stationDao.findByUserId(station.getUserId());
+    		monthKwh=temStationService.monthKwh(stations);
+			}
+			
+			List<Station> stations=stationDao.findAll();
 			monthKwh=temStationService.monthKwh(stations);
 			
 		} else {

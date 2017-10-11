@@ -1,6 +1,13 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.StationDao;
+import com.yn.model.Station;
 import com.yn.model.TemStationYear;
 import com.yn.service.TemStationYearService;
 import com.yn.utils.BeanCopy;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.TemStationYearVo;
 
 @RestController
@@ -22,7 +32,8 @@ import com.yn.vo.TemStationYearVo;
 public class TemStationYearController {
     @Autowired
     TemStationYearService temStationYearService;
-
+    @Autowired
+    StationDao stationDao;
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
@@ -62,5 +73,31 @@ public class TemStationYearController {
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
         Page<TemStationYear> findAll = temStationYearService.findAll(temStationYear, pageable);
         return ResultVOUtil.success(findAll);
+    }
+    /**
+     * 根据用户查找每月的发电量
+     * @return
+     */
+    @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object monthKwh(HttpSession session,Station station) {
+    	NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+    	 List<Map<Object, Object>> monthKwh=new ArrayList<>();
+    	  
+    	 if (userVo!=null ) {
+    		 station.setUserId(userVo.getId());
+    		 if (stationDao.findByUserId(station.getUserId())!=null) {
+    			 List<Station> stations=stationDao.findByUserId(station.getUserId());
+    				monthKwh=temStationYearService.monthKwh(stations);
+			}
+    		 List<Station> stations=stationDao.findAllStation();
+ 			monthKwh=temStationYearService.monthKwh(stations);
+			
+		} else {
+			List<Station> stations=stationDao.findAllStation();
+			monthKwh=temStationYearService.monthKwh(stations);
+		}
+        
+        return ResultVOUtil.success(monthKwh);
     }
 }

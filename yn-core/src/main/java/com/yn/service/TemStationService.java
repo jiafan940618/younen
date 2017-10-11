@@ -287,16 +287,16 @@ public class TemStationService {
     }
 
     /**
-     * 用户发电量
+     * 用户每月发电量
      *
      * @param stations
      * @return
      */
-	public Map<Object, Object> monthKwh(List<Station> stations){
-    	Map<Object, Object> objectMap = new HashMap<>();
-    	
+	public List<Map<Object,Object>> monthKwh(List<Station> stations){
+    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
     	List<Map<Object, Object>> lists=new ArrayList<>();
-    	
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
     	for (Station station : stations) {
     		List<Map<Object, Object>> list=temStationDao.sumMonthKwh(station.getId());
            if (!list.isEmpty()) {
@@ -314,7 +314,15 @@ public class TemStationService {
 			}
     		
     	}
-    	return objectMap;
+    	Object[] key = objectMap.keySet().toArray();
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("capacity", objectMap.get(key[i]));
+    		listsMap.add(listMap);
+        	}
+    	return listsMap;
     }
 
 }
