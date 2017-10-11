@@ -59,6 +59,7 @@ public class AmmeterJob {
 	@Scheduled(fixedDelay = 10 * 1000)
 	@Transactional
 	private void job() {
+		System.out.println("AmmeterJob-->job::run");
 		List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
 		for (Ammeter ammeter : findAll) {
 			AmPhaseRecord aprR = new AmPhaseRecord();
@@ -95,10 +96,10 @@ public class AmmeterJob {
 		ammeterRecord.setdAddr(ammeter.getdAddr());
 		ammeterRecord.setdType(ammeter.getdType());
 		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
-		if (ammeter.getStation() != null) {
-			ammeterRecord.setStationId(ammeter.getStationId());
-			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
-		}
+//		if (ammeter.getStation() != null) {
+//			ammeterRecord.setStationId(ammeter.getStationId());
+//			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
+//		}
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecord.setType(ammeter.getType());
 		ammeterRecordService.save(ammeterRecord);

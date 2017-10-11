@@ -17,11 +17,12 @@ import javax.sql.DataSource;
 /**
  * 数据源2-->次数据源。
  * 连接到youneng
+ * basePackages：为com.yn.dao.job包下的类的配置数据源，连接到120.76.98.74:3306/youneng
  * @author {lzyqssn}
  * <2017年9月28日-下午5:05:48>
  */
 @Configuration
-@MapperScan(basePackages = "com.yn.dao", sqlSessionTemplateRef = "test2SqlSessionTemplate")
+@MapperScan(basePackages = "com.yn.dao.job", sqlSessionTemplateRef = "test2SqlSessionTemplate")
 public class DataSource2 {
 	@Bean(name = "test2DataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.secondary")

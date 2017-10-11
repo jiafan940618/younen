@@ -31,7 +31,6 @@ import com.yn.utils.DateUtil;
  * 采集原始数据
  */
 /**
- * 说明：本job是从admin中的job抽取出来的。对于之前的代码采取注释措施，取消注释即可初始化，但需要删除新增的代码。
  * 用途：用于youneng里面旧表的数据读出来，但插入到younen的新表里去。
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
@@ -106,6 +105,7 @@ public class AmPhaseRecordJob {
 	 */
 	@Scheduled(fixedDelay = 25 * 1000)
 	private void collectAmPhaseRecord() throws Exception {
+		System.out.println("collectAmPhaseRecord-->job::run");
 		/******** 之前的开始 **********/
 		// 把当前小时内的所有数据查找出来
 		// Date[] thisHourSpace = DateUtil.thisHourSpace();

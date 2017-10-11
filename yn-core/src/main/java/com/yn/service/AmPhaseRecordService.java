@@ -1,5 +1,8 @@
 package com.yn.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.yn.dao.AmPhaseRecordDao;
 import com.yn.model.AmPhaseRecord;
+import com.yn.utils.DateUtil;
 import com.yn.utils.RepositoryUtil;
 
 @Service
@@ -54,4 +58,37 @@ public class AmPhaseRecordService {
 		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
 		return amPhaseRecordDao.findAll(spec);
 	}
+	
+	/**
+	 * 删除记录表某一天的数据，。
+	 * @param date
+	 * @throws ParseException 
+	 */
+	public boolean deleteAmPhaseRecordById(String date){
+		try {
+			date = parseDate(date);
+			String sql = "delete FROM  am_phase_record WHERE am_phase_record_id LIKE '%"+date+"%' ";
+			System.out.println(sql);
+			amPhaseRecordDao.deleteAmPhaseRecordByIdLike(date);
+			return true;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * 格式如下：
+	 * 
+	 * @param 2017-10-10
+	 * @return 171010
+	 * @throws ParseException
+	 */
+	private String parseDate(String date) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date thisHourSpace = sdf.parse(date);
+		String startDtm = DateUtil.formatDate(thisHourSpace, DateUtil.yyMMddHHmmss).substring(0, 6);
+		return startDtm;
+	}
+
 }

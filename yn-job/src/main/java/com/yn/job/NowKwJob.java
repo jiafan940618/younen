@@ -26,6 +26,7 @@ public class NowKwJob {
 	
 	@Scheduled(fixedDelay = 10 * 1000)
 	private void job() {
+		System.out.println("NowKwJob-->job::run");
 		List<Station> stations = stationService.findAll(new Station());
 		for (Station station : stations) {
 			Ammeter ammeterR = new Ammeter();
