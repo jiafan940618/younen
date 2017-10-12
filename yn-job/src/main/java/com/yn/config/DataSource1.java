@@ -18,12 +18,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * 数据源1-->主数据源。
- * 连接到younen
+ * 连接到younen 
+ * basePackages：为com.yn.dao包下的类的配置数据源，连接到120.76.98.74:3306/younen
  * @author {lzyqssn}
  * <2017年9月28日-下午5:05:01>
  */
 @Configuration
-@MapperScan(basePackages = "com.yn.dao.mapper", sqlSessionTemplateRef = "test1SqlSessionTemplate")
+@MapperScan(basePackages = "com.yn.dao", sqlSessionTemplateRef = "test1SqlSessionTemplate")
 public class DataSource1 {
 	@Bean(name = "test1DataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.primary")

@@ -107,9 +107,16 @@ public class TemStationController {
     public Object monthKwh(HttpSession session,Station station) {
     	NewUserVo userVo=(NewUserVo)session.getAttribute("user");
     	 List<Map<Object, Object>> monthKwh=new ArrayList<>();
+
+    	
     	 if (userVo!=null) {
     		 station.setUserId(userVo.getId());
-			List<Station> stations=stationDao.findByUserId(station.getUserId());
+    		 if (stationDao.findByUserId(station.getUserId())!=null) {
+    		List<Station> stations=stationDao.findByUserId(station.getUserId());
+    		monthKwh=temStationService.monthKwh(stations);
+			}
+			
+			List<Station> stations=stationDao.findAll();
 			monthKwh=temStationService.monthKwh(stations);
 			
 		} else {

@@ -130,12 +130,19 @@ public class StationController {
 		
 		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
 	    Map<String, Object> stationByUser=new HashMap<>();
+	     
 	    if (userVo!=null) {
+
+	    	
 	    	station.setUserId(userVo.getId());
-			List<Station> stations=stationDao.findByUserId(station.getUserId());
-			stationByUser = stationService.stationByUser(stations);
+	    	if (stationDao.findByUserId(station.getUserId())!=null) {
+	    		List<Station> stations=stationDao.findByUserId(station.getUserId());
+				stationByUser = stationService.stationByUser(stations);
+			}
+				List<Station> stations=stationDao.findAllStation();
+			    stationByUser = stationService.stationByUser(stations);
 		    }else{
-		    List<Station> stations=stationDao.findAll();
+		    List<Station> stations=stationDao.findAllStation();
 		    stationByUser = stationService.stationByUser(stations);
 		    }
 		return ResultVOUtil.success(stationByUser);
@@ -147,15 +154,20 @@ public class StationController {
 	@ResponseBody
 	@RequestMapping(value = "/checkCapacity",method = {RequestMethod.POST, RequestMethod.GET})
     public Object checkCapacity(HttpSession session,Station station) {
-		
+
 		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
 	    List<Map<Object, Object>> capacityAll=new ArrayList<>();
-	    if (userVo!=null) {
+	     
+	    if (userVo!=null ) {
 	    	station.setUserId(userVo.getId());
-			List<Station> stations=stationDao.findByUserId(station.getUserId());
-			capacityAll = stationService.checkCapacity(stations);
+	    	if (stationDao.findByUserId(station.getUserId())!=null) {
+	    		List<Station> stations=stationDao.findByUserId(station.getUserId());
+				capacityAll = stationService.checkCapacity(stations);
+			}
+	    	List<Station> stations=stationDao.findAllStation();
+		    capacityAll = stationService.checkCapacity(stations);
 		    }else{
-		    List<Station> stations=stationDao.findAll();
+		    List<Station> stations=stationDao.findAllStation();
 		    capacityAll = stationService.checkCapacity(stations);
 		    }
 		return ResultVOUtil.success(capacityAll);

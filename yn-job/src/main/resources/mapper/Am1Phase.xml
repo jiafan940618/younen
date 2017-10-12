@@ -29,7 +29,9 @@
 
 	<select id="findAllAm1Phase" resultMap="Am1PhaseMapper"
 		parameterType="java.lang.String">
-		select * from am_1phase_${sqlNowData}
+
+		<!-- 注意：如果使用的数据库不在同一个ip上，请将下面的 youneng 删除，再去DataSource1.java和DataSource2.java中修改basePackages -->
+		select * from youneng.am_1phase_${sqlNowData}
 		where
 		meter_time <![CDATA[ >= ]]>
 		${startDtm}
@@ -37,6 +39,9 @@
 		${endDtm}
 	</select>
 
+
+	<!-- <delete id="deleteAm1PhaseByDate" parameterType="java.lang.String"> 
+		delete FROM am_1phase_${sqlNowDate} WHERE meter_time LIKE '${date}%' </delete> -->
 
 
 

@@ -406,8 +406,9 @@ public class StationService {
         	 //发电效率（百分比）
        	  efficiency=(nowKw/capacity)*100;
 		 }
-    	 DecimalFormat df=new DecimalFormat(".##");
-    	String co2prm=df.format(NumberUtil.accurateToTwoDecimal(CO2Prm * egt)/1000);
+
+    	double co2prm=NumberUtil.accurateToTwoDecimal((CO2Prm * egt)/1000);
+
     	objectMap.put("plantTreesPrm",(int) NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
     	objectMap.put("CO2Prm", co2prm);
     	objectMap.put("nowKw",nowKw);

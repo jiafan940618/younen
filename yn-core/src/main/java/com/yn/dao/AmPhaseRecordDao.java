@@ -20,4 +20,13 @@ public interface AmPhaseRecordDao extends JpaRepository<AmPhaseRecord, Long>, Jp
     @Modifying
     @Query("update AmPhaseRecord set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+    /**
+     * 
+     * @param date : 171009
+     */
+    @Transactional
+    @Modifying
+    @Query(value="delete FROM  am_phase_record WHERE am_phase_record_id LIKE  CONCAT('%',:amPhaseRecordId,'%') ", nativeQuery = true)
+	void deleteAmPhaseRecordByIdLike(@Param("amPhaseRecordId") String amPhaseRecordId);
 }

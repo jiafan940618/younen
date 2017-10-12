@@ -1,5 +1,6 @@
 package com.yn.controller;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yn.model.Am1Phase;
 import com.yn.model.Am3Phase;
 import com.yn.model.AmPhaseRecord;
+import com.yn.model.Ammeter;
+import com.yn.model.AmmeterRecord;
+import com.yn.model.Station;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmPhaseService;
+import com.yn.service.AmmeterRecordService;
+import com.yn.service.AmmeterService;
+import com.yn.service.StationService;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -28,6 +35,15 @@ public class AmPhaseRecordJobController {
 
 	@Autowired
 	private AmPhaseRecordService amPhaseRecordService;
+	
+	@Autowired
+	AmmeterService ammeterService;
+	
+	@Autowired
+	StationService stationService;
+	
+	@Autowired
+	AmmeterRecordService ammeterRecordService;
 
 	/** 
 	 * 模拟测试。两个数据源。
@@ -37,19 +53,17 @@ public class AmPhaseRecordJobController {
 	@RequestMapping("/getInfo")
 	@ResponseBody
 	public Object getInfo() {
-		// old
-		List<Am1Phase> findAll = amPhaseService.findAllAm1Phase();
-		logger.info("AmmeterRecord...size():" + findAll.size());
-		for (Am1Phase am1Phase : findAll) {
-			logger.info("am1Phase.getMeterState():" + am1Phase.getMeterState());
-		}
-		List<AmPhaseRecord> list = amPhaseRecordService.findAll(new AmPhaseRecord());
-		for (AmPhaseRecord amPhaseRecord : list) {
-			logger.info("amPhaseRecord.getMeterState():" + amPhaseRecord.getMeterState());
-		}
-		Object[] objs = new Object[2];
-		objs[0] = findAll;
-		objs[0] = list;
+		Object[] objs = new Object[5];
+		List<Am1Phase> findAll1 = amPhaseService.findAllAm1Phase();
+		List<AmPhaseRecord> findAll2 = amPhaseRecordService.findAll(new AmPhaseRecord());
+		List<Ammeter> findAll3 = ammeterService.findAll(new Ammeter());
+		List<Station> findAll4 = stationService.findAll(new Station());
+		List<AmmeterRecord> findAll5 = ammeterRecordService.findAll(new AmmeterRecord());
+		objs[0] = findAll1.size();//Am1Phase
+		objs[1] = findAll2.size();//AmPhaseRecord
+		objs[2] = findAll3.size();//Ammeter
+		objs[3] = findAll4.size();//Station
+		objs[4] = findAll5.size();//AmmeterRecord
 		return objs;
 	}
 
@@ -60,10 +74,16 @@ public class AmPhaseRecordJobController {
 	 */
 	@RequestMapping("/simulationAPRGAndI")
 	//@RequestMapping("/job")
-	public @ResponseBody Object simulationGAndI() {
+	public @ResponseBody Object simulationGAndI(String date) {
 		Map<String,Object> jsonResult = new HashMap<String,Object>();
-		List<Am1Phase> am1Phases = amPhaseService.findAllAm1Phase();
-		List<Am3Phase> am3Phases = amPhaseService.findAllAm3Phase();
+		List<Am1Phase> am1Phases = null;
+		List<Am3Phase> am3Phases = null;
+		try {
+			am1Phases = amPhaseService.findAllAm1PhaseByDate(date);
+			am3Phases = amPhaseService.findAllAm3PhaseByDate(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		jsonResult.put("am1Phases.size", am1Phases.size());
 		jsonResult.put("am3Phases.size", am3Phases.size());
 		if (am1Phases.size() > 0) {
