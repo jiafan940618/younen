@@ -24,7 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  * <2017年9月28日-下午5:05:01>
  */
 @Configuration
-@MapperScan(basePackages = "com.yn.dao", sqlSessionTemplateRef = "test1SqlSessionTemplate")
+@MapperScan(basePackages = "com.yn", sqlSessionTemplateRef = "test1SqlSessionTemplate")
 public class DataSource1 {
 	@Bean(name = "test1DataSource")
 	@ConfigurationProperties(prefix = "spring.datasource.primary")

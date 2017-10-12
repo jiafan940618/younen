@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.model.AmPhaseRecord;
@@ -29,4 +30,5 @@ public interface AmPhaseRecordDao extends JpaRepository<AmPhaseRecord, Long>, Jp
     @Modifying
     @Query(value="delete FROM  am_phase_record WHERE am_phase_record_id LIKE  CONCAT('%',:amPhaseRecordId,'%') ", nativeQuery = true)
 	void deleteAmPhaseRecordByIdLike(@Param("amPhaseRecordId") String amPhaseRecordId);
+    
 }

@@ -10,6 +10,7 @@
 		<module>yn-core</module>
 		<module>yn-admin</module>
 		<module>yn-client</module>
+		<module>yn-job</module>
 	</modules>
 	<packaging>pom</packaging>
 

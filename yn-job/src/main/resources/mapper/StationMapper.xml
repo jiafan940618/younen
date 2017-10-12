@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.StationMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.Station">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="address_text" property="addressText" jdbcType="VARCHAR" />
+		<result column="capacity" property="capacity" jdbcType="DECIMAL" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="city_text" property="cityText" jdbcType="VARCHAR" />
+		<result column="dev_conf_code" property="devConfCode" jdbcType="VARCHAR" />
+		<result column="electricity_generation_tol" property="electricityGenerationTol"
+			jdbcType="DECIMAL" />
+		<result column="electricity_use_tol" property="electricityUseTol"
+			jdbcType="DECIMAL" />
+		<result column="now_kw" property="nowKw" jdbcType="DECIMAL" />
+		<result column="order_id" property="orderId" jdbcType="INTEGER" />
+		<result column="province_id" property="provinceId" jdbcType="INTEGER" />
+		<result column="province_text" property="provinceText"
+			jdbcType="VARCHAR" />
+		<result column="server_id" property="serverId" jdbcType="INTEGER" />
+		<result column="station_code" property="stationCode" jdbcType="VARCHAR" />
+		<result column="station_name" property="stationName" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="work_dtm" property="workDtm" jdbcType="TIMESTAMP" />
+		<result column="work_tota_tm" property="workTotaTm" jdbcType="INTEGER" />
+		<result column="passage_model" property="passageModel"
+			jdbcType="INTEGER" />
+		<result column="link_man" property="linkMan" jdbcType="VARCHAR" />
+		<result column="link_phone" property="linkPhone" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, create_dtm, del, del_dtm, address_text, capacity, city_id, city_text,
+		dev_conf_code,
+		electricity_generation_tol, electricity_use_tol, now_kw, order_id, province_id, province_text,
+		server_id, station_code, station_name, status, user_id, work_dtm,
+		work_tota_tm, passage_model,
+		link_man, link_phone, type, update_dtm
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from station
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from station
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.yn.model.Station">
+		insert into station (id, create_dtm, del,
+		del_dtm, address_text, capacity,
+		city_id, city_text, dev_conf_code,
+		electricity_generation_tol, electricity_use_tol,
+		now_kw, order_id, province_id,
+		province_text, server_id, station_code,
+		station_name, status, user_id,
+		work_dtm, work_tota_tm, passage_model,
+		link_man, link_phone, type,
+		update_dtm)
+		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
+		#{del,jdbcType=INTEGER},
+		#{delDtm,jdbcType=TIMESTAMP}, #{addressText,jdbcType=VARCHAR}, #{capacity,jdbcType=DECIMAL},
+		#{cityId,jdbcType=INTEGER}, #{cityText,jdbcType=VARCHAR},
+		#{devConfCode,jdbcType=VARCHAR},
+		#{electricityGenerationTol,jdbcType=DECIMAL},
+		#{electricityUseTol,jdbcType=DECIMAL},
+		#{nowKw,jdbcType=DECIMAL}, #{orderId,jdbcType=INTEGER}, #{provinceId,jdbcType=INTEGER},
+		#{provinceText,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER},
+		#{stationCode,jdbcType=VARCHAR},
+		#{stationName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{workDtm,jdbcType=TIMESTAMP}, #{workTotaTm,jdbcType=INTEGER},
+		#{passageModel,jdbcType=INTEGER},
+		#{linkMan,jdbcType=VARCHAR}, #{linkPhone,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+		#{updateDtm,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.yn.model.Station">
+		insert into station
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="createDtm != null">
+				create_dtm,
+			</if>
+			<if test="del != null">
+				del,
+			</if>
+			<if test="delDtm != null">
+				del_dtm,
+			</if>
+			<if test="addressText != null">
+				address_text,
+			</if>
+			<if test="capacity != null">
+				capacity,
+			</if>
+			<if test="cityId != null">
+				city_id,
+			</if>
+			<if test="cityText != null">
+				city_text,
+			</if>
+			<if test="devConfCode != null">
+				dev_conf_code,
+			</if>
+			<if test="electricityGenerationTol != null">
+				electricity_generation_tol,
+			</if>
+			<if test="electricityUseTol != null">
+				electricity_use_tol,
+			</if>
+			<if test="nowKw != null">
+				now_kw,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="provinceId != null">
+				province_id,
+			</if>
+			<if test="provinceText != null">
+				province_text,
+			</if>
+			<if test="serverId != null">
+				server_id,
+			</if>
+			<if test="stationCode != null">
+				station_code,
+			</if>
+			<if test="stationName != null">
+				station_name,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="workDtm != null">
+				work_dtm,
+			</if>
+			<if test="workTotaTm != null">
+				work_tota_tm,
+			</if>
+			<if test="passageModel != null">
+				passage_model,
+			</if>
+			<if test="linkMan != null">
+				link_man,
+			</if>
+			<if test="linkPhone != null">
+				link_phone,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="updateDtm != null">
+				update_dtm,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="createDtm != null">
+				#{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				#{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				#{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="addressText != null">
+				#{addressText,jdbcType=VARCHAR},
+			</if>
+			<if test="capacity != null">
+				#{capacity,jdbcType=DECIMAL},
+			</if>
+			<if test="cityId != null">
+				#{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="cityText != null">
+				#{cityText,jdbcType=VARCHAR},
+			</if>
+			<if test="devConfCode != null">
+				#{devConfCode,jdbcType=VARCHAR},
+			</if>
+			<if test="electricityGenerationTol != null">
+				#{electricityGenerationTol,jdbcType=DECIMAL},
+			</if>
+			<if test="electricityUseTol != null">
+				#{electricityUseTol,jdbcType=DECIMAL},
+			</if>
+			<if test="nowKw != null">
+				#{nowKw,jdbcType=DECIMAL},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="provinceId != null">
+				#{provinceId,jdbcType=INTEGER},
+			</if>
+			<if test="provinceText != null">
+				#{provinceText,jdbcType=VARCHAR},
+			</if>
+			<if test="serverId != null">
+				#{serverId,jdbcType=INTEGER},
+			</if>
+			<if test="stationCode != null">
+				#{stationCode,jdbcType=VARCHAR},
+			</if>
+			<if test="stationName != null">
+				#{stationName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="workDtm != null">
+				#{workDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="workTotaTm != null">
+				#{workTotaTm,jdbcType=INTEGER},
+			</if>
+			<if test="passageModel != null">
+				#{passageModel,jdbcType=INTEGER},
+			</if>
+			<if test="linkMan != null">
+				#{linkMan,jdbcType=VARCHAR},
+			</if>
+			<if test="linkPhone != null">
+				#{linkPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="updateDtm != null">
+				#{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.yn.model.Station">
+		update station
+		<set>
+			<if test="createDtm != null">
+				create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="addressText != null">
+				address_text = #{addressText,jdbcType=VARCHAR},
+			</if>
+			<if test="capacity != null">
+				capacity = #{capacity,jdbcType=DECIMAL},
+			</if>
+			<if test="cityId != null">
+				city_id = #{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="cityText != null">
+				city_text = #{cityText,jdbcType=VARCHAR},
+			</if>
+			<if test="devConfCode != null">
+				dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
+			</if>
+			<if test="electricityGenerationTol != null">
+				electricity_generation_tol =
+				#{electricityGenerationTol,jdbcType=DECIMAL},
+			</if>
+			<if test="electricityUseTol != null">
+				electricity_use_tol = #{electricityUseTol,jdbcType=DECIMAL},
+			</if>
+			<if test="nowKw != null">
+				now_kw = #{nowKw,jdbcType=DECIMAL},
+			</if>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=INTEGER},
+			</if>
+			<if test="provinceId != null">
+				province_id = #{provinceId,jdbcType=INTEGER},
+			</if>
+			<if test="provinceText != null">
+				province_text = #{provinceText,jdbcType=VARCHAR},
+			</if>
+			<if test="serverId != null">
+				server_id = #{serverId,jdbcType=INTEGER},
+			</if>
+			<if test="stationCode != null">
+				station_code = #{stationCode,jdbcType=VARCHAR},
+			</if>
+			<if test="stationName != null">
+				station_name = #{stationName,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="workDtm != null">
+				work_dtm = #{workDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="workTotaTm != null">
+				work_tota_tm = #{workTotaTm,jdbcType=INTEGER},
+			</if>
+			<if test="passageModel != null">
+				passage_model = #{passageModel,jdbcType=INTEGER},
+			</if>
+			<if test="linkMan != null">
+				link_man = #{linkMan,jdbcType=VARCHAR},
+			</if>
+			<if test="linkPhone != null">
+				link_phone = #{linkPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="updateDtm != null">
+				update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.yn.model.Station">
+		update station
+		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+		del = #{del,jdbcType=INTEGER},
+		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+		address_text = #{addressText,jdbcType=VARCHAR},
+		capacity = #{capacity,jdbcType=DECIMAL},
+		city_id = #{cityId,jdbcType=INTEGER},
+		city_text = #{cityText,jdbcType=VARCHAR},
+		dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
+		electricity_generation_tol = #{electricityGenerationTol,jdbcType=DECIMAL},
+		electricity_use_tol = #{electricityUseTol,jdbcType=DECIMAL},
+		now_kw = #{nowKw,jdbcType=DECIMAL},
+		order_id = #{orderId,jdbcType=INTEGER},
+		province_id = #{provinceId,jdbcType=INTEGER},
+		province_text = #{provinceText,jdbcType=VARCHAR},
+		server_id = #{serverId,jdbcType=INTEGER},
+		station_code = #{stationCode,jdbcType=VARCHAR},
+		station_name = #{stationName,jdbcType=VARCHAR},
+		status = #{status,jdbcType=INTEGER},
+		user_id = #{userId,jdbcType=INTEGER},
+		work_dtm = #{workDtm,jdbcType=TIMESTAMP},
+		work_tota_tm = #{workTotaTm,jdbcType=INTEGER},
+		passage_model = #{passageModel,jdbcType=INTEGER},
+		link_man = #{linkMan,jdbcType=VARCHAR},
+		link_phone = #{linkPhone,jdbcType=VARCHAR},
+		type = #{type,jdbcType=INTEGER},
+		update_dtm = #{updateDtm,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

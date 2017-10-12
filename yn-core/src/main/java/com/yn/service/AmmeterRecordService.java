@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.yn.dao.AmmeterRecordDao;
+import com.yn.dao.mapper.AmmeterRecordMapper;
 import com.yn.model.AmmeterRecord;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
@@ -28,6 +29,8 @@ import com.yn.utils.ObjToMap;
 public class AmmeterRecordService { 
     @Autowired
     AmmeterRecordDao ammeterRecordDao;
+    @Autowired
+    AmmeterRecordMapper ammeterRecordMapper;
 
     public AmmeterRecord findOne(Long id) {
         return ammeterRecordDao.findOne(id);
@@ -44,6 +47,19 @@ public class AmmeterRecordService {
             ammeterRecordDao.save(one);
         }else {
             ammeterRecordDao.save(ammeterRecord);
+        }
+    }
+    public void saveByMapper(AmmeterRecord ammeterRecord) {
+        if(ammeterRecord.getId()!=null){
+        	AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
+            try {
+                BeanCopy.beanCopy(ammeterRecord,one);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ammeterRecordMapper.updateByPrimaryKeySelective(one);
+        }else {
+        	ammeterRecordMapper.insert(ammeterRecord);
         }
     }
 

@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
+import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.utils.DateUtil;
 import com.yn.utils.RepositoryUtil;
@@ -21,13 +25,20 @@ public class AmPhaseRecordService {
 	
 	@Autowired
 	AmPhaseRecordDao amPhaseRecordDao;
+	
+	@Autowired
+	AmPhaseRecordMapper amPhaseRecordMapper;
 
 	public AmPhaseRecord findOne(Long id) {
 		return amPhaseRecordDao.findOne(id);
 	}
 
-	public void save(AmPhaseRecord amPhaseRecord) {
-		amPhaseRecordDao.save(amPhaseRecord);
+	public AmPhaseRecord save(AmPhaseRecord amPhaseRecord) {
+		AmPhaseRecord save = amPhaseRecordDao.save(amPhaseRecord);
+		return save;
+	}
+	public void saveByMapper(AmPhaseRecord amPhaseRecord) {
+		amPhaseRecordMapper.addAmPhaseRecord(amPhaseRecord);
 	}
 
 	public void delete(Long id) {

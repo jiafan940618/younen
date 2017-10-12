@@ -1,19 +1,16 @@
 package com.yn.job;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.yn.dao.AmmeterDao;
+import com.yn.dao.mapper.AmmeterMapper;
 import com.yn.model.Am1Phase;
 import com.yn.model.Am3Phase;
 import com.yn.model.AmPhaseRecord;
@@ -35,10 +32,8 @@ import com.yn.utils.DateUtil;
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
  */
-// @Component
+@Component
 public class AmPhaseRecordJob {
-	@Autowired
-	SessionFactory sessionFactory;
 	@Autowired
 	AmPhaseRecordService amPhaseRecordService;
 	@Autowired
@@ -46,67 +41,24 @@ public class AmPhaseRecordJob {
 	@Autowired
 	AmmeterDao ammeterDao;
 	@Autowired
+	AmmeterMapper ammeterMapper;
+	@Autowired
 	AmmeterStatusCodeService ammeterStatusCodeService;
 	@Autowired
 	AmmeterRecordService ammeterRecordService;
 
-	// @Autowired
-	// Am1PhaseService am1PhaseService;
-
 	@Autowired
 	AmPhaseService am1PhaseService;
-
-	@SuppressWarnings("unchecked")
-	public List<Am3Phase> getAm3Phase(String sql) {
-		List<Am3Phase> list = new ArrayList<>();
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		try {
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(Am3Phase.class);
-			list = query.list();
-			tx.commit();
-		} catch (HibernateException e) {
-			e.printStackTrace();
-			if (tx != null) {
-				tx.rollback();
-			}
-			throw e;
-		} finally {
-			session.close();
-		}
-		return list;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Am1Phase> getAm1Phase(String sql) {
-		List<Am1Phase> list = new ArrayList<>();
-		Session session = sessionFactory.openSession();
-		Transaction tx = session.beginTransaction();
-		try {
-			SQLQuery query = session.createSQLQuery(sql);
-			query.addEntity(Am1Phase.class);
-			list = query.list();
-			tx.commit();
-		} catch (HibernateException e) {
-			e.printStackTrace();
-			if (tx != null) {
-				tx.rollback();
-			}
-			throw e;
-		} finally {
-			session.close();
-		}
-		return list;
-	}
 
 	/**
 	 * 采集amPhase数据
 	 */
 	@Scheduled(fixedDelay = 25 * 1000)
+	// @Scheduled(cron = "0/25 * * * * ? ")
 	private void collectAmPhaseRecord() throws Exception {
-		System.out.println("collectAmPhaseRecord-->job::run");
-		/******** 之前的开始 **********/
+		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
+		// amPhaseRecord1.setAmPhaseRecordId("3214321234");
+		// amPhaseRecordService.save(amPhaseRecord1);
 		// 把当前小时内的所有数据查找出来
 		// Date[] thisHourSpace = DateUtil.thisHourSpace();
 		// String startDtm = DateUtil.formatDate(thisHourSpace[0],
@@ -127,14 +79,9 @@ public class AmPhaseRecordJob {
 		// + endDtm;
 		// List<Am1Phase> am1Phases = getAm1Phase(am1Sql);
 		// List<Am3Phase> am3Phases = getAm3Phase(am3Sql);
-		/******** 之前的结束 **********/
-
-		/******** 新的开始 **********/
 		List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 		List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
-		/******** 新的结束 **********/
 
-		/******** 从这里开始，下面全是之前的， **********/
 		if (am1Phases.size() > 0) {
 			for (Am1Phase am1Phase : am1Phases) {
 				AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -151,7 +98,8 @@ public class AmPhaseRecordJob {
 					BeanUtils.copyProperties(am1Phase, amPhaseRecord);
 					amPhaseRecord.setAmPhaseRecordId(
 							"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
-					amPhaseRecordService.save(amPhaseRecord);
+					amPhaseRecordService.saveByMapper(amPhaseRecord);
+					System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				}
 			}
 		}
@@ -172,7 +120,10 @@ public class AmPhaseRecordJob {
 					BeanUtils.copyProperties(am3Phase, amPhaseRecord);
 					amPhaseRecord.setAmPhaseRecordId(
 							"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
-					amPhaseRecordService.save(amPhaseRecord);
+					// amPhaseRecordService.save(amPhaseRecord);//springdata jpa
+					// --> 执行返回select语句。保存不失败，但数据库没有数据。
+					amPhaseRecordService.saveByMapper(amPhaseRecord);
+					System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				}
 			}
 		}
@@ -205,7 +156,12 @@ public class AmPhaseRecordJob {
 
 				ammeter.setNowKw(apr.getKw());
 				ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
-				ammeterDao.save(ammeter);
+				// ammeterDao.save(ammeter);
+				if(ammeterDao.findOne(ammeter.getId())!=null){
+					ammeterMapper.updateByPrimaryKeySelective(ammeter);
+				}else{
+					ammeterMapper.insert(ammeter);
+				}
 
 				// 插入电表状态记录
 				AmmeterRecord ammeterRecord = new AmmeterRecord();
@@ -219,7 +175,8 @@ public class AmPhaseRecordJob {
 				}
 				ammeterRecord.setStatusCode(statusCode);
 				ammeterRecord.setType(ammeter.getType());
-				ammeterRecordService.save(ammeterRecord);
+				// ammeterRecordService.save(ammeterRecord);
+				ammeterRecordService.saveByMapper(ammeterRecord);
 			}
 		}
 	}
