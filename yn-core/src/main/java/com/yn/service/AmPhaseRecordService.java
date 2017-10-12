@@ -19,6 +19,8 @@ import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.utils.DateUtil;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.AmPhaseRecordExample;
+import com.yn.vo.AmPhaseRecordExample.Criteria;
 
 @Service
 public class AmPhaseRecordService {
@@ -68,6 +70,19 @@ public class AmPhaseRecordService {
 	public List<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord) {
 		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
 		return amPhaseRecordDao.findAll(spec);
+	}
+	
+	public List<AmPhaseRecord> findAllByMapper(AmPhaseRecord amPhaseRecord) {
+		AmPhaseRecordExample example = new AmPhaseRecordExample();
+		Criteria criteria = example.createCriteria();
+		//Dealt iAddr dType cAddr dAddr
+		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
+		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
+		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
+		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
+		criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
+		return byExample;
 	}
 	
 	/**

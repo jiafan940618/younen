@@ -77,7 +77,8 @@ public class AmmeterJob {
 				aprR.setdType(ammeter.getdType());
 				aprR.setiAddr(ammeter.getiAddr());
 				aprR.setDealt(0);
-				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
+				//List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
+				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
 					//amPhaseRecordDao.save(apr);
@@ -89,8 +90,14 @@ public class AmmeterJob {
 				if (amPhaseRecords.size() == 0) {
 					ammeter.setNowKw(0D);
 					//ammeterDao.save(ammeter);
-					ammeterMapper.updateByPrimaryKeySelective(ammeter);
-					System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					Ammeter findOne = ammeterDao.findOne(ammeter.getId());
+					if(findOne!=null){
+						int selective = ammeterMapper.updateByPrimaryKeySelective(ammeter);
+						System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					}else{
+						int insert = ammeterMapper.insert(ammeter);
+						System.out.println("AmmeterJob--> ammeter新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -145,7 +152,12 @@ public class AmmeterJob {
 		ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
 		//ammeterDao.save(ammeter);
 		//ammeterMapper.insert(ammeter);
-		ammeterMapper.updateByPrimaryKeySelective(ammeter);
+		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
+		if(findOne!=null){
+			ammeterMapper.updateByPrimaryKeySelective(ammeter);
+		}else{
+			ammeterMapper.insert(ammeter);
+		}
 
 		Long stationId = ammeter.getStationId();
 		if (stationId != null) {
@@ -161,7 +173,12 @@ public class AmmeterJob {
 			}
 			//stationDao.save(station);
 			//stationMapper.insert(station);
-			ammeterMapper.updateByPrimaryKeySelective(ammeter);
+			Station one = stationDao.findOne(station.getId());
+			if(one!=null){
+				ammeterMapper.updateByPrimaryKeySelective(ammeter);
+			}else{
+				stationMapper.insert(station);
+			}
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
 	}

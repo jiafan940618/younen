@@ -26,73 +26,74 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 
 @Service
-public class AmmeterRecordService { 
-    @Autowired
-    AmmeterRecordDao ammeterRecordDao;
-    @Autowired
-    AmmeterRecordMapper ammeterRecordMapper;
+public class AmmeterRecordService {
+	@Autowired
+	AmmeterRecordDao ammeterRecordDao;
+	@Autowired
+	AmmeterRecordMapper ammeterRecordMapper;
 
-    public AmmeterRecord findOne(Long id) {
-        return ammeterRecordDao.findOne(id);
-    }
+	public AmmeterRecord findOne(Long id) {
+		return ammeterRecordDao.findOne(id);
+	}
 
-    public void save(AmmeterRecord ammeterRecord) {
-        if(ammeterRecord.getId()!=null){
-        	AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
-            try {
-                BeanCopy.beanCopy(ammeterRecord,one);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            ammeterRecordDao.save(one);
-        }else {
-            ammeterRecordDao.save(ammeterRecord);
-        }
-    }
-    public void saveByMapper(AmmeterRecord ammeterRecord) {
-        if(ammeterRecord.getId()!=null){
-        	AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
-            try {
-                BeanCopy.beanCopy(ammeterRecord,one);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            ammeterRecordMapper.updateByPrimaryKeySelective(one);
-        }else {
-        	ammeterRecordMapper.insert(ammeterRecord);
-        }
-    }
+	public void save(AmmeterRecord ammeterRecord) {
+		if (ammeterRecord.getId() != null) {
+			AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
+			try {
+				BeanCopy.beanCopy(ammeterRecord, one);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			ammeterRecordDao.save(one);
+		} else {
+			ammeterRecordDao.save(ammeterRecord);
+		}
+	}
 
-    public void delete(Long id) {
-        ammeterRecordDao.delete(id);
-    }
-    
-    public void deleteBatch(List<Long> id) {
+	public void saveByMapper(AmmeterRecord ammeterRecord) {
+		if (ammeterRecord.getId() != null) {
+			AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
+			try {
+				BeanCopy.beanCopy(ammeterRecord, one);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			ammeterRecordMapper.updateByPrimaryKeySelective(one);
+		} else {
+			ammeterRecordMapper.insert(ammeterRecord);
+		}
+	}
+
+	public void delete(Long id) {
+		ammeterRecordDao.delete(id);
+	}
+
+	public void deleteBatch(List<Long> id) {
 		ammeterRecordDao.deleteBatch(id);
 	}
 
-    public AmmeterRecord findOne(AmmeterRecord ammeterRecord) {
-        Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
-        AmmeterRecord findOne = ammeterRecordDao.findOne(spec);
-        return findOne;
-    }
+	public AmmeterRecord findOne(AmmeterRecord ammeterRecord) {
+		Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
+		AmmeterRecord findOne = ammeterRecordDao.findOne(spec);
+		return findOne;
+	}
 
-    public List<AmmeterRecord> findAll(List<Long> list) {
-        return ammeterRecordDao.findAll(list);
-    }
+	public List<AmmeterRecord> findAll(List<Long> list) {
+		return ammeterRecordDao.findAll(list);
+	}
 
-    public Page<AmmeterRecord> findAll(AmmeterRecord ammeterRecord, Pageable pageable) {
-        Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
-        Page<AmmeterRecord> findAll = ammeterRecordDao.findAll(spec, pageable);
-        return findAll;
-    }
+	public Page<AmmeterRecord> findAll(AmmeterRecord ammeterRecord, Pageable pageable) {
+		Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
+		Page<AmmeterRecord> findAll = ammeterRecordDao.findAll(spec, pageable);
+		return findAll;
+	}
 
-    public List<AmmeterRecord> findAll(AmmeterRecord ammeterRecord) {
-        Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
-        return ammeterRecordDao.findAll(spec);
-    }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<AmmeterRecord> findAll(AmmeterRecord ammeterRecord) {
+		Specification<AmmeterRecord> spec = getSpecification(ammeterRecord);
+		return ammeterRecordDao.findAll(spec);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Specification<AmmeterRecord> getSpecification(AmmeterRecord ammeterRecord) {
 		ammeterRecord.setDel(0);
 		Map<String, Object> objectMap = ObjToMap.getObjectMap(ammeterRecord);
@@ -104,7 +105,8 @@ public class AmmeterRecordService {
 
 			while (iterator.hasNext()) {
 				Entry<String, Object> entry = iterator.next();
-				if (!entry.getKey().equals("query") && !entry.getKey().equals("queryStartDtm") && !entry.getKey().equals("queryEndDtm")) {
+				if (!entry.getKey().equals("query") && !entry.getKey().equals("queryStartDtm")
+						&& !entry.getKey().equals("queryEndDtm")) {
 					Object value = entry.getValue();
 					if (value instanceof Map) {
 						Iterator<Entry<String, Object>> iterator1 = ((Map) value).entrySet().iterator();
@@ -117,15 +119,17 @@ public class AmmeterRecordService {
 					}
 				}
 			}
-			
+
 			// 根据日期筛选
 			String queryStartDtm = ammeterRecord.getQueryStartDtm();
 			String queryEndDtm = ammeterRecord.getQueryEndDtm();
 			if (!StringUtils.isEmpty(queryStartDtm)) {
-				expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+				expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"),
+						DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
 			}
 			if (!StringUtils.isEmpty(queryEndDtm)) {
-                expressions.add(cb.lessThan(root.get("createDtm"), DateUtil.parseString(queryEndDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+				expressions.add(cb.lessThan(root.get("createDtm"),
+						DateUtil.parseString(queryEndDtm, DateUtil.yyyy_MM_dd_HHmmss)));
 			}
 
 			return conjunction;
