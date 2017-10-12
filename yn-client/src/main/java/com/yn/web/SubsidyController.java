@@ -93,9 +93,9 @@ public class SubsidyController {
 	@RequestMapping(value = "/monishouyi")
 	public Object findByType(Subsidy subsidy, String sqm, com.yn.model.Page<Subsidy> page) {
 		ResultData<Object> resultData = new ResultData<Object>();
-		/*subsidy.setCityId(119L);
+		subsidy.setCityId(213L);
 		subsidy.setType(1);
-		sqm = "20";*/
+		sqm = "45";
 		Map<String, String> map = systemConfigService.getlist();
 
 		DecimalFormat df = new DecimalFormat("#0.00");

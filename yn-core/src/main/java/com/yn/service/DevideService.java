@@ -3,8 +3,12 @@ package com.yn.service;
 import com.yn.dao.DevideDao;
 import com.yn.enums.DevideEnum;
 import com.yn.model.Devide;
+import com.yn.model.Inverter;
+import com.yn.model.SolarPanel;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.DevideVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +23,12 @@ import java.util.List;
 public class DevideService {
     @Autowired
     DevideDao devideDao;
-
+    @Autowired
+    SolarPanelService solarPanelService;
+    @Autowired
+    InverterService inverterService;
+    
+    
     public Devide findOne(Long id) {
         return devideDao.findOne(id);
     }
@@ -92,4 +101,39 @@ public class DevideService {
         Specification<Devide> spec = RepositoryUtil.getSpecification(devide);
         return devideDao.findAll(spec);
     }
+    
+    
+    /** 保存电池板与逆变器*/
+    public void saveDdeide(DevideVo deviceVo){
+    	SolarPanel solarPanel = new SolarPanel();
+    	solarPanel.setBrandId(deviceVo.getSolbrandId());
+    	solarPanel.setBrandName(deviceVo.getSolbrandName());
+    	solarPanel.setModel(deviceVo.getSolmodel());
+    	solarPanel.setQualityAssurance(deviceVo.getSolqualityAssurance());
+    	solarPanel.setConversionEff(deviceVo.getSolconversionEff());
+    	solarPanel.setPowerGeneration(deviceVo.getSolpowerGeneration());
+    	solarPanel.setRemark(deviceVo.getSolremark());
+    	solarPanel.setSupplyPrice(deviceVo.getSolsupplyPrice());
+    	
+    	solarPanelService.save(solarPanel);
+    	
+    	
+    	Inverter inverter = new Inverter();
+    	/*private Integer invbrandId;
+    	private String invbrandName;
+    	private String invmodel;
+    	private Double invqualityAssurance; //质保年限
+    	private String invremark;
+    	private Double invsupplyPrice;*/
+    	inverter.setBrandId(deviceVo.getInvbrandId());
+    	inverter.setBrandName(deviceVo.getInvbrandName());
+    	inverter.setModel(deviceVo.getInvmodel());
+    	inverter.setQualityAssurance(deviceVo.getInvqualityAssurance());
+    	inverter.setRemark(deviceVo.getInvremark());
+    	inverter.setSupplyPrice(deviceVo.getInvsupplyPrice());
+    	
+    	inverterService.save(inverter);
+    }
+    
+    
 }

@@ -58,9 +58,20 @@ public class ServerVo extends QueryVo {
     
     private List<Devide> device;
     
+    private DevideVo deviceVo;
     
     
-    public String getEmail() {
+    
+    
+    public DevideVo getDeviceVo() {
+		return deviceVo;
+	}
+
+	public void setDeviceVo(DevideVo deviceVo) {
+		this.deviceVo = deviceVo;
+	}
+
+	public String getEmail() {
 		return email;
 	}
 

@@ -42,36 +42,5 @@ public class TestController {
 
 			return ResultVOUtil.success(null);
 	    }
-	 
-	 /* Server server = new Server();
-	 server.setServerCityText("深圳市");
-	 server.setServerCityIds("199");
-	 
-	 Pageable pageable = new PageRequest(0, 20, Direction.DESC, "id");
 	
-Page<Server> page =	serverService.findAll(server, pageable);
-
-System.out.println(page.getTotalPages());
-
-List<Server> list = page.getContent();
-Set<NewServerPlan> doset =  new  HashSet<NewServerPlan>();
-
-for (Server server2 : list) {
-	
-	Set<NewServerPlan> set = server2.getNewServerPlan();
-	
-
-	int i=0;
-	 for (NewServerPlan newServerPlan : set) {
-		 if(i==0){
-			 doset.add(newServerPlan);
-			 server2.setNewServerPlan(null);
-			 server2.setNewServerPlan(doset);
-			 System.out.println(newServerPlan.getId()+" -- -- "+newServerPlan.getInverterId());
-			 break;
-		 }
-	}
-
-}*/
-
 }

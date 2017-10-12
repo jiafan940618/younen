@@ -122,7 +122,7 @@ public class PayOrderAction {
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
 		
-		bankCardVo.setBankCardNum("6212262201023557228");
+		/*bankCardVo.setBankCardNum("6212262201023557228");
 		bankCardVo.setBankId(5);
 		bankCardVo.setBankNo("1051000");
 		bankCardVo.setIdCardNum("410526199307147372");
@@ -130,7 +130,7 @@ public class PayOrderAction {
 		bankCardVo.setRealName("bankCardVo");
 		bankCardVo.setTreatyType("11"); 
 		
-		bankCardVo.setUserId(1L);
+		bankCardVo.setUserId(1L);*/
 		/** 测试数据*/
 		logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import com.yn.domain.IDomain;
 
 /** 
- * 电池板
+ * 电池板的
  * */
 
 @Entity
@@ -33,12 +33,57 @@ public class SolarPanel extends IDomain implements Serializable {
 	private Double qualityAssurance;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[附件年限 年]'")
 	private Double boardYear;
+	
+	@Column(columnDefinition = "varchar(255) comment '[电池板的转换效率]'")
+	private String conversionEff;
+	@Column(columnDefinition = "varchar(255) comment '[电池板的每平米发电功率]'")
+	private String powerGeneration;
+	@Column(columnDefinition = "varchar(255) comment '[备注]'")
+	private String remark;
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板的供货价格]'")
+	private Double supplyPrice;
+	
+	
 
 	public SolarPanel() {}
 
 	public SolarPanel(Long id, String model) {
 		this.id = id;
 		this.model = model;
+	}
+
+	
+	
+	public String getConversionEff() {
+		return conversionEff;
+	}
+
+	public void setConversionEff(String conversionEff) {
+		this.conversionEff = conversionEff;
+	}
+
+	public String getPowerGeneration() {
+		return powerGeneration;
+	}
+
+	public void setPowerGeneration(String powerGeneration) {
+		this.powerGeneration = powerGeneration;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Double getSupplyPrice() {
+		return supplyPrice;
+	}
+
+	public void setSupplyPrice(Double supplyPrice) {
+		this.supplyPrice = supplyPrice;
 	}
 
 	public Long getId() {

@@ -1,22 +1,16 @@
 package com.yn.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -52,6 +46,7 @@ import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
+import com.yn.vo.DevideVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.SolarPanelVo;
@@ -83,7 +78,10 @@ public class ServerController {
     ServerService serverService;
     @Autowired
     UserService userservice;
-
+    @Autowired
+    DevideService devideService;
+    
+    
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
 	public Object findOne(Long id) {
@@ -375,6 +373,13 @@ public class ServerController {
 				devideDao.save(devices);
 			}
 		}
+		 /** 新版本的电池板，与逆变器的保存方式*/
+		/*DevideVo deviceVo =serverVo.getDeviceVo();
+
+		devideService.saveDdeide(deviceVo);*/
+		
+		
+		
 		Server server01= new Server();
 		 BeanCopy.copyProperties(serverVo, server01);
 		 
@@ -383,8 +388,8 @@ public class ServerController {
 		 if(null != log && !log.equals("")){
 			 server01.setCompanyLogo(log);
 		 }
-		 logger.info("--- ---- ---- ---- ---- ---- --- registeredDtm "+server01.getRegisteredDtm());
-		logger.info("--- ---- ---- ---- ---- ---- --- companyemail "+serverVo.getEmail());
+		logger.info("--- ---- ---- ---- ---- ---- --- registeredDtm "+server01.getRegisteredDtm());
+		logger.info("--- ---- ---- ---- ---- ---- --- email "+serverVo.getEmail());
 		logger.info("--- ---- ---- ---- ---- ---- --- password "+serverVo.getPassword());
 		logger.info("--- ---- ---- ---- ---- ---- --- 公司名称：companyName "+server01.getCompanyName());
 		logger.info("--- ---- ---- ---- ---- ---- --- 公司地址：companyAddress "+server01.getCompanyAddress());
@@ -513,14 +518,16 @@ public class ServerController {
 	   
 	   Long id =deviceType.getParentId();
 	   if(deviceType.getType() == 0){
-		   List<Inverter> list = inverterService.selectInverter(id);
 		   
-		   return ResultVOUtil.success(list);
-		   
-	   }else if(deviceType.getType() == 1){
 		   List<SolarPanel> listpanel =   solarService.selectSolarPanel(id);
 		   
 		   return ResultVOUtil.success(listpanel);
+		  
+		   
+	   }else if(deviceType.getType() == 1){
+		   List<Inverter> list = inverterService.selectInverter(id);
+		   
+		   return ResultVOUtil.success(list);
 	   }
 	   
 
