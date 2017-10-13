@@ -72,7 +72,9 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 		  //  List<Object> findObject(@Param("start") Integer start,@Param("limit") Integer limit);
 	    Long findcityCount(@Param("cityName") String cityName);
 	      
-	    
+        /** 通过userID查询*/ 
+	    @Query(value="SELECT e.id FROM server e WHERE e.user_id=?1",nativeQuery=true)
+	    Long findByUserid(Long userid);
 	    
 	
 }
