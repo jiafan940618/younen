@@ -1,5 +1,7 @@
 package com.yn.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +61,10 @@ public class AmmeterRecordService {
 				e.printStackTrace();
 			}
 			ammeterRecordMapper.updateByPrimaryKeySelective(one);
+			System.out.println("AmmeterJob--> AmmeterRecord更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		} else {
 			ammeterRecordMapper.insert(ammeterRecord);
+			System.out.println("AmmeterJob--> AmmeterRecord新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}
 	}
 

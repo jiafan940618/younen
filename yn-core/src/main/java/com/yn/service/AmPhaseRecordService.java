@@ -24,10 +24,10 @@ import com.yn.vo.AmPhaseRecordExample.Criteria;
 
 @Service
 public class AmPhaseRecordService {
-	
+
 	@Autowired
 	AmPhaseRecordDao amPhaseRecordDao;
-	
+
 	@Autowired
 	AmPhaseRecordMapper amPhaseRecordMapper;
 
@@ -39,8 +39,22 @@ public class AmPhaseRecordService {
 		AmPhaseRecord save = amPhaseRecordDao.save(amPhaseRecord);
 		return save;
 	}
+
 	public void saveByMapper(AmPhaseRecord amPhaseRecord) {
 		amPhaseRecordMapper.addAmPhaseRecord(amPhaseRecord);
+	}
+
+	@Transactional
+	public int updateByPrimaryKeySelective(AmPhaseRecord record) {
+		return amPhaseRecordMapper.updateByPrimaryKeySelective(record);
+	}
+	@Transactional
+	public int updateByPrimaryKey(AmPhaseRecord record) {
+		return amPhaseRecordMapper.updateByPrimaryKey(record);
+	}
+
+	public AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId) {
+		return amPhaseRecordMapper.selectByPrimaryKey(amPhaseRecordId);
 	}
 
 	public void delete(Long id) {
@@ -71,11 +85,11 @@ public class AmPhaseRecordService {
 		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
 		return amPhaseRecordDao.findAll(spec);
 	}
-	
+
 	public List<AmPhaseRecord> findAllByMapper(AmPhaseRecord amPhaseRecord) {
 		AmPhaseRecordExample example = new AmPhaseRecordExample();
 		Criteria criteria = example.createCriteria();
-		//Dealt iAddr dType cAddr dAddr
+		// Dealt iAddr dType cAddr dAddr
 		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
 		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
 		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
@@ -84,16 +98,17 @@ public class AmPhaseRecordService {
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
-	
+
 	/**
 	 * 删除记录表某一天的数据，。
+	 * 
 	 * @param date
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
-	public boolean deleteAmPhaseRecordById(String date){
+	public boolean deleteAmPhaseRecordById(String date) {
 		try {
 			date = parseDate(date);
-			String sql = "delete FROM  am_phase_record WHERE am_phase_record_id LIKE '%"+date+"%' ";
+			String sql = "delete FROM  am_phase_record WHERE am_phase_record_id LIKE '%" + date + "%' ";
 			System.out.println(sql);
 			amPhaseRecordDao.deleteAmPhaseRecordByIdLike(date);
 			return true;
@@ -102,7 +117,7 @@ public class AmPhaseRecordService {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 格式如下：
 	 * 
