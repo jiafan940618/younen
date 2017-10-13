@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.yn.model.Decideinfo;
+import com.yn.model.NewServerPlan;
 import com.yn.service.DecideinfoService;
+import com.yn.service.NewServerPlanService;
 import com.yn.service.redisService.DemoInfoService;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -32,6 +34,8 @@ public class TestController {
     DecideinfoService  decideinfoService;
 	
 	@Autowired
+	NewServerPlanService newserverPlanService;
+	@Autowired
 	DemoInfoService  demoInfoService;
 	
 	       @RequestMapping("/dotest")  
@@ -45,7 +49,8 @@ public class TestController {
 	       @RequestMapping("/test")  
 	       public String helloJsp001(){  
 	          
-	    	   demoInfoService.deleteFromCache("东莞"); 
+	    	   NewServerPlan findOne = newserverPlanService.findOne(1l);
+	    	   System.out.println(findOne);
 
 	              return "NewFile";  
 	       } 

@@ -64,4 +64,7 @@ public class UserController {
         return ResultVOUtil.success(findAll);
     }
     
+    /** 修改用户资料*/
+    
+    
 }

@@ -1,5 +1,7 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -112,12 +114,12 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         Page<ServerPlan> findAll = serverPlanService.findAll(serverPlan, pageable);
         return ResultVOUtil.success(findAll);
     }
- 
+    //@RequestParam("checkedId")   @RequestParam("moneyTotal")
     /** 处理金额*/
     @ResponseBody
     @RequestMapping(value = "/findPlan")
     public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> checkedId,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
-
+    	
     	for (Long long1 : checkedId) {
 			logger.info("id串为：-------- ----- ----- ---- "+long1);
 		}

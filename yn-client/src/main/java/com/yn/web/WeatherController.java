@@ -51,7 +51,6 @@ public class WeatherController {
 	@RequestMapping("/findWeather")
     public  Object Weather(WeatherVo weatherVo){
 	//	weatherVo.setCity("东莞");
-		
       /** 根据系统时间来确定*/
         logger.info("-- --- ---- - -- - - ------传递的城市为："+weatherVo.getCity());
      

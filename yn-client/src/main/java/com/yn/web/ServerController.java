@@ -175,7 +175,7 @@ public class ServerController {
 			return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
 		}
 		
-		User user =	serverLocal.getUser();
+		 User user =	serverLocal.getUser();
 		
 		 user.setToken(userService.getToken(user));
 		 userService.updateToken(user);
@@ -367,7 +367,7 @@ public class ServerController {
 			return ResultVOUtil.error(777, Constant.CITY_LONG);
 		}
 
-		Server server01= new Server();
+		 Server server01= new Server();
 		 BeanCopy.copyProperties(serverVo, server01);
 		 
 		 String log = (String) httpSession.getAttribute("finaltime");
@@ -413,7 +413,7 @@ public class ServerController {
 		logger.info("--- ---- ---- ---- ---- ---- --- 市场价格 20KW以上  元/瓦:pricebRing "+server01.getPricebRing());
 		logger.info("--- ---- ---- ---- ---- ---- --- sqmElectric "+serverVo.getSqmElectric());
 		logger.info("--- ---- ---- ---- ---- ---- --- 项目负责人：personInCharge "+serverVo.getPersonInCharge());
-		
+		 /** 关联与server有关的对象，然后保存*/
 		 User user =new User();
 		 user.setEmail(serverVo.getEmail());
 		 user.setAddressText(serverVo.getCompanyAddress());
@@ -425,6 +425,8 @@ public class ServerController {
 		 User user2 = userservice.findByPhone(user.getPhone());
 		 
 		server01.setUserId(user2.getId());
+		server01.setQualificationsImgUrl(qualificationsImgUrl);
+		server01.setBusinessLicenseImgUrl(businessLicenseImgUrl);
 		server01.setDel(0);
 		serverService.save(server01);
 		

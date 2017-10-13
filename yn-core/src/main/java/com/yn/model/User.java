@@ -73,8 +73,19 @@ public class User extends IDomain implements Serializable {
     @Where(clause = "del=0")
     private Set<BankCard> bankCard;
 
+    public User() {}
 
-    public String getToken() {
+	public User(String phone, String email, String headImgUrl, String fullAddressText,String nickName) {
+		this.phone = phone;
+		this.email = email;
+		this.headImgUrl = headImgUrl;
+		this.fullAddressText = fullAddressText;
+		this.nickName = nickName;
+	}
+
+
+
+	public String getToken() {
         return token;
     }
 
