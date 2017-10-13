@@ -1,6 +1,8 @@
 package com.yn.controller;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +106,7 @@ public class AmPhaseRecordJobController {
 					amPhaseRecord.setAmPhaseRecordId(
 							"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 					amPhaseRecordService.save(amPhaseRecord);
+					System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				}
 			}
 		}
@@ -125,6 +128,7 @@ public class AmPhaseRecordJobController {
 					amPhaseRecord.setAmPhaseRecordId(
 							"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
 					amPhaseRecordService.save(amPhaseRecord);
+					System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				}
 			}
 		}

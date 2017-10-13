@@ -3,6 +3,7 @@ package com.yn.service;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.UserDao;
+import com.yn.dao.mapper.AmmeterMapper;
 import com.yn.enums.*;
 import com.yn.exception.MyException;
 import com.yn.model.Ammeter;
@@ -46,6 +47,8 @@ public class AmmeterService {
     private NoticeService noticeService;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private AmmeterMapper ammeterMapper;
 
 
     public Ammeter findOne(Long id) {
@@ -65,6 +68,7 @@ public class AmmeterService {
             return ammeterDao.save(ammeter);
         }
     }
+
 
     @Transactional
     public void delete(Long id) {

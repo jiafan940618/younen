@@ -501,4 +501,22 @@ public class AmPhaseRecord implements Serializable{
     public void setDealt(Integer dealt) {
         this.dealt = dealt;
     }
+
+	@Override
+	public String toString() {
+		return "AmPhaseRecord [amPhaseRecordId=" + amPhaseRecordId + ", rowId=" + rowId + ", cAddr=" + cAddr
+				+ ", iAddr=" + iAddr + ", dAddr=" + dAddr + ", dType=" + dType + ", wAddr=" + wAddr + ", meterTime="
+				+ meterTime + ", meterState=" + meterState + ", voltChange=" + voltChange + ", currentChange="
+				+ currentChange + ", frequency=" + frequency + ", volt=" + volt + ", aVolt=" + aVolt + ", bVolt="
+				+ bVolt + ", cVolt=" + cVolt + ", abVolt=" + abVolt + ", bcVolt=" + bcVolt + ", caVolt=" + caVolt
+				+ ", current=" + current + ", aCurrent=" + aCurrent + ", bCurrent=" + bCurrent + ", cCurrent="
+				+ cCurrent + ", kw=" + kw + ", aKw=" + aKw + ", bKw=" + bKw + ", cKw=" + cKw + ", kvar=" + kvar
+				+ ", aKvar=" + aKvar + ", bKvar=" + bKvar + ", cKvar=" + cKvar + ", kva=" + kva + ", aKva=" + aKva
+				+ ", bKva=" + bKva + ", cKva=" + cKva + ", powerFactor=" + powerFactor + ", aPowerFactor="
+				+ aPowerFactor + ", bPowerFactor=" + bPowerFactor + ", cPowerFactor=" + cPowerFactor + ", currentZero="
+				+ currentZero + ", kwhTotal=" + kwhTotal + ", kwh=" + kwh + ", kwhRev=" + kwhRev + ", kvarh1=" + kvarh1
+				+ ", kvarh2=" + kvarh2 + ", aKwhTotal=" + aKwhTotal + ", bKwhTotal=" + bKwhTotal + ", cKwhTotal="
+				+ cKwhTotal + ", dealt=" + dealt + "]";
+	}
+    
 }

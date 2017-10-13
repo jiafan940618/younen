@@ -1,6 +1,7 @@
 package com.yn.service;
 
 import com.yn.dao.TemStationDao;
+import com.yn.dao.mapper.TemStationMapper;
 import com.yn.domain.EachHourTemStation;
 import com.yn.enums.AmmeterTypeEnum;
 import com.yn.model.Station;
@@ -26,6 +27,8 @@ import java.util.*;
 public class TemStationService {
     @Autowired
     TemStationDao temStationDao;
+    @Autowired
+    TemStationMapper temStationMapper;
 
     public TemStation findOne(Long id) {
         return temStationDao.findOne(id);
@@ -42,6 +45,19 @@ public class TemStationService {
             temStationDao.save(one);
         } else {
             temStationDao.save(temStation);
+        }
+    }
+    public void saveByMapper(TemStation temStation) {
+        if (temStation.getId() != null) {
+            TemStation one = temStationDao.findOne(temStation.getId());
+            try {
+                BeanCopy.beanCopy(temStation, one);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            temStationMapper.updateByPrimaryKeySelective(temStation);
+        } else {
+        	temStationMapper.insert(temStation);
         }
     }
 

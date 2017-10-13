@@ -1,17 +1,21 @@
 package com.yn.job;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.AmmeterRecordDao;
 import com.yn.dao.StationDao;
+import com.yn.dao.mapper.AmmeterMapper;
+import com.yn.dao.mapper.StationMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.model.Ammeter;
 import com.yn.model.AmmeterRecord;
@@ -31,7 +35,7 @@ import com.yn.utils.DateUtil;
 /** 
  * 修改电表/电站信息 保存电表工作状态记录
  */
-// @Component
+@Component
 public class AmmeterJob {
 	@Autowired
 	AmmeterService ammeterService;
@@ -52,35 +56,54 @@ public class AmmeterJob {
 	@Autowired
 	StationDao stationDao;
 	@Autowired
+	StationMapper stationMapper;
+	@Autowired
 	TemStationService temStationService;
 	@Autowired
 	TemStationYearService temStationYearService;
+	@Autowired
+	AmmeterMapper ammeterMapper;
 
 	@Scheduled(fixedDelay = 10 * 1000)
 	@Transactional
 	private void job() {
-		System.out.println("AmmeterJob-->job::run");
-		List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
-		for (Ammeter ammeter : findAll) {
-			AmPhaseRecord aprR = new AmPhaseRecord();
-			aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-			aprR.setdAddr(ammeter.getdAddr());
-			aprR.setdType(ammeter.getdType());
-			aprR.setiAddr(ammeter.getiAddr());
-			aprR.setDealt(0);
-			List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
-			for (AmPhaseRecord apr : amPhaseRecords) {
-				apr.setDealt(1); // 已经处理
-				amPhaseRecordDao.save(apr);
-
-				saveAmmeterRecord(ammeter, apr.getMeterTime());
-				updateAmmeterAndStation(ammeter, apr);
+		try {
+			System.out.println("AmmeterJob-->job::run");
+			List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+			for (Ammeter ammeter : findAll) {
+				AmPhaseRecord aprR = new AmPhaseRecord();
+				aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
+				aprR.setdAddr(ammeter.getdAddr());
+				aprR.setdType(ammeter.getdType());
+				aprR.setiAddr(ammeter.getiAddr());
+				aprR.setDealt(0);
+				//List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
+				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
+				for (AmPhaseRecord apr : amPhaseRecords) {
+					apr.setDealt(1); // 已经处理
+					//amPhaseRecordDao.save(apr);
+					amPhaseRecordService.saveByMapper(apr);
+					saveAmmeterRecord(ammeter, apr.getMeterTime());
+					updateAmmeterAndStation(ammeter, apr);
+					System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+				}
+				if (amPhaseRecords.size() == 0) {
+					ammeter.setNowKw(0D);
+					//ammeterDao.save(ammeter);
+					Ammeter findOne = ammeterDao.findOne(ammeter.getId());
+					if(findOne!=null){
+						int selective = ammeterMapper.updateByPrimaryKeySelective(ammeter);
+						System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					}else{
+						int insert = ammeterMapper.insert(ammeter);
+						System.out.println("AmmeterJob--> ammeter新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					}
+				}
 			}
-
-			if (amPhaseRecords.size() == 0) {
-				ammeter.setNowKw(0D);
-				ammeterDao.save(ammeter);
-			}
+		} catch (Exception e) {
+			System.out.println("Exception：：-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -102,7 +125,8 @@ public class AmmeterJob {
 //		}
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecord.setType(ammeter.getType());
-		ammeterRecordService.save(ammeterRecord);
+		//ammeterRecordService.save(ammeterRecord);
+		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
 
 	/**
@@ -126,7 +150,14 @@ public class AmmeterJob {
 		ammeter.setNowKw(apr.getKw());
 		ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
 		ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
-		ammeterDao.save(ammeter);
+		//ammeterDao.save(ammeter);
+		//ammeterMapper.insert(ammeter);
+		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
+		if(findOne!=null){
+			ammeterMapper.updateByPrimaryKeySelective(ammeter);
+		}else{
+			ammeterMapper.insert(ammeter);
+		}
 
 		Long stationId = ammeter.getStationId();
 		if (stationId != null) {
@@ -140,7 +171,14 @@ public class AmmeterJob {
 			} else if (ammeter.getType() == 2) {
 				station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
 			}
-			stationDao.save(station);
+			//stationDao.save(station);
+			//stationMapper.insert(station);
+			Station one = stationDao.findOne(station.getId());
+			if(one!=null){
+				ammeterMapper.updateByPrimaryKeySelective(ammeter);
+			}else{
+				stationMapper.insert(station);
+			}
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
 	}
@@ -193,11 +231,15 @@ public class AmmeterJob {
 				newTemStation.setKw(apr.getKw());
 				newTemStation.setKwh(tolKwh);
 				newTemStation.setRecordTime(temStationRecordTime);
-				temStationService.save(newTemStation);
+				//temStationService.save(newTemStation);
+				temStationService.saveByMapper(newTemStation);
+				System.out.println("AmmeterJob--> temStation更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				temStation.setKw(apr.getKw());
 				temStation.setKwh(temStation.getKwh() + tolKwh);
-				temStationService.save(temStation);
+				//temStationService.save(temStation);;
+				temStationService.saveByMapper(temStation);
+				System.out.println("AmmeterJob--> temStation更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 
 			// 每天的
@@ -225,11 +267,15 @@ public class AmmeterJob {
 				newTemStationYear.setKw(apr.getKw());
 				newTemStationYear.setKwh(tolKwh);
 				newTemStationYear.setRecordTime(temStationYearRecordTime);
-				temStationYearService.save(newTemStationYear);
+				//temStationYearService.save(newTemStationYear);
+				temStationYearService.saveByMapper(newTemStationYear);
+				System.out.println("AmmeterJob--> temStationYear更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				temStationYear.setKw(apr.getKw());
 				temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
-				temStationYearService.save(temStationYear);
+				//temStationYearService.save(temStationYear);
+				temStationYearService.saveByMapper(temStationYear);
+				System.out.println("AmmeterJob--> temStationYear更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 		}
 	}

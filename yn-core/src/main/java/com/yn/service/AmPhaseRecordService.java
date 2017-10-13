@@ -9,25 +9,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
+import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.utils.DateUtil;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.AmPhaseRecordExample;
+import com.yn.vo.AmPhaseRecordExample.Criteria;
 
 @Service
 public class AmPhaseRecordService {
 	
 	@Autowired
 	AmPhaseRecordDao amPhaseRecordDao;
+	
+	@Autowired
+	AmPhaseRecordMapper amPhaseRecordMapper;
 
 	public AmPhaseRecord findOne(Long id) {
 		return amPhaseRecordDao.findOne(id);
 	}
 
-	public void save(AmPhaseRecord amPhaseRecord) {
-		amPhaseRecordDao.save(amPhaseRecord);
+	public AmPhaseRecord save(AmPhaseRecord amPhaseRecord) {
+		AmPhaseRecord save = amPhaseRecordDao.save(amPhaseRecord);
+		return save;
+	}
+	public void saveByMapper(AmPhaseRecord amPhaseRecord) {
+		amPhaseRecordMapper.addAmPhaseRecord(amPhaseRecord);
 	}
 
 	public void delete(Long id) {
@@ -57,6 +70,19 @@ public class AmPhaseRecordService {
 	public List<AmPhaseRecord> findAll(AmPhaseRecord amPhaseRecord) {
 		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
 		return amPhaseRecordDao.findAll(spec);
+	}
+	
+	public List<AmPhaseRecord> findAllByMapper(AmPhaseRecord amPhaseRecord) {
+		AmPhaseRecordExample example = new AmPhaseRecordExample();
+		Criteria criteria = example.createCriteria();
+		//Dealt iAddr dType cAddr dAddr
+		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
+		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
+		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
+		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
+		criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
+		return byExample;
 	}
 	
 	/**

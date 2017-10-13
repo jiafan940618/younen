@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.TemStationYearDao;
+import com.yn.dao.mapper.TemStationYearMapper;
 import com.yn.model.Station;
 import com.yn.model.TemStationYear;
 import com.yn.utils.BeanCopy;
@@ -22,6 +23,8 @@ import com.yn.utils.RepositoryUtil;
 public class TemStationYearService {
     @Autowired
     TemStationYearDao temStationYearDao;
+    @Autowired
+    TemStationYearMapper temStationYearMapper;
 
     public TemStationYear findOne(Long id) {
         return temStationYearDao.findOne(id);
@@ -38,6 +41,19 @@ public class TemStationYearService {
             temStationYearDao.save(one);
         }else {
             temStationYearDao.save(temStationYear);
+        }
+    } 
+    public void saveByMapper(TemStationYear temStationYear) {
+        if(temStationYear.getId()!=null){
+        	TemStationYear one = temStationYearDao.findOne(temStationYear.getId());
+            try {
+                BeanCopy.beanCopy(temStationYear,one);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            temStationYearMapper.updateByPrimaryKeySelective(one);
+        }else {
+        	temStationYearMapper.insert(temStationYear);
         }
     }
 
