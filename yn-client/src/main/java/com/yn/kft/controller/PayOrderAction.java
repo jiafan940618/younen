@@ -82,13 +82,13 @@ public class PayOrderAction {
 		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+billOrderVo.getTradeNo());
-		logger.info("======= ========= ======== =======传递的amount:"+billOrderVo.getMoney());
+		logger.info("======= ========= ======== =======传递的money:"+billOrderVo.getMoney());
 		
 		logger.info("======= ========= ======== =======传递的协议号TreatyId:"+bankCardVo.getTreatyId());
 		
 		
 		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
-		 if (null!=bankCardVo.getTreatyId() || bankCardVo.getTreatyId().equals("") ){
+		 if (null!=bankCardVo.getTreatyId() && !bankCardVo.getTreatyId().equals("") ){
 		    	
 		    	try {
 		    		kftpayService.init();

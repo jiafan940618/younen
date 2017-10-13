@@ -37,35 +37,13 @@ public class Inverter extends IDomain implements Serializable {
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
 	private Double boardYear;
 
-	@Column(columnDefinition = "varchar(255) comment '[备注]'")
-	private String remark;
-	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[供货价格]'")
-	private Double supplyPrice;
-	
 	
 	public Inverter() {}
 
-	public Inverter(Long id, String model) {
+	public Inverter(Long id, String model,Double qualityAssurance) {
 		this.id = id;
 		this.model = model;
-	}
-
-	
-	public Double getSupplyPrice() {
-		return supplyPrice;
-	}
-
-	public void setSupplyPrice(Double supplyPrice) {
-		this.supplyPrice = supplyPrice;
-	}
-
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
+		this.qualityAssurance = qualityAssurance;
 	}
 
 	public Long getId() {

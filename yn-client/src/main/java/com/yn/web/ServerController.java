@@ -3,6 +3,8 @@ package com.yn.web;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,6 +30,7 @@ import com.yn.dao.ProvinceDao;
 import com.yn.dao.UserDao;
 import com.yn.model.Brand;
 import com.yn.model.City;
+import com.yn.model.Decideinfo;
 import com.yn.model.Devide;
 import com.yn.model.Inverter;
 import com.yn.model.Province;
@@ -36,17 +39,17 @@ import com.yn.model.SolarPanel;
 import com.yn.model.User;
 import com.yn.model.newPage;
 import com.yn.service.BrandService;
-import com.yn.service.DevideService;
+import com.yn.service.DecideinfoService;
 import com.yn.service.InverterService;
 import com.yn.service.ServerService;
 import com.yn.service.SolarPanelSerice;
+import com.yn.service.SolarPanelService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
-import com.yn.vo.DevideVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.SolarPanelVo;
@@ -58,6 +61,8 @@ import com.yn.vo.re.ResultVOUtil;
 public class ServerController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ServerController.class);
+	@Autowired 
+	SolarPanelService solarPanelService;
 	@Autowired
 	SolarPanelSerice solarService;
 	@Autowired
@@ -79,7 +84,7 @@ public class ServerController {
     @Autowired
     UserService userservice;
     @Autowired
-    DevideService devideService;
+    DecideinfoService  decideinfoService;
     
     
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
@@ -239,17 +244,14 @@ public class ServerController {
  	@RequestMapping(value = "/checkCode")
  	public ResultData<Object> checkCode(String code,String phone,HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
  	  
- 	  Server server = new Server();
- 	  server.setLegalPersonPhone(phone);
+ 		User user = userService.findByPhone(phone);
  	  
  	  if( null== phone || phone.equals("")){  
  		 logger.info("--- -- --- 电话不能为空！");
  		 return ResultVOUtil.error(777, Constant.PHONE_NULL);
  	  }
  	  
- 	  Server serverPh = serverService.findOne(server);
- 	  
- 	  if(null!=serverPh){
+ 	  if(null !=user){
  		 logger.info("--- --- -- - 电话号码已存在！");
  		 return ResultVOUtil.error(777, Constant.PHONE_EXIST);
  	  }
@@ -294,8 +296,7 @@ public class ServerController {
    @RequestMapping(value="/serverInf")
    public  ResultData<Object> getRongLian(@RequestParam(value = "phone", required = true) String phone, HttpSession httpSession,HttpServletResponse response){
 	   
-	   Server server = new Server();
-	 	  server.setLegalPersonPhone(phone);
+	  
 	   
 	if(null == phone || phone.equals("")){
 		
@@ -303,9 +304,9 @@ public class ServerController {
 		return ResultVOUtil.error(777, Constant.PHONE_NULL);
 	}
 	
-	 Server server01 = serverService.findOne(server);
+	User user = userService.findByPhone(phone);
 	
-	if(server01 != null){
+	if(user != null){
 	
 		logger.info(" ------ 该手机号已存在");
 		return ResultVOUtil.error(777, Constant.PHONE_EXIST);
@@ -365,21 +366,7 @@ public class ServerController {
 			
 			return ResultVOUtil.error(777, Constant.CITY_LONG);
 		}
-		/** 保存server,关联的数据暂时不明白*/
-		List<Devide> device = serverVo.getDevice();
-		if (device!=null&&device.size()>0) {
-			for (Devide devices : device) {
-				
-				devideDao.save(devices);
-			}
-		}
-		 /** 新版本的电池板，与逆变器的保存方式*/
-		/*DevideVo deviceVo =serverVo.getDeviceVo();
 
-		devideService.saveDdeide(deviceVo);*/
-		
-		
-		
 		Server server01= new Server();
 		 BeanCopy.copyProperties(serverVo, server01);
 		 
@@ -388,6 +375,19 @@ public class ServerController {
 		 if(null != log && !log.equals("")){
 			 server01.setCompanyLogo(log);
 		 }
+	 
+		  String  qualificationsImgUrl =(String)  httpSession.getAttribute("qualificationsImgUrl");
+		  String  businessLicenseImgUrl =(String)  httpSession.getAttribute("businessLicenseImgUrl");
+		  
+		  if(null == qualificationsImgUrl){
+			  logger.info(" ---- ---- --- --- 资质照片不能为空!");
+			  return ResultVOUtil.error(777, Constant.ficationsImgUrl_NULL);
+		  }
+		  if(null == businessLicenseImgUrl){
+			  logger.info(" ---- ---- --- --- 营业执照不能为空!");
+			  return ResultVOUtil.error(777, Constant.LicenseImgUrl_NULL);
+		  }
+
 		logger.info("--- ---- ---- ---- ---- ---- --- registeredDtm "+server01.getRegisteredDtm());
 		logger.info("--- ---- ---- ---- ---- ---- --- email "+serverVo.getEmail());
 		logger.info("--- ---- ---- ---- ---- ---- --- password "+serverVo.getPassword());
@@ -406,8 +406,8 @@ public class ServerController {
 		logger.info("--- ---- ---- ---- ---- ---- --- serverCityIds "+server01.getServerCityIds());
 		logger.info("--- ---- ---- ---- ---- ---- --- 最大施工人数:maxNumberOfBuilder "+server01.getMaxNumberOfBuilder());
 		logger.info("--- ---- ---- ---- ---- ---- --- 装机容量：tolCapacityOfYn "+serverVo.getTolCapacityOfYn());
-		logger.info("--- ---- ---- ---- ---- ---- --- 营业执照图片地址：businessLicenseImgUrl "+server01.getBusinessLicenseImgUrl());
-		logger.info("--- ---- ---- ---- ---- ---- --- 资质照片地址：qualificationsImgUrl "+server01.getQualificationsImgUrl());
+		logger.info("--- ---- ---- ---- ---- ---- --- 营业执照图片地址：businessLicenseImgUrl "+businessLicenseImgUrl);
+		logger.info("--- ---- ---- ---- ---- ---- --- 资质照片地址：qualificationsImgUrl "+qualificationsImgUrl);
 		logger.info("--- ---- ---- ---- ---- ---- --- 设计工程费用：designPrice "+server01.getDesignPrice());
 		logger.info("--- ---- ---- ---- ---- ---- --- 市场价格 20KW（含）以下   元/瓦:priceaRing "+server01.getPriceaRing());
 		logger.info("--- ---- ---- ---- ---- ---- --- 市场价格 20KW以上  元/瓦:pricebRing "+server01.getPricebRing());
@@ -419,19 +419,32 @@ public class ServerController {
 		 user.setAddressText(serverVo.getCompanyAddress());
 		 user.setPassword(serverVo.getPassword());
 		 user.setPhone(serverVo.getPhone());
-		 
+		 user.setDel(0);
 		 userservice.save(user);
 		 
-		 User user2=	 userservice.findByPhone(user.getPhone());
+		 User user2 = userservice.findByPhone(user.getPhone());
 		 
-		/* serverVo.getPhone(); 
-		 serverVo.getPassword();
-		 serverVo.getEmail();
-		 serverVo.getServerCityIds(); //服务城市ID
-		 serverVo.getServerCityText(); //服务城市*/
 		server01.setUserId(user2.getId());
-		 
+		server01.setDel(0);
 		serverService.save(server01);
+		
+		Server	NEWserver = serverService.findbylegalPersonPhone(server01.getLegalPersonPhone());
+		
+		
+		logger.info("--- ---- ---- ---- ---- ---- --- 逆变器的id：inverterId "+serverVo.getDecideinfo().getInverterId());
+		logger.info("--- ---- ---- ---- ---- ---- --- 逆变器的备注：invremark "+serverVo.getDecideinfo().getInvremark());
+		logger.info("--- ---- ---- ---- ---- ---- --- 逆变器的供货价格：invsupplyPrice "+serverVo.getDecideinfo().getInvsupplyPrice());
+		logger.info("--- ---- ---- ---- ---- ---- --- 电池板的供货价格：solsupplyPrice "+serverVo.getDecideinfo().getSolsupplyPrice());
+		logger.info("--- ---- ---- ---- ---- ---- --- 电池板的id：solarpanelId "+serverVo.getDecideinfo().getSolarpanelId());
+		logger.info("--- ---- ---- ---- ---- ---- --- 电池板的solremark：solremark "+serverVo.getDecideinfo().getSolremark());
+		logger.info("--- ---- ---- ---- ---- ---- --- serverId：serverId "+NEWserver.getId());
+		
+		Decideinfo decideinfo=	serverVo.getDecideinfo();
+		decideinfo.setServerId(NEWserver.getId());
+		decideinfo.setDel(0);
+		decideinfoService.save(decideinfo);
+		
+		
 		httpSession.setAttribute("server", server01);
 
 		return ResultVOUtil.success(server01);
@@ -513,6 +526,9 @@ public class ServerController {
  			HttpServletResponse response, HttpSession httpSession) {
 	   //0:电池板,1:逆变器,2:其他材料
 	   //1、电池板 3、逆变器
+	   
+	  /* deviceType.setType(1);
+	   deviceType.setParentId(2L);*/
 	   logger.info("传来的类型的值为 ： ------ --------- -------"+deviceType.getType());
 	   logger.info("传来的型号的值为 ： ------ --------- -------"+deviceType.getParentId());
 	   
@@ -534,6 +550,34 @@ public class ServerController {
  		return ResultVOUtil.success(null);
 
  	}
+   
+   /** 显示型号的详细数据*/
+   @ResponseBody
+	@RequestMapping(value = "/findInvSol")
+	public Object findInvSol(Devide deviceType) {
+	   /*deviceType.setId(2L);
+	   deviceType.setType(1);*/
+	   logger.info("传来的类型的值为 ： ------ --------- -------"+deviceType.getType());
+	   logger.info("传来的型号的值为 ： ------ --------- -------"+deviceType.getId());
+		
+		 if(deviceType.getType() == 0){
+			 
+			 SolarPanel solarPanel	= solarPanelService.findOne(deviceType.getId());
+			 
+			   return ResultVOUtil.success(solarPanel);
+			  
+			   
+		   }else if(deviceType.getType() == 1){
+			 
+			   Inverter inverter =inverterService.findOne(deviceType.getId());
+			   
+			   return ResultVOUtil.success(inverter);
+		   }
+		
+		
+		 return ResultVOUtil.success(null);
+	}
+   
    
    
    /**

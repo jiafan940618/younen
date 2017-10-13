@@ -110,10 +110,7 @@ public class DevideService {
     	solarPanel.setBrandName(deviceVo.getSolbrandName());
     	solarPanel.setModel(deviceVo.getSolmodel());
     	solarPanel.setQualityAssurance(deviceVo.getSolqualityAssurance());
-    	solarPanel.setConversionEff(deviceVo.getSolconversionEff());
     	solarPanel.setPowerGeneration(deviceVo.getSolpowerGeneration());
-    	solarPanel.setRemark(deviceVo.getSolremark());
-    	solarPanel.setSupplyPrice(deviceVo.getSolsupplyPrice());
     	
     	solarPanelService.save(solarPanel);
     	
@@ -129,9 +126,6 @@ public class DevideService {
     	inverter.setBrandName(deviceVo.getInvbrandName());
     	inverter.setModel(deviceVo.getInvmodel());
     	inverter.setQualityAssurance(deviceVo.getInvqualityAssurance());
-    	inverter.setRemark(deviceVo.getInvremark());
-    	inverter.setSupplyPrice(deviceVo.getInvsupplyPrice());
-    	
     	inverterService.save(inverter);
     }
     

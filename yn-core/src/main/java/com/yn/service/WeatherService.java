@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.WeatherDao;
+import com.yn.model.City;
 import com.yn.model.Weather;
 import com.yn.utils.HttpUtil;
 import com.yn.utils.JsonUtil;
@@ -22,6 +23,12 @@ import net.sf.json.JSONArray;
 public class WeatherService {
 	@Autowired
 	WeatherDao weatherDao;
+	
+	 public Weather findOne(Long id) {
+	        return weatherDao.findOne(id);
+	    }
+	
+	
 
 	// final private String JUHEAPPKEY = "72daa5ecfd27138c92f4eb4d257979fd";
 	final private String HEFENGAPPKEY = "8f68a8f55d1e4f259caa3de36cdf16fa";

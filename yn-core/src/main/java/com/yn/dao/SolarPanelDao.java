@@ -26,7 +26,7 @@ public interface SolarPanelDao extends JpaRepository<SolarPanel, Long>, JpaSpeci
 	
 	@Transactional
 	@Modifying
-	@Query(" select new SolarPanel(id,model) from SolarPanel s  where s.brandId = :brandId and s.del =0 ")
+	@Query(" select new SolarPanel(id,model,conversionEfficiency,powerGeneration,qualityAssurance) from SolarPanel s  where s.brandId = :brandId and s.del =0 ")
 	List<SolarPanel> selectSolarPanel(@Param("brandId") Integer brandId);
 	
 	

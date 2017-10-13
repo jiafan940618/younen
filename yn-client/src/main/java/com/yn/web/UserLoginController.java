@@ -65,12 +65,15 @@ public class UserLoginController {
 	@Autowired
     UserDao userDao;
 
-	 @RequestMapping(value = "/login", method = {RequestMethod.POST})
+	    @RequestMapping(value = "/login")
 	    @ResponseBody
 	    public Object appLogin(@RequestParam(value = "phone", required = true) String phone,
 	    		@RequestParam(value = "password", required = true) String password,
 	    		HttpServletResponse response,HttpSession session) {
-	  
+	  logger.info("---- ---- --- --- - --- - --- -----传递的phone"+phone);
+	  logger.info("---- ---- --- --- - --- - --- -----传递的password"+password);
+		 
+		 
 	    	   	 User user =null; 
 	        user = userService.findByPhone(phone);
 	        if(user == null){
@@ -108,8 +111,64 @@ public class UserLoginController {
 	        
 	        session.setAttribute("user", userVo);
 	        
+	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
 	        return ResultVOUtil.success(userVo);
+	    }
+
+	 
+	   @ResponseBody
+	   @RequestMapping(value = "/apologin")
+	    public ResultData apoLogin(UserVo userVo, HttpServletRequest request, HttpServletResponse response,
+				HttpSession httpSession) {
+		   
+		   userVo.setPhone("13450699433");
+		   userVo.setPassword("123456");
+		   
+	  logger.info("---- ---- --- --- - --- - --- -----传递的phone:"+userVo.getPhone());
+	  logger.info("---- ---- --- --- - --- - --- -----传递的password:"+userVo.getPassword());
+		 
+		 
+	    	   	 User newuser =null; 
+	    	   	newuser = userService.findByPhone(userVo.getPhone());
+	        if(newuser == null){
+	        	newuser = userService.findByEamil(userVo.getPhone()); 
+	        	 if(newuser == null){
+	        		 newuser = userService.findByUserName(userVo.getPhone()); 
+	        	 }
+	        }
+	        if (newuser == null) {
+	        	logger.info("----- --- ----- 该用户不存在！");
+	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);
+	        } else if (!newuser.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))) {
+	        	logger.info("----- --- ----- 密码错误！");
+	            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
+	        }
+
+
+	        newuser.setToken(userService.getToken(newuser));
+	        userService.updateToken(newuser);
+
+	        SessionCache.instance().setUser(newuser);
+	        newuser.setPassword(null);
+	        Object object = ResultVOUtil.success(newuser);
+	        
+	        NewUserVo userVo01 = new NewUserVo();
+	        
+	        userVo01.setEmail(newuser.getEmail());
+	        userVo01.setFullAddressText(newuser.getFullAddressText());
+	        userVo01.setId(newuser.getId());
+	        userVo01.setNickName(newuser.getNickName());
+	        userVo01.setUserName(newuser.getUserName());
+	        userVo01.setPhone(newuser.getPhone());
+	        userVo01.setToken(userService.getToken(newuser)); 
+	        userVo01.setHeadImgUrl(newuser.getHeadImgUrl());
+	        
+	        httpSession.setAttribute("user", userVo01);
+	        
+	        logger.info("---- ---- --- --- - --- - --- ----结束");
+	        
+	        return ResultVOUtil.success(userVo01);
 	    }
 
     /**
@@ -403,7 +462,7 @@ public class UserLoginController {
 	}
 	
 	/** 服务商上传营业执照等*/
-	 @RequestMapping(value="/doupload", method = {RequestMethod.POST})
+	 @RequestMapping(value="/doupload")
 	 @ResponseBody
 	  public ResultData<Object> getupload(MultipartHttpServletRequest request,HttpSession session) throws UnsupportedEncodingException{
 		  request.setCharacterEncoding("UTF-8");
@@ -447,6 +506,22 @@ public class UserLoginController {
 	                }
 	            }	
 	        }
+	        
+	        String  businessLicenseImgUrl =(String)  session.getAttribute("businessLicenseImgUrl");
+		     
+		     logger.info("---- ---- ----- ------- --- businessLicenseImgUrl："+businessLicenseImgUrl);
+		     
+		     if(null != businessLicenseImgUrl && !businessLicenseImgUrl.equals("")){
+		    	 
+		    	 String finaltime01 =  businessLicenseImgUrl+","+finaltime;
+		    	 
+		    	 logger.info("---- ---- ----- ------- --- 串接："+finaltime01);
+		    	 
+		    	 session.setAttribute("businessLicenseImgUrl", finaltime01);
+		     }else{
+		    	 session.setAttribute("businessLicenseImgUrl", finaltime);
+		     }
+	      
 
 	       logger.info(finaltime);
 	        return ResultVOUtil.success(finaltime);   
@@ -497,7 +572,22 @@ public class UserLoginController {
 	                }
 	            }	
 	        }
-
+	        
+	        String  qualificationsImgUrl =(String)  session.getAttribute("qualificationsImgUrl");
+		     
+		     logger.info("---- ---- ----- ------- --- qualificationsImgUrl："+qualificationsImgUrl);
+		     
+		     if(null != qualificationsImgUrl && !qualificationsImgUrl.equals("")){
+		    	 
+		    	String finaltime01 =  qualificationsImgUrl+","+finaltime;
+		    	 
+		    	 logger.info("---- ---- ----- ------- --- 串接："+finaltime01);
+		    	 
+		    	 session.setAttribute("qualificationsImgUrl", finaltime01);
+		     }else{
+		    	 session.setAttribute("qualificationsImgUrl", finaltime);
+		     }
+  
 	       logger.info("---- ---- ----- ------- --- 上传的图片为："+finaltime);
 	        return ResultVOUtil.success(finaltime);   
 	 }

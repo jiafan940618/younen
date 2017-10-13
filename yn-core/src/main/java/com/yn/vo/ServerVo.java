@@ -1,6 +1,7 @@
 package com.yn.vo;
 
 import com.yn.domain.QueryVo;
+import com.yn.model.Decideinfo;
 import com.yn.model.Devide;
 
 import java.util.Date;
@@ -58,17 +59,16 @@ public class ServerVo extends QueryVo {
     
     private List<Devide> device;
     
-    private DevideVo deviceVo;
-    
-    
-    
-    
-    public DevideVo getDeviceVo() {
-		return deviceVo;
+    private Decideinfo decideinfo;
+  
+
+  
+	public Decideinfo getDecideinfo() {
+		return decideinfo;
 	}
 
-	public void setDeviceVo(DevideVo deviceVo) {
-		this.deviceVo = deviceVo;
+	public void setDecideinfo(Decideinfo decideinfo) {
+		this.decideinfo = decideinfo;
 	}
 
 	public String getEmail() {

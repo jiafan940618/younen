@@ -56,5 +56,11 @@ public class Constant {
     public final static String BANK_CODE_ERROR = "未绑定银行卡,请先绑定你的银行卡!";
     
     
+    
+    /** 多文件上传*/
+    
+    public final static String LicenseImgUrl_NULL = "抱歉,您的营业执照未上传!"; 
+    
+    public final static String ficationsImgUrl_NULL = "抱歉,您的资质照片未上传!"; 
 
 }

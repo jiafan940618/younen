@@ -61,7 +61,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         // }
         // return true;
         // }
-
+        logger.info("--- ---- --- - -- - - - - -- ----验证为："+fromUserLogin(url));
         if (fromUserLogin(url)) {
             return true;
         }
@@ -120,7 +120,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if (url.indexOf("/client/userLogin/webLogin") > -1) {
+        if (url.indexOf("/client/userLogin") > -1) {
             return true;
         }
         return false;

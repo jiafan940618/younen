@@ -27,7 +27,7 @@ public interface InverterDao extends JpaRepository<Inverter, Long>, JpaSpecifica
 	
 	@Transactional
 	@Modifying
-	@Query(" select new Inverter(id,model) from Inverter i where i.brandId = :brandId and i.del =0 ")
+	@Query(" select new Inverter(id,model,qualityAssurance) from Inverter i where i.brandId = :brandId and i.del =0 ")
 	List<Inverter> selectInverter(@Param("brandId") Integer brandId);
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yn.model.City;
+import com.yn.model.Weather;
 import com.yn.service.redisService.DemoInfoService;
 
 @Controller 
@@ -21,20 +22,22 @@ public class DemoInfoController {
 	@ResponseBody
 	@RequestMapping("/test")
     public  String test(){
-
-		City loaded = demoInfoService.findById(1);
+	
+		
+		Weather loaded = demoInfoService.findById(3l);
 
 		System.out.println("loaded="+loaded);
 	
-		City cached = demoInfoService.findById(1);
+		Weather cached = demoInfoService.findById(3l);
 
         System.out.println("cached="+cached);
 
-        loaded = demoInfoService.findById(2);
+        loaded = demoInfoService.findById(5l);
 
         System.out.println("loaded2="+loaded);
         
       /** 根据系统时间来确定*/
+        
         
         
         Date date = new Date();

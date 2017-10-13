@@ -1,6 +1,7 @@
 package com.yn.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,9 @@ import com.yn.domain.IDomain;
 @Entity
 public class Weather extends IDomain implements Serializable {
 
+	@Column(insertable = false, updatable = false, columnDefinition = "datetime default CURRENT_TIMESTAMP comment '[创建时间]'")
+    private Date createDtm;
+	
 	@Column(columnDefinition = "varchar(10) NOT NULL comment '[城市]'")
 	private String city;
 	/**
@@ -46,7 +50,15 @@ public class Weather extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(10) comment '[夜间天气]'")
 	private String wNight;
 	
+
 	
+	public Date getCreateDtm() {
+		return createDtm;
+	}
+
+	public void setCreateDtm(Date createDtm) {
+		this.createDtm = createDtm;
+	}
 
 	public String getCity() {
 		return city;

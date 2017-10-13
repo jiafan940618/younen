@@ -5,6 +5,8 @@ import com.yn.vo.re.ResultVOUtil;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,9 @@ import com.yn.vo.SubsidyVo;
 @RestController
 @RequestMapping("/client/subsidy")
 public class SubsidyController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SubsidyController.class);
+	
 	@Autowired
 	SystemConfigService systemConfigService;
     @Autowired
@@ -93,9 +98,13 @@ public class SubsidyController {
 	@RequestMapping(value = "/monishouyi")
 	public Object findByType(Subsidy subsidy, String sqm, com.yn.model.Page<Subsidy> page) {
 		ResultData<Object> resultData = new ResultData<Object>();
-		subsidy.setCityId(213L);
+		/*subsidy.setCityId(213L);
 		subsidy.setType(1);
-		sqm = "45";
+		sqm = "45";*/
+	logger.info("传递的type:----- ---- --- ---- ---"+subsidy.getType());
+	logger.info("传递的CityId:----- ---- --- ---- ---"+subsidy.getCityId());	
+	logger.info("传递的sqm:----- ---- --- ---- ---"+sqm);
+	
 		Map<String, String> map = systemConfigService.getlist();
 
 		DecimalFormat df = new DecimalFormat("#0.00");
