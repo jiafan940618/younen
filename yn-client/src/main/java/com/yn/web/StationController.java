@@ -1,6 +1,7 @@
 package com.yn.web;
 
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
 import com.yn.dao.TemStationDao;
+import com.yn.model.Server;
 import com.yn.model.Station;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
@@ -173,4 +175,64 @@ public class StationController {
 		return ResultVOUtil.success(capacityAll);
 	}
     
+	/**
+	 * 实时数据里的电站分布
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/stationFenbu", method = { RequestMethod.POST, RequestMethod.GET })
+	public Object stationFenbu(HttpSession session) {
+			Server server = (Server)session.getAttribute("server");
+			List<Map> rm2 = new ArrayList<>();
+			
+			if (server!=null) {
+				Object rm[]=stationDao.stationFenbuById(server.getId().intValue());
+				for (int i = 0; i < rm.length; i++) {
+					Map<String, Object> map=new HashMap<>();
+					Object object = rm[i];
+					
+					Object[] obj=(Object[])object;
+					String provinceName=provinceName((String)obj[0]);
+					map.put(provinceName, (BigInteger)obj[1]);
+					rm2.add(map);	
+				}
+			}else {
+				Object rm[]=stationDao.stationFenbu();
+				for (int i = 0; i < rm.length; i++) {
+					Map<String, Object> map=new HashMap<>();
+					Object object = rm[i];
+					
+					Object[] obj=(Object[])object;
+					String provinceName=provinceName((String)obj[0]);
+					map.put(provinceName, (BigInteger)obj[1]);
+					rm2.add(map);
+					
+				}
+			}
+		return ResultVOUtil.success(rm2);
+	}
+	private String provinceName(String str){
+		// 判断是否是直辖市
+		if(str.contains("市")){
+			int i = str.indexOf("市");
+			String rs = str.substring(0, i);
+			return rs;
+		} else if(str.contains("省")){
+			int i = str.indexOf("省");
+			String rs = str.substring(0, i);
+			return rs;
+		} else if(str.equals("内蒙古自治区")){
+			return "内蒙古";
+		} else if(str.equals("广西壮族自治区")){
+			return "广西";
+		} else if(str.equals("宁夏回族自治区")){
+			return "宁夏";
+		} else if(str.equals("新疆维吾尔自治区")){
+			return "新疆";
+		} else if(str.equals("香港特别行政区")){
+			return "香港";
+		} else if(str.equals("澳门特别行政区")){
+			return "澳门";
+		}
+		return null;
+	}
 }

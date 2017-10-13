@@ -53,8 +53,8 @@ public class AmPhaseRecordJob {
 	/**
 	 * 采集amPhase数据
 	 */
-	@Scheduled(fixedDelay = 25 * 1000)
-	// @Scheduled(cron = "0/25 * * * * ? ")
+	// @Scheduled(fixedDelay = 25 * 1000)
+	@Scheduled(cron = "0/25 * * * * ? ")
 	private void collectAmPhaseRecord() throws Exception {
 		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
 		// amPhaseRecord1.setAmPhaseRecordId("3214321234");

@@ -14,6 +14,7 @@ import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.AmmeterRecordDao;
 import com.yn.dao.StationDao;
+import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.dao.mapper.AmmeterMapper;
 import com.yn.dao.mapper.StationMapper;
 import com.yn.model.AmPhaseRecord;
@@ -82,7 +83,12 @@ public class AmmeterJob {
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
 					//amPhaseRecordDao.save(apr);
-					amPhaseRecordService.saveByMapper(apr);
+					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr.getAmPhaseRecordId());
+					if(amPhaseRecord==null){
+						amPhaseRecordService.saveByMapper(apr);
+					}else{
+						int keySelective = amPhaseRecordService.updateByPrimaryKeySelective(apr);
+					}
 					saveAmmeterRecord(ammeter, apr.getMeterTime());
 					updateAmmeterAndStation(ammeter, apr);
 					System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
@@ -155,8 +161,10 @@ public class AmmeterJob {
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
 		if(findOne!=null){
 			ammeterMapper.updateByPrimaryKeySelective(ammeter);
+			System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}else{
 			ammeterMapper.insert(ammeter);
+			System.out.println("AmmeterJob--> ammeter新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}
 
 		Long stationId = ammeter.getStationId();
@@ -176,8 +184,10 @@ public class AmmeterJob {
 			Station one = stationDao.findOne(station.getId());
 			if(one!=null){
 				ammeterMapper.updateByPrimaryKeySelective(ammeter);
+				System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}else{
 				stationMapper.insert(station);
+				System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
@@ -269,7 +279,7 @@ public class AmmeterJob {
 				newTemStationYear.setRecordTime(temStationYearRecordTime);
 				//temStationYearService.save(newTemStationYear);
 				temStationYearService.saveByMapper(newTemStationYear);
-				System.out.println("AmmeterJob--> temStationYear更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+				System.out.println("AmmeterJob--> temStationYear新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				temStationYear.setKw(apr.getKw());
 				temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
