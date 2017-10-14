@@ -64,7 +64,35 @@ public class UserController {
         return ResultVOUtil.success(findAll);
     }
     
-    /** 修改用户资料*/
+    /** 查询出用户的资料*/
+    @ResponseBody
+    @RequestMapping(value = "/findUser", method = {RequestMethod.POST})
+    public Object findByOne(UserVo userVo) {
+       
+    	//userVo
+    	User user = userService.findIdByuser(userVo.getId());
+
+    	
+        return ResultVOUtil.success(user);
+    }
     
+    /** 修改用户资料*/
+    @ResponseBody
+    @RequestMapping(value = "/updateSome")
+    public Object updateUser(UserVo userVo) {
+       
+    	userVo.setId(8L);
+    	userVo.setFullAddressText("测试地址");
+    	userVo.setEmail("974426563@163.com");
+    	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
+    	userVo.setPhone("13530895662");
+    	
+    	User user = new User();
+        BeanCopy.copyProperties(userVo, user);
+
+        userService.updateNewUser(user);
+	
+        return ResultVOUtil.success("修改成功!");
+    }
     
 }

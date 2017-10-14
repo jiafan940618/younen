@@ -21,6 +21,7 @@ import com.yn.model.NewServerPlan;
 import com.yn.service.DecideinfoService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.redisService.DemoInfoService;
+import com.yn.utils.PropertyUtils;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -30,6 +31,11 @@ public class TestController {
 
 	
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+	
+	private String merchantId =PropertyUtils.getProperty("merchantId");
+	private String BankAccountNo = PropertyUtils.getProperty("BankAccountNo");
+	private String notifyUrl =PropertyUtils.getProperty("notifyUrl");
+	
 	@Autowired
     DecideinfoService  decideinfoService;
 	
@@ -39,9 +45,12 @@ public class TestController {
 	DemoInfoService  demoInfoService;
 	
 	       @RequestMapping("/dotest")  
-	       public String helloJsp(Map<String, String> map){  
-	          
-	    	   map.put("hello", "Hello Angel From application");  
+	       public String helloJsp(){  
+	         
+	    	logger.info("--- ---- ---- ----  --- merchantId: "+merchantId);
+	    	logger.info("--- ---- ---- ----  --- BankAccountNo: "+BankAccountNo); 
+	    	logger.info("--- ---- ---- ----  --- notifyUrl: "+notifyUrl); 
+	    	 
 	              return "NewFile";  
 	       } 
 	       

@@ -140,7 +140,7 @@ public class OrderService {
 			status =0;
 		}else if(0.3<= num && num < 0.6){
 			status= 1;
-		}else if(0.6<= num && num < 0.1){
+		}else if(0.6<= num && num < 1){
 			status= 2;
 		}else if(num == 1){
 			status= 3;
@@ -357,9 +357,27 @@ public class OrderService {
 
 		Order order = FindByTradeNo(tradeNo);
 		
-		logger.info("----- ------ ------修改的金额为"+money/100);
-		order.setHadPayPrice(order.getHadPayPrice() + money/100);
-
+		logger.info("----- ------ ------修改的金额为"+money);
+		order.setHadPayPrice(order.getHadPayPrice() + money);
+		logger.info("----- ------ ------保存的的金额为"+(order.getHadPayPrice() + money));
+		
+		
+		Double num =order.getHadPayPrice()/order.getTotalPrice();
+		
+		Integer status = order.getStatus();
+		
+		if(0< num && num < 0.3){
+			status = 9;
+		}else if(num >= 0.3 && num < 0.6){
+			status =0;
+		}else if(0.6<= num && num < 1){
+			status= 1;
+		}else if(num == 1){
+			status= 2;
+		}
+		logger.info("----- ------ ------status为"+status);
+		order.setStatus(status);
+		
 		mapper.UpdateOrder(order);
 
 		logger.info("----- ----- ---- ------ ----- --修改订单状态成功！");

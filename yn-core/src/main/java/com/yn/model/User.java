@@ -13,7 +13,11 @@ import java.util.Set;
  */
 @Entity
 public class User extends IDomain implements Serializable {
-
+	
+	@Id
+	@GeneratedValue
+	@Column(columnDefinition = "int(11) comment '[id]'")
+	private Long id;   
     @Column(columnDefinition = "varchar(255) comment '[登陆token]'")
     protected String token;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[手机号码]'")
@@ -21,7 +25,7 @@ public class User extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[密码]'")
     protected String password;
     @Column(columnDefinition = "varchar(255) comment '[邮箱]'")
-    protected String email;
+    private  String email;
     @Column(columnDefinition = "varchar(255) comment '[头像]'")
     protected String headImgUrl;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[账号]'")
@@ -35,7 +39,7 @@ public class User extends IDomain implements Serializable {
     @Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
     protected Long provinceId;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
-    private String provinceText;
+    protected String provinceText;
     @Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
     protected Long cityId;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
@@ -75,7 +79,8 @@ public class User extends IDomain implements Serializable {
 
     public User() {}
 
-	public User(String phone, String email, String headImgUrl, String fullAddressText,String nickName) {
+	public User(Long id,String phone, String email, String headImgUrl, String fullAddressText,String nickName) {
+		this.id = id;
 		this.phone = phone;
 		this.email = email;
 		this.headImgUrl = headImgUrl;
@@ -84,6 +89,14 @@ public class User extends IDomain implements Serializable {
 	}
 
 
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getToken() {
         return token;

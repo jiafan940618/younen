@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import com.lycheepay.gateway.client.GBPService;
 import com.lycheepay.gateway.client.GatewayClientException;
 import com.lycheepay.gateway.client.KftService;
@@ -29,6 +27,7 @@ import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
+import com.yn.utils.PropertyUtils;
 import com.yn.vo.BankCardVo;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -39,7 +38,9 @@ public class KFTpayService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(KFTpayService.class);
 
-	private String merchantId ="2017062300091037";
+	private String merchantId =PropertyUtils.getProperty("merchantId");
+	private String BankAccountNo = PropertyUtils.getProperty("BankAccountNo");
+	
 	
 	@Autowired
 	private  BankCardService bankCardService;
@@ -159,7 +160,7 @@ public class KFTpayService {
 			dto.setBankType(bankCard.getOrderNo());//客户银行账户行别;快付通定义的行别号,详情请看文档
 			dto.setBankCardNo(bankCard.getBankCardNum());//银行卡号，与申请时一致，本次交易中,从客户的哪张卡上扣钱
 
-			dto.setMerchantBankAccountNo("商户对公账号");//商户用于收款的银行账户,资金不落地模式时必填（重要参数）
+			dto.setMerchantBankAccountNo(BankAccountNo);//商户用于收款的银行账户,资金不落地模式时必填（重要参数）
 			System.out.println("请求信息为：" + dto.toString());
 			TreatyCollectResultDTO result= gbpService.treatyCollect(dto);
 		//发往快付通验证并返回结果

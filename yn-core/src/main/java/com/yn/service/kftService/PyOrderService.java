@@ -1,5 +1,7 @@
 package com.yn.service.kftService;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +23,7 @@ import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.WalletService;
 import com.yn.utils.Constant;
+import com.yn.utils.PropertyUtils;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -45,22 +48,36 @@ public class PyOrderService {
 	public static final String ZFB_BANK_NO = "0000002";
 	public static final String YL_BANK_NO = "0000003";
 
+	
 	static	String terminalIp = "192.168.0.104";
-	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
+//	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
 	static String currency = "CNY";
 	static 	String tradeName = "商品描述001";
 	static String remark = "remark";
 	static String operatorId = "operatorId";
 	static	String storeId = "storeId";
 	static	String terminalId = "49000002";
+	private String merchantId =PropertyUtils.getProperty("merchantId");
+	private String notifyUrl =PropertyUtils.getProperty("notifyUrl");
+	private String merchantIps =PropertyUtils.getProperty("merchantIp");
 	
 	
-
+	
 	public  void init() throws Exception {
+		 File directory = new File("");// 参数为空
+		 String pfxPath=null;
+			try {
+				pfxPath = directory.getCanonicalPath();
+				logger.info("项目路径为：-- --- -- -- - - - - - -"+(pfxPath+"/privateKey/pfx.pfx"));
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+	
 		// 初始化证书
-		String merchantIp = "192.168.0.104";
+		String merchantIp = merchantIps;
 		// 证书类型、证书路径、证书密码、别名、证书容器密码
-		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12", "D:/Software/test/pfx.pfx", "123456".toCharArray(), null,
+		SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12",pfxPath+"/privateKey/pfx.pfx", "123456".toCharArray(), null,
 				"123456".toCharArray());
 		// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
 		service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
@@ -76,7 +93,7 @@ public class PyOrderService {
 		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号
 		reqDTO.setService("kpp_zdsm_pay");//接口名称，固定不变
 		reqDTO.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
-		reqDTO.setMerchantId("2017062300091037");//替换成快付通提供的商户ID，测试生产不一样
+		reqDTO.setMerchantId(merchantId);//替换成快付通提供的商户ID，测试生产不一样
 		// reqDTO.setSecMerchantId(secMerchantId)//二级商户ID 可空
 		reqDTO.setOrderNo(billOrderVo.getTradeNo());//交易编号 
 		reqDTO.setTerminalIp(terminalIp);//APP和网页支付提交用户端ip，主扫支付填调用付API的机器IP
@@ -111,7 +128,7 @@ public class PyOrderService {
 		BillOrder billOrder = new BillOrder();
 		billOrder.setOrderId(billOrderVo.getOrderId());
 		billOrder.setUserId(billOrderVo.getUserId());
-		billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+		billOrder.setMoney(billOrderVo.getMoney().doubleValue()*0.01);
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(1);
@@ -162,6 +179,7 @@ public class PyOrderService {
 		billOrder.setOrderId(billOrderVo.getOrderId());
 		billOrder.setUserId(billOrderVo.getUserId());
 		billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+		logger.info("-- --- ----保存的金额为："+billOrderVo.getMoney().doubleValue());		
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(0);
@@ -171,7 +189,8 @@ public class PyOrderService {
     	orderService.UpdateOrStatus(billOrderVo.getTradeNo(), billOrderVo.getMoney().doubleValue());
 
     	 /** 查询订单改变订单进度*/
-    	orderService.checkUpdateOrderStatus(orderService.findOne(billOrderVo.getOrderId()));
+    	orderService.givePrice(orderService.FindByTradeNo(billOrderVo.getTradeNo()));
+    	//orderService.checkUpdateOrderStatus(orderService.findOne(billOrderVo.getOrderId()));
 		
 		return ResultVOUtil.success("支付成功！");
 	}

@@ -65,9 +65,9 @@ public class SignController {
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			billOrderVo.setOrderId(1L);
+			/*billOrderVo.setOrderId(1L);
 			billOrderVo.setPayWay(4);
-			billOrderVo.setUserId(3L);
+			billOrderVo.setUserId(3L);*/
 		
 
 			/** 手机端是微信app支付*/  /** wxApp*/
@@ -88,7 +88,7 @@ public class SignController {
 			if(billOrderVo.getPayWay()==1){
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->1：");
 				return pyOrderService.payBalance(billOrderVo);
-				 //等于3是支付宝支付	
+				 //等于3是支付宝支付//等于2是微信支付	
 			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
@@ -107,7 +107,7 @@ public class SignController {
 			
 
 				return pyOrderService.getMap(request, billOrderVo);
-				 //等于2是微信支付
+				 
 			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
 				BigDecimal xmoney = BigDecimal.valueOf(100);
@@ -185,7 +185,7 @@ public class SignController {
 				                	/** 修改订单记录状态*/
 				                	billorderService.updateOrder(orderNo);
 				                	/** 修改订单金额,及3步走，支付状态*/
-				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
+				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
 				                	
 				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 				                	 /** 查询订单改变订单进度*/

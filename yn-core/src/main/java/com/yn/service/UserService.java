@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,6 +55,10 @@ public class UserService {
     	userDao.updateUser(user);
     }
 
+    public void updateNewUser(User user){
+    	
+    	userDao.updateNewUser(user);
+    }
 
     public void save(User user) {
         if (user.getId() != null) {
@@ -78,6 +83,13 @@ public class UserService {
         noticeService.delete(NoticeEnum.NEW_USER.getCode(), id);
     }
 
+	  public  User findIdByuser(Long id){
+		  
+		return userDao.findIdByuser(id);
+		  
+	  }
+    
+    
     public void deleteBatch(List<Long> id) {
         userDao.deleteBatch(id);
     }

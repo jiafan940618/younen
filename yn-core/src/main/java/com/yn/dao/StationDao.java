@@ -45,7 +45,7 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     
     @Query("select COALESCE(sum(s.capacity),0) from Station s WHERE s.serverId=?1 AND s.del=0")
     double sumCapacity(Long serverId);
-    @Query(value="select * from station as s where s.userid=?1 and s.work_Tota_Tm>0 and s.work_Dtm is not null",nativeQuery=true)
+    @Query(value="select * from station as s where s.user_id=?1 and s.work_Tota_Tm>0 and s.work_Dtm is not null",nativeQuery=true)
     List<Station> findByUserId(long userid);
     
     @Query(value="select * from station as s where s.work_Tota_Tm>0 and s.work_Dtm is not null",nativeQuery=true)

@@ -333,13 +333,10 @@ public class ServerController {
 	 
 	 logger.info("短信验证码： ----- "+servercode);
 	 
-	 
-	 
+
 	return ResultVOUtil.success(null);
 	 
    }	 
-	 
-   
    /** 
     * 服务商第二步的处理添加数据
     * */
