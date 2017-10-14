@@ -8,11 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-
 import com.yn.vo.re.ResultVOUtil;
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.OrderDao;
+import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
 import com.yn.dao.TemStationDao;
@@ -61,6 +57,8 @@ public class StationController {
     TemStationDao temStationDao;
     @Autowired
     TemStationService temStationService;
+    @Autowired
+    ServerDao serverDao;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -181,20 +179,37 @@ public class StationController {
 	@ResponseBody
 	@RequestMapping(value = "/stationFenbu", method = { RequestMethod.POST, RequestMethod.GET })
 	public Object stationFenbu(HttpSession session) {
-			Server server = (Server)session.getAttribute("server");
+		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
 			List<Map> rm2 = new ArrayList<>();
-			
-			if (server!=null) {
-				Object rm[]=stationDao.stationFenbuById(server.getId().intValue());
-				for (int i = 0; i < rm.length; i++) {
-					Map<String, Object> map=new HashMap<>();
-					Object object = rm[i];
-					
-					Object[] obj=(Object[])object;
-					String provinceName=provinceName((String)obj[0]);
-					map.put(provinceName, (BigInteger)obj[1]);
-					rm2.add(map);	
+			if (userVo!=null) {
+				Long serverid = serverDao.findByUserid(userVo.getId());
+				if (serverid !=null) {
+					Object rm[]=stationDao.stationFenbuById(serverid);
+					for (int i = 0; i < rm.length; i++) {
+						Map<String, Object> map=new HashMap<>();
+						Object object = rm[i];
+						
+						Object[] obj=(Object[])object;
+						String provinceName=provinceName((String)obj[0]);
+						map.put("name", provinceName);
+						map.put("value", (BigInteger)obj[1]);
+						rm2.add(map);	
+					}
+				}else {
+					Object rm[]=stationDao.stationFenbu();
+					for (int i = 0; i < rm.length; i++) {
+						Map<String, Object> map=new HashMap<>();
+						Object object = rm[i];
+						
+						Object[] obj=(Object[])object;
+						String provinceName=provinceName((String)obj[0]);
+						map.put("name", provinceName);
+						map.put("value", (BigInteger)obj[1]);
+						rm2.add(map);
+						
+					}
 				}
+				
 			}else {
 				Object rm[]=stationDao.stationFenbu();
 				for (int i = 0; i < rm.length; i++) {
@@ -203,7 +218,8 @@ public class StationController {
 					
 					Object[] obj=(Object[])object;
 					String provinceName=provinceName((String)obj[0]);
-					map.put(provinceName, (BigInteger)obj[1]);
+					map.put("name", provinceName);
+					map.put("value", (BigInteger)obj[1]);
 					rm2.add(map);
 					
 				}
