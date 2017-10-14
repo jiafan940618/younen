@@ -187,7 +187,7 @@ public class SignController {
 				                	/** 修改订单金额,及3步走，支付状态*/
 				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
 				                	
-				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+				                //	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 				                	 /** 查询订单改变订单进度*/
 				                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
 				                	

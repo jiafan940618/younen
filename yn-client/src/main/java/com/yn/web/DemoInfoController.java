@@ -37,17 +37,13 @@ public class DemoInfoController {
         System.out.println("loaded2="+loaded);
         
       /** 根据系统时间来确定*/
-        
-        
-        
+
         Date date = new Date();
         
         SimpleDateFormat formart = new SimpleDateFormat("yyyy-MM-dd");
         
         String dateTime =formart.format(date);
-        
-        
-       
+ 
 
         return "ok";
 
