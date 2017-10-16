@@ -120,7 +120,7 @@ public class TemStationYearService {
     		Map<Object, Object> listMap=new LinkedHashMap<>();
     		linkHashMap.put(key[i], objectMap.get(key[i]));
     		listMap.put("createDtm", key[i]);
-    		listMap.put("kwh", NumberUtil.getTenThousand((Double)objectMap.get(key[i])));
+    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
     		listsMap.add(listMap);
         	}
     	return listsMap;
