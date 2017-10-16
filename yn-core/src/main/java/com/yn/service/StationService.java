@@ -407,7 +407,7 @@ public class StationService {
          double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
     	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
     	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
-    	objectMap.put("nowKw",NumberUtil.getTenThousand(nowKw));
+    	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
     	objectMap.put("egt", NumberUtil.getTenThousand(egt));
     	objectMap.put("efficiency", (int)efficiency);
     	return objectMap;
