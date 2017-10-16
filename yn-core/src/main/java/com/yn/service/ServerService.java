@@ -265,7 +265,9 @@ public class ServerService {
    		
    		Long userId = user.getId();
    		
-    	Server server2 =findOne(userId);
+   		Server newserver = new Server();
+   		newserver.setUserId(userId);
+    	Server server2 =findOne(newserver);
    		
 		return server2;
    }

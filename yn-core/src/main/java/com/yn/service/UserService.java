@@ -9,6 +9,7 @@ import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.ResultData;
 import com.yn.utils.StringUtil;
+import com.yn.vo.WalletVo;
 import com.yn.vo.re.ResultVOUtil;
 
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.criteria.*;
 import javax.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -306,6 +308,25 @@ public class UserService {
 		}
 		return resultData;
 	}
+    
+    /** 个人中心数据的查询*/
+    public WalletVo findUserPrice(Long userId){
+    	
+    	Object object = userDao.findUserPrice(userId);
+    	
+    	Object[] obj = (Object[])object;
+    	BigDecimal money = (BigDecimal)obj[0];
+    	BigDecimal integral =(BigDecimal)obj[1];
+    	String privilegeCodeInit = (String)obj[2];
+    	
+    	WalletVo walletVo = new WalletVo();
+    	walletVo.setMoney(money.doubleValue());
+    	walletVo.setIntegral(integral.doubleValue());
+    	walletVo.setPrivilegeCodeInit(privilegeCodeInit);
+
+		return walletVo;	
+    }
+    
     
   
     public ResultData<Object> getresult(MultipartFile file){

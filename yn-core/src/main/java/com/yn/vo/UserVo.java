@@ -24,17 +24,18 @@ public class UserVo extends QueryVo {
 	private String cityText;
 	private String addressText;
 	private String fullAddressText;
-	private String privilegeCodeInit;
 	private String privilegeCode;
 	private String openIda;
 	private String openIdb;
 	private String openIdc;
 	private Long roleId;
+	
+	private String privilegeCodeInit;
+	
+	
 
 	 /** ioc端备注信息*/
 	private String ipoMemo;
-	
-	
 	
 	public String getIpoMemo() {
 		return ipoMemo;

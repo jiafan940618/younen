@@ -1,5 +1,6 @@
 package com.yn.dao;
 
+import com.yn.model.Station;
 import com.yn.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,6 +60,12 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
     @Query("update User set fullAddressText = :#{#user.fullAddressText}, nickName = :#{#user.nickName} ,"
     		+ " phone = :#{#user.phone},email = :#{#user.email},headImgUrl =:#{#user.headImgUrl} where id = :#{#user.id}")
 	void updateNewUser(@Param("user") User user);
+    
+    //select w.money,u.integral,u.privilege_code_init from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = 1
+    @Query(value="select w.money,w.integral,u.privilege_code_init from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = :userId",nativeQuery=true)
+    Object findUserPrice(@Param("userId") Long userId);
+    
+    
     
     
     

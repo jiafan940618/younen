@@ -25,6 +25,7 @@ import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.BankCardVo;
 import com.yn.vo.BillOrderVo;
+import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
 //http://3ad9d9c5.ngrok.io/client/payOrder/createPay
@@ -37,7 +38,6 @@ public class PayOrderAction {
 	CheckBankCard checkBankcard;
 	@Autowired
 	IdcardUtil idcardUtil;
-	
 	@Autowired
 	private BankCodeService bankCodeService;
 	@Autowired
@@ -271,7 +271,44 @@ public class PayOrderAction {
 		return ResultVOUtil.success(list);
 	}
 	
-	
+	/** Recharge充值*/
+	@ResponseBody
+	@RequestMapping(value="/RechargeIng")
+	public  Object RechargedIng(RechargeVo rechargeVo,BankCardVo bankCardVo){
+	/** 测试数据*/
+		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalltId()));
+		/*billOrderVo.setOrderId(1L);
+		billOrderVo.setUserId(3L);
+		BigDecimal xmoney = BigDecimal.valueOf(100);
+		billOrderVo.setMoney(xmoney);
+		bankCardVo.setTreatyId("20170927035820");*/
+		//logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
+		logger.info("======= ========= ======== =======传递的UserId:"+rechargeVo.getWalltId());
+		logger.info("======= ========= ======== =======传递的TradeNo:"+rechargeVo.getRechargeCode());
+		logger.info("======= ========= ======== =======传递的money:"+rechargeVo.getMoney());
+		
+		logger.info("======= ========= ======== =======传递的协议号TreatyId:"+bankCardVo.getTreatyId());
+		
+		
+		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
+		 if (null!=bankCardVo.getTreatyId() && !bankCardVo.getTreatyId().equals("") ){
+		    	
+		    	try {
+		    		kftpayService.init();
+		    		
+		    		BankCard bankCard=bankCardService.findByTreatyId(bankCardVo.getTreatyId());	
+		    		
+		    		return	kftpayService.rechargeCollect(rechargeVo, bankCard);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+
+		logger.info("=========== =============== =========== 没有该协议号!");
+		
+		return ResultVOUtil.error(777, "没有协议号!");
+	}
 	
 	
 	

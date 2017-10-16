@@ -15,6 +15,10 @@ import java.util.Set;
 @Entity
 public class Station extends IDomain implements Serializable {
 
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "int(11) comment '[id]'")
+    private Long id;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[电站名称]'")
 	private String stationName;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[电站码]'")
@@ -101,11 +105,37 @@ public class Station extends IDomain implements Serializable {
 	@Where(clause="del=0")
 	private Set<Ammeter> ammeter;
 
-    public String getStationName() {
+    public Station() {}
+
+	public Station(Long id, Double capacity, Integer workTotaTm, Double electricityGenerationTol, Integer status,Long userId,String stationName) {
+		this.id = id;
+		this.capacity = capacity;
+		this.workTotaTm = workTotaTm;
+		this.electricityGenerationTol = electricityGenerationTol;
+		this.status = status;
+		this.userId = userId;
+		this.stationName = stationName;
+	}
+
+
+
+	public String getStationName() {
         return stationName;
     }
 
-    public void setStationName(String stationName) {
+    public Long getId() {
+		return id;
+	}
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+
+	public void setStationName(String stationName) {
         this.stationName = stationName;
     }
 

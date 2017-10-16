@@ -61,4 +61,11 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     @Query(value="SELECT t2.province_text AS provinceName, COUNT(*) AS stationNum FROM station t1 INNER JOIN province t2 "
        		+ "ON t1.province_id = t2.id where t1.del = 0 and t1.status = 1 and t1.server_id=?1 GROUP BY t1.province_id ORDER BY t2.id ASC",nativeQuery=true)
     Object[] stationFenbuById(Long id);
+    
+    
+    /** 根据userid查询出电站的信息*/
+    @Query("select new Station(id,capacity,workTotaTm,electricityGenerationTol,status,userId,stationName) from Station s WHERE s.userId = :userId and s.del=0")
+    List<Station> getstation(@Param("userId") Long userId);
+    
+    
 }

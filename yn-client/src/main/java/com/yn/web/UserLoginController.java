@@ -43,6 +43,7 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
+import com.yn.utils.RandomUtil;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
 
@@ -70,10 +71,7 @@ public class UserLoginController {
 	    public Object appLogin(@RequestParam(value = "phone", required = true) String phone,
 	    		@RequestParam(value = "password", required = true) String password,
 	    		HttpServletResponse response,HttpSession session) {
-	  logger.info("---- ---- --- --- - --- - --- -----传递的phone"+phone);
-	  logger.info("---- ---- --- --- - --- - --- -----传递的password"+password);
-		 
-		 
+
 	    	   	 User user =null; 
 	        user = userService.findByPhone(phone);
 	        if(user == null){
@@ -454,6 +452,9 @@ public class UserLoginController {
 		
 		user.setRoleId(6L);
 		user.setAccount("null");
+		
+		String privilegeCodeInit =	RandomUtil.generateOnlyNumber(); 
+		user.setPrivilegeCodeInit(privilegeCodeInit);
 		
 		/** 此时添加时，会添加俩张表，wallet，user表*/
 		userService.save(user);

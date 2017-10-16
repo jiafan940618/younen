@@ -9,8 +9,17 @@ public class WalletVo {
 	private Long userId;
 	private Double money;
 	private Double integral;
+	private String privilegeCodeInit;
 	
 	
+	
+	
+	public String getPrivilegeCodeInit() {
+		return privilegeCodeInit;
+	}
+	public void setPrivilegeCodeInit(String privilegeCodeInit) {
+		this.privilegeCodeInit = privilegeCodeInit;
+	}
 	public Long getId() {
 		return id;
 	}

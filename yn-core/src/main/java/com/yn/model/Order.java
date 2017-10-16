@@ -69,7 +69,7 @@ public class Order extends IDomain implements Serializable {
 	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[贷款状态]{0:未申请,1:申请中,2:申请成功,3:申请失败}'")
 	private Integer loanStatus;
 
-	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电}'")
+	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}'")
 	private Integer status;
 	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[申请中-支付状态]{0:未支付,1:已支付}'")
 	private Integer applyIsPay;
@@ -139,7 +139,13 @@ public class Order extends IDomain implements Serializable {
 	@OrderBy("create_dtm DESC")
 	private Set<BillOrder> billOrder;
 
-	public Order() {
+	public Order() {}
+	
+	public Order(Long id, Double totalPrice, Double hadPayPrice, Integer status) {
+		this.id = id;
+		this.totalPrice = totalPrice;
+		this.hadPayPrice = hadPayPrice;
+		this.status = status;
 	}
 
 	public Order(Integer loanStatus, Integer applyIsPay, Integer applyStepA, Integer applyStepB) {

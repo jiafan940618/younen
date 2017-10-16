@@ -60,8 +60,8 @@ public class User extends IDomain implements Serializable {
     protected String openIdc;
     @Column(columnDefinition = "int(11) NOT NULL comment '[角色id]'")
     protected Long roleId;
-
-
+   
+  
     /**
      * 是否已读
      */
@@ -79,6 +79,8 @@ public class User extends IDomain implements Serializable {
 
     public User() {}
 
+    
+    
 	public User(Long id,String phone, String email, String headImgUrl, String fullAddressText,String nickName) {
 		this.id = id;
 		this.phone = phone;
@@ -87,7 +89,6 @@ public class User extends IDomain implements Serializable {
 		this.fullAddressText = fullAddressText;
 		this.nickName = nickName;
 	}
-
 
 
 	public Long getId() {

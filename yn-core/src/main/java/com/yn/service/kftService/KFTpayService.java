@@ -2,6 +2,7 @@ package com.yn.service.kftService;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.slf4j.Logger;
@@ -25,11 +26,16 @@ import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.model.Recharge;
+import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
+import com.yn.service.OrderService;
+import com.yn.service.WalletService;
 import com.yn.utils.PropertyUtils;
 import com.yn.vo.BankCardVo;
 import com.yn.vo.BillOrderVo;
+import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Service
@@ -41,14 +47,21 @@ public class KFTpayService {
 	private String merchantId =PropertyUtils.getProperty("merchantId");
 	private String BankAccountNo = PropertyUtils.getProperty("BankAccountNo");
 	
-	
+	@Autowired
+	private OrderService orderService;
 	@Autowired
 	private  BankCardService bankCardService;
 	@Autowired
 	private BillOrderService billOrderService;
+	@Autowired
+	private RechargeService rechargeService;
+	//walletService
+	@Autowired
+	private WalletService walletService;
 
 	private static KftService service;
 	private static GBPService gbpService;
+	
    //2017092300132528
 	//初始化KftService
 	public static void init() throws Exception {
@@ -178,12 +191,22 @@ public class KFTpayService {
 				billOrder.setStatus(0);
 				billOrderService.newsave(billOrder);
 				
+				
+				/** 修改订单记录状态*/
+				billOrderService.updateOrder(billOrder.getTradeNo());
+            	/** 修改订单金额,及3步走，支付状态*/
+            	orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue());
+
+            	 /** 查询订单改变订单进度*/
+            	orderService.givePrice(orderService.FindByTradeNo(billOrder.getTradeNo()));
+				
 				 return ResultVOUtil.success("支付成功!");
 			}else{
 				logger.info("============ ============= ============== ========="+result.getFailureDetails());
 				billOrder.setRemark(result.getFailureDetails());
 				billOrder.setStatus(1);
 				billOrderService.save(billOrder);
+
 				
 			  return ResultVOUtil.error(777, result.getFailureDetails());
 			}	
@@ -224,6 +247,73 @@ public class KFTpayService {
 			}
 
 		}
+		
+		/*** 用于充值的*/
+		public Object rechargeCollect(RechargeVo rechargeVo,BankCard bankCard) throws GatewayClientException {
+
+			TreatyCollectDTO dto = new TreatyCollectDTO();
+			dto.setService("gbp_treaty_collect");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId("2017062300091037");//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("2ACB0BBA");//替换成快付通提供的产品编号，测试生产不一样
+			dto.setOrderNo(rechargeVo.getRechargeCode());//订单号同一个商户必须保证唯一
+			dto.setTreatyNo(bankCard.getTreatyId());//协议代扣申请确认返回的协议号
+			dto.setAmount(rechargeVo.getMoney().toString());//此次交易的具体金额,单位:分,不支持小数点
+			dto.setCurrency("CNY");//快付通定义的扣费币种,详情请看文档
+			dto.setHolderName(bankCard.getRealName());//持卡人姓名，与申请时一致
+			dto.setBankType(bankCard.getOrderNo());//客户银行账户行别;快付通定义的行别号,详情请看文档
+			dto.setBankCardNo(bankCard.getBankCardNum());//银行卡号，与申请时一致，本次交易中,从客户的哪张卡上扣钱
+
+			dto.setMerchantBankAccountNo(BankAccountNo);//商户用于收款的银行账户,资金不落地模式时必填（重要参数）
+			System.out.println("请求信息为：" + dto.toString());
+			TreatyCollectResultDTO result= gbpService.treatyCollect(dto);
+		//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+			
+			Recharge recharge = new Recharge();
+			recharge.setWalltId(rechargeVo.getWalltId());
+			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
+			recharge.setRechargeCode(rechargeVo.getRechargeCode());
+			recharge.setPayWay(rechargeVo.getPayWay());
+			recharge.setDel(0);
+			recharge.setStatus(1);
+			rechargeService.save(recharge);
+	  
+
+			if(result.getStatus()==1){
+				
+				Recharge recharge01 = new Recharge();
+            	recharge.setRechargeCode(rechargeVo.getRechargeCode());
+            	recharge.setStatus(0);
+            	
+            	rechargeService.updateRecharge(recharge01);
+            	
+            	/** 根据订单号查询金额 */
+            	RechargeVo rechargeVo01 = rechargeService.findRecharge(recharge01);
+            	
+            	BigDecimal addMoney = rechargeVo.getMoney().add(rechargeVo01.getTotalmoney());
+            	
+            	 /** 在钱包哪里添加充值订单号*/
+            	Wallet wallet = new Wallet();
+            	wallet.setMoney(addMoney);
+            	wallet.setId(rechargeVo01.getWalltId());
+            	 /** 修改用户的钱包金额*/	                	
+            	walletService.updatePrice(wallet);
+				
+				 return ResultVOUtil.success("充值成功!");
+			}else{
+				logger.info("============ ============= ============== ========="+result.getFailureDetails());
+				recharge.setRemark(result.getFailureDetails());
+				recharge.setStatus(1);
+				rechargeService.save(recharge);
+
+				
+			  return ResultVOUtil.error(777, result.getFailureDetails());
+			}	
+		}
+		
+		
+		
 
 		
 		public static void main(String[] args) {

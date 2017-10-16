@@ -1,8 +1,11 @@
 package com.yn.dao.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.yn.model.Order;
+import com.yn.model.Page;
 
 @Mapper
 public interface OrderMapper {
@@ -27,6 +30,10 @@ public interface OrderMapper {
 	
 	/** 修改订单的进度  [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电}'")*/
 	void UpdateOrderStatus(Order order);
+	
+	
+	/** [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}*/
+	List<Order> findBystatus(Page<Order> page);
 	
 	/**
 	 * 修改贷款的状态。

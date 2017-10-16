@@ -1,44 +1,50 @@
 package com.yn.kft.controller;
 
-
-
 import java.io.File;
 import java.io.IOException;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.BillOrder;
+import com.yn.model.Recharge;
+import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.WalletService;
 import com.yn.service.kftService.PyOrderService;
+import com.yn.service.kftService.RechargeService;
 import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
-
 import com.yn.vo.BillOrderVo;
+import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
-@RestController
-@RequestMapping(value="/client/sign")
-public class SignController {
+/**
+ * 充值的接口,并添加充值记录表recharge
+ * 
+ * */
 	
-	private static final Logger logger = LoggerFactory.getLogger(SignController.class);
+
+@RestController
+@RequestMapping(value="/client/recharge")
+public class RechargeController {
+	private static final Logger logger = LoggerFactory.getLogger(RechargeController.class);
 	@Autowired
 	private ServerService serverService;
 	@Autowired
@@ -46,22 +52,19 @@ public class SignController {
 	@Autowired
 	private BillOrderService billorderService;
 	@Autowired
-	private PyOrderService pyOrderService;
+	private RechargeService rechargeService;
 	@Autowired
 	private SignService signService;
 	@Autowired
 	BankCardService bankCardService;
+	@Autowired
+	WalletService walletService;
 
-	
-
-	
-		//http://2e93431d.ngrok.io/client/sign/payonline
-       //http://localhost/younen/html/project/online_apply.html
 	 /** pc端*/
 		@ResponseBody
 		@RequestMapping(value="/payonline")
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
-		public Object doOnline(HttpServletRequest request,HttpSession session,BillOrderVo billOrderVo){
+		public Object doOnline(HttpServletRequest request,HttpSession session,RechargeVo rechargeVo){
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
@@ -72,51 +75,41 @@ public class SignController {
 
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
-			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
+			rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalltId()));
 			
-			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
-			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
-			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+billOrderVo.getMoney());
+			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+rechargeVo.getPayWay());
+			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+rechargeVo.getRechargeCode());
+			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+rechargeVo.getMoney());
 
-			String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
+
+			session.setAttribute("rechargeCode", rechargeVo.getRechargeCode());
 		
-			billOrderVo.setDescription(description);
-
-
-			session.setAttribute("tradeNo", billOrderVo.getTradeNo());
-			 //等于1是余额支付
-			if(billOrderVo.getPayWay()==1){
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->1：");
-				return pyOrderService.payBalance(billOrderVo);
-				 //等于3是支付宝支付//等于2是微信支付	
-			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
+			 if(rechargeVo.getPayWay()==3 || rechargeVo.getPayWay()==2){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
 				
-				System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
-				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2：");
+				System.out.println(df.format(rechargeVo.getMoney().multiply(xmoney)));
+				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->：");
 					
 				try {
-					pyOrderService.init();
+					rechargeService.init();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2："+billOrderVo.getChannel());
-			
 
-				return pyOrderService.getMap(request, billOrderVo);
+				return rechargeService.getMap(request, rechargeVo);
 				 
-			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
+			}else if(rechargeVo.getPayWay()==4){//等于4是银联支付
+				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
 				
-				System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
-				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
+				System.out.println(df.format(rechargeVo.getMoney().multiply(xmoney)));
+				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
 				
-				return signService.findSign(billOrderVo); 
+				return rechargeService.findSign(rechargeVo); 
 			}
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);
@@ -181,27 +174,32 @@ public class SignController {
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --订单号为： "+orderNo);
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount);
 				                	
-				                	/** 修改订单记录状态*/
-				                	billorderService.updateOrder(orderNo);
-				                	/** 修改订单金额,及3步走，支付状态*/
-				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
+				                	Recharge recharge = new Recharge();
+				                	recharge.setRechargeCode(orderNo);
+				                	recharge.setStatus(0);
 				                	
-				                //	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
-				                	 /** 查询订单改变订单进度*/
-				                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
+				                	rechargeService.updateRecharge(recharge);
 				                	
-				                	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
-
+				                	/** 根据订单号查询金额 */
+				                	RechargeVo rechargeVo = rechargeService.findRecharge(recharge);
+				                	
+				                	BigDecimal addMoney = rechargeVo.getMoney().add(rechargeVo.getTotalmoney());
+				                	
+				                	 /** 在钱包哪里添加充值订单号*/
+				                	Wallet wallet = new Wallet();
+				                	wallet.setMoney(addMoney);
+				                	wallet.setId(rechargeVo.getWalltId());
+				                	 /** 修改用户的钱包金额*/	                	
+				                	walletService.updatePrice(wallet);
+	
+				                	
 				                	return "SUCCESS";
 				                	
 			                	}else if(resultMap.get("status").equals("2")){
 			                		
-			                		return ResultVOUtil.error(777, "支付未成功!");
+			                		return ResultVOUtil.error(777, "充值未成功!");
 			                	}else if(resultMap.get("status").equals("3")){
-			                		BillOrder billOrder01 = new BillOrder();
-				                	
-				                	billOrder01.setStatus(2);
-				                	billorderService.newsave(billOrder01);
+			                		
 			                		return ResultVOUtil.error(777, "已冲正!");
 			                	}else if(resultMap.get("status").equals("4")){
 			                		return ResultVOUtil.error(777, "订单已超时!");
@@ -210,11 +208,11 @@ public class SignController {
 			                	}else if(resultMap.get("status").equals("6")){
 			                		return ResultVOUtil.error(777, "已撤销!");
 			                }else{
-			                		return ResultVOUtil.error(777, "支付失败!");
+			                		return ResultVOUtil.error(777, "充值失败!");
 			                	}
 		               }else{
 		            	   logger.info("====================== ================== 验签失败!");
-		            	   return ResultVOUtil.error(777, "支付未成功!");
+		            	   return ResultVOUtil.error(777, "充值未成功!");
 		               }   		
 			          
 
@@ -224,7 +222,7 @@ public class SignController {
 		@ResponseBody
 		@RequestMapping(value="/selectSta")
 		public Object getorderCode(HttpSession session){
-			String tradeNo =(String) session.getAttribute("tradeNo");
+			String tradeNo =(String) session.getAttribute("rechargeCode");
 			Map<String, Integer> map =  new HashMap<String, Integer>();
 			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
 			
@@ -273,22 +271,30 @@ public class SignController {
 				parameters.put("callerIp", request.getParameter("callerIp"));
 				parameters.put("language", request.getParameter("language"));
 				
-				BillOrder billOrder =  billorderService.findByTradeNoandstatus(request.getParameter("orderNo"));
+			//	BillOrder billOrder =  billorderService.findByTradeNoandstatus(request.getParameter("orderNo"));
 				boolean verify_sign=CashierSignUtil.verifySign_2(pfxPath, parameters, request.getParameter("signatureInfo"));
 				if(verify_sign){
 					
-					logger.info("-- --- ---- -- --- - - - - - - - - --订单号为： "+orderNo);
-                	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount);
+					Recharge recharge = new Recharge();
+                	recharge.setRechargeCode(orderNo);
+                	recharge.setStatus(0);
                 	
-                	/** 修改订单记录状态*/
-                	billorderService.updateOrder(orderNo);
-                	/** 修改订单金额,及3步走，支付状态*/
-                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
-
-                	 /** 查询订单改变订单进度*/
-                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
+                	rechargeService.updateRecharge(recharge);
                 	
-                	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
+                	/** 根据订单号查询金额 */
+                	RechargeVo rechargeVo = rechargeService.findRecharge(recharge);
+                	
+                	BigDecimal addMoney = rechargeVo.getMoney().add(rechargeVo.getTotalmoney());
+                	
+                	 /** 在钱包哪里添加充值订单号*/
+                	Wallet wallet = new Wallet();
+                	wallet.setMoney(addMoney);
+                	wallet.setId(rechargeVo.getWalltId());
+                	 /** 修改用户的钱包金额*/	                	
+                	walletService.updatePrice(wallet);
+					
+                	
+               
                 	resultMap.put("status", "1");
                 	resultMap.put("message", "");
                 	resultMap.put("orderNo",orderNo);
@@ -297,33 +303,15 @@ public class SignController {
 				}
         	}
         		logger.info("---- --------- ------------ -------- "+request.getParameter("message"));
-        		resultMap.put("message","支付失败!"+ request.getParameter("message"));
+        		resultMap.put("message","充值失败!"+ request.getParameter("message"));
         		
 			System.out.println("---------- ------ -- ----- 结束后台响应");
 			System.out.println(" ==== ==== ===============================================================================");
 			
 			return resultMap;
 		}
-		
-		/*** 银联支付前端响应接口 */
-		/*@ResponseBody
-		@RequestMapping(value="/bankPay")
-		public  Object getBank(HttpServletRequest request){
-			logger.info("===== =========== ========== ====="+request.getParameter("status"));
-			String tradeNo =(String) request.getParameter("orderNo");
-			Map<String, Integer> map =  new HashMap<String, Integer>();
-			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
-			
-			BillOrder billOrder = billorderService.findByTradeNo(tradeNo);
-			
-			if(null != billOrder){
-				logger.info("订单的状态为：--- ---- -- - -- - - -- - - - -"+billOrder.getStatus());
+	
+	
+	
 
-				map.put("status", billOrder.getStatus());
-			}
-			return	ResultVOUtil.success(map);
-
-		}*/
-		
-		
 }

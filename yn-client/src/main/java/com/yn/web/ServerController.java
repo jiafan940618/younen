@@ -45,14 +45,17 @@ import com.yn.service.ServerService;
 import com.yn.service.SolarPanelSerice;
 import com.yn.service.SolarPanelService;
 import com.yn.service.UserService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.SolarPanelVo;
+import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
 
@@ -141,52 +144,47 @@ public class ServerController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/login")
-	public ResultData<Object> login(ServerVo server01, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
+	public ResultData<Object> login(UserVo userVo, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
 		 
-		Server server =null;
-
-		server = serverService.findbylegalPersonPhone(server01.getPhone());
-	        if(server == null){
-	        	server = serverService.findbycompanyEmail(server01.getPhone()); 
-	        	 if(server == null){
-	        		 server = serverService.findbyuserName(server01.getPhone()); 
+		 User user =null; 
+	        user = userService.findByPhone(userVo.getPhone());
+	        if(user == null){
+	        	 user = userService.findByEamil(userVo.getPhone()); 
+	        	 if(user == null){
+	        		 user = userService.findByUserName(userVo.getPhone()); 
 	        	 }
 	        }
-		
-		if (StringUtils.isEmpty(server.getLegalPersonPhone())) {
-			return  ResultVOUtil.error(777, Constant.PHONE_NULL);
-		}
-		if (StringUtils.isEmpty(server.getUser().getPassword())) {
-		
-			return ResultVOUtil.error(777, Constant.PASSWORD_NULL);
-		}
-		
-		
-		Server s = new Server();
-		s.setLegalPersonPhone(server.getLegalPersonPhone());
-		
-		Server serverLocal = serverService.findOne(s);
-		// String header = request.getHeader("token");
-		if (serverLocal == null) {
-	
-			return ResultVOUtil.error(777, Constant.SERVER_NULL);
-		} else if (!serverLocal.getUser().getPassword().equals(MD5Util.GetMD5Code(server01.getPassword()))) {
+	        if (user == null) {
+	        	logger.info("----- --- ----- 该用户不存在！");
+	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);
+	        } else if (!user.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))) {
+	        	logger.info("----- --- ----- 密码错误！");
+	            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
+	        }
+	        
+	        Server server = new Server();
+	        server.setUserId(user.getId());
+	         
+	        server = serverService.findOne(server);
+	        if(null == server){
+	        	logger.info("----- --- ----- 抱歉,用户未注册服务商的身份");
+	            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
+	        }
 
-			return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
-		}
-		
-		 User user =	serverLocal.getUser();
-		
-		 user.setToken(userService.getToken(user));
-		 userService.updateToken(user);
-		
-		httpSession.setAttribute("server", serverLocal);
-		serverLocal.getUser().setPassword(null);
-		
-		
 
-	
-		return ResultVOUtil.success(serverLocal);
+	        user.setToken(userService.getToken(user));
+	        userService.updateToken(user);
+
+	        SessionCache.instance().setUser(user);
+	        user.setPassword(null);
+	    //    Object object = ResultVOUtil.success(user);  
+	        httpSession.setAttribute("server", server);
+	        
+	        logger.info("---- ---- --- --- - --- - --- ----结束");
+	        
+	        return ResultVOUtil.success(server);
+
+		
 	}
     
     /**短信验证用的是用户注册的短信验证*/

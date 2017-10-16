@@ -61,7 +61,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         // }
         // return true;
         // }
-        logger.info("--- ---- --- - -- - - - - -- ----验证为："+fromUserLogin(url));
         if (fromUserLogin(url)) {
             return true;
         }

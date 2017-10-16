@@ -16,8 +16,20 @@ public class Page<T> {
 	Integer start = 0;
 	Integer index = -1;
 
+	private Long userId;
+	private Integer status;
 	private String time_from;
 	private String time_to;
+
+	
+	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 	public List<T> getList() {
 		return list;
@@ -45,6 +57,15 @@ public class Page<T> {
 
 	public Integer getLimit() {
 		return limit;
+	}
+
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public void setLimit(Integer limit) {

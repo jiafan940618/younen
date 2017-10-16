@@ -488,7 +488,7 @@ public class OrderController {
 
 			Order neworder = orderService.findOne(order02);
 
-			// ** 订单计划表*//*
+			/** 订单计划表*/
 
 			Long id = newserverPlan.getId();
 
@@ -581,7 +581,7 @@ public class OrderController {
 
 			Order neworder = orderService.findOne(order02);
 
-			// ** 订单计划表*//*
+			/** 订单计划表*/
 
 			Long id = newserverPlan.getId();
 

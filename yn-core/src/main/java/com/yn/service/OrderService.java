@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -56,6 +57,40 @@ public class OrderService {
 	@Autowired
 	ApolegamyOrderService apoleService;
 
+	/** 个人中心订单状态查询*/
+	public List<Order> findBystatus(com.yn.model.Page<Order> page){
+		
+		return mapper.findBystatus(page);
+	}
+	
+	/** 修改退款状态*/
+	
+    public void updateOrderbyId(Order order){
+		
+		orderDao.updateOrderbyId(order);
+	}
+    
+    public Order selectOrderSta(Order order){
+		
+    	Object object = orderDao.selectOrderSta(order);
+
+		Object[] obj = (Object[]) object;
+		Integer id = (Integer) obj[0];
+		Integer status = (Integer) obj[1];
+		BigDecimal hadPayPrice = (BigDecimal) obj[2];
+		BigDecimal totalPrice = (BigDecimal) obj[3];
+		
+			
+		Order order01 = new Order();
+		order01.setId(id.longValue());
+		order01.setHadPayPrice(hadPayPrice.doubleValue());
+		order01.setStatus(status);
+		order01.setTotalPrice(totalPrice.doubleValue());
+    	
+		return order01;
+	}
+    
+	
 	public Order findOne(Long id) {
 		return orderDao.findOne(id);
 	}
@@ -409,21 +444,6 @@ public class OrderService {
 	private static String SERVER = "server";// 服务商
 	private static String ORDERCODE = "orderCode";// 订单号
 
-	/*
-	 * private String NOTBEGIN = "notBegin";// 未开始 private String
-	 * MATERIALAPPROAC = "materialApproac";// 材料进场 private String
-	 * FOUNDATIONBUILDING = "foundationBuilding";// 基础建筑 private String
-	 * SUPPORTINSTALLATION = "supportInstallation";// 支架安装 private String
-	 * PHOTOVOLTAICPANELINSTALLATION = "photovoltaicPanelInstallation";// 光伏板安装
-	 * private String DCCONNECTION = "DCConnection";// 直流接线 private String
-	 * ELECTRICBOXINVERTER = "electricBoxInverter";// 电箱逆变器 private String
-	 * BUSBOXINSTALLATION = "busBoxInstallation";// 汇流箱安装 private String ACLINE
-	 * = "ACLine";// 交流辅线 private String LIGHTNINGPROTECTIONGROUNDINGTEST =
-	 * "lightningProtectionGroundingTest";// 防雷接地测试 private String
-	 * GRIDCONNECTEDACCEPTANCE = "gridConnectedAcceptance";// 并网验收 private
-	 * String SUCCESS = "success";// 并网验收成功！走完最后一步 private String SERVER =
-	 * "server";// 服务商 private String ORDERCODE = "orderCode";// 订单号
-	 */
 	/**
 	 * 修改施工状态的进度 如果现在是<材料进场>，就选择为<材料进场>,<材料进场>已经完成的话，那么就是进入到<基础建筑>,此时应该点击<基础建筑>
 	 * 即进入到哪一步，就出发那个的事件。
@@ -520,6 +540,7 @@ public class OrderService {
 			System.out.println(obj2Json);
 			return stepB > 0 && status > 0 ? true : false;
 		}
+		
 		Map<String, Object> json2Obj = (Map<String, Object>) JsonUtil.json2Obj(order.getConstructionStatus());
 		List<Object> l = new LinkedList<Object>();
 		Map<String, Object> m1 = new HashMap<String, Object>();

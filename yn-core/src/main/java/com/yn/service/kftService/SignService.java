@@ -65,7 +65,7 @@ public class SignService {
 			parameters.put("callerIp", "120.76.98.74");
 			 /** 后台通知地址*/
 
-			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doresult");
+			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doSucRep");
 
 			
 			parameters.put("customerType", "1");
