@@ -95,44 +95,45 @@
 		</set>
 		where id = #{id}
 	</update>
-	
+
 	<select id="findstatus" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		SELECT
-			o.loan_status,
-			o.apply_is_pay,
-			o.apply_stepa,
-			o.apply_stepb,
-			o.status,
-			o.apply_stepbimg_url,
-			o.build_is_pay,
-			o.build_stepa,
-			o.build_stepb,
-			o.grid_connected_is_pay,
-			o.grid_connected_stepa
+		o.loan_status,
+		o.apply_is_pay,
+		o.apply_stepa,
+		o.apply_stepb,
+		o.status,
+		o.apply_stepbimg_url,
+		o.build_is_pay,
+		o.build_stepa,
+		o.build_stepb,
+		o.grid_connected_is_pay,
+		o.grid_connected_stepa
 
 		FROM t_order o WHERE o.id =#{orderId}
 
 	</select>
 
 
-	
-	
-	<select id="findOrderCode" parameterType="java.lang.String"  resultMap="BaseResultMap">
-		SELECT  o.id,o.order_code
-	 
-	  FROM t_order o  WHERE o.order_code =#{orderCode}
+
+
+	<select id="findOrderCode" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT o.id,o.order_code
+
+		FROM t_order o WHERE o.order_code =#{orderCode}
 
 	</select>
 
 	<update id="updateConstructionStatus" parameterType="com.yn.model.Order">
 		update t_order
-			<set>
-				construction_status = #{constructionStatus}
-			</set>
+		<set>
+			construction_status = #{constructionStatus}
+		</set>
 		where id = #{id}
 	</update>
-	
+
 
 	<update id="UpdateOrder" parameterType="com.yn.model.Order">
 		update t_order o
@@ -149,39 +150,49 @@
 			<if test="status == 2">
 				o.grid_connected_is_pay = 1,
 			</if>
-		  o.had_pay_price = #{hadPayPrice}
+			o.had_pay_price = #{hadPayPrice}
 		</set>
 		where o.id = #{id}
 	</update>
 
 	<update id="updateBuildStepB" parameterType="com.yn.model.Order">
 		update t_order
-			<set>
-				build_stepb = #{buildStepB}
-			</set>
+		<set>
+			build_stepb = #{buildStepB}
+		</set>
 		where id = #{id}
 	</update>
-	
+
 	<update id="UpdateOrderStatus" parameterType="com.yn.model.Order">
-		update t_order o set o.status =#{status} where o.id =#{id}
+		update t_order o
+		set o.status =#{status} where o.id =#{id}
 	</update>
 
 	<update id="updateLoanStatus" parameterType="com.yn.model.Order">
-		update t_order o 
-			<set>
-				loan_status = #{loanStatus,jdbcType=INTEGER}
-				<if test="hadPayPrice != null">
-					,had_pay_price = #{hadPayPrice}
-				</if>
-			</set>
-				
+		update t_order o
+		<set>
+			loan_status = #{loanStatus,jdbcType=INTEGER}
+			<if test="hadPayPrice != null">
+				,had_pay_price = #{hadPayPrice}
+			</if>
+		</set>
+
 		where o.id = #{id}
 	</update>
 	<update id="updateApplyStepBImgUrl" parameterType="com.yn.model.Order">
-		update t_order o 
-			<set>
-				apply_stepbimg_url = #{applyStepBImgUrl,jdbcType=INTEGER}
-			</set>
+		update t_order o
+		<set>
+			apply_stepbimg_url = #{applyStepBImgUrl,jdbcType=INTEGER}
+		</set>
+		where o.id = #{id}
+	</update>
+	<update id="updateOrderStauts43Step" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			<if test="status != null">
+				o.status = #{status}
+			</if>
+		</set>
 		where o.id = #{id}
 	</update>
 

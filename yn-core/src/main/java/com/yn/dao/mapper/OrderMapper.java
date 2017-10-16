@@ -39,4 +39,7 @@ public interface OrderMapper {
 	int updateApplyStepBImgUrl(Order order);
 
 
+	int updateOrderStauts43Step(Order order);
+
+
 }

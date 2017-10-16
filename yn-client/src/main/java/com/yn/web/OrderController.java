@@ -233,7 +233,7 @@ public class OrderController {
 		// BeanCopy.copyProperties(orderVo, order);
 		Order findOne = orderService.findOne(orderVo.getId());
 		Map<String, Object> result = new HashMap<>();
-		Double flag4Money = 0d;// 支付的钱
+		Double flag4Money = 1d;// 支付的钱
 		System.err.println(order.getApplyStepA());
 		// flag4ApplyStepA; //完成屋顶勘察预约的
 		// flag4ApplyStepB; //完成申请保健的
@@ -246,18 +246,27 @@ public class OrderController {
 					findOne.getApplyStepBImgUrl() == null || findOne.getApplyStepBImgUrl().length() < 1 ? 0 : 1);
 			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
 			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
+			if(flag4Money==0){
+				findOne.setStatus(1);
+				boolean step = orderService.updateOrderStauts43Step(findOne);
+				result.put("checkUpdate", step);
+			}
 		} else if (nextId == 2) { // 施工中的下一步
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
 			result.put("buildIsPay", findOne.getBuildIsPay() == 1 ? 1 : 0);
 			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
 			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
+			if(flag4Money==0){
+				findOne.setStatus(2);
+				boolean step = orderService.updateOrderStauts43Step(findOne);
+				result.put("checkUpdate", step);
+			}
 		} else {// 进入并网发电、ios端
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.6d);
 			result.put("gridConnectedIsPay", findOne.getGridConnectedIsPay());// 并网发电支付状态
 			result.put("gridConnectedStepA", findOne.getGridConnectedStepA());// 并网发电并网状态
 		}
-
-		result.put("flag4Money", flag4Money < 0 ? 1 : 0);
+		result.put("flag4Money", flag4Money == 0 ? 1 : 0);
 		result.put("loanStatus", findOne.getLoanStatus());// 贷款状态
 		result.put("status", findOne.getStatus());// 订单状态
 		return ResultVOUtil.success(result);
