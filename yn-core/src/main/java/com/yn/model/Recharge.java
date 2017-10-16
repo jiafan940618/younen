@@ -19,7 +19,7 @@ public class Recharge  extends IDomain implements Serializable {
 	/** [支付方式]{1:微信,2:支付宝,3:银联,4:快付通}*/
 	private Integer payWay;
 	
-	private Long walltId;
+	private Long walletId;
 	
 	private String remark;
 	
@@ -32,11 +32,12 @@ public class Recharge  extends IDomain implements Serializable {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public Long getWalltId() {
-		return walltId;
+	
+	public Long getWalletId() {
+		return walletId;
 	}
-	public void setWalltId(Long walltId) {
-		this.walltId = walltId;
+	public void setWalletId(Long walletId) {
+		this.walletId = walletId;
 	}
 	public Integer getPayWay() {
 		return payWay;

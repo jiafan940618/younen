@@ -65,9 +65,7 @@ public class SignController {
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			/*billOrderVo.setOrderId(1L);
-			billOrderVo.setPayWay(4);
-			billOrderVo.setUserId(3L);*/
+
 			/*billOrderVo.setMoney(new BigDecimal("4920"));
 			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);
@@ -92,7 +90,7 @@ public class SignController {
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->1：");
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于3是支付宝支付//等于2是微信支付	
-			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
+			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2 || billOrderVo.getPayWay()==4){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -111,7 +109,7 @@ public class SignController {
 
 				return pyOrderService.getMap(request, billOrderVo);
 				 
-			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
+			}/*else if(billOrderVo.getPayWay()==4){//等于4是银联支付
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -120,7 +118,7 @@ public class SignController {
 				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 				
 				return signService.findSign(billOrderVo); 
-			}
+			}*/
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);
 		}

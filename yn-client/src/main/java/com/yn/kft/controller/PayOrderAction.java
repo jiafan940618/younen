@@ -276,14 +276,14 @@ public class PayOrderAction {
 	@RequestMapping(value="/RechargeIng")
 	public  Object RechargedIng(RechargeVo rechargeVo,BankCardVo bankCardVo){
 	/** 测试数据*/
-		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalltId()));
+		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
 		/*billOrderVo.setOrderId(1L);
 		billOrderVo.setUserId(3L);
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
 		bankCardVo.setTreatyId("20170927035820");*/
 		//logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
-		logger.info("======= ========= ======== =======传递的UserId:"+rechargeVo.getWalltId());
+		logger.info("======= ========= ======== =======传递的WalletId():"+rechargeVo.getWalletId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+rechargeVo.getRechargeCode());
 		logger.info("======= ========= ======== =======传递的money:"+rechargeVo.getMoney());
 		

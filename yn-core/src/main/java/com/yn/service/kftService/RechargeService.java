@@ -124,7 +124,7 @@ public class RechargeService {
 			// 初始化证书
 			String merchantIp = merchantIps;
 			// 证书类型、证书路径、证书密码、别名、证书容器密码
-			SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12",pfxPath+"/privateKey/pfx.pfx", "123456".toCharArray(), null,
+			SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12",pfxPath+"\\privateKey\\pfx.pfx", "123456".toCharArray(), null,
 					"123456".toCharArray());
 			// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
 			service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
@@ -156,12 +156,12 @@ public class RechargeService {
 			
 			reqDTO.setTradeTime(dateString);;//商户方交易时间 注意此时间取值一般为商户方系统时间而非快付通生成此时间 20120927185643
 			
-			/** [支付方式]{1:微信,2:支付宝,3:银联,4:快付通}*/
-			if(rechargeVo.getPayWay() == 1){
+			/** [支付方式]{2:微信,3:支付宝,4:银联}*/
+			if(rechargeVo.getPayWay() == 2){
 				reqDTO.setBankNo(WX_BANK_NO);//支付渠道   微信渠道:0000001 支付宝渠道：0000002 银联：0000003 
-			}else if(rechargeVo.getPayWay() == 2){
-				reqDTO.setBankNo(ZFB_BANK_NO);
 			}else if(rechargeVo.getPayWay() == 3){
+				reqDTO.setBankNo(ZFB_BANK_NO);
+			}else if(rechargeVo.getPayWay() == 4){
 				reqDTO.setBankNo(YL_BANK_NO);
 			}
 			reqDTO.setOperatorId(operatorId);//商户操作员编号 可空
@@ -171,7 +171,7 @@ public class RechargeService {
 			
 			/** 保存订单*/
 			Recharge recharge = new Recharge();
-			recharge.setWalltId(rechargeVo.getWalltId());
+			recharge.setWalletId(rechargeVo.getWalletId());
 			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 			recharge.setRechargeCode(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
@@ -260,7 +260,7 @@ public class RechargeService {
 				parameters.put("signatureInfo", signatureInfo);
 				
 				Recharge recharge = new Recharge();
-				recharge.setWalltId(rechargeVo.getWalltId());
+				recharge.setWalletId(rechargeVo.getWalletId());
 				recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 				recharge.setRechargeCode(rechargeVo.getRechargeCode());
 				recharge.setPayWay(rechargeVo.getPayWay());

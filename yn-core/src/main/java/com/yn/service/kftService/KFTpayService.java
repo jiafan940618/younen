@@ -271,7 +271,7 @@ public class KFTpayService {
 			System.out.println("响应信息为:" + result.toString());
 			
 			Recharge recharge = new Recharge();
-			recharge.setWalltId(rechargeVo.getWalltId());
+			recharge.setWalletId(rechargeVo.getWalletId());
 			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 			recharge.setRechargeCode(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
@@ -296,7 +296,7 @@ public class KFTpayService {
             	 /** 在钱包哪里添加充值订单号*/
             	Wallet wallet = new Wallet();
             	wallet.setMoney(addMoney);
-            	wallet.setId(rechargeVo01.getWalltId());
+            	wallet.setId(rechargeVo01.getWalletId());
             	 /** 修改用户的钱包金额*/	                	
             	walletService.updatePrice(wallet);
 				

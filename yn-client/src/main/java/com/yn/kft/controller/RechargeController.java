@@ -68,14 +68,14 @@ public class RechargeController {
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-			/*billOrderVo.setOrderId(1L);
-			billOrderVo.setPayWay(4);
-			billOrderVo.setUserId(3L);*/
-		
+/** 测试数据*/
+			rechargeVo.setWalltId(1L);
+			rechargeVo.setPayWay(2);
+			rechargeVo.setMoney(new BigDecimal("4920"));
 
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
-			rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalltId()));
+			rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
 			
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+rechargeVo.getPayWay());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+rechargeVo.getRechargeCode());
@@ -84,7 +84,7 @@ public class RechargeController {
 
 			session.setAttribute("rechargeCode", rechargeVo.getRechargeCode());
 		
-			 if(rechargeVo.getPayWay()==3 || rechargeVo.getPayWay()==2){
+			 if(rechargeVo.getPayWay()==3 || rechargeVo.getPayWay()==2 || rechargeVo.getPayWay()==4 ){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -101,7 +101,7 @@ public class RechargeController {
 
 				return rechargeService.getMap(request, rechargeVo);
 				 
-			}else if(rechargeVo.getPayWay()==4){//等于4是银联支付
+			}/*else if(rechargeVo.getPayWay()==4){//等于4是银联支付
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -110,7 +110,7 @@ public class RechargeController {
 				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
 				
 				return rechargeService.findSign(rechargeVo); 
-			}
+			}*/
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);
 		}
@@ -188,7 +188,7 @@ public class RechargeController {
 				                	 /** 在钱包哪里添加充值订单号*/
 				                	Wallet wallet = new Wallet();
 				                	wallet.setMoney(addMoney);
-				                	wallet.setId(rechargeVo.getWalltId());
+				                	wallet.setId(rechargeVo.getWalletId());
 				                	 /** 修改用户的钱包金额*/	                	
 				                	walletService.updatePrice(wallet);
 	
@@ -289,7 +289,7 @@ public class RechargeController {
                 	 /** 在钱包哪里添加充值订单号*/
                 	Wallet wallet = new Wallet();
                 	wallet.setMoney(addMoney);
-                	wallet.setId(rechargeVo.getWalltId());
+                	wallet.setId(rechargeVo.getWalletId());
                 	 /** 修改用户的钱包金额*/	                	
                 	walletService.updatePrice(wallet);
 					
