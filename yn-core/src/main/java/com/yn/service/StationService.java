@@ -448,7 +448,7 @@ public class StationService {
     		Map<Object, Object> listMap=new LinkedHashMap<>();
     		linkHashMap.put(key[i], objectMap.get(key[i]));
     		listMap.put("createDtm", key[i]);
-    		listMap.put("capacity", objectMap.get(key[i]));
+    		listMap.put("capacity", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
     		listsMap.add(listMap);
         	}
     	return listsMap;
