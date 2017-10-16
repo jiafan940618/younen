@@ -293,8 +293,7 @@ public class RechargeController {
                 	 /** 修改用户的钱包金额*/	                	
                 	walletService.updatePrice(wallet);
 					
-                	
-               
+
                 	resultMap.put("status", "1");
                 	resultMap.put("message", "");
                 	resultMap.put("orderNo",orderNo);

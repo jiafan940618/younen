@@ -1,4 +1,5 @@
 package com.yn.service.kftService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.jcraft.jsch.Logger;
 import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.kftentity.OrderPay;
@@ -101,12 +103,23 @@ public class SignService {
 			parameters.put("signatureInfo", signatureInfo);
 			
 			BillOrder billOrder = new BillOrder();
+			
+		System.out.println("----- --- ----- ------- ---getOrderId :"+billOrderVo.getOrderId());
+		System.out.println("----- --- ----- ------- ---getUserId: "+billOrderVo.getUserId());
+		System.out.println("----- --- ----- ------- ---getMoney: "+billOrderVo.getMoney().doubleValue());
+		System.out.println("----- --- ----- ------- ---getTradeNo: "+billOrderVo.getTradeNo());
+		System.out.println("----- --- ----- ------- ---getOrderId: "+billOrderVo.getOrderId());
+		System.out.println("----- --- ----- ------- ---getPayWay: "+billOrderVo.getPayWay());
+		
+			
 			billOrder.setOrderId(billOrderVo.getOrderId());
 			billOrder.setUserId(billOrderVo.getUserId());
 			billOrder.setMoney(billOrderVo.getMoney().doubleValue());
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
 	    	billOrder.setPayWay(billOrderVo.getPayWay());
 	    	billOrder.setStatus(1);
+	    	billOrder.setDel(0);
+	    	
 	    	billorderService.newsave(billOrder);
 			
 		} catch (Exception e) {

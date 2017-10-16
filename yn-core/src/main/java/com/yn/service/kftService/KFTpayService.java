@@ -197,8 +197,8 @@ public class KFTpayService {
             	/** 修改订单金额,及3步走，支付状态*/
             	orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue());
 
-            	 /** 查询订单改变订单进度*/
-            	orderService.givePrice(orderService.FindByTradeNo(billOrder.getTradeNo()));
+            	 /** 不在这里修改状态*/
+            //orderService.givePrice(orderService.FindByTradeNo(billOrder.getTradeNo()));
 				
 				 return ResultVOUtil.success("支付成功!");
 			}else{
