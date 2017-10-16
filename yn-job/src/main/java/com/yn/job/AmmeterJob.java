@@ -183,11 +183,12 @@ public class AmmeterJob {
 			//stationMapper.insert(station);
 			Station one = stationDao.findOne(station.getId());
 			if(one!=null){
-				ammeterMapper.updateByPrimaryKeySelective(ammeter);
-				System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+				//ammeterMapper.updateByPrimaryKeySelective(ammeter);
+				stationMapper.updateByPrimaryKeySelective(station);
+				System.out.println("AmmeterJob--> station更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}else{
 				stationMapper.insert(station);
-				System.out.println("AmmeterJob--> ammeter更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+				System.out.println("AmmeterJob--> station新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
