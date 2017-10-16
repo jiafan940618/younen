@@ -22,6 +22,6 @@ public interface TemStationYearDao extends JpaRepository<TemStationYear, Long>, 
     @Query("update TemStationYear set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
-    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM TemStationYear t WHERE t.stationId=?1 AND type=1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM TemStationYear t WHERE t.createDtm is not null AND t.stationId=?1 AND type=1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
     List<Map<Object,Object>> sumMonthKwh(Long stationId);
 }

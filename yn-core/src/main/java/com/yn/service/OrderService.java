@@ -154,8 +154,7 @@ public class OrderService {
 		Integer status = (Integer) obj[1];
 		BigDecimal hadPayPrice = (BigDecimal) obj[2];
 		BigDecimal totalPrice = (BigDecimal) obj[3];
-		
-			
+
 		Order order = new Order();
 		order.setId(id.longValue());
 		order.setHadPayPrice(hadPayPrice.doubleValue());
@@ -163,25 +162,24 @@ public class OrderService {
 		order.setTotalPrice(totalPrice.doubleValue());
 		return order;
 	}
-	
-	/** 根据现有的金额,改变订单状态*/
-	public void givePrice(Order order){
-		
-		Double num =order.getHadPayPrice()/order.getTotalPrice();
-		
-		
+
+	/** 根据现有的金额,改变订单状态 */
+	public void givePrice(Order order) {
+
+		Double num = order.getHadPayPrice() / order.getTotalPrice();
+
 		Integer status = order.getStatus();
-		if(0< num && num < 0.3){
-			status =0;
-		}else if(0.3<= num && num < 0.6){
-			status= 1;
-		}else if(0.6<= num && num < 1){
-			status= 2;
-		}else if(num == 1){
-			status= 3;
+		if (0 < num && num < 0.3) {
+			status = 0;
+		} else if (0.3 <= num && num < 0.6) {
+			status = 1;
+		} else if (0.6 <= num && num < 1) {
+			status = 2;
+		} else if (num == 1) {
+			status = 3;
 		}
 		order.setStatus(status);
-		
+
 		mapper.UpdateOrderStatus(order);
 	}
 
@@ -391,28 +389,27 @@ public class OrderService {
 	public void UpdateOrStatus(String tradeNo, Double money) {
 
 		Order order = FindByTradeNo(tradeNo);
-		
-		logger.info("----- ------ ------修改的金额为"+money);
+
+		logger.info("----- ------ ------修改的金额为" + money);
 		order.setHadPayPrice(order.getHadPayPrice() + money);
-		logger.info("----- ------ ------保存的的金额为"+(order.getHadPayPrice() + money));
-		
-		
-		Double num =order.getHadPayPrice()/order.getTotalPrice();
-		
+		logger.info("----- ------ ------保存的的金额为" + (order.getHadPayPrice() + money));
+
+		Double num = order.getHadPayPrice() / order.getTotalPrice();
+
 		Integer status = order.getStatus();
-		
-		if(0< num && num < 0.3){
+
+		if (0 < num && num < 0.3) {
 			status = 9;
-		}else if(num >= 0.3 && num < 0.6){
-			status =0;
-		}else if(0.6<= num && num < 1){
-			status= 1;
-		}else if(num == 1){
-			status= 2;
+		} else if (num >= 0.3 && num < 0.6) {
+			status = 0;
+		} else if (0.6 <= num && num < 1) {
+			status = 1;
+		} else if (num == 1) {
+			status = 2;
 		}
-		logger.info("----- ------ ------status为"+status);
+		logger.info("----- ------ ------status为" + status);
 		order.setStatus(status);
-		
+
 		mapper.UpdateOrder(order);
 
 		logger.info("----- ----- ---- ------ ----- --修改订单状态成功！");
@@ -606,12 +603,12 @@ public class OrderService {
 	 */
 	public boolean updateLoanStatus(Order o, boolean flag) {
 		Order order = findOne(o.getId());
-		if(flag){
-			order.setLoanStatus(2);//cheng gong ..
+		if (flag) {
+			order.setLoanStatus(2);// cheng gong ..
 			Double totalPrice = order.getTotalPrice();
-			order.setHadPayPrice(totalPrice);//贷款成功就让订单需支付的钱=着条订单的总价-->相等于用户支付满钱了。
-		}else{
-			order.setHadPayPrice(null);//不修改金额
+			order.setHadPayPrice(totalPrice);// 贷款成功就让订单需支付的钱=着条订单的总价-->相等于用户支付满钱了。
+		} else {
+			order.setHadPayPrice(null);// 不修改金额
 			order.setLoanStatus(3);// shi bai ..
 		}
 		int status = mapper.updateLoanStatus(order);
@@ -619,13 +616,13 @@ public class OrderService {
 	}
 
 	public boolean updateApplyStepBImgUrl(Order order) {
-		return mapper.updateApplyStepBImgUrl(order)>0?true:false;
+		return mapper.updateApplyStepBImgUrl(order) > 0 ? true : false;
 	}
 
-	public Map<String, Object> checkSurv(Order o,Integer isOk) {
+	public Map<String, Object> checkSurv(Order o, Integer isOk) {
 		Order o1 = findOne(o.getId());
-		Map<String,Object> jsonResult = new HashMap<String,Object>();
-		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
+		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
 			jsonResult.put("isOk", true);
 			o1.setApplyStepA(1);
 			int condition = mapper.updateByCondition(o1);
@@ -636,7 +633,7 @@ public class OrderService {
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
-		}else{
+		} else {
 			jsonResult.put("loanStatus", false);
 		}
 		if (o1.getApplyIsPay() != 1) {
@@ -644,8 +641,8 @@ public class OrderService {
 			jsonResult.put("applyIsPay", false);
 			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
 			return jsonResult;
-		}else{
-			jsonResult.put("applyStepA", true);//支付成功。
+		} else {
+			jsonResult.put("applyStepA", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
@@ -673,9 +670,9 @@ public class OrderService {
 	}
 
 	public Map<String, Object> checkGrid(Order o, Integer isOk) {
-		Map<String, Object> jsonResult = new HashMap<String,Object>();
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
-		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
 			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
@@ -686,7 +683,7 @@ public class OrderService {
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
-		}else{
+		} else {
 			jsonResult.put("loanStatus", false);
 		}
 		if (o1.getApplyIsPay() != 1) {
@@ -694,8 +691,8 @@ public class OrderService {
 			jsonResult.put("reason", "当前订单未支付,请先支付。");
 			jsonResult.put("isOk", false);
 			return jsonResult;
-		}else{
-			jsonResult.put("applyStepA", true);//支付成功。
+		} else {
+			jsonResult.put("applyStepA", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
@@ -728,9 +725,9 @@ public class OrderService {
 	}
 
 	public Map<String, Object> checkApply(Order o, Integer isOk) {
-		Map<String, Object> jsonResult = new HashMap<String,Object>();
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
-		if (o1.getLoanStatus()==2) {//看看是不是貸款成功的。
+		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
 			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
@@ -741,7 +738,7 @@ public class OrderService {
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
-		}else{
+		} else {
 			jsonResult.put("loanStatus", false);
 		}
 		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
@@ -749,7 +746,7 @@ public class OrderService {
 			jsonResult.put("buildIsPay", false);
 			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
 			return jsonResult;
-		}else{
+		} else {
 			jsonResult.put("buildIsPay", true);
 		}
 		if (isOk == 1) {
@@ -771,5 +768,10 @@ public class OrderService {
 		jsonResult.put("reason", "当前订单状态不能进行申请施工");
 		jsonResult.put("isOk", false);
 		return null;
+	}
+
+	public boolean updateOrderStauts43Step(Order order) {
+		int step = mapper.updateOrderStauts43Step(order);
+		return step > 0 ? true : false;
 	}
 }

@@ -49,6 +49,15 @@
 		from ammeter
 		where id = #{id,jdbcType=INTEGER}
 	</select>
+	<select id="selectByStationId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from younen.ammeter
+		where station_id = #{stationId,jdbcType=INTEGER}
+	</select>
+	
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from
 		ammeter

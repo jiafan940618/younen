@@ -45,13 +45,13 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     
     @Query("select COALESCE(sum(s.capacity),0) from Station s WHERE s.serverId=?1 AND s.del=0")
     double sumCapacity(Long serverId);
-    @Query(value="select * from station as s where s.user_id=?1 and s.work_Tota_Tm>0 and s.work_Dtm is not null",nativeQuery=true)
+    @Query(value="select * from station as s where s.user_id=?1 and s.status in(1,2)",nativeQuery=true)
     List<Station> findByUserId(long userid);
     
-    @Query(value="select * from station as s where s.work_Tota_Tm>0 and s.work_Dtm is not null",nativeQuery=true)
+    @Query(value="select * from station as s where s.status in(1,2)",nativeQuery=true)
     List<Station> findAllStation();
     
-    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.id=?1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.id=?1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
     List<Map<Object,Object>> findUserCapacity(Long stationId);
     
     @Query(value="SELECT t2.province_text AS provinceName, COUNT(*) AS stationNum FROM station t1 INNER JOIN province t2 "
