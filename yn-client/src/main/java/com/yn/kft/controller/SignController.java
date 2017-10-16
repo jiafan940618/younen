@@ -68,11 +68,14 @@ public class SignController {
 			/*billOrderVo.setOrderId(1L);
 			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);*/
-		
-
+			/*billOrderVo.setMoney(new BigDecimal("4920"));
+			billOrderVo.setPayWay(4);
+			billOrderVo.setUserId(3L);
+			billOrderVo.setOrderId(4l);*/
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
-			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
+			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getUserId()));
+			
 			
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
@@ -187,8 +190,8 @@ public class SignController {
 				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
 				                	
 				                //	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
-				                	 /** 查询订单改变订单进度*/
-				                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
+				                	 /** 不在这里修改状态*/
+				                //orderService.givePrice(orderService.FindByTradeNo(orderNo));
 				                	
 				                	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
 
@@ -273,7 +276,7 @@ public class SignController {
 				parameters.put("callerIp", request.getParameter("callerIp"));
 				parameters.put("language", request.getParameter("language"));
 				
-				BillOrder billOrder =  billorderService.findByTradeNoandstatus(request.getParameter("orderNo"));
+		
 				boolean verify_sign=CashierSignUtil.verifySign_2(pfxPath, parameters, request.getParameter("signatureInfo"));
 				if(verify_sign){
 					
@@ -285,8 +288,8 @@ public class SignController {
                 	/** 修改订单金额,及3步走，支付状态*/
                 	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
 
-                	 /** 查询订单改变订单进度*/
-                	orderService.givePrice(orderService.FindByTradeNo(orderNo));
+                	 /** 不在这里修改状态*/
+                	//orderService.givePrice(orderService.FindByTradeNo(orderNo));
                 	
                 	logger.info("---- ----- ------ ---- 添加订单记录结束 0002");
                 	resultMap.put("status", "1");

@@ -51,5 +51,39 @@ public class NumberUtil {
         return s;
 	}
 	
-	
+	/**
+	 * 数据过万，加“万”保留两位小数
+	 * @param decimal
+	 * @return
+	 */
+	public static String getTenThousand(Double decimal) {
+		DecimalFormat df = new DecimalFormat("#.00");
+		String str="";
+		if (decimal>=10000) {
+			String format = df.format(decimal/10000);
+			 str=format+"万";
+		}else {
+			String format = df.format(decimal); 
+			str=format;
+		}
+        return str;
+	}
+	/**
+	 * 数据过万，加“万”保留两位小数
+	 * @param decimal
+	 * @return
+	 */
+	public static String getIntegerTenThousand(Double decimal) {
+         int number=decimal.intValue();
+         DecimalFormat df = new DecimalFormat("#.00");
+		String str="";
+		if (number>=10000) {
+			String format = df.format(number/10000);
+			 str=format+"万";
+		}else {
+			 
+			str=String.valueOf(number);
+		}
+        return str;
+	}
 }
