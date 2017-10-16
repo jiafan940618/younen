@@ -78,9 +78,8 @@ public class AmmeterJob {
 				aprR.setdType(ammeter.getdType());
 				aprR.setiAddr(ammeter.getiAddr());
 				aprR.setDealt(0);
-				// List<AmPhaseRecord> amPhaseRecords =
-				// amPhaseRecordService.findAll(aprR);
-				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
+				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
+				//List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
 					// amPhaseRecordDao.save(apr);
@@ -185,6 +184,7 @@ public class AmmeterJob {
 			} else if (ammeter.getType() == 2) {
 				station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
 			}
+			System.err.println(ammeter.getNowKw());
 			// stationDao.save(station);
 			// stationMapper.insert(station);
 			Station one = stationDao.findOne(station.getId());

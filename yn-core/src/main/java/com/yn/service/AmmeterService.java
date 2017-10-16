@@ -95,6 +95,10 @@ public class AmmeterService {
     public List<Ammeter> findAll(List<Long> list) {
         return ammeterDao.findAll(list);
     }
+    
+    public List<Ammeter> findAllByMapper(Ammeter ammeter) {
+        return ammeterMapper.selectByStationId(ammeter.getStationId().intValue());
+    }
 
     public Page<Ammeter> findAll(Ammeter ammeter, Pageable pageable) {
         Specification<Ammeter> spec = getSpecification(ammeter);

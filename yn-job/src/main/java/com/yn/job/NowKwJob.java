@@ -38,7 +38,8 @@ public class NowKwJob {
 			ammeterR.setStationId(station.getId());
 
 			Double tolNowKw = 0d;
-			List<Ammeter> ammeters = ammeterService.findAll(ammeterR);
+			//List<Ammeter> ammeters = ammeterService.findAll(ammeterR);
+			List<Ammeter> ammeters = ammeterService.findAllByMapper(ammeterR);
 			for (Ammeter ammeter : ammeters) {
 				tolNowKw += ammeter.getNowKw();
 			}

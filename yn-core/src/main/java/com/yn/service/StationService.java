@@ -410,8 +410,8 @@ public class StationService {
     	double co2prm=NumberUtil.accurateToTwoDecimal((CO2Prm * egt)/1000);
     	objectMap.put("plantTreesPrm",(int) NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
     	objectMap.put("CO2Prm", co2prm);
-    	objectMap.put("nowKw",nowKw);
-    	objectMap.put("egt", egt);
+    	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
+    	objectMap.put("egt", NumberUtil.accurateToTwoDecimal(egt));
     	objectMap.put("efficiency", (int)efficiency);
     	return objectMap;
     }
