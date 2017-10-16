@@ -130,17 +130,16 @@ public class StationController {
 		
 		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
 	    Map<String, Object> stationByUser=new HashMap<>();
-	     
+	    
 	    if (userVo!=null) {
-
-	    	
 	    	station.setUserId(userVo.getId());
 	    	if (stationDao.findByUserId(station.getUserId())!=null) {
 	    		List<Station> stations=stationDao.findByUserId(station.getUserId());
 				stationByUser = stationService.stationByUser(stations);
-			}
+			}else {
 				List<Station> stations=stationDao.findAllStation();
 			    stationByUser = stationService.stationByUser(stations);
+			}	
 		    }else{
 		    List<Station> stations=stationDao.findAllStation();
 		    stationByUser = stationService.stationByUser(stations);
@@ -163,9 +162,10 @@ public class StationController {
 	    	if (stationDao.findByUserId(station.getUserId())!=null) {
 	    		List<Station> stations=stationDao.findByUserId(station.getUserId());
 				capacityAll = stationService.checkCapacity(stations);
-			}
+			}else{
 	    	List<Station> stations=stationDao.findAllStation();
 		    capacityAll = stationService.checkCapacity(stations);
+			}
 		    }else{
 		    List<Station> stations=stationDao.findAllStation();
 		    capacityAll = stationService.checkCapacity(stations);
@@ -179,38 +179,9 @@ public class StationController {
 	@ResponseBody
 	@RequestMapping(value = "/stationFenbu", method = { RequestMethod.POST, RequestMethod.GET })
 	public Object stationFenbu(HttpSession session) {
-		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+
 			List<Map> rm2 = new ArrayList<>();
-			if (userVo!=null) {
-				Long serverid = serverDao.findByUserid(userVo.getId());
-				if (serverid !=null) {
-					Object rm[]=stationDao.stationFenbuById(serverid);
-					for (int i = 0; i < rm.length; i++) {
-						Map<String, Object> map=new HashMap<>();
-						Object object = rm[i];
-						
-						Object[] obj=(Object[])object;
-						String provinceName=provinceName((String)obj[0]);
-						map.put("name", provinceName);
-						map.put("value", (BigInteger)obj[1]);
-						rm2.add(map);	
-					}
-				}else {
-					Object rm[]=stationDao.stationFenbu();
-					for (int i = 0; i < rm.length; i++) {
-						Map<String, Object> map=new HashMap<>();
-						Object object = rm[i];
-						
-						Object[] obj=(Object[])object;
-						String provinceName=provinceName((String)obj[0]);
-						map.put("name", provinceName);
-						map.put("value", (BigInteger)obj[1]);
-						rm2.add(map);
-						
-					}
-				}
-				
-			}else {
+			
 				Object rm[]=stationDao.stationFenbu();
 				for (int i = 0; i < rm.length; i++) {
 					Map<String, Object> map=new HashMap<>();
@@ -221,9 +192,7 @@ public class StationController {
 					map.put("name", provinceName);
 					map.put("value", (BigInteger)obj[1]);
 					rm2.add(map);
-					
 				}
-			}
 		return ResultVOUtil.success(rm2);
 	}
 	private String provinceName(String str){

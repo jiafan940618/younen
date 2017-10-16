@@ -89,9 +89,10 @@ public class TemStationYearController {
     		 if (stationDao.findByUserId(station.getUserId())!=null) {
     			 List<Station> stations=stationDao.findByUserId(station.getUserId());
     				monthKwh=temStationYearService.monthKwh(stations);
-			}
-    		 List<Station> stations=stationDao.findAllStation();
- 			monthKwh=temStationYearService.monthKwh(stations);
+			}else {
+				List<Station> stations=stationDao.findAllStation();
+	 			monthKwh=temStationYearService.monthKwh(stations);
+			}	 
 			
 		} else {
 			List<Station> stations=stationDao.findAllStation();

@@ -387,15 +387,9 @@ public class StationService {
     	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
     	double  egt=0;
     	double nowKw=0;
-    	double plantTreesPrm=0;
-    	double CO2Prm=0;
     	double capacity=0;
     	double efficiency=0;
-    	for(Station station2 :stations){
-    		// 相当于植树
-         plantTreesPrm=plantTreesPrm+Double.valueOf(systemConfigService.get("plant_trees_prm"));
-            // 相当于减排二氧化碳
-         CO2Prm =CO2Prm+ Double.valueOf(systemConfigService.get("CO2_prm"));
+    	for(Station station2 :stations){	
             //发电功率
          nowKw=nowKw+station2.getNowKw();
             //发电总量
@@ -407,10 +401,12 @@ public class StationService {
         	 //发电效率（百分比）
        	  efficiency=(nowKw/capacity)*100;
 		 }
-
-    	double co2prm=NumberUtil.accurateToTwoDecimal((CO2Prm * egt)/1000);
-    	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm * egt));
-    	objectMap.put("CO2Prm", NumberUtil.getTenThousand(co2prm));
+    		// 相当于植树
+    	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
+            // 相当于减排二氧化碳
+         double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
+    	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
+    	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
     	objectMap.put("nowKw",NumberUtil.getTenThousand(nowKw));
     	objectMap.put("egt", NumberUtil.getTenThousand(egt));
     	objectMap.put("efficiency", (int)efficiency);
