@@ -128,22 +128,10 @@ public class StationController {
 	@RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
 	public Object runningStation(HttpSession session,Station station) {
 		
-		NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+		
 	    Map<String, Object> stationByUser=new HashMap<>();
-	    
-	    if (userVo!=null) {
-	    	station.setUserId(userVo.getId());
-	    	if (stationDao.findByUserId(station.getUserId())!=null) {
-	    		List<Station> stations=stationDao.findByUserId(station.getUserId());
-				stationByUser = stationService.stationByUser(stations);
-			}else {
-				List<Station> stations=stationDao.findAllStation();
-			    stationByUser = stationService.stationByUser(stations);
-			}	
-		    }else{
 		    List<Station> stations=stationDao.findAllStation();
 		    stationByUser = stationService.stationByUser(stations);
-		    }
 		return ResultVOUtil.success(stationByUser);
 	}
 	
@@ -170,6 +158,20 @@ public class StationController {
 		    List<Station> stations=stationDao.findAllStation();
 		    capacityAll = stationService.checkCapacity(stations);
 		    }
+		return ResultVOUtil.success(capacityAll);
+	}
+	
+	/**
+	 * web 查询用户的装机容量
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/numCapacity",method = {RequestMethod.POST, RequestMethod.GET})
+    public Object numCapacity(Station station,Integer type,String dateStr) {
+
+	    List<Map<Object, Object>> capacityAll=new ArrayList<>();
+		    List<Station> stations=stationDao.findAllStation();
+		    capacityAll = stationService.checkCapacity(stations,type,dateStr);
+		    
 		return ResultVOUtil.success(capacityAll);
 	}
     

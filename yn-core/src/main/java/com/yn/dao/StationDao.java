@@ -68,4 +68,11 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     List<Station> getstation(@Param("userId") Long userId);
     
     
+    /*
+     * 按时间查询装机并网总量
+     */
+    
+    @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.createDtm LIKE CONCAT('%',:dateStr,'%') AND t.id=:stationId GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
+    List<Map<Object,Object>> numCapacity(@Param("stationId")Long stationId,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
+    
 }
