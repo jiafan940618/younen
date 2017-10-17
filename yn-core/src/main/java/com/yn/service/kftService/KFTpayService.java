@@ -212,7 +212,7 @@ public class KFTpayService {
 				 return ResultVOUtil.success("支付成功!");
 			}else{
 				logger.info("============ ============= ============== ========="+result.getFailureDetails());
-				billOrder.setRemark(result.getFailureDetails());
+				billOrder.setRemark(result.getErrorCode()+":"+result.getFailureDetails());
 				billOrder.setStatus(1);
 				billOrderService.save(billOrder);
 
@@ -312,7 +312,7 @@ public class KFTpayService {
 				 return ResultVOUtil.success("充值成功!");
 			}else{
 				logger.info("============ ============= ============== ========="+result.getFailureDetails());
-				recharge.setRemark(result.getFailureDetails());
+				recharge.setRemark(result.getErrorCode()+":"+result.getFailureDetails());
 				recharge.setStatus(1);
 				rechargeService.save(recharge);
 

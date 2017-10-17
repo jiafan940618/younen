@@ -159,6 +159,9 @@ public class SignController {
              String status =(String)request.getParameter("status");
              String amount =(String) request.getParameter("settlementAmount");
              	
+             String failureDetails = request.getParameter("failureDetails");	
+             String errorCode = request.getParameter("errorCode");
+             
              String pfxPath=null;
  			try {
  				 File directory = new File("");// 参数为空
@@ -193,23 +196,41 @@ public class SignController {
 				                	
 			                	}else if(resultMap.get("status").equals("2")){
 			                		
-			                		return ResultVOUtil.error(777, "支付未成功!");
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("3")){
-			                		BillOrder billOrder01 = new BillOrder();
-				                	
-				                	billOrder01.setStatus(2);
-				                	billorderService.newsave(billOrder01);
-			                		return ResultVOUtil.error(777, "已冲正!");
+			                	
+			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+			                		billOrder.setRemark(errorCode+":"+failureDetails);
+			                		
+			                		billorderService.save(billOrder);
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("4")){
-			                		return ResultVOUtil.error(777, "订单已超时!");
+			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+			                		billOrder.setRemark(errorCode+":"+failureDetails);
+			                		
+			                		billorderService.save(billOrder);
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("5")){
-			                		return ResultVOUtil.error(777, "异常成功!");
+			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+			                		billOrder.setRemark(errorCode+":"+failureDetails);
+			                		billorderService.save(billOrder);
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("6")){
-			                		return ResultVOUtil.error(777, "已撤销!");
+			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+			                		billOrder.setRemark(errorCode+":"+failureDetails);
+			                		billorderService.save(billOrder);
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                }else{
-			                		return ResultVOUtil.error(777, "支付失败!");
+			                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+		                		billOrder.setRemark(errorCode+":"+failureDetails);
+		                		billorderService.save(billOrder);
+		                		
+			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}
 		               }else{
+		            	   BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+	                		billOrder.setRemark(errorCode+":"+failureDetails);
+	                		billorderService.save(billOrder);
 		            	   logger.info("====================== ================== 验签失败!");
 		            	   return ResultVOUtil.error(777, "支付未成功!");
 		               }   		
@@ -294,6 +315,11 @@ public class SignController {
 				}
         	}
         		logger.info("---- --------- ------------ -------- "+request.getParameter("message"));
+        		
+        		 BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+         		 billOrder.setRemark(request.getParameter("message"));
+         		 billorderService.save(billOrder);
+        		
         		resultMap.put("message","支付失败!"+ request.getParameter("message"));
         		
 			System.out.println("---------- ------ -- ----- 结束后台响应");

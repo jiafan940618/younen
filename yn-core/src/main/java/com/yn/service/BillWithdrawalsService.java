@@ -49,6 +49,12 @@ public class BillWithdrawalsService {
 		}
 		System.out.println();
 	}
+	
+	public BillWithdrawals findByOrderNo(String orderNo){
+		
+		return billWithdrawalsDao.findByOrderNo(orderNo);	
+	}
+	
 	 //b.phone,b.real_name,b.bank_card_num,b.user_id,c.bank_no,c.bank_name,w.id w_id
 	public BillWithdrawalsVo selWithdrawal(String treatyId){
 		

@@ -85,6 +85,12 @@ public class RechargeService {
 	        }
 	    }
 
+	    public   Recharge findByRecode(String orderNo){
+	    	
+			return rechargeDao.findByRecode(orderNo);
+	    }
+	    
+	    
 	 public   RechargeVo findRecharge(Recharge recharge){
 		 
 		Object[] objct  = (Object[])rechargeDao.findRecharge(recharge);
@@ -188,7 +194,11 @@ public class RechargeService {
 				if(Integer.parseInt(resp.getStatus()) != 7){
 					logger.info("------ ----- ----- ------错误码："+resp.getErrorCode());
 					logger.info("------ ----- ----- ------错误信息："+resp.getFailureDetails());
-					return ResultVOUtil.error(777,resp.getFailureDetails());
+					
+					recharge.setRemark(resp.getErrorCode()+":"+resp.getFailureDetails());
+					rechargeService.save(recharge);
+					
+					return ResultVOUtil.error(777,"抱歉,充值失败,详请咨询客服!");
 				}
 	    	} catch (GatewayClientException e) {
 	    		// TODO Auto-generated catch block
@@ -198,6 +208,7 @@ public class RechargeService {
 			return  ResultVOUtil.success(resp);
 		}
 		
+		/** 老版本网银支付，2.0 以后不用*/
 		public  Object  findSign(RechargeVo rechargeVo){
 			 //** 银行卡编号*//*
 			rechargeVo.setBankType("1051000");

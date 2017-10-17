@@ -20,7 +20,7 @@ public class Push extends IDomain implements Serializable{
 	private String title;
 	@Column(columnDefinition = "text comment '[内容]'")
 	private String content;
-	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[是否已读]{0:未读,1:已读}'")
+	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[是否已读]{0:未读,1:已读,2:全部}'")
 	private Integer isRead;
 	@Column(columnDefinition = "int(1) comment '[类型]{0:推送给个人,1:推送给所有人}'")
 	private Integer type;

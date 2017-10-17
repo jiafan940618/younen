@@ -33,6 +33,9 @@ public interface BillWithdrawalsDao extends JpaRepository<BillWithdrawals, Long>
     
    	Object selWithdrawal(@Param("treatyId") String treatyId);
     
+    @Query("select  b from BillWithdrawals b where b.tradeNo = :orderNo and b.del=0 ")
+    BillWithdrawals findByOrderNo(@Param("orderNo") String orderNo);
+    
     
     
     

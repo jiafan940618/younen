@@ -13,10 +13,34 @@
 		<result column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="content" property="content" jdbcType="VARCHAR" />
-		
-	
+		<result column="is_read" property="isRead" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
 	</resultMap>
-
+			
+			
+			<select id="findByPush" parameterType="com.yn.model.Page" resultMap="pushMapper">
+			
+				SELECT 
+				 id,create_dtm,del,content,is_read,title,user_id 
+				 
+				 FROM push WHERE  user_id = #{userId} and del =0 
+				 <if test =" 2 != isRead">
+				 	<if test=" 0 == isRead">
+				 		AND is_read = 0
+				 	</if>
+					  <if test="1 == isRead">
+				 		AND is_read = 1
+				 	</if>
+	 
+				 </if>  
+				 <if test =" null != time_from  and null != time_to">
+				   AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
+				  </if> 
+				     ORDER BY create_dtm DESC
+				    limit #{start},#{limit}
+			
+			</select>			
 </mapper>
 
 

@@ -29,6 +29,11 @@ import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
 //http://3ad9d9c5.ngrok.io/client/payOrder/createPay
+
+/**
+ * 提示
+ * 
+ * */
 @Controller
 @RequestMapping(value="/client/payOrder")
 public class PayOrderAction {
@@ -184,15 +189,16 @@ public class PayOrderAction {
 			TreatyApplyResultDTO resultdto = kftpayService.treatyCollectApply(bankCardVo);
 			
 			if(resultdto.getStatus()==2){
-				logger.info("========= =========== ========== ========="+resultdto.getFailureDetails());
+				logger.info("========= =========== ========== ========="+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
 				
-				return ResultVOUtil.error(777, resultdto.getFailureDetails());
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
 			}
 			
 			if(resultdto.getStatus()!=1){
-				logger.info("========= =========== ========== ========="+ resultdto.getFailureDetails());
+				logger.info("========= =========== ========== ========="+ resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
 				
-				return ResultVOUtil.error(777, resultdto.getFailureDetails());
+
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
 			}
 
 			TreatyConfirmResultDTO configdto=	kftpayService.confirmTreatyCollectApply(resultdto, bankCardVo);
@@ -200,7 +206,7 @@ public class PayOrderAction {
 			if(configdto.getStatus()!=1){
 				logger.info("========= =========== ========== ========="+ configdto.getFailureDetails());
 				
-				return ResultVOUtil.error(777, configdto.getFailureDetails());
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
 			}else{
 				bankCardVo.setTreatyId(configdto.getTreatyId());
 				
@@ -214,6 +220,7 @@ public class PayOrderAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return ResultVOUtil.error(777, "绑定银行卡失败!");
 	
 		

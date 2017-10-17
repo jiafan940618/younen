@@ -2,6 +2,8 @@ package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,21 +78,38 @@ public class PushController {
 	}
 	
 	
+	/** 根据查询条件查询Push*/
 	@ResponseBody
-	@RequestMapping(value = "/queryFind", method = { RequestMethod.POST })
+	@RequestMapping(value = "/queryFind")
 	public Object QueryPush(PushVo pushVo,com.yn.model.Page<Push> page) {
+		/*page.setTime_to("2017-10-10");
+		page.setTime_from("2017-10-01");
+		page.setIndex(1);
+		page.setIsRead(1);
+		page.setUserId(3L);*/
+		logger.info("---- ----- ---- ----- 传递的用户id,userId："+page.getTime_from());
+		logger.info("---- ----- ---- ----- 传递的开始时间:time_from："+page.getTime_from());
+		logger.info("---- ----- ---- ----- 传递的结束时间:time_to："+page.getTime_to());
+		logger.info("---- ----- ---- ----- 当前页:index："+page.getIndex());
+		logger.info("---- ----- ---- ----- 是否已读:{0:未读,1:已读,2:全部},isRead："+page.getIsRead());
 		
-		logger.info("---- ----- ---- ----- 传递的开始时间："+page.getTime_from());
-		logger.info("---- ----- ---- ----- 传递的结束时间："+page.getTime_to());
-		logger.info("---- ----- ---- ----- 当前页："+page.getIndex());
-		logger.info("---- ----- ---- ----- 是否已读:{0:未读,1:已读}："+pushVo.getIsRead());
+		List<Push> list = pushService.findByPush(page);
 		
-		
-		
-
-		return ResultVOUtil.success();
+		return ResultVOUtil.newsuccess(page, list);
 	}
 	
-	
+	/** 根据PushId修改是否已读*/
+	@ResponseBody
+	@RequestMapping(value = "/queryIdFind")
+	public Object QueryPushId(PushVo pushVo) {
+		
+		logger.info("---- ----- ---- ----- 传递的id："+pushVo.getId());
+		Push push = new Push();
+		push.setId(pushVo.getId());
+		
+		pushService.save(push);
+		
+		return ResultVOUtil.success();	
+	}
 	
 }

@@ -1,5 +1,7 @@
 package com.yn.dao.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.yn.model.Page;
@@ -10,7 +12,7 @@ import com.yn.vo.PushVo;
 public interface PushMapper {
 	
 	
-	Push findByPush(Page<PushVo> page);
+	List<Push> findByPush(Page<Push> page);
 	
 	
 	

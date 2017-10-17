@@ -21,8 +21,18 @@ public class Page<T> {
 	private String time_from;
 	private String time_to;
 
+	private Integer isRead;
 	
 	
+	
+	public Integer getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(Integer isRead) {
+		this.isRead = isRead;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}

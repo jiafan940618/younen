@@ -9,14 +9,18 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.PushDao;
+import com.yn.dao.mapper.PushMapper;
 import com.yn.model.Push;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.PushVo;
 
 @Service
 public class PushService {
     @Autowired
     PushDao pushDao;
+    @Autowired
+    PushMapper pushMapper;
 
     public Push findOne(Long id) {
         return pushDao.findOne(id);
@@ -58,6 +62,12 @@ public class PushService {
         Specification<Push> spec = RepositoryUtil.getSpecification(push);
         Page<Push> findAll = pushDao.findAll(spec, pageable);
         return findAll;
+    }
+    
+    /** 条件查询系统消息*/
+    public List<Push> findByPush(com.yn.model.Page<Push> page){
+    	
+    	return pushMapper.findByPush(page);
     }
 
     public List<Push> findAll(Push push) {

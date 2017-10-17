@@ -11,12 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.yn.model.BillOrder;
+import com.yn.model.BillWithdrawals;
 import com.yn.model.Construction;
 import com.yn.model.Order;
 import com.yn.model.Page;
 import com.yn.model.Recharge;
 import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
+import com.yn.service.BillWithdrawalsService;
 import com.yn.service.ConstructionService;
 import com.yn.service.DecideinfoService;
 import com.yn.service.NewServerPlanService;
@@ -53,15 +55,22 @@ public class TestController {
 	@Autowired
 	NewServerPlanService newserverPlanService;
 	@Autowired
-	DemoInfoService  demoInfoService;
+	BillWithdrawalsService  billWithdrawalsService;
+	
+	
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
 	    	
-	    	 List<Construction> list =  constructionService.findbyStruction();
+	    	//   BillWithdrawals billWithdrawals =  billWithdrawalsService.findByOrderNo("");
+	    	   Recharge recharge =   rechargeService.findByRecode("wo6x171017093457");
+	    	   
 
-	            return ResultVOUtil.success(list);  
+       		recharge.setRemark("测试数据");
+       		rechargeService.save(recharge);
+
+	            return ResultVOUtil.success(recharge);  
 	       } 
 	       
 	       @ResponseBody

@@ -145,7 +145,11 @@ public class PyOrderService {
 			if(Integer.parseInt(resp.getStatus()) != 7){
 				logger.info("------ ----- ----- ------错误码："+resp.getErrorCode());
 				logger.info("------ ----- ----- ------错误信息："+resp.getFailureDetails());
-				return ResultVOUtil.error(777,resp.getFailureDetails());
+				billOrder.setRemark(resp.getErrorCode()+":"+resp.getFailureDetails());
+				
+				billOrderService.save(billOrder);
+				
+				return ResultVOUtil.error(777,"抱歉,支付失败，详情，请咨询客服!");
 			}
     	} catch (GatewayClientException e) {
     		// TODO Auto-generated catch block
@@ -185,15 +189,15 @@ public class PyOrderService {
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(0);
+    	billOrder.setDel(0);
     	billOrderService.newsave(billOrder);
 		
 		/** 修改订单金额,及3步走，支付状态*/
     	orderService.UpdateOrStatus(billOrderVo.getTradeNo(), billOrderVo.getMoney().doubleValue());
 
     	 /** 查询订单改变订单进度*/
-    	orderService.givePrice(orderService.FindByTradeNo(billOrderVo.getTradeNo()));
+    	//orderService.givePrice(orderService.FindByTradeNo(billOrderVo.getTradeNo()));
     	//orderService.checkUpdateOrderStatus(orderService.findOne(billOrderVo.getOrderId()));
-		
 		return ResultVOUtil.success("支付成功！");
 	}
 

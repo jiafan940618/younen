@@ -145,6 +145,7 @@ public class RechargeController {
 			 map.put("channelNo", request.getParameter("channelNo"));
 			/* map.put("failureDetails", request.getParameter("failureDetails"));
 			 map.put("errorCode", request.getParameter("errorCode"));*/
+			 
 			 map.put("callerIp", request.getParameter("callerIp"));
 			 map.put("reconStatus", request.getParameter("reconStatus"));
 			
@@ -152,7 +153,8 @@ public class RechargeController {
 
              String status =(String)request.getParameter("status");
              String amount =(String) request.getParameter("settlementAmount");
-             	
+             String failureDetails = request.getParameter("failureDetails");	
+             String errorCode = request.getParameter("errorCode");
              String pfxPath=null;
  			try {
  				 File directory = new File("");// 参数为空
@@ -193,22 +195,50 @@ public class RechargeController {
 				                	
 				                	return "SUCCESS";
 				                	
-			                	}else if(resultMap.get("status").equals("2")){
+			                	}else if(status.equals("2")){
 			                		
-			                		return ResultVOUtil.error(777, "充值未成功!");
-			                	}else if(resultMap.get("status").equals("3")){
+			                		Recharge recharge =rechargeService.findByRecode(orderNo);
+			                		recharge.setRemark(errorCode+":"+failureDetails);
+			                		rechargeService.save(recharge);
 			                		
-			                		return ResultVOUtil.error(777, "已冲正!");
-			                	}else if(resultMap.get("status").equals("4")){
-			                		return ResultVOUtil.error(777, "订单已超时!");
-			                	}else if(resultMap.get("status").equals("5")){
-			                		return ResultVOUtil.error(777, "异常成功!");
-			                	}else if(resultMap.get("status").equals("6")){
-			                		return ResultVOUtil.error(777, "已撤销!");
+			                		
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                	}else if(status.equals("3")){
+			                		Recharge recharge =rechargeService.findByRecode(orderNo);
+			                		recharge.setRemark(errorCode+":"+failureDetails);
+			                		rechargeService.save(recharge);
+			                		
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                	}else if(status.equals("4")){
+			                		Recharge recharge =rechargeService.findByRecode(orderNo);
+			                		recharge.setRemark(errorCode+":"+failureDetails);
+			                		rechargeService.save(recharge);
+			                		
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                	}else if(status.equals("5")){
+			                		Recharge recharge =rechargeService.findByRecode(orderNo);
+			                		recharge.setRemark(errorCode+":"+failureDetails);
+			                		rechargeService.save(recharge);
+			                		
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                	}else if(status.equals("6")){
+			                		Recharge recharge =rechargeService.findByRecode(orderNo);
+			                		recharge.setRemark(errorCode+":"+failureDetails);
+			                		rechargeService.save(recharge);
+			                		
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                }else{
-			                		return ResultVOUtil.error(777, "充值失败!");
+			                	Recharge recharge =rechargeService.findByRecode(orderNo);
+		                		recharge.setRemark(errorCode+":"+failureDetails);
+		                		rechargeService.save(recharge);
+			                	
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}
 		               }else{
+		            	   Recharge recharge =rechargeService.findByRecode(orderNo);
+	                		recharge.setRemark(errorCode+":"+failureDetails);
+	                		rechargeService.save(recharge);
+		            	   
 		            	   logger.info("====================== ================== 验签失败!");
 		            	   return ResultVOUtil.error(777, "充值未成功!");
 		               }   		
@@ -301,6 +331,11 @@ public class RechargeController {
         	}
         		logger.info("---- --------- ------------ -------- "+request.getParameter("message"));
         		resultMap.put("message","充值失败!"+ request.getParameter("message"));
+        		
+        		Recharge recharge =rechargeService.findByRecode(orderNo);
+        		recharge.setRemark(request.getParameter("message"));
+        		rechargeService.save(recharge);
+        		
         		
 			System.out.println("---------- ------ -- ----- 结束后台响应");
 			System.out.println(" ==== ==== ===============================================================================");

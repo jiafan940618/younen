@@ -678,7 +678,7 @@ public class OrderController {
 		jsonResult.put("applyStepA", order.getApplyStepA());
 		jsonResult.put("applyStepB", order.getApplyStepB());
 		jsonResult.put("applyStepBImgUrl",
-				findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0);
+				findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0 ? 1 : 0);
 		jsonResult.put("buildIsPay", order.getBuildIsPay());
 		jsonResult.put("buildStepA", order.getBuildIsPay());
 		jsonResult.put("buildStepB", order.getBuildStepB());

@@ -18,4 +18,7 @@ public interface RechargeDao extends JpaRepository<Recharge, Long>, JpaSpecifica
 		"FROM recharge r LEFT JOIN wallet w ON w.id = r.`wallet_id` WHERE r.`recharge_code` = :#{#recharge.rechargeCode} AND r.del = 0",nativeQuery=true)
 		Object findRecharge(@Param("recharge") Recharge recharge);
 	
+	@Query("SELECT r from   Recharge r where r.rechargeCode = :orderNo and r.del = 0")
+	Recharge findByRecode(@Param("orderNo") String orderNo);
+	
 }
