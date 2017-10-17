@@ -213,5 +213,18 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         }
     
     
+    /** 点击我要建站保存类型*/
+    @ResponseBody
+    @RequestMapping(value = "/saveType")
+    public ResultData<Object> saveType(ServerVo ServerVo,HttpSession httpSession) {
+    	
+    	logger.info(" ---- ---- ---- --- --- 传过来的类型:"+ServerVo.getType());
+    	
+    	httpSession.setAttribute("type", ServerVo.getType());
+    	
+		return ResultVOUtil.success();
+    }
+    
+    
     
 }

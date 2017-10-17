@@ -207,7 +207,10 @@
 		 
 		  <if test="status != 9">
 		 	 and STATUS = #{status} 
-		</if>  
+		</if>
+		
+		ORDER BY create_dtm DESC
+		  
 		  LIMIT #{start},#{limit}
 
 	</select>

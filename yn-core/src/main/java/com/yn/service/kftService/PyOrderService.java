@@ -90,10 +90,11 @@ public class PyOrderService {
 
 	public Object getMap(HttpServletRequest request,BillOrderVo billOrderVo){
 		ActiveScanPayReqDTO reqDTO = new ActiveScanPayReqDTO();
-		reqDTO.setReqNo(String.valueOf(System.currentTimeMillis()));//请求编号
+		reqDTO.setReqNo("kft"+String.valueOf(System.currentTimeMillis()));//请求编号
 		reqDTO.setService("kpp_zdsm_pay");//接口名称，固定不变
 		reqDTO.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
 		reqDTO.setMerchantId(merchantId);//替换成快付通提供的商户ID，测试生产不一样
+		
 		// reqDTO.setSecMerchantId(secMerchantId)//二级商户ID 可空
 		reqDTO.setOrderNo(billOrderVo.getTradeNo());//交易编号 
 		reqDTO.setTerminalIp(terminalIp);//APP和网页支付提交用户端ip，主扫支付填调用付API的机器IP
@@ -132,6 +133,7 @@ public class PyOrderService {
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(1);
+    	billOrder.setDel(0);
     	billOrderService.newsave(billOrder);
     	
 

@@ -26,12 +26,10 @@ import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
 import com.yn.service.WalletService;
-import com.yn.service.kftService.PyOrderService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
-import com.yn.vo.BillOrderVo;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -62,16 +60,16 @@ public class RechargeController {
 
 	 /** pc端*/
 		@ResponseBody
-		@RequestMapping(value="/payonline")
+		@RequestMapping(value="/rechargeOnline")
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
 		public Object doOnline(HttpServletRequest request,HttpSession session,RechargeVo rechargeVo){
 			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 /** 测试数据*/
-			rechargeVo.setWalltId(1L);
+			/*rechargeVo.setWalltId(1L);
 			rechargeVo.setPayWay(2);
-			rechargeVo.setMoney(new BigDecimal("4920"));
+			rechargeVo.setMoney(new BigDecimal("4920"));*/
 
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/

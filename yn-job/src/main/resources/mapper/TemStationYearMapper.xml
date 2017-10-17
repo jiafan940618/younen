@@ -225,4 +225,15 @@
 		w_addr = #{wAddr,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
+	
+	<select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap">
+		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM tem_station_year t1 LEFT JOIN t_station t2 ON t1.station_code = t2.station_code
+		INNER JOIN t_user t3 ON t2.user_id = t3.id
+		AND t2.user_id = #{userId}
+		AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%')
+		GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
+	</select>
+	
+	
+	
 </mapper>

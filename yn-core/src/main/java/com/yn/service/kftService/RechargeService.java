@@ -65,7 +65,7 @@ public class RechargeService {
 		static	String terminalId = "49000002";
 		private String merchantId =PropertyUtils.getProperty("merchantId");
 		private String notifyUrl ="http://test.u-en.cn/client/recharge/doresult";
-		private String merchantIps =PropertyUtils.getProperty("merchantIp");
+		private String merchantIps ="192.168.0.104";
 
 	  public Recharge findOne(Long id) {
 	        return rechargeDao.findOne(id);

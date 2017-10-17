@@ -10,8 +10,6 @@ import com.yn.domain.IDomain;
 public class Recharge  extends IDomain implements Serializable {
 	/** 金额*/
 	private Double money;
-	/** 合计*/
-	private Double total;
 	/** [状态 0:成功 1:失败]*/
 	private Integer status;
 	/** 订单编号*/
@@ -23,9 +21,7 @@ public class Recharge  extends IDomain implements Serializable {
 	
 	private String remark;
 	
-	
-	
-	
+
 	public String getRemark() {
 		return remark;
 	}
@@ -50,12 +46,6 @@ public class Recharge  extends IDomain implements Serializable {
 	}
 	public void setMoney(Double money) {
 		this.money = money;
-	}
-	public Double getTotal() {
-		return total;
-	}
-	public void setTotal(Double total) {
-		this.total = total;
 	}
 	public Integer getStatus() {
 		return status;

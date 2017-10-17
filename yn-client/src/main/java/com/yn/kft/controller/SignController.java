@@ -2,13 +2,12 @@ package com.yn.kft.controller;
 
 
 
+
 import java.io.File;
 import java.io.IOException;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,22 +15,20 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.model.BillOrder;
-import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
+import com.yn.service.BillWithdrawalsService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.kftService.KFTpayService;
 import com.yn.service.kftService.PyOrderService;
-import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
-
 import com.yn.vo.BillOrderVo;
+import com.yn.vo.BillWithdrawalsVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @RestController
@@ -48,10 +45,9 @@ public class SignController {
 	@Autowired
 	private PyOrderService pyOrderService;
 	@Autowired
-	private SignService signService;
+	BillWithdrawalsService billWithdrawalsService;
 	@Autowired
-	BankCardService bankCardService;
-
+	KFTpayService kFTpayService;
 	
 
 	
@@ -67,9 +63,9 @@ public class SignController {
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 
 			/*billOrderVo.setMoney(new BigDecimal("4920"));
-			billOrderVo.setPayWay(4);
+			billOrderVo.setPayWay(2);
 			billOrderVo.setUserId(3L);
-			billOrderVo.setOrderId(4l);*/
+			billOrderVo.setOrderId(1l);*/
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getUserId()));
@@ -79,9 +75,9 @@ public class SignController {
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
 			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+billOrderVo.getMoney());
 
-			String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
+			/*String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
 		
-			billOrderVo.setDescription(description);
+			billOrderVo.setDescription(description);*/
 
 
 			session.setAttribute("tradeNo", billOrderVo.getTradeNo());
@@ -104,7 +100,7 @@ public class SignController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->2："+billOrderVo.getChannel());
+				
 			
 
 				return pyOrderService.getMap(request, billOrderVo);
@@ -178,7 +174,7 @@ public class SignController {
 	   
 		               if(result){
 		                		
-		                		if(request.getParameter("status").equals("1")){
+		                		if(status.equals("1")){
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --订单号为： "+orderNo);
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount);
 				                	
@@ -306,25 +302,42 @@ public class SignController {
 			return resultMap;
 		}
 		
-		/*** 银联支付前端响应接口 */
-		/*@ResponseBody
-		@RequestMapping(value="/bankPay")
-		public  Object getBank(HttpServletRequest request){
-			logger.info("===== =========== ========== ====="+request.getParameter("status"));
-			String tradeNo =(String) request.getParameter("orderNo");
-			Map<String, Integer> map =  new HashMap<String, Integer>();
-			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
+		/*** 提现的接口 */
+	  @ResponseBody
+		@RequestMapping(value="/bankRefund")
+		public  Object getRefund(BillWithdrawalsVo billWithdrawalsVo){
+			//666640755.96
+		  //21000000000773
+		/*  billWithdrawalsVo.setTreatyId("21000000000773");
+		  billWithdrawalsVo.setMoney(10000.0);*/
+		  
+	  Double money = billWithdrawalsVo.getMoney();
+	  	logger.info("---- --------- ------------ -------- 金额："+money);
+	  
+		  logger.info("---- --------- ------------ -------- 协议号："+billWithdrawalsVo.getTreatyId());
+		  
+		  billWithdrawalsVo =billWithdrawalsService.selWithdrawal(billWithdrawalsVo.getTreatyId());
+		  
+		  /** 将查询出来的行号替换成treatyType*/
+		  
+		  billWithdrawalsVo.setMoney(money);
+		  
+		  billWithdrawalsVo.setTradeNo(serverService.getOrderCode(billWithdrawalsVo.getUserId()));
+		  
+		  try {
+			  kFTpayService.init();
+			  
+			kFTpayService.payToBankAccount(billWithdrawalsVo);
 			
-			BillOrder billOrder = billorderService.findByTradeNo(tradeNo);
 			
-			if(null != billOrder){
-				logger.info("订单的状态为：--- ---- -- - -- - - -- - - - -"+billOrder.getStatus());
+		  }catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+			
+			return	ResultVOUtil.success(null);
 
-				map.put("status", billOrder.getStatus());
-			}
-			return	ResultVOUtil.success(map);
-
-		}*/
+		}
 		
 		
 }

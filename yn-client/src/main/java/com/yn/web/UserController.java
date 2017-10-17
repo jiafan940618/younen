@@ -144,7 +144,7 @@ public class UserController {
     List<Order>	list = orderService.findBystatus(page);
     	
     	
-		return ResultVOUtil.success(list);
+		return ResultVOUtil.newsuccess(page, list);
     }
     
     /** 点击贷款修改订单状态*/

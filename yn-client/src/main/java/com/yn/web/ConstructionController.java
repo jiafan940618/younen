@@ -41,7 +41,7 @@ public class ConstructionController {
 		 List<Construction> list = new ArrayList<Construction>();
 		 
 		 if(constructionVo.getType() == 0){
-			 list = constructionService.findAll(construction);
+			 list = constructionService.findbyStruction();
 		 }else{
 			 list = constructionService.findbyType(constructionVo.getType());
 		 }

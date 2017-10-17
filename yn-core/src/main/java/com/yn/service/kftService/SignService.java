@@ -92,8 +92,6 @@ public class SignService {
 			//** 添加时注意添加银行的类型*//*
 			parameters.put("bankType",billOrderVo.getBankType());
 			parameters.put("timeout", "5m");
-			//parameters.put("showUrl", "");
-			//parameters.put("merchantLogoUrl", "");
 			parameters.put("cashierStyle", "1");
 		
 			String signatureInfo =	CashierSignUtil.sign(pfxPath+"/privateKey/pfx.pfx", "123456",parameters);

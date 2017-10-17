@@ -125,4 +125,12 @@ public class TemStationYearService {
         	}
     	return listsMap;
     }
+	
+	public TemStationYear findHuanbao(Map<String, Object> map){
+		
+		return temStationYearMapper.findHuanbao(map);	
+	}
+	
+	
+	
 }

@@ -21,7 +21,24 @@ public class BillWithdrawalsVo extends QueryVo{
     private Date applyDtm;
 	private Integer status;
 	
+	private String treatyId;
 	
+	private String bankNo;
+	
+	
+	
+	public String getBankNo() {
+		return bankNo;
+	}
+	public void setBankNo(String bankNo) {
+		this.bankNo = bankNo;
+	}
+	public String getTreatyId() {
+		return treatyId;
+	}
+	public void setTreatyId(String treatyId) {
+		this.treatyId = treatyId;
+	}
 	public Long getId() {
 		return id;
 	}

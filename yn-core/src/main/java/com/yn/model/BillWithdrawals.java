@@ -37,7 +37,10 @@ public class BillWithdrawals extends IDomain implements Serializable {
     private Date applyDtm;
 	@Column(columnDefinition = "int(1) default 0 comment '[提现状态]{0:申请中,1:提现成功,2:提现失败}'")
 	private Integer status;
-
+	
+	private String remark;
+	
+	
 	/**
 	 * 用户
 	 */
@@ -46,6 +49,13 @@ public class BillWithdrawals extends IDomain implements Serializable {
 	@JsonIgnoreProperties(value = {"password","role"})
 	private User user;
 	
+	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	public Long getUserId() {
 		return userId;
 	}

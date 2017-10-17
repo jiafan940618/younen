@@ -1,6 +1,9 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,10 @@ import com.yn.vo.PushVo;
 @RestController
 @RequestMapping("/client/push")
 public class PushController {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(PushController.class);
+	
 	@Autowired
 	PushService pushService;
 	@Autowired
@@ -67,4 +74,23 @@ public class PushController {
 		Page<Push> findAll = pushService.findAll(push, pageable);
 		return ResultVOUtil.success(findAll);
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/queryFind", method = { RequestMethod.POST })
+	public Object QueryPush(PushVo pushVo,com.yn.model.Page<Push> page) {
+		
+		logger.info("---- ----- ---- ----- 传递的开始时间："+page.getTime_from());
+		logger.info("---- ----- ---- ----- 传递的结束时间："+page.getTime_to());
+		logger.info("---- ----- ---- ----- 当前页："+page.getIndex());
+		logger.info("---- ----- ---- ----- 是否已读:{0:未读,1:已读}："+pushVo.getIsRead());
+		
+		
+		
+
+		return ResultVOUtil.success();
+	}
+	
+	
+	
 }

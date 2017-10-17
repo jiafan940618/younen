@@ -2,37 +2,31 @@ package com.yn.web;
 
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
 import com.yn.model.BillOrder;
-import com.yn.model.Decideinfo;
-import com.yn.model.NewServerPlan;
+import com.yn.model.Construction;
 import com.yn.model.Order;
 import com.yn.model.Page;
-import com.yn.model.Server;
+import com.yn.model.Recharge;
+import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
+import com.yn.service.ConstructionService;
 import com.yn.service.DecideinfoService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.WalletService;
+import com.yn.service.kftService.RechargeService;
 import com.yn.service.redisService.DemoInfoService;
-import com.yn.utils.PropertyUtils;
 import com.yn.vo.BillOrderVo;
-import com.yn.vo.UserVo;
+import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -46,9 +40,12 @@ public class TestController {
 	private String BankAccountNo = PropertyUtils.getProperty("BankAccountNo");
 	private String notifyUrl =PropertyUtils.getProperty("notifyUrl");*/
 	@Autowired
-	private BillOrderService billorderService;
+	ConstructionService constructionService;
+	
 	@Autowired
-    DecideinfoService  decideinfoService;
+	private RechargeService rechargeService;
+	@Autowired
+	WalletService  walletService;
 	@Autowired
 	ServerService  serverService;
 	@Autowired
@@ -61,42 +58,48 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
-	         
-	    	   Page<Order> page = new  Page<Order>();
-	    	   page.setUserId(3L);
-	    	   page.setStatus(9);
-	    	   page.setIndex(1);
-	    	   
-	    	   List<Order> list =   orderService.findBystatus(page);
-	    	   for (Order order : list) {
-	    		   logger.info("-- ---- --- --- ---- --- order.getId()"+order.getId());
-	    		   logger.info("-- ---- --- --- ---- --- order.getServerName()"+order.getServerName());
-	    		   logger.info("-- ---- --- --- ---- --- order.getOrderCode()"+order.getOrderCode());
-	    		   logger.info("-- ---- --- --- ---- --- order.getCapacity()"+order.getCapacity());
-	    	   }
-	    	 
+	    	
+	    	 List<Construction> list =  constructionService.findbyStruction();
+
 	            return ResultVOUtil.success(list);  
 	       } 
 	       
 	       @ResponseBody
 	       @RequestMapping("/test")  
-	       public Object helloJsp001(BillOrderVo billOrderVo){
+	       public Object helloJsp001(RechargeVo rechargeVo){
+	    	   BigDecimal Money  = new BigDecimal(1000.0);
 	    	   
-	    	   billOrderVo.setMoney(new BigDecimal("4920"));
-				billOrderVo.setTradeNo("5ho3171016191437");
-				billOrderVo.setPayWay(4);
-				billOrderVo.setUserId(3L);
-				billOrderVo.setOrderId(1l);
-	          
-	    	   BillOrder billOrder = new BillOrder();
-				billOrder.setOrderId(billOrderVo.getOrderId());
-				billOrder.setUserId(billOrderVo.getUserId());
-				billOrder.setMoney(billOrderVo.getMoney().doubleValue());
-				billOrder.setTradeNo(billOrderVo.getTradeNo());
-		    	billOrder.setPayWay(billOrderVo.getPayWay());
-		    	billOrder.setStatus(1);
-		    	billOrder.setDel(0);
-		    	billorderService.newsave(billOrder);
+	    	 
+	    	   
+	    	   Recharge recharge = new Recharge();
+				recharge.setWalletId(1L);
+				recharge.setMoney(Money.doubleValue());
+				recharge.setRechargeCode(serverService.getOrderCode(1l));
+				recharge.setPayWay(4);
+				recharge.setDel(0);
+				recharge.setStatus(1);
+				rechargeService.save(recharge);
+				
+				logger.info("---- ----- ----- ---- RechargeCode "+recharge.getRechargeCode());
+				logger.info("---- ----- ----- ---- Money "+recharge.getMoney());
+				
+				Recharge NEWrecharge = new Recharge();
+				NEWrecharge.setRechargeCode(recharge.getRechargeCode());
+				NEWrecharge.setStatus(0);
+            	
+            	rechargeService.updateRecharge(NEWrecharge);
+            	
+            	/** 根据订单号查询金额 */
+            	RechargeVo NEWrechargeVo = rechargeService.findRecharge(NEWrecharge);
+            	
+            	BigDecimal addMoney = NEWrechargeVo.getMoney().add(NEWrechargeVo.getTotalmoney());
+            	
+            	 /** 在钱包哪里添加充值订单号*/
+            	Wallet wallet = new Wallet();
+            	wallet.setMoney(addMoney);
+            	wallet.setId(NEWrechargeVo.getWalletId());
+            	 /** 修改用户的钱包金额*/	                	
+            	walletService.updatePrice(wallet);
 	    	  
 	    	   
 	              return ResultVOUtil.success(null);  

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.lycheepay.gateway.client.GBPService;
 import com.lycheepay.gateway.client.GatewayClientException;
 import com.lycheepay.gateway.client.KftService;
+import com.lycheepay.gateway.client.dto.PayToBankAccountDTO;
+import com.lycheepay.gateway.client.dto.TradeResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.CancelTreatyDTO;
 import com.lycheepay.gateway.client.dto.gbp.CancelTreatyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.SearchTreatyDTO;
@@ -26,15 +28,19 @@ import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.model.BillWithdrawals;
 import com.yn.model.Recharge;
 import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
+import com.yn.service.BillWithdrawalsService;
 import com.yn.service.OrderService;
 import com.yn.service.WalletService;
 import com.yn.utils.PropertyUtils;
 import com.yn.vo.BankCardVo;
 import com.yn.vo.BillOrderVo;
+import com.yn.vo.BillRefundVo;
+import com.yn.vo.BillWithdrawalsVo;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -58,6 +64,9 @@ public class KFTpayService {
 	//walletService
 	@Autowired
 	private WalletService walletService;
+	@Autowired
+	BillWithdrawalsService billWithdrawalsService;
+	
 
 	private static KftService service;
 	private static GBPService gbpService;
@@ -312,6 +321,65 @@ public class KFTpayService {
 			}	
 		}
 		
+		public  Object payToBankAccount(BillWithdrawalsVo billWithdrawalsVo) throws GatewayClientException {
+			PayToBankAccountDTO dto = new PayToBankAccountDTO();
+			dto.setService("gbp_pay");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId(merchantId);//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("2BA00BBA");//替换成快付通提供的产品编号，测试生产不一样
+			dto.setOrderNo(billWithdrawalsVo.getTradeNo());//订单号同一个商户必须保证唯一
+			dto.setTradeName("单笔付款测试交易");//简要概括此次交易的内容
+			dto.setMerchantBankAccountNo("商户对公账号");//商户用于付款的银行账户,资金不落地模式时必填（重要参数）		
+
+			dto.setTradeTime(new Date());//交易时间,注意此时间取值一般为商户方系统时间而非快付通生成此时间
+			dto.setAmount("60");//交易金额，单位：分，不支持小数点
+			dto.setCurrency("CNY");//快付通定义的扣费币种,详情请看文档
+			dto.setCustBankNo(billWithdrawalsVo.getBankNo());//客户银行帐户银行别，测试环境只支持：中、农、建
+			dto.setCustBankAccountNo(billWithdrawalsVo.getBankCardNum());//本次交易中,付款到客户哪张卡
+			dto.setCustName(billWithdrawalsVo.getRealName());//客户银行卡户名
+			dto.setRemark("单笔收款");//商户可额外填写付款方备注信息,此信息会传给银行,会在银行的账单信息中显示(具体如何显示取决于银行方,快付通不保证银行肯定能显示)
+			System.out.println("请求信息为:" + dto.toString());
+			TradeResultDTO result = service.payToBankAccount(dto);//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+			
+			//TradeResultDTO [orderNo=8o6615079499770435677, status=1, errorCode=, failureDetails=]
+			
+			BillWithdrawals billWithdrawals = new BillWithdrawals();
+			billWithdrawals.setStatus(0);
+			billWithdrawals.setDel(0);
+			billWithdrawals.setWalletId(billWithdrawalsVo.getWalletId());
+			billWithdrawals.setUserId(billWithdrawalsVo.getUserId());
+			billWithdrawals.setTradeNo(billWithdrawalsVo.getTradeNo());
+			billWithdrawals.setMoney(billWithdrawalsVo.getMoney());
+			billWithdrawals.setBankName(billWithdrawalsVo.getBankName());
+			billWithdrawals.setBankCardNum(billWithdrawalsVo.getBankCardNum());
+			billWithdrawals.setRealName(billWithdrawalsVo.getRealName());
+			billWithdrawals.setPhone(billWithdrawalsVo.getPhone());
+			
+			billWithdrawalsService.save(billWithdrawals);
+			
+			
+			if(result.getStatus() == 1){
+				billWithdrawals.setStatus(1);
+				
+				Wallet wallet  = walletService.findWalletByUser(billWithdrawals.getUserId());
+				 //subtract
+				BigDecimal money = wallet.getMoney().subtract(BigDecimal.valueOf(billWithdrawals.getMoney()));
+				
+				wallet.setMoney(money);
+				
+				walletService.updatePrice(wallet);
+				
+				
+				return ResultVOUtil.success("提现成功!");
+			}else{
+				billWithdrawals.setStatus(2);
+				billWithdrawals.setRemark(result.getFailureDetails());
+				
+				billWithdrawalsService.save(billWithdrawals);
+				 return ResultVOUtil.error(777, "抱歉,提现失败,详情请咨询客服!");	
+			}	
+		}
 		
 		
 

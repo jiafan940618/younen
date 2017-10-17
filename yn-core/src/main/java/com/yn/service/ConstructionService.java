@@ -21,6 +21,12 @@ public class ConstructionService {
 		return constructionDao.findbyType(type);  
 	  }
 	 
+	 
+	public  List<Construction> findbyStruction(){
+		
+		return constructionDao.findbyStruction(); 
+	 }
+	 
 	  
 	 public Construction findOne(Long id) {
 	        return constructionDao.findOne(id);
@@ -46,6 +52,7 @@ public class ConstructionService {
 	        return constructionDao.findAll(spec);
 	    }
 	 
+	    
 	
 	
 

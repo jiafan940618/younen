@@ -18,6 +18,11 @@ public interface ConstructionDao extends JpaRepository<Construction, Long>, JpaS
 	    @Modifying
 	    @Query("select c from  Construction c  where c.type = :type ")
 	    List<Construction> findbyType(@Param("type") Integer type);
+	    
+
+	    @Query("SELECT c FROM Construction c WHERE c.del = 0    ORDER BY c.type  ")
+	    List<Construction> findbyStruction();
+	    
 	
 	
 
