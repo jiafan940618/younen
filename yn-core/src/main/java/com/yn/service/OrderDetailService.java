@@ -225,24 +225,24 @@ public class OrderDetailService {
 	 */
 	public Map<String, Object> buildApplication(Order order) {
 		result = new HashMap<>();
-		Double needToPay = calculatedNeedToPayMoney(order, BUILD_PAYMENT_SCALE);
-		if (needToPay < 0) {
+		Double hadPayPrice = order.getHadPayPrice();// 已支付
+		Double totalPrice = order.getTotalPrice();// 总价4620
+		Double needToPay = totalPrice * BUILD_PAYMENT_SCALE;// 需要支付的金额
+		if (hadPayPrice == null || order.getHadPayPrice() == 0) {
+			result.put("needToPay", needToPay);
+		}else{
+			needToPay = needToPay-hadPayPrice;
+			result.put("needToPay", needToPay);
 			// 修改状态 : 已支付、已申请、未开始
 			order.setBuildIsPay(1);
 			order.setBuildStepA(1);
 			order.setBuildStepB(0);
-			result.put("needToPay", 0);
-		} else {
-			result.put("needToPay", needToPay);
-			order.setBuildIsPay(0);
-			order.setBuildStepA(0);
-			order.setBuildStepB(0);
+			// 更新状态 --> success：true
+			result.put("buildIsPay", order.getBuildIsPay());
+			result.put("buildStepB", order.getBuildStepB());
+			boolean byCondition = orderService.checkUpdateOrderStatus(order);
+			result.put("updateOrderStauts", byCondition);
 		}
-		// 更新状态 --> success：true
-		result.put("buildIsPay", order.getBuildIsPay());
-		result.put("buildStepB", order.getBuildStepB());
-		boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		result.put("updateOrderStauts", byCondition);
 		return result;
 	}
 
