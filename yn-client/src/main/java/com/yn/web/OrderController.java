@@ -185,7 +185,7 @@ public class OrderController {
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
 			break;
 		case GRIDCONNECTEDPAYMENT:
-			result = orderDetailService.gridConnectedPayment(findOne);// 申请保健
+			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
 																		// -->
 																		// 报建状态
 			break;

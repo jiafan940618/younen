@@ -1,17 +1,13 @@
 package com.yn.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.CommentDao;
-import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.Order;
 
@@ -124,7 +120,7 @@ public class OrderDetailService {
 	}
 
 	/**
-	 * 申请保健、
+	 * 并网申请 --> 线上支付
 	 * 
 	 * @param order
 	 * @return
@@ -145,16 +141,31 @@ public class OrderDetailService {
 		result = new HashMap<>();
 		Double hadPayPrice = order.getHadPayPrice();
 		Double totalPrice = order.getTotalPrice();
-		double needToPay = totalPrice * APPLY_PAYMENT_SCALE;
+		// 计算出尾款 :: 100% - 60% --> 40%
+		double needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE);
 		if (hadPayPrice != null) {
 			if (hadPayPrice >= needToPay) {
 				result.put("needToPay", 0);
+				// order.setApplyIsPay(1);// 申请中-支付状态
+				// 修改状态 ： 已支付、已申请、并网发电申请中
+				// order.setGridConnectedIsPay(1);
+				// order.setGridConnectedStepA(1);
+				// order.setStatus(2);
 			} else {
 				result.put("needToPay", needToPay);
+				// order.setGridConnectedIsPay(0);
+				// order.setGridConnectedStepA(0);
+				// order.setApplyIsPay(0);
 			}
 		} else {
 			result.put("needToPay", needToPay);
+			// order.setGridConnectedIsPay(0);
+			// order.setGridConnectedStepA(0);
+			// order.setApplyIsPay(0);
 		}
+		// 更新状态 --> success：true
+		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
+		// result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -182,14 +193,14 @@ public class OrderDetailService {
 	}
 
 	/**
-	 * 并网申请（并网发电的线上支付）
+	 * 申请保健。
 	 * 
 	 * @param order
 	 * @return
 	 */
 	public Map<String, Object> gridConnectedApplication(Order order) {
 		result = new HashMap<>();
-		Double needToPay = calculatedNeedToPayMoney(order, BUILD_PAYMENT_SCALE);
+		Double needToPay = calculatedNeedToPayMoney(order, APPLY_PAYMENT_SCALE);
 		if (needToPay < 0) {
 			result.put("needToPay", 0);
 			// 修改状态 ： 已支付、已申请
