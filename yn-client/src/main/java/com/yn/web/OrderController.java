@@ -185,7 +185,7 @@ public class OrderController {
 			result = orderDetailService.buildPayment(findOne);// 建设中线上支付
 			break;
 		case GRIDCONNECTEDPAYMENT:
-			result = orderDetailService.gridConnectedPayment(findOne);// 并网申请线上支付
+			result = orderDetailService.gridConnectedPayment(findOne);// 申请保健
 																		// -->
 																		// 报建状态
 			break;
@@ -678,7 +678,7 @@ public class OrderController {
 		jsonResult.put("applyStepA", order.getApplyStepA());
 		jsonResult.put("applyStepB", order.getApplyStepB());
 		jsonResult.put("applyStepBImgUrl",
-				findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0);
+				findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0?1:0);
 		jsonResult.put("buildIsPay", order.getBuildIsPay());
 		jsonResult.put("buildStepA", order.getBuildIsPay());
 		jsonResult.put("buildStepB", order.getBuildStepB());
