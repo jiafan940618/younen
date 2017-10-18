@@ -720,7 +720,7 @@ public class OrderService {
 		} else {
 			jsonResult.put("loanStatus", false);
 		}
-		if (o1.getBuildIsPay() != 1 || o1.getStatus() != 2) {
+		if (o1.getBuildIsPay() != 1 && o1.getStatus() != 2) {
 			jsonResult.put("isOk", false);
 			jsonResult.put("buildIsPay", false);
 			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");

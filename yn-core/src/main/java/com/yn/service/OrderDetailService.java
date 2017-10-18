@@ -105,17 +105,15 @@ public class OrderDetailService {
 	 */
 	public Map<String, Object> buildPayment(Order order) {
 		result = new HashMap<>();
-		Double needToPay = calculatedNeedToPayMoney(order, BUILD_PAYMENT_SCALE);
-		if (needToPay < 0) {
-			result.put("needToPay", 0);
-			// order.setApplyIsPay(1);// 已支付
-		} else {
+		Double hadPayPrice = order.getHadPayPrice();// 已支付
+		Double totalPrice = order.getTotalPrice();// 总价4620
+		Double needToPay = totalPrice * BUILD_PAYMENT_SCALE;// 需要支付的金额
+		if (hadPayPrice == null || order.getHadPayPrice() == 0) {
 			result.put("needToPay", needToPay);
-			// order.setApplyIsPay(0);// 未支付
+		}else{
+			needToPay = needToPay-hadPayPrice;
+			result.put("needToPay", needToPay);
 		}
-		// 更新状态 --> success：true
-		// boolean byCondition = orderService.checkUpdateOrderStatus(order);
-		// result.put("updateOrderStauts", byCondition + "");
 		return result;
 	}
 
@@ -144,7 +142,7 @@ public class OrderDetailService {
 		// 计算出尾款 :: 100% - 60% --> 40%
 		double needToPay = totalPrice - (totalPrice * BUILD_PAYMENT_SCALE);
 		if (hadPayPrice != null) {
-			if (hadPayPrice >= needToPay) {
+			if (hadPayPrice >= totalPrice) {
 				result.put("needToPay", 0);
 				// order.setApplyIsPay(1);// 申请中-支付状态
 				// 修改状态 ： 已支付、已申请、并网发电申请中
