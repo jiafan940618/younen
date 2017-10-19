@@ -742,6 +742,56 @@ public class OrderService {
 		jsonResult.put("isOk", false);
 		return jsonResult;
 	}
+	
+	public Map<String, Object> checkApply(Order o, Integer isOk) {
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
+		Order o1 = findOne(o.getId());
+		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
+			o1.setApplyStepB(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("buildIsPay", false);
+			} else {
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("buildIsPay", false);
+				jsonResult.put("isOk", false);
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+			}
+			return jsonResult;
+		} else {
+			jsonResult.put("loanStatus", false);
+		}
+		if (o1.getBuildIsPay() != 1 && o1.getStatus() != 2) {
+			jsonResult.put("isOk", false);
+			jsonResult.put("buildIsPay", false);
+			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
+			return jsonResult;
+		} else {
+			jsonResult.put("buildIsPay", true);
+		}
+		if (isOk == 1) {
+			if (o1.getBuildStepA() == 1) {
+				jsonResult.put("reason", "已申请施工，不能重复申请");
+				jsonResult.put("isOk", false);
+				return jsonResult;
+			}
+			o1.setBuildStepA(1);
+			int condition = mapper.updateByCondition(o1);
+			if (condition > 0) {
+				jsonResult.put("isOk", true);
+			} else {
+				jsonResult.put("reason", "系统错误，请联系管理员。");
+				jsonResult.put("isOk", false);
+			}
+			return jsonResult;
+		}
+		jsonResult.put("reason", "当前订单状态不能进行申请施工");
+		jsonResult.put("isOk", false);
+		return null;
+	}
+
 
 	
 
