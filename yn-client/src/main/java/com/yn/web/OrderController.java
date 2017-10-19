@@ -247,7 +247,7 @@ public class OrderController {
 			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
 			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
 			if(flag4Money==0){
-				findOne.setStatus(1);
+				//findOne.setStatus(1);
 				boolean step = orderService.updateOrderStauts43Step(findOne);
 				result.put("checkUpdate", step);
 			}
@@ -257,7 +257,7 @@ public class OrderController {
 			result.put("flag4BuildStepA", findOne.getBuildStepA() == 1 ? 1 : 0);
 			result.put("flag4BuildStepB", findOne.getBuildStepB() == 10 ? 1 : 0);
 			if(flag4Money==0){
-				findOne.setStatus(2);
+				//findOne.setStatus(2);
 				boolean step = orderService.updateOrderStauts43Step(findOne);
 				result.put("checkUpdate", step);
 			}

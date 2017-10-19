@@ -40,7 +40,7 @@ public class OrderVo extends QueryVo{
 	private Integer applyIsPay;
 	private Integer applyStepA;
 	private Integer applyStepB;
-	private Integer applyStepBImgUrl;
+	private String applyStepBImgUrl;
 	
 	private Integer buildIsPay;
 	private Integer buildStepA;
@@ -223,10 +223,10 @@ public class OrderVo extends QueryVo{
 	public void setApplyStepB(Integer applyStepB) {
 		this.applyStepB = applyStepB;
 	}
-	public Integer getApplyStepBImgUrl() {
+	public String getApplyStepBImgUrl() {
 		return applyStepBImgUrl;
 	}
-	public void setApplyStepBImgUrl(Integer applyStepBImgUrl) {
+	public void setApplyStepBImgUrl(String applyStepBImgUrl) {
 		this.applyStepBImgUrl = applyStepBImgUrl;
 	}
 	public Integer getBuildIsPay() {
