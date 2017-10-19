@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -56,6 +57,40 @@ public class OrderService {
 	@Autowired
 	ApolegamyOrderService apoleService;
 
+	/** 个人中心订单状态查询*/
+	public List<Order> findBystatus(com.yn.model.Page<Order> page){
+		
+		return mapper.findBystatus(page);
+	}
+	
+	/** 修改退款状态*/
+	
+    public void updateOrderbyId(Order order){
+		
+		orderDao.updateOrderbyId(order);
+	}
+    
+    public Order selectOrderSta(Order order){
+		
+    	Object object = orderDao.selectOrderSta(order);
+
+		Object[] obj = (Object[]) object;
+		Integer id = (Integer) obj[0];
+		Integer status = (Integer) obj[1];
+		BigDecimal hadPayPrice = (BigDecimal) obj[2];
+		BigDecimal totalPrice = (BigDecimal) obj[3];
+		
+			
+		Order order01 = new Order();
+		order01.setId(id.longValue());
+		order01.setHadPayPrice(hadPayPrice.doubleValue());
+		order01.setStatus(status);
+		order01.setTotalPrice(totalPrice.doubleValue());
+    	
+		return order01;
+	}
+    
+	
 	public Order findOne(Long id) {
 		return orderDao.findOne(id);
 	}
@@ -406,21 +441,6 @@ public class OrderService {
 	private static String SERVER = "server";// 服务商
 	private static String ORDERCODE = "orderCode";// 订单号
 
-	/*
-	 * private String NOTBEGIN = "notBegin";// 未开始 private String
-	 * MATERIALAPPROAC = "materialApproac";// 材料进场 private String
-	 * FOUNDATIONBUILDING = "foundationBuilding";// 基础建筑 private String
-	 * SUPPORTINSTALLATION = "supportInstallation";// 支架安装 private String
-	 * PHOTOVOLTAICPANELINSTALLATION = "photovoltaicPanelInstallation";// 光伏板安装
-	 * private String DCCONNECTION = "DCConnection";// 直流接线 private String
-	 * ELECTRICBOXINVERTER = "electricBoxInverter";// 电箱逆变器 private String
-	 * BUSBOXINSTALLATION = "busBoxInstallation";// 汇流箱安装 private String ACLINE
-	 * = "ACLine";// 交流辅线 private String LIGHTNINGPROTECTIONGROUNDINGTEST =
-	 * "lightningProtectionGroundingTest";// 防雷接地测试 private String
-	 * GRIDCONNECTEDACCEPTANCE = "gridConnectedAcceptance";// 并网验收 private
-	 * String SUCCESS = "success";// 并网验收成功！走完最后一步 private String SERVER =
-	 * "server";// 服务商 private String ORDERCODE = "orderCode";// 订单号
-	 */
 	/**
 	 * 修改施工状态的进度 如果现在是<材料进场>，就选择为<材料进场>,<材料进场>已经完成的话，那么就是进入到<基础建筑>,此时应该点击<基础建筑>
 	 * 即进入到哪一步，就出发那个的事件。
@@ -517,6 +537,7 @@ public class OrderService {
 			System.out.println(obj2Json);
 			return stepB > 0 && status > 0 ? true : false;
 		}
+		
 		Map<String, Object> json2Obj = (Map<String, Object>) JsonUtil.json2Obj(order.getConstructionStatus());
 		List<Object> l = new LinkedList<Object>();
 		Map<String, Object> m1 = new HashMap<String, Object>();
@@ -598,6 +619,7 @@ public class OrderService {
 		return mapper.updateApplyStepBImgUrl(order) > 0 ? true : false;
 	}
 
+
 	public Map<String, Object> checkSurv(Order o, Integer isOk) {
 		Order o1 = findOne(o.getId());
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
@@ -607,8 +629,12 @@ public class OrderService {
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
 				jsonResult.put("isOk", true);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("applyIsPay", false);
 			} else {
 				jsonResult.put("isOk", false);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("applyIsPay", false);
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
@@ -621,7 +647,7 @@ public class OrderService {
 			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
 			return jsonResult;
 		} else {
-			jsonResult.put("applyStepA", true);// 支付成功。
+			jsonResult.put("applyIsPay", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
@@ -652,13 +678,16 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", true);
+				jsonResult.put("applyIsPay", false);
 			} else {
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", false);
+				jsonResult.put("applyIsPay", false);
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
@@ -666,12 +695,12 @@ public class OrderService {
 			jsonResult.put("loanStatus", false);
 		}
 		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("applyStepA", false);
+			jsonResult.put("applyIsPay", false);
 			jsonResult.put("reason", "当前订单未支付,请先支付。");
 			jsonResult.put("isOk", false);
 			return jsonResult;
 		} else {
-			jsonResult.put("applyStepA", true);// 支付成功。
+			jsonResult.put("applyIsPay", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
@@ -707,12 +736,15 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
 			o1.setApplyStepB(1);
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
 				jsonResult.put("isOk", true);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("buildIsPay", false);
 			} else {
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("buildIsPay", false);
 				jsonResult.put("isOk", false);
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
@@ -748,6 +780,7 @@ public class OrderService {
 		jsonResult.put("isOk", false);
 		return null;
 	}
+
 
 	public boolean updateOrderStauts43Step(Order order) {
 		int step = mapper.updateOrderStauts43Step(order);
