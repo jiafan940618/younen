@@ -17,6 +17,7 @@ import com.yn.model.BankCode;
 import com.yn.service.BankCardService;
 import com.yn.service.BankCodeService;
 import com.yn.service.ServerService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.kftService.CheckBankCard;
 import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
@@ -39,6 +40,9 @@ import com.yn.vo.re.ResultVOUtil;
 public class PayOrderAction {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayOrderAction.class);
+	
+	@Autowired
+	TransactionRecordService transactionRecordService;
 	@Autowired
 	CheckBankCard checkBankcard;
 	@Autowired

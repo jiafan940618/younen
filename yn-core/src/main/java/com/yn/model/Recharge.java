@@ -21,7 +21,16 @@ public class Recharge  extends IDomain implements Serializable {
 	
 	private String remark;
 	
+	private Long userId;
+	
 
+	
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 	public String getRemark() {
 		return remark;
 	}

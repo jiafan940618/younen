@@ -120,7 +120,7 @@ public class UserController {
     @RequestMapping(value = "/findSomeUs")
     public Object findSomeUs(UserVo userVo) {
     	
-    	userVo.setId(3L);
+    	//userVo.setId(3L);
     	logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
     	/** 电站信息*/
     List<Station> list = stationService.getstation(userVo.getId());
@@ -131,6 +131,18 @@ public class UserController {
     	
     	 return ResultVOUtil.newsuccess(walletVo, list);
     }
+    
+     /** 后面版本要改为分页的形式*/
+    @ResponseBody
+    @RequestMapping(value = "/findStationUs")
+    public Object findStation(UserVo userVo) {
+    	
+    	 List<Station> list = stationService.getstation(userVo.getId());
+    	
+    	return ResultVOUtil.success(list);
+    }
+    
+    
     
     /** 个人中心订单管理*/
     @ResponseBody

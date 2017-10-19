@@ -23,8 +23,10 @@ import com.yn.service.BillOrderService;
 import com.yn.service.BillWithdrawalsService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.kftService.KFTpayService;
 import com.yn.service.kftService.PyOrderService;
+import com.yn.service.kftService.SignService;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
 import com.yn.vo.BillOrderVo;
@@ -47,8 +49,11 @@ public class SignController {
 	@Autowired
 	BillWithdrawalsService billWithdrawalsService;
 	@Autowired
+	TransactionRecordService transactionRecordService;
+	@Autowired
 	KFTpayService kFTpayService;
-	
+	@Autowired
+	SignService signService;
 
 	
 		//http://2e93431d.ngrok.io/client/sign/payonline
@@ -86,7 +91,7 @@ public class SignController {
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->1：");
 				return pyOrderService.payBalance(billOrderVo);
 				 //等于3是支付宝支付//等于2是微信支付	
-			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2 || billOrderVo.getPayWay()==4){
+			}else if(billOrderVo.getPayWay()==3 || billOrderVo.getPayWay()==2){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -105,8 +110,8 @@ public class SignController {
 
 				return pyOrderService.getMap(request, billOrderVo);
 				 
-			}/*else if(billOrderVo.getPayWay()==4){//等于4是银联支付
-				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4："+billOrderVo.getChannel());
+			}else if(billOrderVo.getPayWay()==4){//等于4是银联支付
+				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->4：");
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
 				
@@ -114,7 +119,7 @@ public class SignController {
 				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 				
 				return signService.findSign(billOrderVo); 
-			}*/
+			}
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);
 		}
@@ -186,7 +191,9 @@ public class SignController {
 				                	/** 修改订单金额,及3步走，支付状态*/
 				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
 				                	
-				                //	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+				                	
+				                	transactionRecordService.InsertBillAll(billOrder);
 				                	 /** 不在这里修改状态*/
 				                //orderService.givePrice(orderService.FindByTradeNo(orderNo));
 				                	
@@ -195,42 +202,50 @@ public class SignController {
 				                	return "SUCCESS";
 				                	
 			                	}else if(resultMap.get("status").equals("2")){
+			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+			                		billOrder.setRemark(errorCode+":"+failureDetails);
+			                		billorderService.save(billOrder);
+				                	transactionRecordService.InsertBillAll(billOrder);
 			                		
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("3")){
 			                	
+				                	
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
-			                		
 			                		billorderService.save(billOrder);
+			                		transactionRecordService.InsertBillAll(billOrder);
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("4")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
-			                		
 			                		billorderService.save(billOrder);
+			                		transactionRecordService.InsertBillAll(billOrder);
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("5")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
+			                		transactionRecordService.InsertBillAll(billOrder);
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}else if(resultMap.get("status").equals("6")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
+			                		transactionRecordService.InsertBillAll(billOrder);
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                }else{
 			                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 		                		billOrder.setRemark(errorCode+":"+failureDetails);
 		                		billorderService.save(billOrder);
-		                		
+		                		transactionRecordService.InsertBillAll(billOrder);
 			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
 			                	}
 		               }else{
 		            	   BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 	                		billOrder.setRemark(errorCode+":"+failureDetails);
 	                		billorderService.save(billOrder);
+	                		transactionRecordService.InsertBillAll(billOrder);
 		            	   logger.info("====================== ================== 验签失败!");
 		            	   return ResultVOUtil.error(777, "支付未成功!");
 		               }   		
@@ -300,9 +315,12 @@ public class SignController {
                 	
                 	/** 修改订单记录状态*/
                 	billorderService.updateOrder(orderNo);
-                	/** 修改订单金额,及3步走，支付状态*/
-                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
+                	/** 不能再这里 进行修改*/
+                //	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
 
+                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
+                	
+                	transactionRecordService.InsertBillAll(billOrder);
                 	 /** 不在这里修改状态*/
                 	//orderService.givePrice(orderService.FindByTradeNo(orderNo));
                 	
@@ -320,6 +338,7 @@ public class SignController {
          		 billOrder.setRemark(request.getParameter("message"));
          		 billorderService.save(billOrder);
         		
+         		transactionRecordService.InsertBillAll(billOrder);
         		resultMap.put("message","支付失败!"+ request.getParameter("message"));
         		
 			System.out.println("---------- ------ -- ----- 结束后台响应");

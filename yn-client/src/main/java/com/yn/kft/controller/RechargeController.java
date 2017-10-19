@@ -25,6 +25,7 @@ import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.service.kftService.SignService;
@@ -44,6 +45,8 @@ import com.yn.vo.re.ResultVOUtil;
 public class RechargeController {
 	private static final Logger logger = LoggerFactory.getLogger(RechargeController.class);
 	@Autowired
+	TransactionRecordService transactionRecordService;
+	@Autowired
 	private ServerService serverService;
 	@Autowired
 	private OrderService orderService;
@@ -61,16 +64,18 @@ public class RechargeController {
 	 /** pc端*/
 		@ResponseBody
 		@RequestMapping(value="/rechargeOnline")
-		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
+		/** 传过来的参数为 payWay,userId,money*/
 		public Object doOnline(HttpServletRequest request,HttpSession session,RechargeVo rechargeVo){
-			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
-			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
+
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
-/** 测试数据*/
-			/*rechargeVo.setWalltId(1L);
+			/*rechargeVo.setUserId(1L);
 			rechargeVo.setPayWay(2);
 			rechargeVo.setMoney(new BigDecimal("4920"));*/
 
+			Wallet wallet = walletService.findWalletByUser(rechargeVo.getUserId());
+			
+			rechargeVo.setWalletId(wallet.getId());
+			
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
@@ -82,7 +87,7 @@ public class RechargeController {
 
 			session.setAttribute("rechargeCode", rechargeVo.getRechargeCode());
 		
-			 if(rechargeVo.getPayWay()==3 || rechargeVo.getPayWay()==2 || rechargeVo.getPayWay()==4 ){
+			 if(rechargeVo.getPayWay()==3 || rechargeVo.getPayWay()==2  ){
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -99,7 +104,7 @@ public class RechargeController {
 
 				return rechargeService.getMap(request, rechargeVo);
 				 
-			}/*else if(rechargeVo.getPayWay()==4){//等于4是银联支付
+			}else if(rechargeVo.getPayWay()==4){//等于4是银联支付
 				
 				BigDecimal xmoney = BigDecimal.valueOf(100);
 				DecimalFormat   df   =new DecimalFormat("#");
@@ -108,7 +113,7 @@ public class RechargeController {
 				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
 				
 				return rechargeService.findSign(rechargeVo); 
-			}*/
+			}
 
 			return ResultVOUtil.error(777, Constant.PAY_WAY_NULL);
 		}
@@ -192,6 +197,7 @@ public class RechargeController {
 				                	 /** 修改用户的钱包金额*/	                	
 				                	walletService.updatePrice(wallet);
 	
+				                	transactionRecordService.InsertBillAll(recharge);
 				                	
 				                	return "SUCCESS";
 				                	
@@ -201,6 +207,7 @@ public class RechargeController {
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
+			                		transactionRecordService.InsertBillAll(recharge);
 			                		
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}else if(status.equals("3")){
@@ -208,30 +215,36 @@ public class RechargeController {
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
+			                		transactionRecordService.InsertBillAll(recharge);
+			                		
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}else if(status.equals("4")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
+			                		transactionRecordService.InsertBillAll(recharge);
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}else if(status.equals("5")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
+			                		transactionRecordService.InsertBillAll(recharge);
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}else if(status.equals("6")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
+			                		transactionRecordService.InsertBillAll(recharge);
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                }else{
 			                	Recharge recharge =rechargeService.findByRecode(orderNo);
 		                		recharge.setRemark(errorCode+":"+failureDetails);
 		                		rechargeService.save(recharge);
-			                	
+		                		transactionRecordService.InsertBillAll(recharge);
+		                		
 			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
 			                	}
 		               }else{
@@ -239,6 +252,8 @@ public class RechargeController {
 	                		recharge.setRemark(errorCode+":"+failureDetails);
 	                		rechargeService.save(recharge);
 		            	   
+	                		transactionRecordService.InsertBillAll(recharge);
+	                		
 		            	   logger.info("====================== ================== 验签失败!");
 		            	   return ResultVOUtil.error(777, "充值未成功!");
 		               }   		
@@ -321,7 +336,9 @@ public class RechargeController {
                 	 /** 修改用户的钱包金额*/	                	
                 	walletService.updatePrice(wallet);
 					
-
+                	recharge =	rechargeService.findByRecode(orderNo);
+                	transactionRecordService.InsertBillAll(recharge);
+                	
                 	resultMap.put("status", "1");
                 	resultMap.put("message", "");
                 	resultMap.put("orderNo",orderNo);
@@ -335,6 +352,9 @@ public class RechargeController {
         		Recharge recharge =rechargeService.findByRecode(orderNo);
         		recharge.setRemark(request.getParameter("message"));
         		rechargeService.save(recharge);
+        		
+     
+            	transactionRecordService.InsertBillAll(recharge);
         		
         		
 			System.out.println("---------- ------ -- ----- 结束后台响应");

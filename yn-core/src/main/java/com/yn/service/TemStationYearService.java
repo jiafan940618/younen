@@ -88,6 +88,12 @@ public class TemStationYearService {
         return temStationYearDao.findAll(spec);
     }
     
+   public TemStationYear findHuanbao(Map<String, Object> map){
+		return temStationYearMapper.findHuanbao(map);	
+    }
+    
+    
+    
     /**
      * 用户每月发电量
      *

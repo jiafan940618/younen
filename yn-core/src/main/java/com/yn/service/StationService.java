@@ -4,6 +4,7 @@ import com.yn.dao.AmmeterDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
+import com.yn.dao.mapper.StationMapper;
 import com.yn.enums.DeleteEnum;
 import com.yn.enums.NoticeEnum;
 import com.yn.exception.MyException;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -35,7 +35,8 @@ import java.util.Map.Entry;
 public class StationService {
     @Autowired
     StationDao stationDao;
-    
+    @Autowired
+    StationMapper stationMapper;
     @Autowired
     TemStationService temStationService;
     @Autowired
@@ -67,6 +68,11 @@ public class StationService {
 
     public Station findOne(Long id) {
         return stationDao.findOne(id);
+    }
+    
+    public Station selectByPrimaryKey(Integer id){
+    	
+    	return stationMapper.selectByPrimaryKey(id);
     }
 
     public void save(Station station) {

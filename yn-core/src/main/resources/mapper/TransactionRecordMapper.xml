@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.TransactionRecordMapper">
+
+	<resultMap type="com.yn.model.TransactionRecord" id="TransacRecordMapper">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="pay_way" property="payWay" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />	
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="money" property="money" jdbcType="DOUBLE" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="GivePage" parameterType="com.yn.model.Page" resultMap="TransacRecordMapper">
+	
+		select
+		 id,del,create_dtm,pay_way,user_id,type,status,money,remark,order_no
+		 
+		 from transaction_record
+		 
+		 where user_id = #{userId} and del = 0
+		 
+		 <if test =" payWay != 9">
+		 	<if test ="payWay == 1">
+		      and pay_way =1
+			 </if>
+			 <if test =" payWay == 2 ">
+			  and pay_way =2
+			 </if>
+			 <if test =" payWay == 3">
+			  and pay_way =3
+			 </if> 
+		 </if>
+		 <if test =" type != 9">
+		    <if test ="type =1">
+		    	and type = 1
+		    </if>
+			<if test ="type ==2">
+				and type = 2
+			</if>
+		    <if test ="type ==3">
+		    	and type = 3
+		    </if>
+		    <if test =" type ==4 ">
+		    	and type = 4
+		    </if>
+		    <if test ="type ==5">
+		    	and type = 5
+		    </if>
+		 </if>
+		 
+		 <if test ="status != 9">
+			 <if test ="status ==0">
+			    	and status = 0
+			    </if>
+			    <if test ="status ==1">
+			    	and status = 1
+			    </if>
+		 
+		 </if>
+		<if test =" null != time_from  and null != time_to">
+			AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
+		</if> 
+		 ORDER BY create_dtm DESC
+		 limit #{start},#{limit}
+	
+	</select>
+	
+	
+
+</mapper>

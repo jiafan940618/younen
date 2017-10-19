@@ -26,9 +26,20 @@ public class RechargeVo {
 	
 	private BigDecimal totalmoney;
 	
+	private Long userId;
 	
 	
 	
+	
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public void setWalletId(Long walletId) {
+		this.walletId = walletId;
+	}
 	public BigDecimal getTotalmoney() {
 		return totalmoney;
 	}

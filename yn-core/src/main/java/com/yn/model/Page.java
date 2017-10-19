@@ -20,11 +20,30 @@ public class Page<T> {
 	private Integer status;
 	private String time_from;
 	private String time_to;
+	
+	private Integer type;
 
+	private Integer payWay;
 	private Integer isRead;
 	
 	
 	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getPayWay() {
+		return payWay;
+	}
+
+	public void setPayWay(Integer payWay) {
+		this.payWay = payWay;
+	}
+
 	public Integer getIsRead() {
 		return isRead;
 	}

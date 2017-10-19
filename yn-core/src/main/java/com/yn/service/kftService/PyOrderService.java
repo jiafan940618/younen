@@ -52,7 +52,7 @@ public class PyOrderService {
 	static	String terminalIp = "192.168.0.104";
 //	static	String notifyUrl = "http://b85ba525.ngrok.io/client/sign/doresult";
 	static String currency = "CNY";
-	static 	String tradeName = "商品描述001";
+	static 	String tradeName = "优能光伏";
 	static String remark = "remark";
 	static String operatorId = "operatorId";
 	static	String storeId = "storeId";

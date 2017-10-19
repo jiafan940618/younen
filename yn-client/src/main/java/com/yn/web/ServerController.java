@@ -3,8 +3,6 @@ package com.yn.web;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,7 +49,6 @@ import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
-import com.yn.vo.NewUserVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.SolarPanelVo;

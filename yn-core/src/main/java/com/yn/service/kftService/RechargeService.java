@@ -39,7 +39,7 @@ import com.yn.vo.re.ResultVOUtil;
 public class RechargeService {
 	
 	 private static final Logger logger = LoggerFactory.getLogger(PyOrderService.class);
-	 
+	
 	 
 		InitiativePayService service;
 		
@@ -58,14 +58,19 @@ public class RechargeService {
 
 		static	String terminalIp = "192.168.0.104";
 		static String currency = "CNY";
-		static 	String tradeName = "商品描述001";
+		static 	String tradeName = "优能光伏";
 		static String remark = "remark";
 		static String operatorId = "operatorId";
 		static	String storeId = "storeId";
 		static	String terminalId = "49000002";
+		
 		private String merchantId =PropertyUtils.getProperty("merchantId");
 		private String notifyUrl ="http://test.u-en.cn/client/recharge/doresult";
-		private String merchantIps ="192.168.0.104";
+		private String merchantIps =PropertyUtils.getProperty("callerIp");
+		private String callerIp =PropertyUtils.getProperty("callerIp");
+		private String version =PropertyUtils.getProperty("version");
+		
+		
 
 	  public Recharge findOne(Long id) {
 	        return rechargeDao.findOne(id);
@@ -130,7 +135,7 @@ public class RechargeService {
 			// 初始化证书
 			String merchantIp = merchantIps;
 			// 证书类型、证书路径、证书密码、别名、证书容器密码
-			SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12",pfxPath+"\\privateKey\\pfx.pfx", "123456".toCharArray(), null,
+			SignProvider keystoreSignProvider = new KeystoreSignProvider("PKCS12",pfxPath+"/privateKey/pfx.pfx", "123456".toCharArray(), null,
 					"123456".toCharArray());
 			// 签名提供者、商户服务器IP(callerIp)、下载文件路径(暂时没用)
 			service = new InitiativePayService(keystoreSignProvider, merchantIp, "zh_CN", "c:/zip"); 
@@ -164,7 +169,7 @@ public class RechargeService {
 			
 			/** [支付方式]{2:微信,3:支付宝,4:银联}*/
 			if(rechargeVo.getPayWay() == 2){
-				reqDTO.setBankNo(WX_BANK_NO);//支付渠道   微信渠道:0000001 支付宝渠道：0000002 银联：0000003 
+				reqDTO.setBankNo(WX_BANK_NO);//支付渠道   微信渠道:0000001 支付宝渠道：0000002  银联：0000003 
 			}else if(rechargeVo.getPayWay() == 3){
 				reqDTO.setBankNo(ZFB_BANK_NO);
 			}else if(rechargeVo.getPayWay() == 4){
@@ -175,12 +180,13 @@ public class RechargeService {
 			reqDTO.setIsS0("0");//是否是S0支付是否是S0支付，1：是；0：否。默认否。如果是S0支付，金额会实时付给商户。需经快付通审核通过后才可开展此业务。如果无此业务权限，此参数为1，则返回失败。 可空 
 			ActiveScanPayRespDTO resp = new ActiveScanPayRespDTO();
 			
-			/** 保存订单*/
+			/** 保存充值订单*/
 			Recharge recharge = new Recharge();
 			recharge.setWalletId(rechargeVo.getWalletId());
 			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 			recharge.setRechargeCode(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
+			recharge.setUserId(rechargeVo.getUserId());
 			recharge.setDel(0);
 			recharge.setStatus(1);
 			rechargeService.save(recharge);
@@ -208,11 +214,11 @@ public class RechargeService {
 			return  ResultVOUtil.success(resp);
 		}
 		
-		/** 老版本网银支付，2.0 以后不用*/
+		/** */
 		public  Object  findSign(RechargeVo rechargeVo){
 			 //** 银行卡编号*//*
 			rechargeVo.setBankType("1051000");
-			rechargeVo.setBoby("充值记录交易名称0002");
+			rechargeVo.setBoby("优能光伏");
 			rechargeVo.setSubject("充值记录商品名称0001");
 			rechargeVo.setDescription("充值记录");
 			
@@ -230,12 +236,12 @@ public class RechargeService {
 
 				parameters.put("productNo", "1FA00AAA");
 				parameters.put("service", "proxy_onlineBank_direct_service");
-				parameters.put("version", "1.0.0-TEST");
+				parameters.put("version", version);
 				parameters.put("language", "BG");
 				parameters.put("signatureAlgorithm", "RSA");
-				/** 2014030600048235*/
-				parameters.put("merchantId", "2014030600048235");
-				parameters.put("callerIp", "120.76.98.74");
+				/** 2014030600048235  */
+				parameters.put("merchantId", merchantId);
+				parameters.put("callerIp", callerIp);
 				 /** 后台通知地址*/
 
 				parameters.put("notifyAddr", "http://test.u-en.cn/client/recharge/doSucRep");
@@ -255,7 +261,7 @@ public class RechargeService {
 				parameters.put("currency",  "CNY");
 				parameters.put("tradeName", rechargeVo.getBoby());
 				parameters.put("subject", rechargeVo.getSubject());
-				parameters.put("description", rechargeVo.getDescription());
+				parameters.put("description", "优能光伏");
 				parameters.put("amount", rechargeVo.getMoney().toString());
 				
 				//** 添加时注意添加银行的类型*//*

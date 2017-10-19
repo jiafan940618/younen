@@ -1,8 +1,7 @@
 package com.yn.dao.mapper;
 
 import com.yn.model.Station;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+
 
 public interface StationMapper {
 
@@ -15,7 +14,6 @@ public interface StationMapper {
 
 
     Station selectByPrimaryKey(Integer id);
-
 
 
     int updateByPrimaryKeySelective(Station record);

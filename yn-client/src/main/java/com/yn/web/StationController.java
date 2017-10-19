@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import com.yn.vo.re.ResultVOUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +28,6 @@ import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
 import com.yn.dao.TemStationDao;
-import com.yn.model.Server;
 import com.yn.model.Station;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
@@ -34,11 +36,13 @@ import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.StationVo;
-import com.yn.vo.UserVo;
 
 @RestController
 @RequestMapping("/client/station")
 public class StationController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StationController.class);
+	
     @Autowired
     StationService stationService;
     @Autowired
@@ -222,4 +226,18 @@ public class StationController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value = "/findBystaId")
+	@ResponseBody
+	public Object FindBystationId(StationVo stationVo) {
+		
+		logger.info("传递id为 ---->  ++ ++++ +++++ "+stationVo.getId());
+		
+		
+		Station station =	stationService.selectByPrimaryKey(stationVo.getId().intValue());
+		
+		return ResultVOUtil.success(station);
+	}
+	
+	
 }

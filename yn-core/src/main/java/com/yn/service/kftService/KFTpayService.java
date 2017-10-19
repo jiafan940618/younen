@@ -12,8 +12,15 @@ import org.springframework.stereotype.Service;
 import com.lycheepay.gateway.client.GBPService;
 import com.lycheepay.gateway.client.GatewayClientException;
 import com.lycheepay.gateway.client.KftService;
+import com.lycheepay.gateway.client.dto.AccountBalanceChangeRecordRequestDTO;
+import com.lycheepay.gateway.client.dto.AccountBalanceChangeRecordResultDTO;
 import com.lycheepay.gateway.client.dto.PayToBankAccountDTO;
+import com.lycheepay.gateway.client.dto.QueryBatchFileResultDTO;
+import com.lycheepay.gateway.client.dto.QueryReconResultRequestDTO;
+import com.lycheepay.gateway.client.dto.QueryTradeRecordDTO;
+import com.lycheepay.gateway.client.dto.QueryTradeRecordResultDTO;
 import com.lycheepay.gateway.client.dto.TradeResultDTO;
+import com.lycheepay.gateway.client.dto.QueryTradeRecordDTO.Criteria;
 import com.lycheepay.gateway.client.dto.gbp.CancelTreatyDTO;
 import com.lycheepay.gateway.client.dto.gbp.CancelTreatyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.SearchTreatyDTO;
@@ -24,6 +31,8 @@ import com.lycheepay.gateway.client.dto.gbp.TreatyCollectDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyCollectResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
+import com.lycheepay.gateway.client.dto.gebp.CapitalAccountQueryDTO;
+import com.lycheepay.gateway.client.dto.gebp.CapitalAccountQueryResultDTO;
 import com.lycheepay.gateway.client.security.KeystoreSignProvider;
 import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.model.BankCard;
@@ -35,6 +44,7 @@ import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.BillWithdrawalsService;
 import com.yn.service.OrderService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.utils.PropertyUtils;
 import com.yn.vo.BankCardVo;
@@ -52,7 +62,8 @@ public class KFTpayService {
 
 	private String merchantId =PropertyUtils.getProperty("merchantId");
 	private String BankAccountNo = PropertyUtils.getProperty("BankAccountNo");
-	
+	@Autowired
+	TransactionRecordService transactionRecordService;
 	@Autowired
 	private OrderService orderService;
 	@Autowired
@@ -204,11 +215,12 @@ public class KFTpayService {
 				/** 修改订单记录状态*/
 				billOrderService.updateOrder(billOrder.getTradeNo());
             	/** 修改订单金额,及3步走，支付状态*/
-            	orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue());
+            	//orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue());
 
             	 /** 不在这里修改状态*/
             //orderService.givePrice(orderService.FindByTradeNo(billOrder.getTradeNo()));
 				
+            	transactionRecordService.InsertBillAll(billOrder);
 				 return ResultVOUtil.success("支付成功!");
 			}else{
 				logger.info("============ ============= ============== ========="+result.getFailureDetails());
@@ -216,6 +228,7 @@ public class KFTpayService {
 				billOrder.setStatus(1);
 				billOrderService.save(billOrder);
 
+				transactionRecordService.InsertBillAll(billOrder);
 				
 			  return ResultVOUtil.error(777, result.getFailureDetails());
 			}	
@@ -308,6 +321,8 @@ public class KFTpayService {
             	wallet.setId(rechargeVo01.getWalletId());
             	 /** 修改用户的钱包金额*/	                	
             	walletService.updatePrice(wallet);
+            	
+            	transactionRecordService.InsertBillAll(recharge);
 				
 				 return ResultVOUtil.success("充值成功!");
 			}else{
@@ -316,6 +331,7 @@ public class KFTpayService {
 				recharge.setStatus(1);
 				rechargeService.save(recharge);
 
+				transactionRecordService.InsertBillAll(recharge);
 				
 			  return ResultVOUtil.error(777, result.getFailureDetails());
 			}	
@@ -370,21 +386,83 @@ public class KFTpayService {
 				
 				walletService.updatePrice(wallet);
 				
+				transactionRecordService.InsertBillAll(billWithdrawals);
 				
 				return ResultVOUtil.success("提现成功!");
 			}else{
 				billWithdrawals.setStatus(2);
 				billWithdrawals.setRemark(result.getFailureDetails());
 				
+				transactionRecordService.InsertBillAll(billWithdrawals);
 				billWithdrawalsService.save(billWithdrawals);
 				 return ResultVOUtil.error(777, "抱歉,提现失败,详情请咨询客服!");	
 			}	
 		}
+	
+	
+		//查询交易结果
+		public void queryTradeRecord() throws GatewayClientException {
+			QueryTradeRecordDTO dto = new QueryTradeRecordDTO();
+			dto.setService("trade_record_query");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId("商户ID");//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("查询接口的产品编号");//替换成快付通提供的产品编号，测试生产不一样
+			dto.addCriteria(dto.new Criteria("原交易的产品编号", "", "原交易订单号"))//第二个参数为空
+					.addCriteria(dto.new Criteria("原交易的产品编号", "", "原交易订单号"));//一次可查询多个订单,最多200条
+			System.out.println("请求信息为:" + dto.toString());
+			QueryTradeRecordResultDTO result = service.queryTradeRecord(dto);//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+		}
+		
+		//查询帐户余额
+		public void queryCapitalAccounts() throws GatewayClientException {
+			CapitalAccountQueryDTO dto = new CapitalAccountQueryDTO();
+			dto.setService("query_available_balance");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId("商户ID");//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("产品编号");//替换成快付通提供的产品编号，测试生产不一样
+			System.out.println("请求信息为:" + dto.toString());
+			CapitalAccountQueryResultDTO result = service.queryCapitalAccounts(dto);//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+		}
+
+		//查询资金变动明细
+		public  void accountBalanceChangeRecordQuery() throws GatewayClientException{
+			AccountBalanceChangeRecordRequestDTO dto = new AccountBalanceChangeRecordRequestDTO();
+			dto.setService("capital_account_balance_change_query");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId("商户ID");//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("查询接口的产品编号");//替换成快付通提供的产品编号，测试生产不一样
+			dto.setTradeDate("20160309");//查询日期格式由YYYYMMDD只能查询今天以前的资金变动
+			File file = new File("D:\\result.json");//指定资金变动明细文件存放路径
+			dto.setDownloadFile(file);
+			System.out.println("请求信息为:" + dto.toString());
+			AccountBalanceChangeRecordResultDTO result = service.queryAccountBalanceChangeRecords(dto);//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+		}
+		
+		//查询对帐文件
+		public void queryReconResult() throws GatewayClientException, IOException {
+			QueryReconResultRequestDTO dto = new QueryReconResultRequestDTO();
+			dto.setService("recon_result_query");//接口名称，固定不变
+			dto.setVersion("1.0.0-IEST");//接口版本号，测试:1.0.0-IEST,生产:1.0.0-PRD
+			dto.setMerchantId("商户ID");//替换成快付通提供的商户ID，测试生产不一样
+			dto.setProductNo("查询对账接口的产品编号");//替换成快付通提供的产品编号，测试生产不一样
+			dto.setQueryCriteria("原交易产品编号,查询起始日期,查询结束日期");//"2ACCCCC,20120101,20140101"
+			File file = new File("D:\\result.json");//指定对账文件存放路径
+			dto.setDownloadFile(file);
+			System.out.println("请求信息为:" + dto.toString());
+			QueryBatchFileResultDTO result = service.queryReconResult(dto);//发往快付通验证并返回结果
+			System.out.println("响应信息为:" + result.toString());
+		}
+		
+		
+	
 		
 		
 
 		
-		public static void main(String[] args) {
+	/*	public static void main(String[] args) {
 			try {
 				init();
 				//treatyCollectApply();
@@ -398,5 +476,5 @@ public class KFTpayService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 }

@@ -23,6 +23,7 @@ import com.yn.kftentity.OrderPay;
 import com.yn.model.BillOrder;
 import com.yn.service.BillOrderService;
 import com.yn.utils.CashierSignUtil;
+import com.yn.utils.PropertyUtils;
 import com.yn.vo.BillOrderVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -35,13 +36,19 @@ public class SignService {
 	private static BillOrderService billorderService;
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
+	private String merchantId =PropertyUtils.getProperty("merchantId");
+	private String notifyUrl ="http://test.u-en.cn/client/sign/doSucRep";
+	private String merchantIps =PropertyUtils.getProperty("callerIp");
+	private String callerIp =PropertyUtils.getProperty("callerIp");
+	private String version =PropertyUtils.getProperty("version");
+	
 	
 	//request
-	public static Object  findSign(BillOrderVo billOrderVo){
+	public  Object  findSign(BillOrderVo billOrderVo){
 		 //** 银行卡编号*//*
 		 billOrderVo.setBankType("1051000");
 		 billOrderVo.setBoby("交易名称0002");
-		billOrderVo.setSubject("商品名称0001");
+		billOrderVo.setSubject("优能光伏");
 		Map<String, String> parameters = new HashMap<String, String>();
 		
 		Charset encoding = Charset.forName(charset);
@@ -59,12 +66,12 @@ public class SignService {
 
 			parameters.put("productNo", "1FA00AAA");
 			parameters.put("service", "proxy_onlineBank_direct_service");
-			parameters.put("version", "1.0.0-TEST");
+			parameters.put("version", version);
 			parameters.put("language", "BG");
 			parameters.put("signatureAlgorithm", "RSA");
 			/** 2014030600048235*/
-			parameters.put("merchantId", "2014030600048235");
-			parameters.put("callerIp", "120.76.98.74");
+			parameters.put("merchantId", merchantId);
+			parameters.put("callerIp", callerIp);
 			 /** 后台通知地址*/
 
 			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doSucRep");
@@ -84,7 +91,7 @@ public class SignService {
 			parameters.put("currency",  "CNY");
 			parameters.put("tradeName", billOrderVo.getBoby());
 			parameters.put("subject", billOrderVo.getSubject());
-			parameters.put("description", billOrderVo.getDescription());
+			parameters.put("description", "优能光伏");
 			parameters.put("amount", billOrderVo.getMoney().toString());
 			//parameters.put("singlePrice", "");
 			//parameters.put("quantity", "");
