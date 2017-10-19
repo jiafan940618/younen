@@ -5,13 +5,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AmPhaseRecordExample {
+	
+	protected String date; 
+	
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public AmPhaseRecordExample() {
+    
+    public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public AmPhaseRecordExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 

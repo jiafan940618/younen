@@ -3,6 +3,8 @@ package com.yn.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import java.io.Serializable;
 
 
@@ -109,8 +111,23 @@ public class AmPhaseRecord implements Serializable{
 	private Double cKwhTotal;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[是否已经处理]{0:未处理,1:已经处理}'")
 	private Integer dealt;
+	
+	
+	/**
+	 * 时间：2010_10_10
+	 */
+    @Transient
+    private String date;
 
-    public String getAmPhaseRecordId() {
+    public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getAmPhaseRecordId() {
         return amPhaseRecordId;
     }
 
