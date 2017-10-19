@@ -94,13 +94,16 @@ public class AmPhaseService {
 	/**
 	 * 格式如下：
 	 * 
-	 * @param 2017-10-10
+	 * @param 2017-10-10 20171010
 	 * @return 171010/1710100000000
 	 * @throws ParseException
 	 */
 	private String parseDate(String date) throws ParseException {
+		SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd");
+		Date parse = s.parse(date);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date thisHourSpace = sdf.parse(date);
+		String format = sdf.format(parse);
+		Date thisHourSpace = sdf.parse(format);
 		String startDtm = DateUtil.formatDate(thisHourSpace, DateUtil.yyMMddHHmmss).substring(0, 6);
 		return startDtm;
 	}
@@ -108,17 +111,18 @@ public class AmPhaseService {
 	/**
 	 * 格式如下：
 	 * 
-	 * @param 2017-10-10
+	 * @param 20171010
 	 * @return 2017_10_10
 	 * @throws ParseException
 	 */
 	private String string2Date(String date) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy_MM_dd");
 		Date ss = sdf.parse(date);
 		String format = sdf1.format(ss);
 		return format;
 	}
+	
 
 	public List<Am1Phase> findAllAm1PhaseByDate(String date) throws ParseException {
 		String am1TableName = string2Date(date);// 2017_10_10

@@ -39,13 +39,29 @@ public class AmPhaseRecordService {
 		AmPhaseRecord save = amPhaseRecordDao.save(amPhaseRecord);
 		return save;
 	}
+	
+	/**
+	 * 
+	    * @Title: dropTmpTable
+	    * @Description: TODO(删除表)
+	    * @param @param date    参数
+	    * @return void    返回类型
+	    * @throws
+	 */
+	public void dropTmpTable(String date){
+		AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
+		amPhaseRecord.setDate(date);
+		amPhaseRecordMapper.dropTmpTable(amPhaseRecord);
+	}
 
-	public void saveByMapper(AmPhaseRecord amPhaseRecord) {
-		amPhaseRecordMapper.addAmPhaseRecord(amPhaseRecord);
+	public void saveByMapper(AmPhaseRecord apr) {
+		amPhaseRecordMapper.createTmpTable(apr);
+		amPhaseRecordMapper.addAmPhaseRecord(apr);
 	}
 
 	@Transactional
 	public int updateByPrimaryKeySelective(AmPhaseRecord record) {
+		amPhaseRecordMapper.createTmpTable(record);
 		return amPhaseRecordMapper.updateByPrimaryKeySelective(record);
 	}
 	@Transactional
@@ -53,8 +69,8 @@ public class AmPhaseRecordService {
 		return amPhaseRecordMapper.updateByPrimaryKey(record);
 	}
 
-	public AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId) {
-		return amPhaseRecordMapper.selectByPrimaryKey(amPhaseRecordId);
+	public AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId,String date) {
+		return amPhaseRecordMapper.selectByPrimaryKey(amPhaseRecordId,date);
 	}
 
 	public void delete(Long id) {
@@ -68,6 +84,12 @@ public class AmPhaseRecordService {
 	public AmPhaseRecord findOne(AmPhaseRecord amPhaseRecord) {
 		Specification<AmPhaseRecord> spec = RepositoryUtil.getSpecification(amPhaseRecord);
 		AmPhaseRecord findOne = amPhaseRecordDao.findOne(spec);
+		return findOne;
+	}
+	public AmPhaseRecord findOneByMapper(AmPhaseRecord amPhaseRecord) {
+		//RowId cAddr iAddr dAddr dType wAddr MeterTime
+		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
+		AmPhaseRecord findOne = amPhaseRecordMapper.selectOneByC(amPhaseRecord);
 		return findOne;
 	}
 
@@ -95,6 +117,8 @@ public class AmPhaseRecordService {
 		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
 		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
 		criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
+		example.setDate(date);
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}

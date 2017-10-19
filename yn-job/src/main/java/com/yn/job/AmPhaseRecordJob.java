@@ -53,35 +53,12 @@ public class AmPhaseRecordJob {
 	/**
 	 * 采集amPhase数据
 	 */
-	// @Scheduled(fixedDelay = 25 * 1000)
-	@Scheduled(cron = "0/25 * * * * ? ")
+	@Scheduled(fixedDelay = 25 * 1000)
 	private void collectAmPhaseRecord() throws Exception {
-		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
-		// amPhaseRecord1.setAmPhaseRecordId("3214321234");
-		// amPhaseRecordService.save(amPhaseRecord1);
-		// 把当前小时内的所有数据查找出来
-		// Date[] thisHourSpace = DateUtil.thisHourSpace();
-		// String startDtm = DateUtil.formatDate(thisHourSpace[0],
-		// DateUtil.yyMMddHHmmss);
-		// String endDtm = DateUtil.formatDate(thisHourSpace[1],
-		// DateUtil.yyMMddHHmmss);
-		// String am1TableName = "am_1phase_" + DateUtil.formatDate(new Date(),
-		// "yyyy_MM_dd"); // am_1phase_2017_07_13
-		// String am1TableName = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
-		// String am1Sql = "select * from " + am1TableName + " where
-		// meter_time>=" + startDtm + " and meter_time<="
-		// + endDtm;
-		// String am3TableName = "am_3phase_" + DateUtil.formatDate(new Date(),
-		// "yyyy_MM_dd"); // am_3phase_2017_07_13
-		// String am3TableName = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
-		// String am3Sql = "select * from " + am3TableName + " where
-		// meter_time>=" + startDtm + " and meter_time<="
-		// + endDtm;
-		// List<Am1Phase> am1Phases = getAm1Phase(am1Sql);
-		// List<Am3Phase> am3Phases = getAm3Phase(am3Sql);
 		List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 		List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
 
+		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 		if (am1Phases.size() > 0) {
 			for (Am1Phase am1Phase : am1Phases) {
 				AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -92,14 +69,21 @@ public class AmPhaseRecordJob {
 				amPhaseRecordR.setdType(am1Phase.getdType());
 				amPhaseRecordR.setwAddr(am1Phase.getwAddr());
 				amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
-				AmPhaseRecord findOne = amPhaseRecordService.findOne(amPhaseRecordR);
+				//AmPhaseRecord findOne = amPhaseRecordService.findOne(amPhaseRecordR);
+				amPhaseRecordR.setDate(date);
+				AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 				if (findOne == null) {
-					AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
-					BeanUtils.copyProperties(am1Phase, amPhaseRecord);
-					amPhaseRecord.setAmPhaseRecordId(
-							"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
-					amPhaseRecordService.saveByMapper(amPhaseRecord);
-					System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					try {
+						AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
+						BeanUtils.copyProperties(am1Phase, amPhaseRecord);
+						amPhaseRecord.setAmPhaseRecordId(
+								"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
+						amPhaseRecord.setDate(date);
+						amPhaseRecordService.saveByMapper(amPhaseRecord);
+						System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
 				}
 			}
 		}
@@ -114,16 +98,23 @@ public class AmPhaseRecordJob {
 				amPhaseRecordR.setdType(am3Phase.getdType());
 				amPhaseRecordR.setwAddr(am3Phase.getwAddr());
 				amPhaseRecordR.setMeterTime(am3Phase.getMeterTime());
-				AmPhaseRecord findOne = amPhaseRecordService.findOne(amPhaseRecordR);
+				//AmPhaseRecord findOne = amPhaseRecordService.findOne(amPhaseRecordR);
+				amPhaseRecordR.setDate(date);
+				AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 				if (findOne == null) {
-					AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
-					BeanUtils.copyProperties(am3Phase, amPhaseRecord);
-					amPhaseRecord.setAmPhaseRecordId(
-							"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
-					// amPhaseRecordService.save(amPhaseRecord);//springdata jpa
-					// --> 执行返回select语句。保存不失败，但数据库没有数据。
-					amPhaseRecordService.saveByMapper(amPhaseRecord);
-					System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					try {
+						AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
+						BeanUtils.copyProperties(am3Phase, amPhaseRecord);
+						amPhaseRecord.setAmPhaseRecordId(
+								"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
+						// amPhaseRecordService.save(amPhaseRecord);//springdata jpa
+						// --> 执行返回select语句。保存不失败，但数据库没有数据。
+						amPhaseRecord.setDate(date);
+						amPhaseRecordService.saveByMapper(amPhaseRecord);
+						System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
 				}
 			}
 		}

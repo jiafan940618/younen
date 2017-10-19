@@ -11,7 +11,7 @@ import com.yn.vo.AmPhaseRecordExample;
 @Mapper
 public interface AmPhaseRecordMapper {
 
-	public void addAmPhaseRecord(AmPhaseRecord amPhaseRecord);
+	public void addAmPhaseRecord(AmPhaseRecord apr);
 	 int countByExample(AmPhaseRecordExample example);
 
 	    int deleteByExample(AmPhaseRecordExample example);
@@ -24,7 +24,7 @@ public interface AmPhaseRecordMapper {
 
 	    List<AmPhaseRecord> selectByExample(AmPhaseRecordExample example);
 
-	    AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId);
+	    AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId,String date);
 
 	    int updateByExampleSelective(@Param("record") AmPhaseRecord record, @Param("example") AmPhaseRecordExample example);
 
@@ -33,4 +33,26 @@ public interface AmPhaseRecordMapper {
 	    int updateByPrimaryKeySelective(AmPhaseRecord record);
 
 	    int updateByPrimaryKey(AmPhaseRecord record);
+	    
+		public AmPhaseRecord selectOneByC(AmPhaseRecord amPhaseRecord);
+		
+		/**
+		 * 
+		    * @Title: createTmpTable
+		    * @Description: TODO(根据时间创建临时表)
+		    * @param @param amPhaseRecord    参数 
+		    * @return void    返回类型
+		    * @throws
+		 */
+	    void createTmpTable(AmPhaseRecord amPhaseRecord);
+	    
+	    /**
+	     * 
+	        * @Title: dropTmpTable
+	        * @Description: TODO(这里用一句话描述这个方法的作用)
+	        * @param @param amPhaseRecord    参数
+	        * @return void    返回类型
+	        * @throws
+	     */
+	    void dropTmpTable(AmPhaseRecord amPhaseRecord);
 }

@@ -1,0 +1,94 @@
+每天自动生成一张带时间的表 ：：
+
+
+
+////////////////存储过程////////////////////
+SELECT @@event_scheduler  ;
+SET GLOBAL event_scheduler = 1   ;
+
+DELIMITER $$
+CREATE PROCEDURE create_table_am_phase_record_day()
+BEGIN 
+DECLARE str_Now_date VARCHAR(16);
+SET str_Now_date = DATE_FORMAT(NOW(),'%Y_%m_%d');
+SET @sqlcmd1 = CONCAT('CREATE TABLE am_phase_record_',str_Now_date," (
+  `am_phase_record_id` varchar(32) NOT NULL COMMENT '[id]',
+  `a_current` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `a_kva` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `a_kvar` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `a_kw` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `a_kwh_total` decimal(12,2) DEFAULT NULL COMMENT '[]',`create_table_am_phase_record_day`
+  `a_power_factor` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `a_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `ab_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_current` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_kva` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_kvar` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_kw` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_kwh_total` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_power_factor` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `b_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `bc_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_addr` int(11) DEFAULT NULL COMMENT '[]',
+  `c_current` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_kva` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_kvar` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_kw` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_kwh_total` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_power_factor` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `c_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `ca_volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `current` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `current_change` int(11) DEFAULT NULL COMMENT '[]',
+  `current_zero` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `d_addr` bigint(20) DEFAULT NULL COMMENT '[]',
+  `d_type` int(11) DEFAULT NULL COMMENT '[]',
+  `dealt` int(1) DEFAULT '0' COMMENT '[是否已经处理]{0:未处理,1:已经处理}',
+  `frequency` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `i_addr` int(11) DEFAULT NULL COMMENT '[]',
+  `kva` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kvar` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kvarh1` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kvarh2` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kw` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kwh` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kwh_rev` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `kwh_total` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `meter_state` varchar(255) DEFAULT NULL COMMENT '[]',
+  `meter_time` bigint(20) DEFAULT NULL COMMENT '[]',
+  `power_factor` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `row_id` int(11) DEFAULT NULL COMMENT '[]',
+  `volt` decimal(12,2) DEFAULT NULL COMMENT '[]',
+  `volt_change` int(11) DEFAULT NULL COMMENT '[]',
+  `w_addr` int(11) DEFAULT NULL COMMENT '[]',
+  PRIMARY KEY (`am_phase_record_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+PREPARE p1 FROM @sqlcmd1;
+EXECUTE p1;
+DEALLOCATE PREPARE p1;
+END$$
+
+DELIMITER ;
+
+
+CREATE EVENT IF NOT EXISTS create_table
+ON SCHEDULE EVERY 1 DAY
+ON COMPLETION PRESERVE
+DO CALL create_table_am_phase_record_day();
+
+ALTER EVENT e_test ON COMPLETION PRESERVE ENABLE;
+ALTER EVENT e_test ON COMPLETION PRESERVE DISABLE;
+ 
+ 
+ /////////////////事件/////////////////////////
+ 
+ DELIMITER $$
+
+ALTER DEFINER=`root`@`%` EVENT `younen_createTable` ON SCHEDULE EVERY 1 DAY STARTS '2017-10-16 23:39:43' ON COMPLETION PRESERVE ENABLE DO BEGIN
+	    CALL create_table_am_phase_record_day();
+	END$$
+
+DELIMITER ;
+ 
+ 
+

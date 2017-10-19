@@ -1,5 +1,26 @@
 package com.yn.web;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
 import com.yn.domain.OrderDetailAccounts;
@@ -37,22 +58,6 @@ import com.yn.vo.NewUserVo;
 import com.yn.vo.OrderVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/server/order")
@@ -113,6 +118,22 @@ public class OrderController {
 	public Object save(@RequestBody OrderVo orderVo) {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
+		// 修改订单的状态为施工中。
+		Integer applyStepA = order.getApplyStepA();
+		Integer applyStepB = order.getApplyStepB();
+		if (applyStepA == 2 && applyStepB == 2) {
+			order.setStatus(1);
+		}
+		Integer buildStepB = order.getBuildStepB();
+		Integer gridConnectedStepA = order.getGridConnectedStepA();
+		//并网申请中
+		if (buildStepB == 10 && gridConnectedStepA == 1) {
+			order.setStatus(2);
+		}
+		//并网发电。
+		if (gridConnectedStepA == 2) {
+			order.setStatus(3);
+		}
 		orderService.save(order);
 		return ResultVOUtil.success(order);
 	}
@@ -361,8 +382,7 @@ public class OrderController {
 		user.setFullAddressText(user01.getAddressText());
 		user.setPhone(user01.getPhone());
 		user.setUserName(user01.getUserName());
-		
-		
+
 		userservice.updateUser(user);
 
 		plan.setAddress(user01.getAddressText());

@@ -70,6 +70,7 @@ public class AmmeterJob {
 	private void job() {
 		try {
 			System.out.println("AmmeterJob-->job::run");
+			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 			List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
 			for (Ammeter ammeter : findAll) {
 				AmPhaseRecord aprR = new AmPhaseRecord();
@@ -78,12 +79,14 @@ public class AmmeterJob {
 				aprR.setdType(ammeter.getdType());
 				aprR.setiAddr(ammeter.getiAddr());
 				aprR.setDealt(0);
-				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
-				//List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
+				//List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAll(aprR);
+				aprR.setDate(date);
+				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
 					// amPhaseRecordDao.save(apr);
-					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr.getAmPhaseRecordId());
+					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr.getAmPhaseRecordId(),date);
+					apr.setDate(date);
 					if (amPhaseRecord == null) {
 						amPhaseRecordService.saveByMapper(apr);
 					} else {
@@ -128,10 +131,10 @@ public class AmmeterJob {
 		ammeterRecord.setdAddr(ammeter.getdAddr());
 		ammeterRecord.setdType(ammeter.getdType());
 		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
-		// if (ammeter.getStation() != null) {
-		// ammeterRecord.setStationId(ammeter.getStationId());
-		// ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
-		// }
+		 if (ammeter.getStation() != null) {
+			 ammeterRecord.setStationId(ammeter.getStationId());
+			 ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
+		 }
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecord.setType(ammeter.getType());
 		// ammeterRecordService.save(ammeterRecord);
@@ -319,7 +322,10 @@ public class AmmeterJob {
 		amPhaseRecordR.setdType(apr.getdType());
 		amPhaseRecordR.setwAddr(apr.getwAddr());
 		amPhaseRecordR.setMeterTime(lastMeterTime);
-		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOne(amPhaseRecordR);
+		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
+		amPhaseRecordR.setDate(date);
+		//AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOne(amPhaseRecordR);
+		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
 			kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
 		}
