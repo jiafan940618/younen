@@ -239,5 +239,16 @@ public class StationController {
 		return ResultVOUtil.success(station);
 	}
 	
+	/** */
+	@RequestMapping(value = "/saveType")
+	@ResponseBody
+	public Object SaveType(StationVo stationVo,HttpSession httpSession) {
+		
+		logger.info("传递type: ---- ----- ----- "+stationVo.getType());
+		
+		httpSession.setAttribute("type", stationVo.getType());
+		
+		return ResultVOUtil.success(null);
+	}
 	
 }

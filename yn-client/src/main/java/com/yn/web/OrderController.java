@@ -456,7 +456,7 @@ public class OrderController {
 	@RequestMapping(value = "/orderPrice")
 	public ResultData<Object> findOrderprice(HttpSession session) {
 		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
-		// Integer type = (Integer)session.getAttribute("type");
+		 Integer type = (Integer)session.getAttribute("type");
 
 		String orderCode = (String) session.getAttribute("orderCode");
 
@@ -484,11 +484,11 @@ public class OrderController {
 			newserverPlan.setMinPurchase(plan.getNum());
 
 			User user02 = userservice.findByPhone(plan.getPhone());
-			// ** 添加订单*//*
+			/** 添加订单*/
 			Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-					plan.getOrderCode(), null);
+					plan.getOrderCode(), null,type);
 
-			// 取出订单号并添加
+			/** 取出订单号并添加*/
 			order.setOrderCode(plan.getOrderCode());
 			orderService.newSave(order);
 
@@ -498,7 +498,6 @@ public class OrderController {
 			Order neworder = orderService.findOne(order02);
 
 			/** 订单计划表*/
-
 			Long id = newserverPlan.getId();
 
 			NewServerPlan serverPlan = newserverPlanService.findOne(id);
@@ -540,7 +539,7 @@ public class OrderController {
 
 	}
 
-	/** Ios点击确定的接口 */
+	/** Ios点击确定的接口,没有传订单类型，后面在修改 */
 
 	@ResponseBody
 	@RequestMapping(value = "/iosorderPrice")
@@ -577,11 +576,11 @@ public class OrderController {
 			newserverPlan.setMinPurchase(plan.getNum());
 
 			User user02 = userservice.findByPhone(plan.getPhone());
-			// ** 添加订单*//*
+			/** 添加订单*/
 			Order order = newserverPlanService.getOrder(newserverPlan, user02, allMoney, apoPrice, plan.getOrderCode(),
-					newuser.getIpoMemo());
+					newuser.getIpoMemo(),0);
 
-			// 取出订单号并添加
+			/** 取出订单号并添加*/
 			order.setOrderCode(plan.getOrderCode());
 			orderService.newSave(order);
 

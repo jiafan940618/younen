@@ -176,7 +176,7 @@ public class NewServerPlanService {
 	    
 	    /** 根据用户和服务商生成一个订单 */
 	    
-	    public Order getOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,String IpoMemo){
+	    public Order getOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,String IpoMemo,Integer type){
 	    	
 	    	Order order = new Order();
 	    	 /** 保存订单*/
@@ -238,7 +238,7 @@ public class NewServerPlanService {
 	        order.setBuildStepA(0);
 	        order.setBuildStepB(0);
 	        /** 安装类型 默认为 0：居民*/
-	        order.setType(0);
+	        order.setType(type);
 	       
 	        
 	        order.setUser(user);

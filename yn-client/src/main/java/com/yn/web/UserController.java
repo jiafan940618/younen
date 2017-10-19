@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.Order;
 import com.yn.model.Station;
+import com.yn.model.TransactionRecord;
 import com.yn.model.User;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.OrderVo;
@@ -42,6 +44,8 @@ public class UserController {
     StationService stationService;
     @Autowired
 	OrderService orderService;
+    @Autowired
+	TransactionRecordService transactionRecordService;
     
     
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
@@ -214,6 +218,25 @@ public class UserController {
     	}
 
     }
+    
+    /** 查询交易记录*/
+    @RequestMapping("/userTransactionRecord") 
+    @ResponseBody
+    public Object helloJsp01(com.yn.model.Page<TransactionRecord>  page){
+    	
+    	logger.info("传递参数 ---- ----- ----- index："+page.getIndex());
+    	logger.info("传递参数 ---- ----- ----- time_from："+page.getTime_from());
+    	logger.info("传递参数 ---- ----- ----- time_to："+page.getTime_to());
+    	logger.info("传递参数 ---- ----- ----- type："+page.getType());
+    	logger.info("传递参数 ---- ----- ----- status："+page.getStatus());
+    	logger.info("传递参数 ---- ----- ----- payWay："+page.getPayWay());
+    	
+    	 List<TransactionRecord> list = transactionRecordService.GivePage(page);
+
+		return ResultVOUtil.newsuccess(page, list);  
+    }
+    
+    
     /**
 	 * 用户退出登录
 	 */

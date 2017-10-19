@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -619,6 +618,7 @@ public class OrderService {
 		return mapper.updateApplyStepBImgUrl(order) > 0 ? true : false;
 	}
 
+
 	public Map<String, Object> checkSurv(Order o, Integer isOk) {
 		Order o1 = findOne(o.getId());
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
@@ -628,8 +628,12 @@ public class OrderService {
 			int condition = mapper.updateByCondition(o1);
 			if (condition > 0) {
 				jsonResult.put("isOk", true);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("applyIsPay", false);
 			} else {
 				jsonResult.put("isOk", false);
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("applyIsPay", false);
 				jsonResult.put("reason", "系统错误，请联系管理员。");
 			}
 			return jsonResult;
@@ -642,7 +646,7 @@ public class OrderService {
 			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
 			return jsonResult;
 		} else {
-			jsonResult.put("applyStepA", true);// 支付成功。
+			jsonResult.put("applyIsPay", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
@@ -672,31 +676,45 @@ public class OrderService {
 	public Map<String, Object> checkGrid(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
-		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
-			o1.setApplyStepB(1);
-			int condition = mapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
+		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。再看有没有上传图片 。
+			if (o1.getApplyStepBImgUrl() != null || o1.getApplyStepBImgUrl().length() > 1) {
+				o1.setApplyStepB(1);
+				int condition = mapper.updateByCondition(o1);
+				if (condition > 0) {
+					jsonResult.put("loanStatus", true);
+					jsonResult.put("isOk", true);
+					jsonResult.put("applyIsPay", false);
+					jsonResult.put("applyStepBImgUrl", true);
+				} else {
+					jsonResult.put("loanStatus", true);
+					jsonResult.put("applyStepBImgUrl", true);
+					jsonResult.put("isOk", false);
+					jsonResult.put("applyIsPay", false);
+					jsonResult.put("reason", "系统错误，请联系管理员。");
+				}
+			}else{
+				jsonResult.put("reason", "请先上传报建时所需要的材料。");
+				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "系统错误，请联系管理员。");
+				jsonResult.put("applyStepBImgUrl", false);
+				jsonResult.put("applyIsPay", false);
 			}
 			return jsonResult;
 		} else {
 			jsonResult.put("loanStatus", false);
 		}
 		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("applyStepA", false);
+			jsonResult.put("applyIsPay", false);
 			jsonResult.put("reason", "当前订单未支付,请先支付。");
 			jsonResult.put("isOk", false);
 			return jsonResult;
 		} else {
-			jsonResult.put("applyStepA", true);// 支付成功。
+			jsonResult.put("applyIsPay", true);// 支付成功。
 		}
 		if (isOk == 1) {
 			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
 				jsonResult.put("reason", "请先上传报建时所需要的材料。");
+				jsonResult.put("applyStepBImgUrl", false);
 				jsonResult.put("isOk", false);
 			} else {
 				if (o1.getApplyStepB() == 1) {
@@ -716,6 +734,7 @@ public class OrderService {
 					jsonResult.put("reason", "系统错误，请联系管理员。");
 					jsonResult.put("isOk", false);
 				}
+				jsonResult.put("applyStepBImgUrl", true);
 			}
 			return jsonResult;
 		}
@@ -724,51 +743,7 @@ public class OrderService {
 		return jsonResult;
 	}
 
-	public Map<String, Object> checkApply(Order o, Integer isOk) {
-		Map<String, Object> jsonResult = new HashMap<String, Object>();
-		Order o1 = findOne(o.getId());
-		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。
-			jsonResult.put("isOk", true);
-			o1.setApplyStepB(1);
-			int condition = mapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("isOk", false);
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-			}
-			return jsonResult;
-		} else {
-			jsonResult.put("loanStatus", false);
-		}
-		if (o1.getBuildIsPay() != 1 && o1.getStatus() != 2) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("buildIsPay", false);
-			jsonResult.put("reason", "当前订单状态不能进行申请施工（未支付施工费用）。");
-			return jsonResult;
-		} else {
-			jsonResult.put("buildIsPay", true);
-		}
-		if (isOk == 1) {
-			if (o1.getBuildStepA() == 1) {
-				jsonResult.put("reason", "已申请施工，不能重复申请");
-				jsonResult.put("isOk", false);
-				return jsonResult;
-			}
-			o1.setBuildStepA(1);
-			int condition = mapper.updateByCondition(o1);
-			if (condition > 0) {
-				jsonResult.put("isOk", true);
-			} else {
-				jsonResult.put("reason", "系统错误，请联系管理员。");
-				jsonResult.put("isOk", false);
-			}
-			return jsonResult;
-		}
-		jsonResult.put("reason", "当前订单状态不能进行申请施工");
-		jsonResult.put("isOk", false);
-		return null;
-	}
+	
 
 	public boolean updateOrderStauts43Step(Order order) {
 		int step = mapper.updateOrderStauts43Step(order);
