@@ -1,5 +1,6 @@
 package com.yn.kft.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,8 @@ public class PayOrderAction {
 	@RequestMapping(value="/bind")
 	public  Object getBindIng(BillOrderVo billOrderVo){
 		
+		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
+		
 		List<BankCardVo> list = new ArrayList<BankCardVo>();
 
 	    if(null!=billOrderVo.getUserId()){
@@ -82,12 +85,13 @@ public class PayOrderAction {
 	@RequestMapping(value="/bindIng")
 	public  Object getdIng(BillOrderVo billOrderVo,BankCardVo bankCardVo){
 		/** 测试数据*/
-		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
-		/*billOrderVo.setOrderId(1L);
+		
+		/*billOrderVo.setOrderId(19L);
 		billOrderVo.setUserId(3L);
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
-		bankCardVo.setTreatyId("20170927035820");*/
+		bankCardVo.setTreatyId("21000000000773");*/
+		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
 		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+billOrderVo.getTradeNo());

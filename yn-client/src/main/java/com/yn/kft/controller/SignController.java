@@ -67,10 +67,10 @@ public class SignController {
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 
-			/*billOrderVo.setMoney(new BigDecimal("4920"));
-			billOrderVo.setPayWay(2);
+			billOrderVo.setMoney(new BigDecimal("0.01"));
+			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);
-			billOrderVo.setOrderId(1l);*/
+			billOrderVo.setOrderId(1l);
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getUserId()));
@@ -105,8 +105,6 @@ public class SignController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-			
 
 				return pyOrderService.getMap(request, billOrderVo);
 				 
@@ -117,6 +115,27 @@ public class SignController {
 				
 				System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
 				billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
+				
+				
+				BillOrder billOrder = new BillOrder();
+				
+				System.out.println("----- --- ----- ------- ---getOrderId :"+billOrderVo.getOrderId());
+				System.out.println("----- --- ----- ------- ---getUserId: "+billOrderVo.getUserId());
+				System.out.println("----- --- ----- ------- ---getMoney: "+billOrderVo.getMoney().doubleValue()/100);
+				System.out.println("----- --- ----- ------- ---getTradeNo: "+billOrderVo.getTradeNo());
+				System.out.println("----- --- ----- ------- ---getOrderId: "+billOrderVo.getOrderId());
+				System.out.println("----- --- ----- ------- ---getPayWay: "+billOrderVo.getPayWay());
+				
+					
+					billOrder.setOrderId(billOrderVo.getOrderId());
+					billOrder.setUserId(billOrderVo.getUserId());
+					billOrder.setMoney(billOrderVo.getMoney().doubleValue()/100);
+					billOrder.setTradeNo(billOrderVo.getTradeNo());
+			    	billOrder.setPayWay(billOrderVo.getPayWay());
+			    	billOrder.setStatus(1);
+			    	//billOrder.setDel(0);
+			    	
+			    	billorderService.save(billOrder);
 				
 				return signService.findSign(billOrderVo); 
 			}
@@ -316,7 +335,7 @@ public class SignController {
                 	/** 修改订单记录状态*/
                 	billorderService.updateOrder(orderNo);
                 	/** */
-                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
+                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)*0.01 );
 
                 	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
                 	

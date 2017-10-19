@@ -1,17 +1,11 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
-
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.intThat;
-
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +31,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.OrderVo;
+import com.yn.vo.StationVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.WalletVo;
 
@@ -68,6 +63,14 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody UserVo userVo) {
+    	
+    	/*addressText = "松山湖";
+        email = "nicb@engrossing.cn";
+        phone = 13450699433;
+        realName = "刘";
+        userName = "刘先生";*/
+    	
+    	
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
         userService.save(user);
@@ -135,13 +138,15 @@ public class UserController {
     public Object findSomeUs(UserVo userVo) {
     	
     	//userVo.setId(3L);
-    	logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
     	/** 电站信息*/
-    List<Station> list = stationService.getstation(userVo.getId());
+    List<StationVo> list = stationService.getnewstation(userVo.getId());
      
     	/** 个人资料*/
     WalletVo walletVo =  userService.findUserPrice(userVo.getId());
     
+    
+     
     	
     	 return ResultVOUtil.newsuccess(walletVo, list);
     }
@@ -181,7 +186,7 @@ public class UserController {
     newmap.put("num",num);
     newmap.put("Integral",walletVo.getIntegral().toString() );
     	
-    	 return ResultVOUtil.newhsuccess(walletVo, list, newmap);
+    	 return ResultVOUtil.newhsuccess(walletVo, newmap);
     }
     
     

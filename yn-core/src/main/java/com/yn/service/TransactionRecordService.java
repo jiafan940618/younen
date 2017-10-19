@@ -28,7 +28,7 @@ public class TransactionRecordService {
 	    }
 	 
 	public int FindByNum(Long userId){
-		
+
 		return transactionRecordDao.FindByNum(userId); 
 	 }
 

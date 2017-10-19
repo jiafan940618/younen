@@ -16,6 +16,8 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
+import com.yn.vo.StationVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -504,10 +506,32 @@ public class StationService {
         	}
     	return listsMap;	
     }
-    
-   public  List<Station> getstation( Long userId){
+    //0:未绑定电表,1:正在发电,2:电表异常
+   public  List<StationVo> getnewstation(Long userId){
 	   
-	 return stationDao.getstation(userId); 	
+	   List<StationVo> newlist = new LinkedList<StationVo>();
+	  
+	 List<Station> list = stationDao.getstation(userId);
+	 for (Station station : list) {
+		 StationVo stationVo = new StationVo();
+		 BeanCopy.copyProperties(station, stationVo);
+		 
+		 if(stationVo.getStatus() == 0){
+			 stationVo.setRemark("未绑定电表");
+		 }else if(stationVo.getStatus() == 1){
+			 stationVo.setRemark("正在发电");
+		 }else if(stationVo.getStatus() == 2){
+			 stationVo.setRemark("电表异常");
+		 }
+		 newlist.add(stationVo);
+	}
+ 
+	 return newlist; 	
     }
+   public  List<Station> getstation(Long userId){
+	   
+	 return stationDao.getstation(userId); 
+   }
+   
     
 }

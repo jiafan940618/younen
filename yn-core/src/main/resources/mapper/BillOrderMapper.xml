@@ -37,8 +37,8 @@
 	
 	<insert id="InsertBillorder"  parameterType="com.yn.model.BillOrder" >
 		INSERT INTO bill_order 
-		(del,money,order_id,pay_way,STATUS,user_id,trade_no) VALUES
-		 (#{del},#{money},#{orderId},#{payWay},#{status},#{userId},#{tradeNo})
+		(money,order_id,pay_way,STATUS,user_id,trade_no) VALUES
+		 (#{money},#{orderId},#{payWay},#{status},#{userId},#{tradeNo})
 	</insert>
 	
 	

@@ -15,6 +15,7 @@ import com.yn.model.BillOrder;
 import com.yn.model.BillWithdrawals;
 import com.yn.model.Page;
 import com.yn.model.Recharge;
+import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.Wallet;
 import com.yn.service.BillOrderService;
@@ -24,11 +25,13 @@ import com.yn.service.ConstructionService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.StationService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 
 import com.yn.vo.RechargeVo;
+import com.yn.vo.StationVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -51,6 +54,8 @@ public class TestController {
 	
 	@Autowired
 	ServerService  serverService;
+	@Autowired
+	StationService  stationService;
 	
 	@Autowired
 	OrderService orderService;
@@ -64,16 +69,21 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
-	    	
-	    	  Page<TransactionRecord>  page = new Page<TransactionRecord>();
-	    	  page.setUserId(3l);
-	  
-
-	    	  List<TransactionRecord> list = transactionRecordService.GivePage(page);
+	    
+	    	   BillOrder   billOrder = new BillOrder();
+	    	    billOrder.setOrderId(556l);
+				billOrder.setUserId(2l);
+				billOrder.setMoney(0.01);
+				billOrder.setTradeNo("eogn171019198341");
+		    	billOrder.setPayWay(4);
+		    	billOrder.setStatus(1);
+		    	billOrder.setDel(0);
+		    	
+		    	billOrderService.save(billOrder);
 	    	  
 	    	   
 
-	            return ResultVOUtil.success(list);  
+	            return ResultVOUtil.success(null);  
 	       } 
 	       
 	       @ResponseBody

@@ -22,14 +22,13 @@ public class ResultVOUtil {
         return resultData;
     }
     
-    public static  ResultData<Object> newhsuccess(Object object,List<Station> list,Map<String,String> map) {
+    public static  ResultData<Object> newhsuccess(Object object,Map<String,String> map) {
     	ResultData resultData = new ResultData();
         
         resultData.setCode(200);
         resultData.setMsg("成功");
         resultData.setSuccess(true);
         resultData.setData(object);
-        resultData.setList(list);
         resultData.setMap(map);
         return resultData;
     }

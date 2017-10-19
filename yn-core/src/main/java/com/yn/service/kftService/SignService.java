@@ -103,29 +103,11 @@ public class SignService {
 		
 			String signatureInfo =	CashierSignUtil.sign(pfxPath+"/privateKey/pfx.pfx", "123456",parameters);
 			
-			System.out.println(signatureInfo);
+	
 			
 			parameters.put("signatureInfo", signatureInfo);
 			
-			BillOrder billOrder = new BillOrder();
 			
-		System.out.println("----- --- ----- ------- ---getOrderId :"+billOrderVo.getOrderId());
-		System.out.println("----- --- ----- ------- ---getUserId: "+billOrderVo.getUserId());
-		System.out.println("----- --- ----- ------- ---getMoney: "+billOrderVo.getMoney().doubleValue());
-		System.out.println("----- --- ----- ------- ---getTradeNo: "+billOrderVo.getTradeNo());
-		System.out.println("----- --- ----- ------- ---getOrderId: "+billOrderVo.getOrderId());
-		System.out.println("----- --- ----- ------- ---getPayWay: "+billOrderVo.getPayWay());
-		
-			
-			billOrder.setOrderId(billOrderVo.getOrderId());
-			billOrder.setUserId(billOrderVo.getUserId());
-			billOrder.setMoney(billOrderVo.getMoney().doubleValue());
-			billOrder.setTradeNo(billOrderVo.getTradeNo());
-	    	billOrder.setPayWay(billOrderVo.getPayWay());
-	    	billOrder.setStatus(1);
-	    	billOrder.setDel(0);
-	    	
-	    	billorderService.newsave(billOrder);
 			
 		} catch (Exception e) {
 		

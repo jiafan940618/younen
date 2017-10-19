@@ -33,7 +33,15 @@ public class StationVo extends QueryVo{
 	private Integer passageModel;
 	private Integer type;
 	
+	private String remark;
 	
+	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	public Long getId() {
 		return id;
 	}
