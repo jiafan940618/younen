@@ -2,6 +2,7 @@ package com.yn.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,11 @@ public class TransactionRecordService {
 	 public TransactionRecord findOne(Long id) {
 	        return transactionRecordDao.findOne(id);
 	    }
+	 
+	public int FindByNum(Long userId){
+		
+		return transactionRecordDao.FindByNum(userId); 
+	 }
 
 	    public TransactionRecord save(TransactionRecord transactionRecord) {
 	        if (transactionRecord.getId() != null) {

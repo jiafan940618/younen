@@ -194,6 +194,8 @@ public class PyOrderService {
 		
 		/** 修改订单金额,及3步走，支付状态*/
     	orderService.UpdateOrStatus(billOrderVo.getTradeNo(), billOrderVo.getMoney().doubleValue());
+    	
+    	
 
     	 /** 查询订单改变订单进度*/
     	//orderService.givePrice(orderService.FindByTradeNo(billOrderVo.getTradeNo()));

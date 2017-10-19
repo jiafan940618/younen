@@ -65,20 +65,10 @@ public class TestController {
 	       @ResponseBody
 	       public Object helloJsp01(){  
 	    	
-	    	   BillWithdrawals billWithdrawals =  billWithdrawalsService.findByOrderNo("8o7f171017004590");
-	    	   
-	    	   BillOrder billOrder =   billOrderService.findByTradeNo("s4or170926164739");
-	    	   transactionRecordService.InsertBillAll(billOrder);
-	    	   Recharge recharge =  rechargeService.findByRecode("wo8n171017100999");
-	    	   transactionRecordService.InsertBillAll(recharge);
-	   
-	    	   transactionRecordService.InsertBillAll(billWithdrawals);
-	    	   
 	    	  Page<TransactionRecord>  page = new Page<TransactionRecord>();
 	    	  page.setUserId(3l);
-	    	  page.setType(2);
-	    	  
-	    	   
+	  
+
 	    	  List<TransactionRecord> list = transactionRecordService.GivePage(page);
 	    	  
 	    	   

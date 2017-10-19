@@ -677,7 +677,13 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。再看有没有上传图片 。
-			if (o1.getApplyStepBImgUrl() != null || o1.getApplyStepBImgUrl().length() > 1) {
+			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+				jsonResult.put("reason", "请先上传报建时所需要的材料。");
+				jsonResult.put("loanStatus", true);
+				jsonResult.put("isOk", false);
+				jsonResult.put("applyStepBImgUrl", false);
+				jsonResult.put("applyIsPay", false);
+			}else{
 				o1.setApplyStepB(1);
 				int condition = mapper.updateByCondition(o1);
 				if (condition > 0) {
@@ -692,12 +698,6 @@ public class OrderService {
 					jsonResult.put("applyIsPay", false);
 					jsonResult.put("reason", "系统错误，请联系管理员。");
 				}
-			}else{
-				jsonResult.put("reason", "请先上传报建时所需要的材料。");
-				jsonResult.put("loanStatus", true);
-				jsonResult.put("isOk", false);
-				jsonResult.put("applyStepBImgUrl", false);
-				jsonResult.put("applyIsPay", false);
 			}
 			return jsonResult;
 		} else {
@@ -742,6 +742,7 @@ public class OrderService {
 		jsonResult.put("isOk", false);
 		return jsonResult;
 	}
+
 	
 	public Map<String, Object> checkApply(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();

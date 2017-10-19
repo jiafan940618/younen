@@ -2,7 +2,13 @@ package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
 
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.intThat;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,6 +32,7 @@ import com.yn.model.TransactionRecord;
 import com.yn.model.User;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
@@ -38,6 +45,9 @@ import com.yn.vo.WalletVo;
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
+	@Autowired
+	SystemConfigService systemConfigService;
     @Autowired
     UserService userService;
     @Autowired
@@ -119,7 +129,7 @@ public class UserController {
         return ResultVOUtil.success("修改成功!");
     }
     
-    /** */
+    /** PC端*/
     @ResponseBody
     @RequestMapping(value = "/findSomeUs")
     public Object findSomeUs(UserVo userVo) {
@@ -135,6 +145,47 @@ public class UserController {
     	
     	 return ResultVOUtil.newsuccess(walletVo, list);
     }
+    
+    /** ios端的个人中心*/
+    @ResponseBody
+    @RequestMapping(value = "/iosFindSomeUs")
+    public Object iosfindSomeUs(UserVo userVo) {
+    	
+    Map<String, String> newmap = new HashMap<String, String>();
+    	//userVo.setId(3L);
+    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+    	/** 电站信息*/
+    List<Station> list = stationService.getstation(userVo.getId());
+    Double power = 0.0;
+    
+    for (Station station : list) {
+    	power += station.getElectricityGenerationTol();
+	}
+     
+    Map<String, String> map = systemConfigService.getlist(); 
+	// 植树参数
+	Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));
+	// co2减排参数
+	Double CO2_prm = Double.valueOf(map.get("CO2_prm"));
+	
+	DecimalFormat df = new DecimalFormat("#0.00");
+	
+	newmap.put("CO2_prm", df.format(power * CO2_prm));
+	newmap.put("plant_trees_prm", df.format(power * plant_trees_prm));
+    
+    	/** 个人资料*/
+    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+    
+    String num = transactionRecordService.FindByNum(userVo.getId())+"";
+  
+    newmap.put("num",num);
+    newmap.put("Integral",walletVo.getIntegral().toString() );
+    	
+    	 return ResultVOUtil.newhsuccess(walletVo, list, newmap);
+    }
+    
+    
+    
     
      /** 后面版本要改为分页的形式*/
     @ResponseBody

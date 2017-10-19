@@ -64,7 +64,7 @@ public class SignService {
 		}
 		try {
 
-			parameters.put("productNo", "1FA00AAA");
+			parameters.put("productNo", "2ACB0BAA");
 			parameters.put("service", "proxy_onlineBank_direct_service");
 			parameters.put("version", version);
 			parameters.put("language", "BG");

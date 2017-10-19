@@ -150,6 +150,7 @@
 			<if test="status == 2">
 				o.grid_connected_is_pay = 1,
 			</if>
+		
 			o.had_pay_price = #{hadPayPrice}
 		</set>
 		where o.id = #{id}

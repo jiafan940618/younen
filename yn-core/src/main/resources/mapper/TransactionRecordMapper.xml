@@ -37,7 +37,7 @@
 			 </if> 
 		 </if>
 		 <if test =" type != 9">
-		    <if test ="type =1">
+		    <if test ="type ==1">
 		    	and type = 1
 		    </if>
 			<if test ="type ==2">

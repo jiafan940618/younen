@@ -1,6 +1,7 @@
 package com.yn.utils;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yn.model.Apolegamy;
 import com.yn.model.ProductionDetail;
@@ -22,8 +23,16 @@ public class ResultData<T> {
 
 		private T produ;
 		
-		
+		private Map<String, String> map;
 
+		
+		public Map<String, String> getMap() {
+			return map;
+		}
+
+		public void setMap(Map<String, String> map) {
+			this.map = map;
+		}
 
 		public Boolean getSuccess() {
 			return success;

@@ -189,7 +189,7 @@ public class SignController {
 				                	/** 修改订单记录状态*/
 				                	billorderService.updateOrder(orderNo);
 				                	/** 修改订单金额,及3步走，支付状态*/
-				                	//orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
+				                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount)/100 );
 				                	
 				                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 				                	
@@ -315,8 +315,8 @@ public class SignController {
                 	
                 	/** 修改订单记录状态*/
                 	billorderService.updateOrder(orderNo);
-                	/** 不能再这里 进行修改*/
-                //	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
+                	/** */
+                	orderService.UpdateOrStatus(orderNo,Double.valueOf(amount) );
 
                 	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
                 	
