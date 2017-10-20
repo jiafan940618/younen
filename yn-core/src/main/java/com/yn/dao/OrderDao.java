@@ -68,6 +68,7 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
   	Object selectOrderSta(@Param("order") Order order);
   
   
-    
+  	@Query("select o.orderCode from Order o where o.del=0 and o.id=?1")
+    String findByStationId(Long orderId);
 
 }

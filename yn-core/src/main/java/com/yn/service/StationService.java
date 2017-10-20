@@ -534,4 +534,54 @@ public class StationService {
    }
    
     
+   /**
+	 * 查询用户电站,电表等信息
+	 * 
+	 */
+	public Map<String, Object> stationInformation(Long stationId) {
+
+          Station station=stationDao.findOne(stationId);
+			Map<String, Object> map = new LinkedHashMap<>();
+			map.put("stationCode", station.getStationCode());
+			map.put("stationName", station.getStationName());
+			map.put("capacity", station.getCapacity());
+			map.put("orderCode", orderDao.findByStationId(station.getOrderId()));
+			map.put("status", station.getStatus());
+			map.put("addressText", station.getAddressText());
+			map.put("workTotaTm", station.getWorkTotaTm());
+			List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+			System.out.println(station.getId());
+			for (Ammeter ammeter : ammeters) {
+				System.out.println(ammeter.getId());
+				Map<String, Object> map2 = new LinkedHashMap<>();
+				map2.put("ammeterId", ammeter.getId());
+				map2.put("ammeterScale", ammeter.getInitKwh());
+				map.put("ammeterRecode", map2);
+			}
+			Date date = station.getCreateDtm();
+			map.put("workInfo", temStationService.getNowToalKwh(stationId, 1, date));
+			map.put("useInfo", temStationService.getNowToalKwh(stationId, 2, date));
+
+		return map;
+
+	}
+
+	/**
+	 * 根据session按时间获取用户收益
+	 */
+	public Map<String, Object> userIncome(Station station) {
+
+		Calendar aCalendar = Calendar.getInstance(Locale.CHINA);
+		int days = aCalendar.getActualMaximum(Calendar.DATE);
+		double price=1/(Double.valueOf(systemConfigService.get("watt_price")))*1000;
+		Map<String, Object> map = new HashMap<>();
+		// 今日预计收益
+		map.put("todayIncome", NumberUtil.accurateToTwoDecimal(station.getCapacity() * 3.06*price));
+		// 本月预计收益
+		map.put("monthIncome", NumberUtil.accurateToTwoDecimal(station.getCapacity() * 3.06 * days*price));
+		// 本年预计收益
+		map.put("yearIncome", NumberUtil.accurateToTwoDecimal(station.getCapacity() * 3.06 * 365*price));
+
+		return map;
+	}
 }

@@ -28,5 +28,6 @@ public interface TemStationYearDao extends JpaRepository<TemStationYear, Long>, 
     @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(kwh) AS kwh FROM TemStationYear t WHERE t.createDtm is not null AND t.stationId=:stationId AND type=1 AND t.createDtm LIKE CONCAT('%',:dateStr,'%') GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
     List<Map<Object,Object>> sumKwh(@Param("stationId")Long stationId,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
     
-    
+    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM TemStationYear t WHERE t.createDtm is not null AND t.stationId=?1 AND type=?2 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+    List<Map<Object,Object>> workUseCount(Long stationId,Integer type);
 }

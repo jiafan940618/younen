@@ -187,4 +187,28 @@ public class TemStationYearController {
 
 		return ResultVOUtil.success(monthKwh);
 	}
+	
+	/**
+	 * 
+	 */
+	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object workUseCount(Long stationId, Integer type) {
+
+		Map<String, Object> workUseCount = new HashMap<>();
+
+		workUseCount = temStationYearService.workUseCount(stationId, type);
+
+		return ResultVOUtil.success(workUseCount);
+	}
+	
+	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object listCount(TemStationYearVo temStationYearVo,
+			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
+		TemStationYear temStationYear = new TemStationYear();
+		BeanCopy.copyProperties(temStationYearVo, temStationYear);
+		Page<TemStationYear> listCount = temStationYearService.listCount(temStationYear, pageable);
+		return ResultVOUtil.success(listCount);
+	}
 }

@@ -29,4 +29,11 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	@Query("SELECT DISTINCT(a.dAddr) FROM Ammeter a WHERE a.stationId=?1 AND a.type=?2 AND a.del=0")
 	List<Long> findDAddr(Long stationId, Integer type);
 	
+	/**
+	 * 通过stationId找到电表
+	 * 
+	 */
+	@Query(value="select * from ammeter as a where a.station_id=?1 ",nativeQuery=true)
+    List<Ammeter> findByStationId(Long stationId);
+	
 }

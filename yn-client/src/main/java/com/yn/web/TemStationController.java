@@ -126,4 +126,16 @@ public class TemStationController {
         
         return ResultVOUtil.success(monthKwh);
     }
+    
+    /**
+     * 根据用户查找每小时的发电量
+     * @return
+     */
+    @RequestMapping(value = "/oneHourKwh", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody 
+    public Object oneHourKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+       List<Map<String, Object>> list =new ArrayList<>();
+       list=temStationService.oneHourKwh(stationId, type);
+        return ResultVOUtil.success(list);
+    }
 }

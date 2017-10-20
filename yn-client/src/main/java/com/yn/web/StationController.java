@@ -251,4 +251,31 @@ public class StationController {
 		return ResultVOUtil.success(null);
 	}
 	
+	/**
+	 * 查询用户电站,电表等信息
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/stationInformation", method = { RequestMethod.POST, RequestMethod.GET })
+	public Object stationInformation(Long stationId) {
+
+		Map<String, Object> information = new HashMap<>();
+		information = stationService.stationInformation(stationId);
+
+		return ResultVOUtil.success(information);
+	}
+
+	/**
+	 * 根据session查询用户电站25年收益
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/user25YearIncome", method = { RequestMethod.POST, RequestMethod.GET })
+	public Object user25YearIncome(Long stationId) {
+
+		Station station = stationDao.findOne(stationId);
+		Map<String, Object> map = stationService.get25YearIncome(stationId);
+		map.put("stationName", station.getStationName());
+		map.put("income", stationService.userIncome(station));
+		return ResultVOUtil.success(map);
+	}
+	
 }

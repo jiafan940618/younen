@@ -3,11 +3,11 @@ package com.yn.service;
 import com.yn.dao.TemStationDao;
 import com.yn.dao.mapper.TemStationMapper;
 import com.yn.domain.EachHourTemStation;
-import com.yn.enums.AmmeterTypeEnum;
 import com.yn.model.Station;
 import com.yn.model.TemStation;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
+import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 
 
@@ -340,5 +340,55 @@ public class TemStationService {
         	}
     	return listsMap;
     }
+	
+	/**
+	 * 获取当前时间的发电/用电总量
+	 */
+	public Map<String, Object> getNowToalKwh(Long stationId, Integer type, Date date) {
+
+		Date start = date;
+
+		Date end = new Date();
+
+		List<TemStation> temStationList = temStationDao.findByStationIdAndTypeAndCreateDtmBetween(stationId, type,
+				start, end);
+		Double toalKwh = 0D;
+		Double kw = 0D;
+		Map<String, Object> map = new HashMap<>();
+		for (TemStation temStation : temStationList) {
+			toalKwh += temStation.getKwh();
+			kw=temStation.getKw();
+			
+		}
+		map.put("toalKwh", NumberUtil.accurateToTwoDecimal(toalKwh));
+		 
+		map.put("kw",NumberUtil.accurateToTwoDecimal(kw) );
+		map.put("todayKwh",NumberUtil.accurateToTwoDecimal(todayKwh(stationId, type)));
+
+		return map;
+
+	}
+	
+	/**
+	 * 当前一个小时内的发电、用电量
+	 */
+	public List<Map<String, Object>> oneHourKwh(Long stationId, Integer type) {
+		List<Map<String, Object>> list=new ArrayList<>();
+		Date time  = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 12);
+		SimpleDateFormat dFormat=new SimpleDateFormat("HHmm");
+		List<TemStation> temStationList = temStationDao.findByStationIdAndTypeAndCreateDtmBetween(stationId, type,
+				calendar.getTime(), time);
+		
+		for (TemStation temStation : temStationList) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("time", dFormat.format(temStation.getCreateDtm()));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(temStation.getKw()));
+			list.add(map);
+		}
+		return list;
+		
+	}
 
 }
