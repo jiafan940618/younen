@@ -198,9 +198,9 @@ public class TemStationYearService {
 	/**
 	 * 用户发电/用电统计图
 	 */
-	public Map<String,Object> workUseCount(Long stationId ,Integer type) {
+	public Map<String,Object> workUseCount(Long stationId ,Long dAddr) {
 		
-		List<Map<Object, Object>> lists=temStationYearDao.workUseCount(stationId, type);
+		List<Map<Object, Object>> lists=temStationYearDao.workUseCount(stationId, dAddr);
 		Map<Object, Object> linkHashMap=new LinkedHashMap<>();
 		List<Map<Object, Object>> listsMap=new ArrayList<>();
 		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
@@ -226,12 +226,12 @@ public class TemStationYearService {
     	
     	Map<String, Object> map=new HashMap<>();
     	map.put("workUseCount", listsMap);
-    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.thisYearKwh(stationId, type)) );
-    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.thisMonthKwh(stationId, type)));
-    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.lastYearKwh(stationId, type)) );
-    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.lastMonthKwh(stationId, type)));
-    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(temStationService.todayKwh(stationId, type)));
-    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(temStationService.yesterdayKwh(stationId, type)));
+    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.thisYearKwh(stationId, dAddr)) );
+    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.thisMonthKwh(stationId, dAddr)));
+    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.lastYearKwh(stationId, dAddr)) );
+    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.lastMonthKwh(stationId, dAddr)));
+    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(temStationService.todayKwh(stationId, dAddr)));
+    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(temStationService.yesterdayKwh(stationId, dAddr)));
     	
     	return map;
 		
@@ -273,6 +273,10 @@ public class TemStationYearService {
 	            // 根据日期筛选
 	            String queryStartDtm = temStationYear.getQueryStartDtm();
 	            String queryEndDtm = temStationYear.getQueryEndDtm();
+	            Long  dAddr= temStationYear.getdAddr();
+	            if (!StringUtils.isEmpty(dAddr)) {
+	            	expressions.add(cb.like(root.get("dAddr"), "%"+dAddr+"%"));
+	            }
 	            if (!StringUtils.isEmpty(queryStartDtm)) {
 	                expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd)));
 	            }

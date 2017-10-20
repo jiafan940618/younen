@@ -60,10 +60,10 @@ public class HomePageController {
         double sumKwh = 0;
         if (serverId == null) {
             sumNowKw = stationDao.sumNowKw();
-            sumKwh = temStationDao.sumKwh(1);
+            sumKwh = temStationDao.sumKwh(1L);
         } else {
             sumNowKw = stationDao.sumNowKw(serverId);
-            sumKwh = temStationDao.sumKwh(1, serverId);
+            sumKwh = temStationDao.sumKwh(1L, serverId);
         }
 
         Map<String, Object> map = new HashMap<>();
@@ -204,7 +204,7 @@ public class HomePageController {
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
     public Object todayKwh(Long serverId) {
-        List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+        List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().longValue());
         return ResultVOUtil.success(todayKwh);
     }
 

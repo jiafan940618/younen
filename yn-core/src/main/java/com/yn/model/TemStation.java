@@ -4,6 +4,8 @@ import com.yn.domain.IDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import java.io.Serializable;
 
 @Entity
@@ -27,7 +29,8 @@ public class TemStation extends IDomain implements Serializable {
     private Double kw;
     @Column(columnDefinition = "decimal(12,2) default 0 comment '[电量]'")
     private Double kwh;
-    @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
+   // @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
+    @Transient
     private Integer type;
     @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017072109]'")
     private String recordTime;

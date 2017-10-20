@@ -193,7 +193,7 @@ public class TemStationYearController {
 	 */
 	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object workUseCount(Long stationId, Integer type) {
+	public Object workUseCount(Long stationId, Long type) {
 
 		Map<String, Object> workUseCount = new HashMap<>();
 

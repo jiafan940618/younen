@@ -93,7 +93,7 @@ public class TemStationController {
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
-    public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+    public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Long type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
         return ResultVOUtil.success(todayKwhByStationId);
     }
@@ -133,7 +133,7 @@ public class TemStationController {
      */
     @RequestMapping(value = "/oneHourKwh", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody 
-    public Object oneHourKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+    public Object oneHourKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Long type) {
        List<Map<String, Object>> list =new ArrayList<>();
        list=temStationService.oneHourKwh(stationId, type);
         return ResultVOUtil.success(list);

@@ -213,22 +213,22 @@ public class StationService {
         Map<String, Object> objectMap = ObjToMap.getObjectMap(station);
 
         // 今日发电量
-        double todayKwh = temStationService.todayKwh(stationId, 1);
+        double todayKwh = temStationService.todayKwh(stationId, 1L);
         objectMap.put("todayEG", todayKwh);
         // 昨日发电量
-        double yesterdayKwh = temStationService.yesterdayKwh(stationId, 1);
+        double yesterdayKwh = temStationService.yesterdayKwh(stationId, 1L);
         objectMap.put("yesterdayEG", yesterdayKwh);
         // 当月发电量
-        double thisMonthKwh = temStationService.thisMonthKwh(stationId, 1);
+        double thisMonthKwh = temStationService.thisMonthKwh(stationId, 1L);
         objectMap.put("thisMonthEG", thisMonthKwh);
         // 上月发电量
-        double lastMonthKwh = temStationService.lastMonthKwh(stationId, 1);
+        double lastMonthKwh = temStationService.lastMonthKwh(stationId, 1L);
         objectMap.put("lastMonthEG", lastMonthKwh);
         // 今年发电量
-        double thisYearKwh = temStationService.thisYearKwh(stationId, 1);
+        double thisYearKwh = temStationService.thisYearKwh(stationId, 1L);
         objectMap.put("thisYearEG", thisYearKwh);
         // 去年发电量
-        double lastYearKwh = temStationService.lastYearKwh(stationId, 1);
+        double lastYearKwh = temStationService.lastYearKwh(stationId, 1L);
         objectMap.put("lastYearEG", lastYearKwh);
 
         // 电站总发电量
@@ -559,8 +559,8 @@ public class StationService {
 				map.put("ammeterRecode", map2);
 			}
 			Date date = station.getCreateDtm();
-			map.put("workInfo", temStationService.getNowToalKwh(stationId, 1, date));
-			map.put("useInfo", temStationService.getNowToalKwh(stationId, 2, date));
+			map.put("workInfo", temStationService.getNowToalKwh(stationId, 1L, date));
+			map.put("useInfo", temStationService.getNowToalKwh(stationId, 2L, date));
 
 		return map;
 

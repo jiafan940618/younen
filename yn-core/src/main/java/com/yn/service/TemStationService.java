@@ -5,13 +5,13 @@ import com.yn.dao.mapper.TemStationMapper;
 import com.yn.domain.EachHourTemStation;
 import com.yn.model.Station;
 import com.yn.model.TemStation;
+import com.yn.model.TemStationYear;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 
-
-
+import org.dom4j.CDATA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Map.Entry;
 
 @Service
 public class TemStationService {
@@ -128,6 +129,10 @@ public class TemStationService {
             // 根据日期筛选
             String queryStartDtm = temStation.getQueryStartDtm();
             String queryEndDtm = temStation.getQueryEndDtm();
+            Long  dAddr= temStation.getdAddr();
+            if (!StringUtils.isEmpty(dAddr)) {
+            	expressions.add(cb.like(root.get("dAddr"), "%"+dAddr+"%"));
+            }
             if (!StringUtils.isEmpty(queryStartDtm)) {
                 expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
             }
@@ -145,7 +150,7 @@ public class TemStationService {
      *
      * @return
      */
-    public List<EachHourTemStation> getTodayKwh(Long serverId, Integer type) {
+    public List<EachHourTemStation> getTodayKwh(Long serverId, Long  dAddr) {
 
         Date[] todaySpace = DateUtil.getTodaySpace();
         Date start = todaySpace[0];
@@ -154,10 +159,10 @@ public class TemStationService {
 
         List<TemStation> temStationList = new ArrayList<>();
         if (serverId == null) {
-            temStationList = temStationDao.findByTypeAndCreateDtmBetween(type, start, end);
+            temStationList = temStationDao.findByDAddrAndCreateDtmBetween(dAddr, start, end);
         }
         if (serverId != null) {
-            temStationList = temStationDao.findByServerIdAndTypeAndCreateDtmBetween(serverId, type, start, end);
+            temStationList = temStationDao.findByServerIdAndDAddrAndCreateDtmBetween(serverId, dAddr, start, end);
         }
 
 
@@ -173,14 +178,14 @@ public class TemStationService {
      *
      * @return
      */
-    public List<EachHourTemStation> getTodayKwhByStationId(Long stationId, Integer type) {
+    public List<EachHourTemStation> getTodayKwhByStationId(Long stationId, Long  dAddr) {
 
         Date[] todaySpace = DateUtil.getTodaySpace();
         Date start = todaySpace[0];
         Date end = todaySpace[1];
 
 
-        List<TemStation> temStationList = temStationDao.findByStationIdAndTypeAndCreateDtmBetween(stationId, type, start, end);
+        List<TemStation> temStationList = temStationDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId, dAddr, start, end);
 
 
         List<EachHourTemStation> eachHourTemStationList = groupByEachHourInOneDay(temStationList);
@@ -231,9 +236,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double todayKwh(Long stationId, Integer type) {
+    public double todayKwh(Long stationId, Long dAddr) {
         Date[] todaySpace = DateUtil.getTodaySpace();
-        double todayKwh = temStationDao.sumKwhByStationId(todaySpace[0], todaySpace[1], type, stationId);
+        double todayKwh = temStationDao.sumKwhByStationId(todaySpace[0], todaySpace[1], dAddr, stationId);
         return todayKwh;
     }
 
@@ -244,9 +249,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double yesterdayKwh(Long stationId, Integer type) {
+    public double yesterdayKwh(Long stationId, Long dAddr) {
         Date[] yesterdaySpace = DateUtil.getYesterdaySpace();
-        double yesterdayKwh = temStationDao.sumKwhByStationId(yesterdaySpace[0], yesterdaySpace[1], type, stationId);
+        double yesterdayKwh = temStationDao.sumKwhByStationId(yesterdaySpace[0], yesterdaySpace[1], dAddr, stationId);
         return yesterdayKwh;
     }
 
@@ -257,9 +262,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double thisMonthKwh(Long stationId, Integer type) {
+    public double thisMonthKwh(Long stationId, Long dAddr) {
         Date[] thisMonthSpace = DateUtil.getThisMonthSpace();
-        double thisMonthKwh = temStationDao.sumKwhByStationId(thisMonthSpace[0], thisMonthSpace[1], type, stationId);
+        double thisMonthKwh = temStationDao.sumKwhByStationId(thisMonthSpace[0], thisMonthSpace[1], dAddr, stationId);
         return thisMonthKwh;
     }
 
@@ -270,9 +275,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double lastMonthKwh(Long stationId, Integer type) {
+    public double lastMonthKwh(Long stationId, Long dAddr) {
         Date[] lastMonthSpace = DateUtil.getLastMonthSpace();
-        double lastMonthKwh = temStationDao.sumKwhByStationId(lastMonthSpace[0], lastMonthSpace[1], type, stationId);
+        double lastMonthKwh = temStationDao.sumKwhByStationId(lastMonthSpace[0], lastMonthSpace[1], dAddr, stationId);
         return lastMonthKwh;
     }
 
@@ -283,9 +288,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double thisYearKwh(Long stationId, Integer type) {
+    public double thisYearKwh(Long stationId, Long dAddr) {
         Date[] thisYearSpace = DateUtil.getThisYearSpace();
-        double thisYearKwh = temStationDao.sumKwhByStationId(thisYearSpace[0], thisYearSpace[1], type, stationId);
+        double thisYearKwh = temStationDao.sumKwhByStationId(thisYearSpace[0], thisYearSpace[1], dAddr, stationId);
         return thisYearKwh;
     }
 
@@ -296,9 +301,9 @@ public class TemStationService {
      * @param type
      * @return
      */
-    public double lastYearKwh(Long stationId, Integer type) {
+    public double lastYearKwh(Long stationId, Long dAddr) {
         Date[] lastYearSpace = DateUtil.getLastYearSpace();
-        double lastYearKwh = temStationDao.sumKwhByStationId(lastYearSpace[0], lastYearSpace[1], type, stationId);
+        double lastYearKwh = temStationDao.sumKwhByStationId(lastYearSpace[0], lastYearSpace[1], dAddr, stationId);
         return lastYearKwh;
     }
 
@@ -344,13 +349,13 @@ public class TemStationService {
 	/**
 	 * 获取当前时间的发电/用电总量
 	 */
-	public Map<String, Object> getNowToalKwh(Long stationId, Integer type, Date date) {
+	public Map<String, Object> getNowToalKwh(Long stationId, Long dAddr, Date date) {
 
 		Date start = date;
 
 		Date end = new Date();
 
-		List<TemStation> temStationList = temStationDao.findByStationIdAndTypeAndCreateDtmBetween(stationId, type,
+		List<TemStation> temStationList = temStationDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId, dAddr,
 				start, end);
 		Double toalKwh = 0D;
 		Double kw = 0D;
@@ -363,7 +368,7 @@ public class TemStationService {
 		map.put("toalKwh", NumberUtil.accurateToTwoDecimal(toalKwh));
 		 
 		map.put("kw",NumberUtil.accurateToTwoDecimal(kw) );
-		map.put("todayKwh",NumberUtil.accurateToTwoDecimal(todayKwh(stationId, type)));
+		map.put("todayKwh",NumberUtil.accurateToTwoDecimal(todayKwh(stationId, dAddr)));
 
 		return map;
 
@@ -372,13 +377,13 @@ public class TemStationService {
 	/**
 	 * 当前一个小时内的发电、用电量
 	 */
-	public List<Map<String, Object>> oneHourKwh(Long stationId, Integer type) {
+	public List<Map<String, Object>> oneHourKwh(Long stationId, Long dAddr) {
 		List<Map<String, Object>> list=new ArrayList<>();
 		Date time  = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 12);
 		SimpleDateFormat dFormat=new SimpleDateFormat("HHmm");
-		List<TemStation> temStationList = temStationDao.findByStationIdAndTypeAndCreateDtmBetween(stationId, type,
+		List<TemStation> temStationList = temStationDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId, dAddr,
 				calendar.getTime(), time);
 		
 		for (TemStation temStation : temStationList) {
@@ -390,5 +395,5 @@ public class TemStationService {
 		return list;
 		
 	}
-
+	 
 }

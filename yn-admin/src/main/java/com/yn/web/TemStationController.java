@@ -78,7 +78,7 @@ public class TemStationController {
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
-    public Object todayKwh(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
+    public Object todayKwh(@RequestParam("stationId") Long stationId, @RequestParam("type") Long type) {
         List<EachHourTemStation> todayKwhByStationId = temStationService.getTodayKwhByStationId(stationId, type);
         return ResultVOUtil.success(todayKwhByStationId);
     }
@@ -89,7 +89,7 @@ public class TemStationController {
      */
     @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
+    public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Long type) {
         Set<Long> findDAddr = temStationDao.findDAddr(stationId, type);
         return ResultVOUtil.success(findDAddr);
     }
