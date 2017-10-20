@@ -275,7 +275,7 @@ public class TemStationYearService {
 	            String queryEndDtm = temStationYear.getQueryEndDtm();
 	            Long  dAddr= temStationYear.getdAddr();
 	            if (!StringUtils.isEmpty(dAddr)) {
-	            	expressions.add(cb.like(root.get("dAddr"), "%"+dAddr+"%"));
+	            	expressions.add(cb.like(root.get("dAddr"), dAddr+"%"));
 	            }
 	            if (!StringUtils.isEmpty(queryStartDtm)) {
 	                expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd)));
