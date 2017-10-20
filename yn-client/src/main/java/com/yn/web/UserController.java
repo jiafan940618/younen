@@ -30,6 +30,8 @@ import com.yn.service.SystemConfigService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.Constant;
+import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.OrderVo;
 import com.yn.vo.StationVo;
 import com.yn.vo.UserVo;
@@ -117,17 +119,61 @@ public class UserController {
     /** 修改用户资料*/
     @ResponseBody
     @RequestMapping(value = "/updateSome")
-    public Object updateUser(UserVo userVo) {
+    public Object updateUser(UserVo userVo ,String code4register,HttpSession httpSession) {
     	/*userVo.setId(8L);
     	userVo.setFullAddressText("测试地址");
     	userVo.setEmail("974426563@163.com");
     	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
     	userVo.setPhone("13530895662");*/
     	
+    	UserVo newuserVo =(UserVo) httpSession.getAttribute("user");
+    	
+    	if(!PhoneFormatCheckUtils.isPhoneLegal(userVo.getPhone())){
+			
+			return ResultVOUtil.error(777, "抱歉,您的手机号有误!");
+		}
+    	
+    	if(!newuserVo.getPhone().equals(userVo.getPhone())){
+    		 User newuser =	userService.findByPhone(userVo.getPhone());
+    		    if(null != newuser ){
+    		    	return ResultVOUtil.error(777, "该电话号码已注册");
+    		    }
+    	}
+    	
+    	Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
+		if (code4registerTime==null) {
+			logger.info(" -- -- --- 短信验证码不能为空！");
+			return ResultVOUtil.error(777, Constant.CODE_NULL);
+		}
+		// 如果短信验证码超过了5分钟,获得短信验证码的时间
+		Long spaceTime = System.currentTimeMillis() - code4registerTime;
+		if(spaceTime > 300000){
+			logger.info(" -- -- --- 短信验证码已失效！");
+			return ResultVOUtil.error(777, Constant.CODE_AGAIN);
+		}
+		
+		String attribute2 = (String)httpSession.getAttribute("codeUser");
+		if (attribute2 == null) {
+			logger.info(" -- -- --- 短信验证码不能为空！");
+			
+			return ResultVOUtil.error(777, Constant.CODE_NULL);
+		}
+		/** 比较俩次的验证码是否一样 或者 俩次电话不一样都返回一个验证码错误*/
+		if (!code4register.equals(attribute2) || !userVo.getPhone().equals(httpSession.getAttribute("user_phone"))) {
+			
+			logger.info(" -- -- --- 验证码错误");
+			
+			return ResultVOUtil.error(777, Constant.CODE_ERROR);
+		}
+    	
+	    
+    	
     	User user = new User();
         BeanCopy.copyProperties(userVo, user);
 
         userService.updateNewUser(user);
+        
+        httpSession.setAttribute("user", userVo);
 	
         return ResultVOUtil.success("修改成功!");
     }

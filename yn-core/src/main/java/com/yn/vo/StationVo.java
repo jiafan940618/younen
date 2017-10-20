@@ -32,10 +32,17 @@ public class StationVo extends QueryVo{
 	private String privilegeCode;
 	private Integer passageModel;
 	private Integer type;
+	private Double electricityGenerationTol;
 	
 	private String remark;
 	
 	
+	public Double getElectricityGenerationTol() {
+		return electricityGenerationTol;
+	}
+	public void setElectricityGenerationTol(Double electricityGenerationTol) {
+		this.electricityGenerationTol = electricityGenerationTol;
+	}
 	public String getRemark() {
 		return remark;
 	}

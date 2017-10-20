@@ -14,7 +14,7 @@ public class Recharge  extends IDomain implements Serializable {
 	private Integer status;
 	/** 订单编号*/
 	private String rechargeCode;
-	/** [支付方式]{1:微信,2:支付宝,3:银联,4:快付通}*/
+	/** [支付方式]{2:微信,3:支付宝,4:银联,5:快付通}*/
 	private Integer payWay;
 	
 	private Long walletId;
