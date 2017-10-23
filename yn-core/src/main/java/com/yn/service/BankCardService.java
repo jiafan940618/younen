@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.BankCardDao;
@@ -37,6 +38,11 @@ public class BankCardService {
 			bankCardDao.save(bankCard);
 		}
 		System.out.println();
+	}
+	
+	public BankCard findBybank(String bankCardNum){
+		
+		return bankCardDao.findBybank(bankCardNum);	
 	}
 
 	public void delete(Long id) {

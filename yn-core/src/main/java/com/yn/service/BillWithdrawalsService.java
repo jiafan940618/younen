@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,9 @@ public class BillWithdrawalsService {
 	String bankNo = (String) object[4];
 	String bankName = (String) object[5];
 	Integer walletId = (Integer) object[6];
+	BigDecimal money = (BigDecimal)object[7];
+	
+	
 	
 	BillWithdrawalsVo billWithdrawalsVo = new BillWithdrawalsVo();
 	billWithdrawalsVo.setPhone(phone);
@@ -76,6 +80,8 @@ public class BillWithdrawalsService {
 	billWithdrawalsVo.setBankName(bankName);
 	billWithdrawalsVo.setWalletId(walletId.longValue());
 	billWithdrawalsVo.setBankNo(bankNo);
+	billWithdrawalsVo.setMoney(money.doubleValue());
+	
 		return billWithdrawalsVo;	
 	}
 	

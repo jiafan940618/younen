@@ -94,6 +94,9 @@ public class PayOrderAction {
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
 		bankCardVo.setTreatyId("21000000000773");*/
+		
+		
+		
 		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
 		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
@@ -147,6 +150,9 @@ public class PayOrderAction {
 		bankCardVo.setTreatyType("11"); 
 		
 		bankCardVo.setUserId(1L);*/
+		
+		
+		
 		/** 测试数据*/
 		logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());
@@ -158,7 +164,11 @@ public class PayOrderAction {
 		logger.info("======= ========= ======== =======传递的用户选择的银行id:bankId:"+bankCardVo.getBankId());
 		logger.info("======= ========= ======== =======传递的类型(1、个人账户):Type:"+bankCardVo.getType());
 		
+		BankCard newbankCard =	bankCardService.findBybank(bankCardVo.getBankCardNum());
 		
+		if(null != newbankCard){
+			return ResultVOUtil.error(777, "该银行卡已绑定!");
+		}
 		if(null == bankCardVo.getBankCardNum() || bankCardVo.getBankCardNum().equals("") ){
 			return ResultVOUtil.error(777, "银行卡号不能为空!");//Constant
 		}
@@ -273,6 +283,8 @@ public class PayOrderAction {
 	@ResponseBody
 	@RequestMapping(value="/selectbank")
 	public Object getbank(BillOrderVo billOrderVo){
+	//	billOrderVo.setUserId(3l);
+		
 		logger.info("---------- ------------ --------查找的userId:"+billOrderVo.getUserId());
 		
 		List<BankCardVo> list =bankCardService.selectBank(billOrderVo.getUserId());

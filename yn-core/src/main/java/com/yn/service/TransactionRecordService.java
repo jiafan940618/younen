@@ -31,6 +31,12 @@ public class TransactionRecordService {
 
 		return transactionRecordDao.FindByNum(userId); 
 	 }
+	
+  public List<TransactionRecord> FindByTransactionRecord(Long userId){
+		
+		return transactionRecordDao.FindByTransactionRecord(userId);
+		
+	}
 
 	    public TransactionRecord save(TransactionRecord transactionRecord) {
 	        if (transactionRecord.getId() != null) {

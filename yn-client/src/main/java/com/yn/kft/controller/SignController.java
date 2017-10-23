@@ -372,26 +372,35 @@ public class SignController {
 		public  Object getRefund(BillWithdrawalsVo billWithdrawalsVo){
 			//666640755.96
 		  //21000000000773
-		/*  billWithdrawalsVo.setTreatyId("21000000000773");
+		 /* billWithdrawalsVo.setTreatyId("21000000000773");
 		  billWithdrawalsVo.setMoney(10000.0);*/
 		  
-	  Double money = billWithdrawalsVo.getMoney();
-	  	logger.info("---- --------- ------------ -------- 金额："+money);
+		 // billWithdrawalsVo.getUserId();
+		  
+	      Double money = billWithdrawalsVo.getMoney();
+	  	  logger.info("---- --------- ------------ -------- 金额："+money);
 	  
 		  logger.info("---- --------- ------------ -------- 协议号："+billWithdrawalsVo.getTreatyId());
 		  
-		  billWithdrawalsVo =billWithdrawalsService.selWithdrawal(billWithdrawalsVo.getTreatyId());
+		  BillWithdrawalsVo   billWithdrawals =billWithdrawalsService.selWithdrawal(billWithdrawalsVo.getTreatyId());
+		  
+		  if(billWithdrawals.getMoney() - billWithdrawalsVo.getMoney() >= 0){
+			  billWithdrawals.setMoney(money);
+
+			  billWithdrawals.setTradeNo(serverService.getOrderCode(billWithdrawals.getUserId()));
+		  }else{
+			  
+			  return ResultVOUtil.error(777, "抱歉,你的余额不足!");
+		  }
 		  
 		  /** 将查询出来的行号替换成treatyType*/
 		  
-		  billWithdrawalsVo.setMoney(money);
-		  
-		  billWithdrawalsVo.setTradeNo(serverService.getOrderCode(billWithdrawalsVo.getUserId()));
+		 
 		  
 		  try {
 			  kFTpayService.init();
 			  
-			kFTpayService.payToBankAccount(billWithdrawalsVo);
+			kFTpayService.payToBankAccount(billWithdrawals);
 			
 			
 		  }catch (Exception e) {

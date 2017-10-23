@@ -35,6 +35,7 @@ import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.OrderVo;
 import com.yn.vo.StationVo;
+import com.yn.vo.TransactionRecordVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.WalletVo;
 
@@ -344,6 +345,37 @@ public class UserController {
     	 List<TransactionRecord> list = transactionRecordService.GivePage(page);
 
 		return ResultVOUtil.newsuccess(page, list);  
+    }
+    
+    /** ios端接口*/
+    
+    @RequestMapping("/iosTransactionRecord") 
+    @ResponseBody
+    public Object ioshelloJs(TransactionRecordVo transactionRecordVo){
+    	
+    	logger.info("传递参数 ---- ----- ----- userId："+transactionRecordVo.getUserId());
+
+    //	1、余额支付 2、微信 3、支付宝  4、银联  5 快付通   9、全部*
+    	
+    	 List<TransactionRecord> list = transactionRecordService.FindByTransactionRecord(transactionRecordVo.getUserId());
+    	 
+    	 for (TransactionRecord transactionRecord : list) {
+    		 
+    		 if(transactionRecord.getType() == 1){
+    			 transactionRecord.setRemark("余额支付");
+    		 }else if(transactionRecord.getType() == 2){
+    			 transactionRecord.setRemark("微信");
+    		 }else if(transactionRecord.getType() == 3){
+    			 transactionRecord.setRemark("支付宝");
+    		 }else if(transactionRecord.getType() == 4){
+    			 transactionRecord.setRemark("网银支付");
+    		 }else if(transactionRecord.getType() == 5){
+    			 transactionRecord.setRemark("快付通");
+    		 }
+			
+		}
+    	 
+		return ResultVOUtil.success(list);
     }
     
     
