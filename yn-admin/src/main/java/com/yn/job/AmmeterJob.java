@@ -43,9 +43,9 @@ public class AmmeterJob {
     @Autowired
     StationDao stationDao;
     @Autowired
-    TemStationService temStationService;
+    ElecDataHourService elecDataHourService;
     @Autowired
-    TemStationYearService temStationYearService;
+    ElecDataDayService elecDataDayService;
 
     @Scheduled(fixedDelay = 10 * 1000)
     @Transactional
@@ -121,15 +121,15 @@ public class AmmeterJob {
         Long stationId = ammeter.getStationId();
         if (stationId != null) {
             Station station = stationService.findOne(stationId);
-            if (station.getWorkDtm() == null) {
-                station.setWorkDtm(new Date());
-            }
-            station.setWorkTotaTm(station.getWorkTotaTm() + 10);
-            if (ammeter.getType() == 1) {
-                station.setElectricityGenerationTol(station.getElectricityGenerationTol() + kwhTol);
-            } else if (ammeter.getType() == 2) {
-                station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
-            }
+//            if (station.getWorkDtm() == null) {
+//                station.setWorkDtm(new Date());
+//            }
+//            station.setWorkTotaTm(station.getWorkTotaTm() + 10);
+//            if (ammeter.getType() == 1) {
+//                station.setElectricityGenerationTol(station.getElectricityGenerationTol() + kwhTol);
+//            } else if (ammeter.getType() == 2) {
+//                station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
+//            }
             stationDao.save(station);
             saveTemStation(station, ammeter, apr, kwhTol);
         }
@@ -159,67 +159,67 @@ public class AmmeterJob {
             Integer type = ammeter.getType();
 
             // 每小时的
-            TemStation temStationR = new TemStation();
+            ElecDataHour temStationR = new ElecDataHour();
             temStationR.setDevConfCode(cAddr);
             temStationR.setdAddr(dAddr);
             temStationR.setdType(dType);
             temStationR.setwAddr(wAddr);
-            temStationR.setStationId(stationId);
-            temStationR.setStationCode(stationCode);
+//            temStationR.setStationId(stationId);
+//            temStationR.setStationCode(stationCode);
             temStationR.setServerId(serverId);
             temStationR.setType(type);
             temStationR.setRecordTime(temStationRecordTime);
-            TemStation temStation = temStationService.findOne(temStationR);
+            ElecDataHour temStation = elecDataHourService.findOne(temStationR);
             if (temStation == null) {
-                TemStation newTemStation = new TemStation();
+            	ElecDataHour newTemStation = new ElecDataHour();
                 newTemStation.setDevConfCode(cAddr);
                 newTemStation.setdAddr(dAddr);
                 newTemStation.setdType(dType);
                 newTemStation.setwAddr(wAddr);
-                newTemStation.setStationId(stationId);
-                newTemStation.setStationCode(stationCode);
+//                newTemStation.setStationId(stationId);
+//                newTemStation.setStationCode(stationCode);
                 newTemStation.setServerId(serverId);
                 newTemStation.setType(type);
                 newTemStation.setKw(apr.getKw());
                 newTemStation.setKwh(tolKwh);
                 newTemStation.setRecordTime(temStationRecordTime);
-                temStationService.save(newTemStation);
+                elecDataHourService.save(newTemStation);
             } else {
                 temStation.setKw(apr.getKw());
                 temStation.setKwh(temStation.getKwh() + tolKwh);
-                temStationService.save(temStation);
+                elecDataHourService.save(temStation);
             }
 
             // 每天的
-            TemStationYear temStationYearR = new TemStationYear();
+            ElecDataDay temStationYearR = new ElecDataDay();
             temStationYearR.setDevConfCode(cAddr);
             temStationYearR.setdAddr(dAddr);
             temStationYearR.setdType(dType);
             temStationYearR.setwAddr(wAddr);
-            temStationYearR.setStationId(stationId);
-            temStationYearR.setStationCode(stationCode);
+            /*temStationYearR.setStationId(stationId);
+            temStationYearR.setStationCode(stationCode);*/
             temStationYearR.setServerId(serverId);
             temStationYearR.setType(type);
             temStationYearR.setRecordTime(temStationYearRecordTime);
-            TemStationYear temStationYear = temStationYearService.findOne(temStationYearR);
+            ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
             if (temStationYear == null) {
-                TemStationYear newTemStationYear = new TemStationYear();
+            	ElecDataDay newTemStationYear = new ElecDataDay();
                 newTemStationYear.setDevConfCode(cAddr);
                 newTemStationYear.setdAddr(dAddr);
                 newTemStationYear.setdType(dType);
                 newTemStationYear.setwAddr(wAddr);
-                newTemStationYear.setStationId(stationId);
-                newTemStationYear.setStationCode(stationCode);
+                /*newTemStationYear.setStationId(stationId);
+                newTemStationYear.setStationCode(stationCode);*/
                 newTemStationYear.setServerId(serverId);
                 newTemStationYear.setType(type);
                 newTemStationYear.setKw(apr.getKw());
                 newTemStationYear.setKwh(tolKwh);
                 newTemStationYear.setRecordTime(temStationYearRecordTime);
-                temStationYearService.save(newTemStationYear);
+                elecDataDayService.save(newTemStationYear);
             } else {
                 temStationYear.setKw(apr.getKw());
                 temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
-                temStationYearService.save(temStationYear);
+                elecDataDayService.save(temStationYear);
             }
         }
     }

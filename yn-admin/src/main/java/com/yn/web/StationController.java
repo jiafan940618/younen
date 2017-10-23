@@ -116,12 +116,12 @@ public class StationController {
     /**
      * 电站信息
      */
-    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object stationInfo(Long stationId) {
-        Map<String, Object> stationInfo = stationService.stationInfo(stationId);
-        return ResultVOUtil.success(stationInfo);
-    }
+//    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST})
+//    @ResponseBody
+//    public Object stationInfo(Long stationId) {
+//        Map<String, Object> stationInfo = stationService.stationInfo(stationId);
+//        return ResultVOUtil.success(stationInfo);
+//    }
 
     /**
      * 25年收益

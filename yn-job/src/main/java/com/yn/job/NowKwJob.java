@@ -43,7 +43,7 @@ public class NowKwJob {
 			for (Ammeter ammeter : ammeters) {
 				tolNowKw += ammeter.getNowKw();
 			}
-			station.setNowKw(tolNowKw);
+			//station.setNowKw(tolNowKw);
 			// stationDao.save(station);
 			if (stationDao.findOne(station.getId()) != null){
 				stationMapper.updateByPrimaryKeySelective(station);

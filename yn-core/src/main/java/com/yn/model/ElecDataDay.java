@@ -7,12 +7,10 @@ import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Entity
-public class TemStationYear extends IDomain implements Serializable {
+public class ElecDataDay extends IDomain implements Serializable {
 
-    @Column(columnDefinition = "int(11) comment '[电站id]'")
-    private Long stationId;
     @Column(updatable = true, columnDefinition = "varchar(255) comment '[电站码]'")
-    private String stationCode;
+    private String ammeterCode;
     @Column(columnDefinition = "int(11) comment '[服务商id]'")
     private Long serverId;
     @Column(columnDefinition = "varchar(255) comment '[采集器码]'")
@@ -32,23 +30,17 @@ public class TemStationYear extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017-07-20]'")
     private String recordTime;
 
-    public Long getStationId() {
-        return stationId;
-    }
 
-    public void setStationId(Long stationId) {
-        this.stationId = stationId;
-    }
 
-    public String getStationCode() {
-        return stationCode;
-    }
+    public String getAmmeterCode() {
+		return ammeterCode;
+	}
 
-    public void setStationCode(String stationCode) {
-        this.stationCode = stationCode;
-    }
+	public void setAmmeterCode(String ammeterCode) {
+		this.ammeterCode = ammeterCode;  
+	}
 
-    public Long getServerId() {
+	public Long getServerId() {
         return serverId;
     }
 

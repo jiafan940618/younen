@@ -40,7 +40,7 @@ public class StationService {
     @Autowired
     StationMapper stationMapper;
     @Autowired
-    TemStationService temStationService;
+    ElecDataHourService elecDataHourService;
     @Autowired
     SystemConfigService systemConfigService;
     @Autowired
@@ -204,53 +204,57 @@ public class StationService {
      * @param stationId
      * @return
      */
-    public Map<String, Object> stationInfo(Long stationId) {
-        Station station = stationDao.findOne(stationId);
-        station.setUser(null);
-        station.setServer(null);
-        station.setAmmeter(null);
-
-        Map<String, Object> objectMap = ObjToMap.getObjectMap(station);
-
-        // 今日发电量
-        double todayKwh = temStationService.todayKwh(stationId, 1L);
-        objectMap.put("todayEG", todayKwh);
-        // 昨日发电量
-        double yesterdayKwh = temStationService.yesterdayKwh(stationId, 1L);
-        objectMap.put("yesterdayEG", yesterdayKwh);
-        // 当月发电量
-        double thisMonthKwh = temStationService.thisMonthKwh(stationId, 1L);
-        objectMap.put("thisMonthEG", thisMonthKwh);
-        // 上月发电量
-        double lastMonthKwh = temStationService.lastMonthKwh(stationId, 1L);
-        objectMap.put("lastMonthEG", lastMonthKwh);
-        // 今年发电量
-        double thisYearKwh = temStationService.thisYearKwh(stationId, 1L);
-        objectMap.put("thisYearEG", thisYearKwh);
-        // 去年发电量
-        double lastYearKwh = temStationService.lastYearKwh(stationId, 1L);
-        objectMap.put("lastYearEG", lastYearKwh);
-
-        // 电站总发电量
-        Double egt = station.getElectricityGenerationTol();
-        // 电站装机容量
-        Double capacity = station.getCapacity();
-        // 相当于植树
-        double plantTreesPrm = Double.valueOf(systemConfigService.get("plant_trees_prm"));
-        objectMap.put("plantTreesPrm", NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
-        // 相当于减排二氧化碳
-        Double CO2Prm = Double.valueOf(systemConfigService.get("CO2_prm"));
-        objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt));
-        // 相当于减排二氧化硫
-        Double SOPrm = Double.valueOf(systemConfigService.get("SO_prm"));
-        objectMap.put("SOPrm", NumberUtil.accurateToTwoDecimal(SOPrm * egt));
-        // 节省面积
-        Double saveSqmPrm = Double.valueOf(systemConfigService.get("save_sqm_prm"));
-        objectMap.put("saveSqmPrm", NumberUtil.accurateToTwoDecimal(saveSqmPrm * capacity));
-
-        return objectMap;
-    }
-
+	// public Map<String, Object> stationInfo(Long stationId) {
+	// Station station = stationDao.findOne(stationId);
+	// station.setUser(null);
+	// station.setServer(null);
+	// station.setAmmeter(null);
+	//
+	// Map<String, Object> objectMap = ObjToMap.getObjectMap(station);
+	//
+	// // 今日发电量
+	// double todayKwh = elecDataHourService.todayKwh(stationId, 1L);
+	// objectMap.put("todayEG", todayKwh);
+	// // 昨日发电量
+	// double yesterdayKwh = elecDataHourService.yesterdayKwh(stationId, 1L);
+	// objectMap.put("yesterdayEG", yesterdayKwh);
+	// // 当月发电量
+	// double thisMonthKwh = elecDataHourService.thisMonthKwh(stationId, 1L);
+	// objectMap.put("thisMonthEG", thisMonthKwh);
+	// // 上月发电量
+	// double lastMonthKwh = elecDataHourService.lastMonthKwh(stationId, 1L);
+	// objectMap.put("lastMonthEG", lastMonthKwh);
+	// // 今年发电量
+	// double thisYearKwh = elecDataHourService.thisYearKwh(stationId, 1L);
+	// objectMap.put("thisYearEG", thisYearKwh);
+	// // 去年发电量
+	// double lastYearKwh = elecDataHourService.lastYearKwh(stationId, 1L);
+	// objectMap.put("lastYearEG", lastYearKwh);
+	//
+	// // 电站总发电量
+	// Double egt = station.getElectricityGenerationTol();
+	// // 电站装机容量
+	// Double capacity = station.getCapacity();
+	// // 相当于植树
+	// double plantTreesPrm =
+	// Double.valueOf(systemConfigService.get("plant_trees_prm"));
+	// objectMap.put("plantTreesPrm",
+	// NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
+	// // 相当于减排二氧化碳
+	// Double CO2Prm = Double.valueOf(systemConfigService.get("CO2_prm"));
+	// objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt));
+	// // 相当于减排二氧化硫
+	// Double SOPrm = Double.valueOf(systemConfigService.get("SO_prm"));
+	// objectMap.put("SOPrm", NumberUtil.accurateToTwoDecimal(SOPrm * egt));
+	// // 节省面积
+	// Double saveSqmPrm =
+	// Double.valueOf(systemConfigService.get("save_sqm_prm"));
+	// objectMap.put("saveSqmPrm", NumberUtil.accurateToTwoDecimal(saveSqmPrm *
+	// capacity));
+	//
+	// return objectMap;
+	// }
+    
     /**
      * 25年收益
      *
@@ -391,35 +395,35 @@ public class StationService {
     /**
      * 用户的所有电站信息
      */
-    public Map<String, Object> stationByUser(List<Station> stations){
-    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
-    	double  egt=0;
-    	double nowKw=0;
-    	double capacity=0;
-    	double efficiency=0;
-    	for(Station station2 :stations){	
-            //发电功率
-         nowKw=nowKw+station2.getNowKw();
-            //发电总量
-         egt=egt+station2.getElectricityGenerationTol();
-            //装机容量
-         capacity=capacity+station2.getCapacity();
-    	}
-    	 if (capacity>nowKw) {
-        	 //发电效率（百分比）
-       	  efficiency=(nowKw/capacity)*100;
-		 }
-    		// 相当于植树
-    	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
-            // 相当于减排二氧化碳
-         double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
-    	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
-    	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
-    	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
-    	objectMap.put("egt", NumberUtil.getTenThousand(egt));
-    	objectMap.put("efficiency", (int)efficiency);
-    	return objectMap;
-    }
+//    public Map<String, Object> stationByUser(List<Station> stations){
+//    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
+//    	double  egt=0;
+//    	double nowKw=0;
+//    	double capacity=0;
+//    	double efficiency=0;
+//    	for(Station station2 :stations){	
+//            //发电功率
+//         nowKw=nowKw+station2.getNowKw();
+//            //发电总量
+//         egt=egt+station2.getElectricityGenerationTol();
+//            //装机容量
+//         capacity=capacity+station2.getCapacity();
+//    	}
+//    	 if (capacity>nowKw) {
+//        	 //发电效率（百分比）
+//       	  efficiency=(nowKw/capacity)*100;
+//		 }
+//    		// 相当于植树
+//    	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
+//            // 相当于减排二氧化碳
+//         double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
+//    	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
+//    	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
+//    	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
+//    	objectMap.put("egt", NumberUtil.getTenThousand(egt));
+//    	objectMap.put("efficiency", (int)efficiency);
+//    	return objectMap;
+//    }
     
     /**
      * 用户的装机容量
@@ -538,7 +542,7 @@ public class StationService {
 	 * 查询用户电站,电表等信息
 	 * 
 	 */
-	public Map<String, Object> stationInformation(Long stationId) {
+/*	public Map<String, Object> stationInformation(Long stationId) {
 
           Station station=stationDao.findOne(stationId);
 			Map<String, Object> map = new LinkedHashMap<>();
@@ -559,12 +563,10 @@ public class StationService {
 				map.put("ammeterRecode", map2);
 			}
 			Date date = station.getCreateDtm();
-			map.put("workInfo", temStationService.getNowToalKwh(stationId, 1L, date));
-			map.put("useInfo", temStationService.getNowToalKwh(stationId, 2L, date));
-
+			map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1L, date));
+			map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2L, date));
 		return map;
-
-	}
+	}*/
 
 	/**
 	 * 根据session按时间获取用户收益

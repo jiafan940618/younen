@@ -21,6 +21,8 @@ public class TestDemo {
 	}
 
 	public static void main(String[] as) throws ParseException {
+		 
+		System.out.println();
 		int y, m, d, h, mi, s;
 		Calendar cal = Calendar.getInstance();
 		y = cal.get(Calendar.YEAR);

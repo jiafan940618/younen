@@ -1,20 +1,18 @@
 package com.yn.model;
 
-import com.yn.domain.IDomain;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-import java.io.Serializable;
+import com.yn.domain.IDomain;
 
 @Entity
-public class TemStation extends IDomain implements Serializable {
+public class ElecDataHour extends IDomain implements Serializable {
 
-    @Column(columnDefinition = "int(11) comment '[电站id]'")
-    private Long stationId;
     @Column(columnDefinition = "varchar(255) comment '[电站码]'")
-    private String stationCode;
+    private String ammeterCode;
     @Column(columnDefinition = "int(11) comment '[服务商id]'")
     private Long serverId;
     @Column(columnDefinition = "varchar(255) comment '[采集器码]'")
@@ -29,27 +27,19 @@ public class TemStation extends IDomain implements Serializable {
     private Double kw;
     @Column(columnDefinition = "decimal(12,2) default 0 comment '[电量]'")
     private Double kwh;
-   // @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
-    @Transient
+    @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
     private Integer type;
     @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017072109]'")
     private String recordTime;
 
-    public Long getStationId() {
-        return stationId;
-    }
 
-    public void setStationId(Long stationId) {
-        this.stationId = stationId;
-    }
+    public String getAmmeterCode() {
+		return ammeterCode;
+	}
 
-    public String getStationCode() {
-        return stationCode;
-    }
-
-    public void setStationCode(String stationCode) {
-        this.stationCode = stationCode;
-    }
+	public void setAmmeterCode(String ammeterCode) {
+		this.ammeterCode = ammeterCode;
+	}
 
     public Long getServerId() {
         return serverId;

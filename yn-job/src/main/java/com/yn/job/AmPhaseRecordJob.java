@@ -62,7 +62,7 @@ public class AmPhaseRecordJob {
 	private void collectAmPhaseRecord() throws Exception {
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
-		taskExecuteRecord.setJobName(this.getClass().getName());
+		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
@@ -134,7 +134,7 @@ public class AmPhaseRecordJob {
 			e.printStackTrace();
 		}
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
-		taskExecuteRecord.setJobName(this.getClass().getName());
+		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
 		taskExecuteRecordMapper.insert(taskExecuteRecord);
 		System.out.println("日志记录："+taskExecuteRecord.getStatus());
 	}

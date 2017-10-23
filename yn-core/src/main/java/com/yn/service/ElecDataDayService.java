@@ -1,13 +1,13 @@
 package com.yn.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -20,90 +20,90 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import com.yn.dao.TemStationYearDao;
-import com.yn.dao.mapper.TemStationYearMapper;
+
+import com.yn.dao.ElecDataDayDao;
+import com.yn.dao.mapper.ElecDataDayMapper;
+import com.yn.model.ElecDataDay;
 import com.yn.model.Station;
-import com.yn.model.TemStation;
-import com.yn.model.TemStationYear;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.DateUtil;
 import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
-import com.yn.utils.DateUtil;
 
 
 @Service
-public class TemStationYearService {
+public class ElecDataDayService {
     @Autowired
-    TemStationYearDao temStationYearDao;
+    ElecDataDayDao elecDataDayDao;
     @Autowired
-    TemStationYearMapper temStationYearMapper;
+    ElecDataDayMapper elecDataDayMapper;
     @Autowired
-    TemStationService temStationService;
+    ElecDataHourService elecDataHourService;
 
-    public TemStationYear findOne(Long id) {
-        return temStationYearDao.findOne(id);
+    public ElecDataDay findOne(Long id) {
+        return elecDataDayDao.findOne(id);
     }
 
-    public void save(TemStationYear temStationYear) {
-        if(temStationYear.getId()!=null){
-        	TemStationYear one = temStationYearDao.findOne(temStationYear.getId());
+    public void save(ElecDataDay elecDataDay) {
+        if(elecDataDay.getId()!=null){
+        	ElecDataDay one = elecDataDayDao.findOne(elecDataDay.getId());
             try {
-                BeanCopy.beanCopy(temStationYear,one);
+                BeanCopy.beanCopy(elecDataDay,one);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            temStationYearDao.save(one);
+            elecDataDayDao.save(one);
         }else {
-            temStationYearDao.save(temStationYear);
+        	elecDataDayDao.save(elecDataDay);
         }
     } 
-    public void saveByMapper(TemStationYear temStationYear) {
-        if(temStationYear.getId()!=null){
-        	TemStationYear one = temStationYearDao.findOne(temStationYear.getId());
+    public void saveByMapper(ElecDataDay elecDataDay) {
+        if(elecDataDay.getId()!=null){
+        	ElecDataDay one = elecDataDayDao.findOne(elecDataDay.getId());
             try {
-                BeanCopy.beanCopy(temStationYear,one);
+                BeanCopy.beanCopy(elecDataDay,one);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            temStationYearMapper.updateByPrimaryKeySelective(one);
+            elecDataDayMapper.updateByPrimaryKeySelective(one);
         }else {
-        	temStationYearMapper.insert(temStationYear);
+        	elecDataDayMapper.insert(elecDataDay);
         }
     }
 
     public void delete(Long id) {
-        temStationYearDao.delete(id);
+    	elecDataDayDao.delete(id);
     }
     
     public void deleteBatch(List<Long> id) {
-		temStationYearDao.deleteBatch(id);
+    	elecDataDayDao.deleteBatch(id);
 	}
 
-    public TemStationYear findOne(TemStationYear temStationYear) {
-        Specification<TemStationYear> spec = RepositoryUtil.getSpecification(temStationYear);
-        TemStationYear findOne = temStationYearDao.findOne(spec);
+    public ElecDataDay findOne(ElecDataDay elecDataDay) {
+        Specification<ElecDataDay> spec = RepositoryUtil.getSpecification(elecDataDay);
+        ElecDataDay findOne = elecDataDayDao.findOne(spec);
         return findOne;
     }
 
-    public List<TemStationYear> findAll(List<Long> list) {
-        return temStationYearDao.findAll(list);
+    public List<ElecDataDay> findAll(List<Long> list) {
+        return elecDataDayDao.findAll(list);
     }
 
-    public Page<TemStationYear> findAll(TemStationYear temStationYear, Pageable pageable) {
-        Specification<TemStationYear> spec = RepositoryUtil.getSpecification(temStationYear);
-        Page<TemStationYear> findAll = temStationYearDao.findAll(spec, pageable);
+    public Page<ElecDataDay> findAll(ElecDataDay elecDataDay, Pageable pageable) {
+        Specification<ElecDataDay> spec = RepositoryUtil.getSpecification(elecDataDay);
+        Page<ElecDataDay> findAll = elecDataDayDao.findAll(spec, pageable);
         return findAll;
     }
 
-    public List<TemStationYear> findAll(TemStationYear temStationYear) {
-        Specification<TemStationYear> spec = RepositoryUtil.getSpecification(temStationYear);
-        return temStationYearDao.findAll(spec);
+    public List<ElecDataDay> findAll(ElecDataDay elecDataDay) {
+        Specification<ElecDataDay> spec = RepositoryUtil.getSpecification(elecDataDay);
+        return elecDataDayDao.findAll(spec);
     }
     
-   public TemStationYear findHuanbao(Map<String, Object> map){
-		return temStationYearMapper.findHuanbao(map);	
-    }
+//   public ElecDataDay findHuanbao(Map<String, Object> map){
+//		return temStationYearMapper.findHuanbao(map);	
+//    }
     
     
     
@@ -119,7 +119,7 @@ public class TemStationYearService {
     	List<Map<Object, Object>> lists=new ArrayList<>();
     	List<Map<Object, Object>> listsMap=new ArrayList<>();
     	for (Station station : stations) {
-    		List<Map<Object, Object>> list=temStationYearDao.sumMonthKwh(station.getId());
+    		List<Map<Object, Object>> list=elecDataDayDao.sumMonthKwh(station.getId());
            if (!list.isEmpty()) {
 	          lists.addAll(list);
 			}
@@ -167,7 +167,7 @@ public class TemStationYearService {
    			dateFormat="%Y-%m-%d";	
    		} 
     	for (Station station : stations) {
-    		List<Map<Object, Object>> list=temStationYearDao.sumKwh(station.getId(),dateFormat,dateStr);
+    		List<Map<Object, Object>> list=elecDataDayDao.sumKwh(station.getId(),dateFormat,dateStr);
            if (!list.isEmpty()) {
 	          lists.addAll(list);
 			}
@@ -199,57 +199,55 @@ public class TemStationYearService {
 	/**
 	 * 用户发电/用电统计图
 	 */
-	public Map<String,Object> workUseCount(Long stationId ,Long dAddr) {
-		
-		List<Map<Object, Object>> lists=temStationYearDao.workUseCount(stationId, dAddr);
-		Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-		List<Map<Object, Object>> listsMap=new ArrayList<>();
-		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-		for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-		Object[] key = objectMap.keySet().toArray();
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-    		listsMap.add(listMap);
-        	}
-    	
-    	
-    	Map<String, Object> map=new HashMap<>();
-    	map.put("workUseCount", listsMap);
-    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.thisYearKwh(stationId, dAddr)) );
-    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.thisMonthKwh(stationId, dAddr)));
-    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(temStationService.lastYearKwh(stationId, dAddr)) );
-    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(temStationService.lastMonthKwh(stationId, dAddr)));
-    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(temStationService.todayKwh(stationId, dAddr)));
-    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(temStationService.yesterdayKwh(stationId, dAddr)));
-    	
-    	return map;
-		
-	}
+//	public Map<String,Object> workUseCount(Long stationId ,Long dAddr) {
+//		
+//		List<Map<Object, Object>> lists=elecDataDayDao.workUseCount(stationId, dAddr);
+//		Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+//		List<Map<Object, Object>> listsMap=new ArrayList<>();
+//		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+//		for(Map<Object, Object> map : lists) {
+//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+//    			
+//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+//			}else{
+//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+//				objectMap.put(map.get("create_dtm"), (Object)kwh);
+//			}
+//    		
+//    	}
+//		Object[] key = objectMap.keySet().toArray();
+//    	for (int i = 0; i < key.length; i++) { 
+//    		Map<Object, Object> listMap=new LinkedHashMap<>();
+//    		linkHashMap.put(key[i], objectMap.get(key[i]));
+//    		listMap.put("createDtm", key[i]);
+//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+//    		listsMap.add(listMap);
+//        	}
+//    	
+//    	
+//    	Map<String, Object> map=new HashMap<>();
+//    	map.put("workUseCount", listsMap);
+//    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.thisYearKwh(stationId, dAddr)) );
+//    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisMonthKwh(stationId, dAddr)));
+//    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.lastYearKwh(stationId, dAddr)) );
+//    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, dAddr)));
+//    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.elecDataHourService(stationId, dAddr)));
+//    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, dAddr)));
+//    	return map;
+//	}
 	
-	 public Page<TemStationYear> listCount(TemStationYear temStationYear, Pageable pageable) {
-		 Specification<TemStationYear> spec = getSpecification(temStationYear);
-	        Page<TemStationYear> findAll = temStationYearDao.findAll(spec, pageable);
+	 public Page<ElecDataDay> listCount(ElecDataDay temStationYear, Pageable pageable) {
+		 Specification<ElecDataDay> spec = getSpecification(temStationYear);
+	        Page<ElecDataDay> findAll = elecDataDayDao.findAll(spec, pageable);
 	        
 	        return findAll;
 	    }
 	
 	 @SuppressWarnings({"unchecked", "rawtypes"})
-	    public static Specification<TemStationYear> getSpecification(TemStationYear temStationYear) {
+	    public static Specification<ElecDataDay> getSpecification(ElecDataDay temStationYear) {
 		 temStationYear.setDel(0);
 	        Map<String, Object> objectMap = ObjToMap.getObjectMap(temStationYear);
-	        return (Root<TemStationYear> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+	        return (Root<ElecDataDay> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
 
 	            Predicate conjunction = cb.conjunction();
 	            List<Expression<Boolean>> expressions = conjunction.getExpressions();
@@ -290,9 +288,9 @@ public class TemStationYearService {
 	    }
 
 	 
-	 public List<TemStationYear> findByMapper(TemStationYear temStationYear) {
+	 public List<ElecDataDay> findByMapper(ElecDataDay elecDataDay) {
 			
-			List<TemStationYear> list=temStationYearMapper.selectByQuery(temStationYear);
+			List<ElecDataDay> list=elecDataDayMapper.selectByQuery(elecDataDay);
 	        return list;
 	    }
 }

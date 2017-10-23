@@ -218,10 +218,10 @@ public class UserController {
     List<Station> list = stationService.getstation(userVo.getId());
     Double power = 0.0;
     
-    for (Station station : list) {
-    	power += station.getElectricityGenerationTol();
-	}
-     
+//    for (Station station : list) {
+//    	power += station.getElectricityGenerationTol();
+//	}
+//     
     Map<String, String> map = systemConfigService.getlist(); 
 	// 植树参数
 	Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));

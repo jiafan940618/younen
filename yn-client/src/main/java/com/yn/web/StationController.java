@@ -1,4 +1,4 @@
-	package com.yn.web;
+package com.yn.web;
 
 
 import java.math.BigInteger;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
-import com.yn.vo.re.ResultVOUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +21,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.yn.dao.AmmeterDao;
+import com.yn.dao.ElecDataDayDao;
+import com.yn.dao.ElecDataHourDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
-import com.yn.dao.TemStationDao;
 import com.yn.model.Station;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
-import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.StationVo;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/client/station")
@@ -58,9 +59,9 @@ public class StationController {
     @Autowired
     SystemConfigService systemConfigService;
     @Autowired
-    TemStationDao temStationDao;
+    ElecDataHourDao elecDataHourDao;
     @Autowired
-    TemStationService temStationService;
+    ElecDataDayDao elecDataDayDao;
     @Autowired
     ServerDao serverDao;
 
@@ -108,13 +109,13 @@ public class StationController {
     /**
 	 * 电站信息
 	 */
-    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST})
-	@ResponseBody
-	public Object stationInfo(Long stationId) {
-		Map<String, Object> stationInfo = stationService.stationInfo(stationId);
-		return ResultVOUtil.success(stationInfo);
-	}
-    
+//    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST})
+//	@ResponseBody
+//	public Object stationInfo(Long stationId) {
+//		Map<String, Object> stationInfo = stationService.stationInfo(stationId);
+//		return ResultVOUtil.success(stationInfo);
+//	}
+//    
     /**
 	 * 25年收益
 	 */
@@ -128,17 +129,17 @@ public class StationController {
     /**
 	 * web 查询用户的所有电站信息
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
-	public Object runningStation(HttpSession session,Station station) {
-		
-		
-	    Map<String, Object> stationByUser=new HashMap<>();
-		    List<Station> stations=stationDao.findAllStation();
-		    stationByUser = stationService.stationByUser(stations);
-		return ResultVOUtil.success(stationByUser);
-	}
-	
+//	@ResponseBody
+//	@RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
+//	public Object runningStation(HttpSession session,Station station) {
+//		
+//		
+//	    Map<String, Object> stationByUser=new HashMap<>();
+//		    List<Station> stations=stationDao.findAllStation();
+//		    stationByUser = stationService.stationByUser(stations);
+//		return ResultVOUtil.success(stationByUser);
+//	}
+//	
 	/**
 	 * web 查询用户的装机容量
 	 */
@@ -254,15 +255,15 @@ public class StationController {
 	/**
 	 * 查询用户电站,电表等信息
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/stationInformation", method = { RequestMethod.POST, RequestMethod.GET })
-	public Object stationInformation(Long stationId) {
-
-		Map<String, Object> information = new HashMap<>();
-		information = stationService.stationInformation(stationId);
-
-		return ResultVOUtil.success(information);
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/stationInformation", method = { RequestMethod.POST, RequestMethod.GET })
+//	public Object stationInformation(Long stationId) {
+//
+//		Map<String, Object> information = new HashMap<>();
+//		information = stationService.stationInformation(stationId);
+//
+//		return ResultVOUtil.success(information);
+//	}
 
 	/**
 	 * 根据session查询用户电站25年收益
