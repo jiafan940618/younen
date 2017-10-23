@@ -26,7 +26,7 @@ public class AAATestController {
     public Object getTodayKwh2() {
 
 
-        List<EachHourTemStation> todayKwh2 = temStationService.getTodayKwh(null, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+        List<EachHourTemStation> todayKwh2 = temStationService.getTodayKwh(null, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().longValue());
 
 
         return ResultVOUtil.success(todayKwh2);

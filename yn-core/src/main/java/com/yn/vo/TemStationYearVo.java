@@ -1,6 +1,8 @@
 package com.yn.vo;
 
-public class TemStationYearVo {
+import com.yn.domain.QueryVo;
+
+public class TemStationYearVo extends QueryVo{
 
 	private Long id;
 	private Long stationId;

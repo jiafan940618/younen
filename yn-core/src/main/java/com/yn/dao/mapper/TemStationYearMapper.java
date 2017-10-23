@@ -1,10 +1,11 @@
 package com.yn.dao.mapper;
 
+import com.yn.model.TemStation;
 import com.yn.model.TemStationYear;
-import java.util.List;
 
+import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface TemStationYearMapper {
 
@@ -19,7 +20,11 @@ public interface TemStationYearMapper {
     TemStationYear selectByPrimaryKey(Integer id);
 
 
+    TemStationYear findHuanbao(Map<String, Object> map);
+    
     int updateByPrimaryKeySelective(TemStationYear record);
 
     int updateByPrimaryKey(TemStationYear record);
+    
+    List<TemStationYear> selectByQuery(TemStationYear temStationYear);
 }
