@@ -15,10 +15,12 @@ import com.lycheepay.gateway.client.dto.gbp.TreatyApplyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
 import com.yn.model.BankCard;
 import com.yn.model.BankCode;
+import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BankCodeService;
 import com.yn.service.ServerService;
 import com.yn.service.TransactionRecordService;
+import com.yn.service.WalletService;
 import com.yn.service.kftService.CheckBankCard;
 import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
@@ -41,7 +43,8 @@ import com.yn.vo.re.ResultVOUtil;
 public class PayOrderAction {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayOrderAction.class);
-	
+	@Autowired
+	WalletService walletService;
 	@Autowired
 	TransactionRecordService transactionRecordService;
 	@Autowired
@@ -291,13 +294,21 @@ public class PayOrderAction {
 	@RequestMapping(value="/RechargeIng")
 	public  Object RechargedIng(RechargeVo rechargeVo,BankCardVo bankCardVo){
 	/** 测试数据*/
-		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
+		//rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
 		/*billOrderVo.setOrderId(1L);
 		billOrderVo.setUserId(3L);
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
 		bankCardVo.setTreatyId("20170927035820");*/
-		//logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
+		/*//logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
+		BigDecimal xmoney = BigDecimal.valueOf(100);
+		rechargeVo.setMoney(xmoney);
+		rechargeVo.setUserId(3l);
+		bankCardVo.setTreatyId("21000000000773");
+		rechargeVo.setPayWay(5);*/
+		Wallet wallet = walletService.findWalletByUser(rechargeVo.getUserId());
+		rechargeVo.setWalletId(wallet.getId());
+		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
 		logger.info("======= ========= ======== =======传递的WalletId():"+rechargeVo.getWalletId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+rechargeVo.getRechargeCode());
 		logger.info("======= ========= ======== =======传递的money:"+rechargeVo.getMoney());

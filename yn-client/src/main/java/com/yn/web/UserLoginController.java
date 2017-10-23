@@ -33,7 +33,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.yn.dao.DevideDao;
 import com.yn.dao.UserDao;
-import com.yn.model.ServerPlan;
 import com.yn.model.User;
 import com.yn.service.DevideService;
 import com.yn.service.OssService;
@@ -592,7 +591,6 @@ public class UserLoginController {
 	       logger.info("---- ---- ----- ------- --- 上传的图片为："+finaltime);
 	        return ResultVOUtil.success(finaltime);   
 	 }
-	 
 	 
 	 //produces="text/html;charset=utf-8" ResultData<Object> 
 	 /** 用户,服务商上传头像*/

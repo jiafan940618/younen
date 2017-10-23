@@ -62,7 +62,7 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
 	void updateNewUser(@Param("user") User user);
     
     //select w.money,u.integral,u.privilege_code_init from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = 1
-    @Query(value="select w.money,w.integral,u.privilege_code_init from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = :userId",nativeQuery=true)
+    @Query(value="select w.money,w.integral,u.privilege_code_init,u.nick_name from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = :userId",nativeQuery=true)
     Object findUserPrice(@Param("userId") Long userId);
     
     

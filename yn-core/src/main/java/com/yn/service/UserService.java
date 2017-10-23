@@ -9,6 +9,7 @@ import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.ResultData;
 import com.yn.utils.StringUtil;
+import com.yn.vo.UserVo;
 import com.yn.vo.WalletVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -318,11 +319,13 @@ public class UserService {
     	BigDecimal money = (BigDecimal)obj[0];
     	BigDecimal integral =(BigDecimal)obj[1];
     	String privilegeCodeInit = (String)obj[2];
+    	String nickName = (String)obj[3];
     	
     	WalletVo walletVo = new WalletVo();
     	walletVo.setMoney(money.doubleValue());
     	walletVo.setIntegral(integral.doubleValue());
     	walletVo.setPrivilegeCodeInit(privilegeCodeInit);
+    	walletVo.setNickName(nickName);
 
 		return walletVo;	
     }

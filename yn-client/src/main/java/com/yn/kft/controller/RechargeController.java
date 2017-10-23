@@ -269,11 +269,11 @@ public class RechargeController {
 			Map<String, Integer> map =  new HashMap<String, Integer>();
 			logger.info("拿到的订单号为：--- ---- -- - -- - - -- - - - -"+tradeNo);
 			
-			BillOrder billOrder = billorderService.findByTradeNo(tradeNo);
+			Recharge recharge =rechargeService.findByRecode(tradeNo);
 			
-			if(null != billOrder){
+			if(null != recharge){
 
-				map.put("status", billOrder.getStatus());
+				map.put("status", recharge.getStatus());
 			}
 			return	ResultVOUtil.success(map);
 		}

@@ -32,6 +32,7 @@ import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.OrderVo;
 import com.yn.vo.StationVo;
 import com.yn.vo.UserVo;
@@ -110,10 +111,10 @@ public class UserController {
     public Object findByOne(UserVo userVo) {
        
     	//userVo
-    	User user = userService.findIdByuser(userVo.getId());
+    	  WalletVo walletVo =  userService.findUserPrice(userVo.getId());
 
     	
-        return ResultVOUtil.success(user);
+        return ResultVOUtil.success(walletVo);
     }
     
     /** 修改用户资料*/
@@ -126,7 +127,7 @@ public class UserController {
     	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
     	userVo.setPhone("13530895662");*/
     	
-    	UserVo newuserVo =(UserVo) httpSession.getAttribute("user");
+    	NewUserVo newuserVo =(NewUserVo) httpSession.getAttribute("user");
     	
     	if(!PhoneFormatCheckUtils.isPhoneLegal(userVo.getPhone())){
 			
@@ -138,7 +139,7 @@ public class UserController {
     		    if(null != newuser ){
     		    	return ResultVOUtil.error(777, "该电话号码已注册");
     		    }
-    	}
+    	
     	
     	Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
 		if (code4registerTime==null) {
@@ -166,16 +167,23 @@ public class UserController {
 			return ResultVOUtil.error(777, Constant.CODE_ERROR);
 		}
     	
-	    
+    	} 
+    	 User user = new User();
+         BeanCopy.copyProperties(userVo, user);
     	
-    	User user = new User();
-        BeanCopy.copyProperties(userVo, user);
-
         userService.updateNewUser(user);
         
-        httpSession.setAttribute("user", userVo);
-	
-        return ResultVOUtil.success("修改成功!");
+        NewUserVo userVo01 = new NewUserVo(); 
+        userVo01.setEmail(userVo.getEmail());
+        userVo01.setFullAddressText(userVo.getFullAddressText());
+        userVo01.setId(userVo.getId());
+        userVo01.setNickName(userVo.getNickName());
+        userVo01.setUserName(newuserVo.getUserName());
+        userVo01.setPhone(userVo.getPhone());
+        userVo01.setHeadImgUrl(userVo.getHeadImgUrl());
+        
+
+        return ResultVOUtil.success(userVo01);
     }
     
     /** PC端*/

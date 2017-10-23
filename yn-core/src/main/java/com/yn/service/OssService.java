@@ -39,6 +39,9 @@ public class OssService {
 		return saveToOsss;
 	}
 	
+	
+	
+	
 	/**
 	 * 图片保存oos
 	 */

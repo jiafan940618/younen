@@ -294,24 +294,25 @@ public class KFTpayService {
 			
 			Recharge recharge = new Recharge();
 			recharge.setWalletId(rechargeVo.getWalletId());
-			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
+			recharge.setMoney(rechargeVo.getMoney().doubleValue());
 			recharge.setRechargeCode(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
-			recharge.setDel(0);
+			recharge.setUserId(rechargeVo.getUserId());
+			//recharge.setDel(0);
 			recharge.setStatus(1);
 			rechargeService.save(recharge);
 	  
 
 			if(result.getStatus()==1){
 				
-				Recharge recharge01 = new Recharge();
+			
             	recharge.setRechargeCode(rechargeVo.getRechargeCode());
             	recharge.setStatus(0);
             	
-            	rechargeService.updateRecharge(recharge01);
+            	rechargeService.updateRecharge(recharge);
             	
             	/** 根据订单号查询金额 */
-            	RechargeVo rechargeVo01 = rechargeService.findRecharge(recharge01);
+            	RechargeVo rechargeVo01 = rechargeService.findRecharge(recharge);
             	
             	BigDecimal addMoney = rechargeVo.getMoney().add(rechargeVo01.getTotalmoney());
             	
@@ -333,7 +334,7 @@ public class KFTpayService {
 
 				transactionRecordService.InsertBillAll(recharge);
 				
-			  return ResultVOUtil.error(777, result.getFailureDetails());
+			  return ResultVOUtil.error(777, "抱歉,充值失败,详情请联系客服!");
 			}	
 		}
 		

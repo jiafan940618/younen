@@ -281,6 +281,7 @@ public class RechargeService {
 				recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 				recharge.setRechargeCode(rechargeVo.getRechargeCode());
 				recharge.setPayWay(rechargeVo.getPayWay());
+				recharge.setUserId(rechargeVo.getUserId());
 				recharge.setStatus(1);
 				rechargeService.save(recharge);
 				
