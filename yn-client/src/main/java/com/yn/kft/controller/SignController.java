@@ -67,10 +67,10 @@ public class SignController {
 			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 
-			billOrderVo.setMoney(new BigDecimal("0.01"));
+			/*billOrderVo.setMoney(new BigDecimal("0.01"));
 			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);
-			billOrderVo.setOrderId(1l);
+			billOrderVo.setOrderId(1l);*/
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getUserId()));
