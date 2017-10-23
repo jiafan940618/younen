@@ -51,6 +51,9 @@ public class RollBack4Exception {
 		TaskExecuteRecordExample recordExample = new TaskExecuteRecordExample();
 		recordExample.setOrderByClause(" end_date desc");
 		List<TaskExecuteRecord> example = taskExecuteRecordMapper.selectByExample(recordExample);
+		if(example.size()<1){
+			return;
+		}
 		String jobName = example.get(0).getJobName();
 		if (jobName.equals("AmPhaseRecordJob")) {
 			Date endDate = example.get(0).getEndDate();

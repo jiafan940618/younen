@@ -61,12 +61,12 @@ public class AmPhaseRecordJob {
 	@Scheduled(fixedDelay = 25 * 1000)
 	private void collectAmPhaseRecord() throws Exception {
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
-		taskExecuteRecord.setStatus("正常");
+		taskExecuteRecord.setStatus("失败");
+		taskExecuteRecord.setJobName(this.getClass().getName());
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
 			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
-			System.out.println(1/0);
 			if (am1Phases.size() > 0) {
 				for (Am1Phase am1Phase : am1Phases) {
 					AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -88,6 +88,7 @@ public class AmPhaseRecordJob {
 									"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
+							taskExecuteRecord.setStatus("正常");
 							System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							taskExecuteRecord.setStatus(e.getMessage());
@@ -119,6 +120,7 @@ public class AmPhaseRecordJob {
 							// --> 执行返回select语句。保存不失败，但数据库没有数据。
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
+							taskExecuteRecord.setStatus("正常");
 							System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
@@ -132,6 +134,7 @@ public class AmPhaseRecordJob {
 			e.printStackTrace();
 		}
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
+		taskExecuteRecord.setJobName(this.getClass().getName());
 		taskExecuteRecordMapper.insert(taskExecuteRecord);
 		System.out.println("日志记录："+taskExecuteRecord.getStatus());
 	}
