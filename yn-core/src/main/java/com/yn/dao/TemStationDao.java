@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -53,4 +54,5 @@ public interface TemStationDao extends JpaRepository<TemStation, Long>, JpaSpeci
 
     @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM TemStation t WHERE t.stationId=?1 AND t.dAddr like CONCAT(1,'%') GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
     List<Map<Object,Object>> sumMonthKwh(Long stationId);
+    
 }

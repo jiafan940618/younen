@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
 import com.yn.domain.EachHourTemStation;
 import com.yn.model.Station;
@@ -30,6 +31,7 @@ import com.yn.model.TemStation;
 import com.yn.service.StationService;
 import com.yn.service.TemStationService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.PageInfo;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.TemStationVo;
 import com.yn.vo.UserVo;
@@ -78,11 +80,14 @@ public class TemStationController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(TemStationVo temStationVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(TemStationVo temStationVo, Integer pageIndex) {
         TemStation temStation = new TemStation();
         BeanCopy.copyProperties(temStationVo, temStation);
-        Page<TemStation> findAll = temStationService.findAll(temStation, pageable);
-        return ResultVOUtil.success(findAll);
+        temStation.setdAddr(temStationVo.getD_addr());
+        PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
+		List<TemStation> list = temStationService.findByMapper(temStation);
+		PageInfo<TemStation> pageInfo=new PageInfo<>(list);
+        return ResultVOUtil.success(pageInfo);
     }
     
     /**

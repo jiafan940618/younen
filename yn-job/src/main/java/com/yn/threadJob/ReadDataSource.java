@@ -1,7 +1,5 @@
 package com.yn.threadJob;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +9,6 @@ import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,7 +45,7 @@ public class ReadDataSource extends Thread {
 	@Autowired
 	ReadDataSource readDataSource;
 
-	//年月日
+	// 年月日
 	int year = 2017, month = 0, day = 0;
 
 	private static int countNowDaysInMonth(int month) {
@@ -124,12 +121,8 @@ public class ReadDataSource extends Thread {
 			System.out.println("存在am_phase_record_" + date + "表就删除！");
 			List<Am1Phase> am1Phases = null;
 			List<Am3Phase> am3Phases = null;
-			try {
-				am1Phases = am1PhaseService.findAllAm1PhaseByDate(selectDate);
-				am3Phases = am1PhaseService.findAllAm3PhaseByDate(selectDate);
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
+			am1Phases = am1PhaseService.findAllAm1PhaseByDate(selectDate);
+			am3Phases = am1PhaseService.findAllAm3PhaseByDate(selectDate);
 
 			if (am1Phases.size() > 0) {
 				for (Am1Phase am1Phase : am1Phases) {
@@ -155,7 +148,8 @@ public class ReadDataSource extends Thread {
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
 							// System.out.println("ReadDataSource--> am1Phase::"
 							// + amPhaseRecord.getAmPhaseRecordId()
-							//		+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+							// + "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日
+							// HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -189,7 +183,8 @@ public class ReadDataSource extends Thread {
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
 							// System.out.println("ReadDataSource--> am3Phase::"
 							// + amPhaseRecord.getAmPhaseRecordId()
-							//			+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+							// + "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日
+							// HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}

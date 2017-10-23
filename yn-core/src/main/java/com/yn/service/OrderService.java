@@ -465,16 +465,16 @@ public class OrderService {
 		if (order.getConstructionStatus() == null || order.getConstructionStatus().length() < 100) {
 			System.out.println("没有数据，先填充。");
 			ResVo rv0 = new ResVo();
-			rv0.setContent(format + "-已完成-" + MATERIALAPPROAC);
+			rv0.setContent("当前正在执行");
 			rv0.setTarget("materialapproac");
 			rv0.setTitle(MATERIALAPPROAC);
+			rv0.setIsNow(true);
 			list1.add(rv0);
 
 			ResVo rv1 = new ResVo(true);
-			rv1.setContent("当前正在执行");
+			rv1.setContent("");
 			rv1.setTarget("foundationbuilding");
 			rv1.setTitle(FOUNDATIONBUILDING);
-			rv1.setIsNow(true);
 			list1.add(rv1);
 
 			ResVo rv2 = new ResVo();

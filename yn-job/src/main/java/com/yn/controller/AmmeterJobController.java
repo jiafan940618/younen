@@ -250,7 +250,7 @@ public class AmmeterJobController {
 			temStationR.setStationId(stationId);
 			temStationR.setStationCode(stationCode);
 			temStationR.setServerId(serverId);
-			temStationR.setType(type);
+//			temStationR.setType(type);
 			temStationR.setRecordTime(temStationRecordTime);
 			TemStation temStation = temStationService.findOne(temStationR);
 			if (temStation == null) {
@@ -262,7 +262,7 @@ public class AmmeterJobController {
 				newTemStation.setStationId(stationId);
 				newTemStation.setStationCode(stationCode);
 				newTemStation.setServerId(serverId);
-				newTemStation.setType(type);
+//				newTemStation.setType(type);
 				newTemStation.setKw(apr.getKw());
 				newTemStation.setKwh(tolKwh);
 				newTemStation.setRecordTime(temStationRecordTime);
@@ -288,7 +288,7 @@ public class AmmeterJobController {
 			temStationYearR.setStationId(stationId);
 			temStationYearR.setStationCode(stationCode);
 			temStationYearR.setServerId(serverId);
-			temStationYearR.setType(type);
+//			temStationYearR.setType(type);
 			temStationYearR.setRecordTime(temStationYearRecordTime);
 			TemStationYear temStationYear = temStationYearService.findOne(temStationYearR);
 			if (temStationYear == null) {
@@ -300,7 +300,7 @@ public class AmmeterJobController {
 				newTemStationYear.setStationId(stationId);
 				newTemStationYear.setStationCode(stationCode);
 				newTemStationYear.setServerId(serverId);
-				newTemStationYear.setType(type);
+//				newTemStationYear.setType(type);
 				newTemStationYear.setKw(apr.getKw());
 				newTemStationYear.setKwh(tolKwh);
 				newTemStationYear.setRecordTime(temStationYearRecordTime);

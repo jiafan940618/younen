@@ -24,12 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
 import com.yn.model.Station;
+import com.yn.model.TemStation;
 import com.yn.model.TemStationYear;
 import com.yn.service.SystemConfigService;
 import com.yn.service.TemStationYearService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.PageInfo;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.TemStationYearVo;
 
@@ -78,12 +81,16 @@ public class TemStationYearController {
 
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object findAll(TemStationYearVo temStationYearVo,
-			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
+	public Object findAll(TemStationYearVo temStationYearVo,Integer pageIndex) {
+		
 		TemStationYear temStationYear = new TemStationYear();
 		BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		Page<TemStationYear> findAll = temStationYearService.findAll(temStationYear, pageable);
-		return ResultVOUtil.success(findAll);
+		temStationYear.setdAddr(temStationYearVo.getD_addr());
+		System.out.println(temStationYear.getQueryStartDtm());
+		PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
+		List<TemStationYear> list = temStationYearService.findByMapper(temStationYear);
+		PageInfo<TemStationYear> pageInfo=new PageInfo<>(list);
+        return ResultVOUtil.success(pageInfo);
 	}
 
 	/**

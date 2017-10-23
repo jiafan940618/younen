@@ -395,5 +395,11 @@ public class TemStationService {
 		return list;
 		
 	}
-	 
+
+	public List<TemStation> findByMapper(TemStation temStation) {
+		
+		List<TemStation> list=temStationMapper.selectByQuery(temStation);
+        return list;
+    }
+
 }

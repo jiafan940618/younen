@@ -16,13 +16,14 @@
 		<result column="server_id" property="serverId" jdbcType="INTEGER" />
 		<result column="station_code" property="stationCode" jdbcType="VARCHAR" />
 		<result column="station_id" property="stationId" jdbcType="INTEGER" />
-		<!-- <result column="type" property="type" jdbcType="INTEGER" /> -->
+		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="w_addr" property="wAddr" jdbcType="INTEGER" />
+		
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, create_dtm, del, del_dtm, update_dtm, d_addr, d_type, dev_conf_code,
 		kw, kwh,
-		record_time, server_id, station_code, station_id, <!-- type, --> w_addr
+		record_time, server_id, station_code, station_id, type, w_addr
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -51,7 +52,7 @@
 		del_dtm, update_dtm, d_addr,
 		d_type, dev_conf_code, kw,
 		kwh, record_time, server_id,
-		station_code, station_id,<!--  type, -->
+		station_code, station_id, type,
 		w_addr)
 		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
 		#{del,jdbcType=INTEGER},
@@ -60,7 +61,7 @@
 		#{kw,jdbcType=DECIMAL},
 		#{kwh,jdbcType=DECIMAL}, #{recordTime,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER},
 		#{stationCode,jdbcType=VARCHAR}, #{stationId,jdbcType=INTEGER},
-		<!-- #{type,jdbcType=INTEGER}, -->
+		#{type,jdbcType=INTEGER},
 		#{wAddr,jdbcType=INTEGER})
 	</insert>
 	<insert id="insertSelective" parameterType="com.yn.model.TemStation">
@@ -108,9 +109,9 @@
 			<if test="stationId != null">
 				station_id,
 			</if>
-			<!-- <if test="type != null">
+			<if test="type != null">
 				type,
-			</if> -->
+			</if>
 			<if test="wAddr != null">
 				w_addr,
 			</if>
@@ -158,9 +159,9 @@
 			<if test="stationId != null">
 				#{stationId,jdbcType=INTEGER},
 			</if>
-		<!-- 	<if test="type != null">
+			<if test="type != null">
 				#{type,jdbcType=INTEGER},
-			</if> -->
+			</if>
 			<if test="wAddr != null">
 				#{wAddr,jdbcType=INTEGER},
 			</if>
@@ -208,9 +209,9 @@
 			<if test="stationId != null">
 				station_id = #{stationId,jdbcType=INTEGER},
 			</if>
-		<!-- 	<if test="type != null">
+			<if test="type != null">
 				type = #{type,jdbcType=INTEGER},
-			</if> -->
+			</if>
 			<if test="wAddr != null">
 				w_addr = #{wAddr,jdbcType=INTEGER},
 			</if>
@@ -232,8 +233,31 @@
 		server_id = #{serverId,jdbcType=INTEGER},
 		station_code = #{stationCode,jdbcType=VARCHAR},
 		station_id = #{stationId,jdbcType=INTEGER},
-		<!-- type = #{type,jdbcType=INTEGER}, -->
+		type = #{type,jdbcType=INTEGER},
 		w_addr = #{wAddr,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
+	
+	<select id="selectByQuery" parameterType="com.yn.model.TemStation" resultMap="BaseResultMap">
+	select * from tem_station where 1=1
+	       <if test="queryStartDtm != null">
+				AND create_dtm <![CDATA[ >= ]]>#{queryStartDtm}
+			</if>
+			<if test="queryEndDtm != null">
+				AND create_dtm <![CDATA[ <= ]]> #{queryEndDtm}
+			</if>
+			<if test="del != null">
+				AND del = #{del},
+			</if>
+			<if test="dAddr != null">
+				AND d_addr like '${dAddr}%'
+			</if>
+			<if test="query != null">
+				AND  (kwh like '%${query}%' or kw like '%${query}%')
+			</if>
+			<if test="stationId != null">
+				AND station_id = #{stationId}
+			</if>		
+			 ORDER BY create_dtm DESC
+	</select>
 </mapper>

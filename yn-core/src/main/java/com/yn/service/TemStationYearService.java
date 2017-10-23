@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import com.yn.dao.TemStationYearDao;
 import com.yn.dao.mapper.TemStationYearMapper;
 import com.yn.model.Station;
+import com.yn.model.TemStation;
 import com.yn.model.TemStationYear;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.NumberUtil;
@@ -286,5 +287,12 @@ public class TemStationYearService {
 
 	            return conjunction;
 	        };
+	    }
+
+	 
+	 public List<TemStationYear> findByMapper(TemStationYear temStationYear) {
+			
+			List<TemStationYear> list=temStationYearMapper.selectByQuery(temStationYear);
+	        return list;
 	    }
 }
