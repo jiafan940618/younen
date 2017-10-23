@@ -56,8 +56,16 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
   	@Query(value="SELECT o.id,o.status,o.had_pay_price,o.total_price FROM `bill_order`"
   			+ " b LEFT JOIN t_order o ON b.order_id = o.id WHERE b.trade_no = :tradeNo ;",nativeQuery=true)
   	Object FindByTradeNo(@Param("tradeNo") String tradeNo);
+  	
+  	
+  	@Transactional
+	@Modifying
+	@Query("update Order set status =:#{#order.status} where id = :#{#order.id}")
+	void updateOrderbyId(@Param("order") Order order);
 
-	
+
+  	@Query(value=" SELECT id,status,had_pay_price,total_price from t_order where  id = :#{#order.id} and del =0 ",nativeQuery=true)
+  	Object selectOrderSta(@Param("order") Order order);
   
   
     

@@ -10,7 +10,7 @@
 		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
 		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
 		<result column="server_id" property="serverId" jdbcType="INTEGER" />
-		<result column="serverName" property="serverName" jdbcType="VARCHAR" />
+		<result column="server_name" property="serverName" jdbcType="VARCHAR" />
 		<result column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="link_Man" property="linkMan" jdbcType="VARCHAR" />
 		<result column="link_phone" property="linkPhone" jdbcType="VARCHAR" />
@@ -195,5 +195,26 @@
 		</set>
 		where o.id = #{id}
 	</update>
+	
+	<select id="findBystatus" parameterType="com.yn.model.Page" resultMap="BaseResultMap">
+		SELECT 
+		
+		id,order_code,STATUS,server_name,capacity,total_price
+		
+		 FROM t_order WHERE
+		 
+		user_id = #{userId} and del = 0 
+		 
+		  <if test="status != 9">
+		 	 and STATUS = #{status} 
+		</if>
+		
+		ORDER BY create_dtm DESC
+		  
+		  LIMIT #{start},#{limit}
+
+	</select>
+	
+	
 
 </mapper>
