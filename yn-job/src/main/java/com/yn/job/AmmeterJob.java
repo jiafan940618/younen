@@ -190,17 +190,9 @@ public class AmmeterJob {
 			System.err.println(ammeter.getNowKw());
 			// stationDao.save(station);
 			// stationMapper.insert(station);
-			Station one = stationDao.findOne(station.getId());
-			if (one != null) {
-				// ammeterMapper.updateByPrimaryKeySelective(ammeter);
-				stationMapper.updateByPrimaryKeySelective(station);
-				System.out.println("AmmeterJob--> station更新成功！-->"
-						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			} else {
 				stationMapper.insert(station);
 				System.out.println("AmmeterJob--> station新增成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			}
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
 	}
@@ -218,13 +210,14 @@ public class AmmeterJob {
 		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyyMMddHH");
 		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyyMMdd");
 
-		if (ammeter.getStationId() != null) {
+		//if (ammeter.getStationId() != null) {
 			String cAddr = ammeter.getcAddr();
 			Long dAddr = ammeter.getdAddr();
 			Integer dType = ammeter.getdType();
 			Integer wAddr = apr.getwAddr();
 			Long stationId = station.getId();
 			String stationCode = station.getStationCode();
+			String ammeterCode = ammeter.getcAddr();
 			Long serverId = station.getServerId();
 			Integer type = ammeter.getType();
 
@@ -303,7 +296,7 @@ public class AmmeterJob {
 				System.out.println("AmmeterJob--> temStationYear更新成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
-		}
+		//}
 	}
 
 	/**
