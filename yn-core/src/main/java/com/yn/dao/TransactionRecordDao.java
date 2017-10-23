@@ -18,7 +18,7 @@ public interface TransactionRecordDao extends JpaRepository<TransactionRecord, L
 	
 	//select id,del,create_dtm,pay_way,user_id,type,status,money,remark,order_no from transaction_record where user_id = #{userId} and del = 0*/
 	
-	@Query("select id,del,createDtm,payWay,userId,type,status,money,remark,orderNo from TransactionRecord where userId = :userId and del = 0 ")
+	@Query("select t from TransactionRecord t where t.userId = :userId and t.del = 0 ")
 	List<TransactionRecord> FindByTransactionRecord(@Param("userId") Long userId);
 	
 	

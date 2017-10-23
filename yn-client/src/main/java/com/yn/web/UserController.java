@@ -334,7 +334,11 @@ public class UserController {
     @RequestMapping("/userTransactionRecord") 
     @ResponseBody
     public Object helloJsp01(com.yn.model.Page<TransactionRecord>  page){
+    	page.setUserId(2L);
+    	page.setTime_to("2017-10-20");
     	
+    	
+    	logger.info("传递参数 ---- ----- ----- userId："+page.getUserId());
     	logger.info("传递参数 ---- ----- ----- index："+page.getIndex());
     	logger.info("传递参数 ---- ----- ----- time_from："+page.getTime_from());
     	logger.info("传递参数 ---- ----- ----- time_to："+page.getTime_to());
@@ -343,7 +347,20 @@ public class UserController {
     	logger.info("传递参数 ---- ----- ----- payWay："+page.getPayWay());
     	
     	 List<TransactionRecord> list = transactionRecordService.GivePage(page);
-
+    	 for (TransactionRecord transactionRecord : list) {
+    		 
+    		 if(transactionRecord.getType() == 1){
+    			 transactionRecord.setRemark("余额支付");
+    		 }else if(transactionRecord.getType() == 2){
+    			 transactionRecord.setRemark("微信");
+    		 }else if(transactionRecord.getType() == 3){
+    			 transactionRecord.setRemark("支付宝");
+    		 }else if(transactionRecord.getType() == 4){
+    			 transactionRecord.setRemark("网银支付");
+    		 }else if(transactionRecord.getType() == 5){
+    			 transactionRecord.setRemark("快付通");
+    		 }
+    	 }
 		return ResultVOUtil.newsuccess(page, list);  
     }
     
@@ -353,6 +370,7 @@ public class UserController {
     @ResponseBody
     public Object ioshelloJs(TransactionRecordVo transactionRecordVo){
     	
+    	//transactionRecordVo.setUserId(3L);
     	logger.info("传递参数 ---- ----- ----- userId："+transactionRecordVo.getUserId());
 
     //	1、余额支付 2、微信 3、支付宝  4、银联  5 快付通   9、全部*

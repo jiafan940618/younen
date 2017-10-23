@@ -25,32 +25,32 @@
 		 
 		 where user_id = #{userId} and del = 0
 		 
-		 <if test =" payWay != 9">
-		 	<if test ="payWay == 1">
-		      and pay_way =1
+		 <if test =" type != 9">
+		 	<if test ="type == 1">
+		      and type =1
 			 </if>
-			 <if test =" payWay == 2 ">
-			  and pay_way =2
+			 <if test =" type == 2 ">
+			  and type =2
 			 </if>
-			 <if test =" payWay == 3">
-			  and pay_way =3
+			 <if test =" type == 3">
+			  and type =3
 			 </if> 
 		 </if>
-		 <if test =" type != 9">
-		    <if test ="type ==1">
-		    	and type = 1
+		 <if test =" payWay != 9">
+		    <if test ="payWay ==1">
+		    	and pay_way = 1
 		    </if>
-			<if test ="type ==2">
-				and type = 2
+			<if test ="payWay ==2">
+				and pay_way = 2
 			</if>
-		    <if test ="type ==3">
-		    	and type = 3
+		    <if test ="payWay ==3">
+		    	and pay_way = 3
 		    </if>
-		    <if test =" type ==4 ">
-		    	and type = 4
+		    <if test =" payWay ==4 ">
+		    	and pay_way = 4
 		    </if>
-		    <if test ="type ==5">
-		    	and type = 5
+		    <if test ="payWay ==5">
+		    	and pay_way = 5
 		    </if>
 		 </if>
 		 
@@ -63,9 +63,19 @@
 			    </if>
 		 
 		 </if>
+		 
+		 <if test= "null != time_from and null == time_to ">
+			 AND create_dtm >=  #{time_from}
+		 </if>
+		  <if test= "null == time_from and null != time_to ">
+			 AND create_dtm &lt;=  #{time_to}
+		 </if>
+		 
 		<if test =" null != time_from  and null != time_to">
 			AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
 		</if> 
+		
+		
 		 ORDER BY create_dtm DESC
 		 limit #{start},#{limit}
 	
