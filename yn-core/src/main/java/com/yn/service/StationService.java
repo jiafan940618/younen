@@ -467,77 +467,81 @@ public class StationService {
      * 用户的装机容量
      * 
      */
-    public List<Map<Object,Object>> checkCapacity(List<Station> stations,Integer type ,String dateStr){
-    	Map<Object, Object> objectMap=new HashMap<>();
-    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-    	List<Map<Object, Object>> lists=new ArrayList<>();
-    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-    	
-    	  String dateFormat="";
-         	if (type == 0) {
-         		 dateFormat="%Y";
-     		} else if (type == 1) {
-     			dateFormat="%Y-%m";
-     		} else if (type == 2) {
-     			dateFormat="%Y-%m-%d";	
-     		} 
-         	
-    	for (Station station : stations) {
-    		List<Map<Object, Object>> list=stationDao.numCapacity(station.getId(), dateFormat, dateStr);
-           if (!list.isEmpty()) {
-	          lists.addAll(list);
-			}
-    			
-    	}
-    	for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("capacity"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-    	Object[] key = objectMap.keySet().toArray();
-    	Arrays.sort(key);
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("capacity", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-    		listsMap.add(listMap);
-        	}
-    	return listsMap;	
-    }
-    //0:未绑定电表,1:正在发电,2:电表异常
-   public  List<StationVo> getnewstation(Long userId){
-	   
-	   List<StationVo> newlist = new LinkedList<StationVo>();
-	  
-	 List<Station> list = stationDao.getstation(userId);
-	 for (Station station : list) {
-		 StationVo stationVo = new StationVo();
-		 BeanCopy.copyProperties(station, stationVo);
-		 
-		 if(stationVo.getStatus() == 0){
-			 stationVo.setRemark("未绑定电表");
-		 }else if(stationVo.getStatus() == 1){
-			 stationVo.setRemark("正在发电");
-		 }else if(stationVo.getStatus() == 2){
-			 stationVo.setRemark("电表异常");
-		 }
-		 newlist.add(stationVo);
-	}
- 
-	 return newlist; 	
-    }
-   public  List<Station> getstation(Long userId){
-	   
-	 return stationDao.getstation(userId); 
-   }
-   
+//    public List<Map<Object,Object>> checkCapacity(List<Station> stations,Integer type ,String dateStr){
+//    	Map<Object, Object> objectMap=new HashMap<>();
+//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+//    	List<Map<Object, Object>> lists=new ArrayList<>();
+//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+//    	
+//    	  String dateFormat="";
+//         	if (type == 0) {
+//         		 dateFormat="%Y";
+//     		} else if (type == 1) {
+//     			dateFormat="%Y-%m";
+//     		} else if (type == 2) {
+//     			dateFormat="%Y-%m-%d";	
+//     		} 
+//         	
+//    	for (Station station : stations) {
+//    		List<Map<Object, Object>> list=stationDao.numCapacity(station.getId(), dateFormat, dateStr);
+//           if (!list.isEmpty()) {
+//	          lists.addAll(list);
+//			}
+//    			
+//    	}
+//    	for(Map<Object, Object> map : lists) {
+//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+//    			
+//    			objectMap.put(map.get("create_dtm"), map.get("capacity"));
+//			}else{
+//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
+//				objectMap.put(map.get("create_dtm"), (Object)kwh);
+//			}
+//    		
+//    	}
+//    	Object[] key = objectMap.keySet().toArray();
+//    	Arrays.sort(key);
+//    	for (int i = 0; i < key.length; i++) { 
+//    		Map<Object, Object> listMap=new LinkedHashMap<>();
+//    		linkHashMap.put(key[i], objectMap.get(key[i]));
+//    		listMap.put("createDtm", key[i]);
+//    		listMap.put("capacity", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+//    		listsMap.add(listMap);
+//        	}
+//    	return listsMap;	
+//    }
     
+    
+    //0:未绑定电表,1:正在发电,2:电表异常
+//   public  List<StationVo> getnewstation(Long userId){
+//	   
+//	   List<StationVo> newlist = new LinkedList<StationVo>();
+//	  
+//	 List<Station> list = stationDao.getstation(userId);
+//	 for (Station station : list) {
+//		 StationVo stationVo = new StationVo();
+//		 BeanCopy.copyProperties(station, stationVo);
+//		 
+//		 if(stationVo.getStatus() == 0){
+//			 stationVo.setRemark("未绑定电表");
+//		 }else if(stationVo.getStatus() == 1){
+//			 stationVo.setRemark("正在发电");
+//		 }else if(stationVo.getStatus() == 2){
+//			 stationVo.setRemark("电表异常");
+//		 }
+//		 newlist.add(stationVo);
+//	}
+// 
+//	 return newlist; 	
+//    }
+    
+    
+//   public  List<Station> getstation(Long userId){
+//	   
+//	 return stationDao.getstation(userId); 
+//   }
+//   
+//    
    /**
 	 * 查询用户电站,电表等信息
 	 * 

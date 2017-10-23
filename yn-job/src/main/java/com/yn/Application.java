@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 //@ComponentScan
 // @MapperScan("com.cj.dao.mapper")
-//@EnableScheduling
+@EnableScheduling
 public class Application {
 
 	public static void main(String[] args) {

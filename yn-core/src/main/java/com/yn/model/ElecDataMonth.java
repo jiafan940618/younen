@@ -26,8 +26,6 @@ public class ElecDataMonth {
 
     private String recordTime;
 
-    private Integer serverId;
-
     private String ammeterCode;
 
     private Integer type;
@@ -120,14 +118,6 @@ public class ElecDataMonth {
 
     public void setRecordTime(String recordTime) {
         this.recordTime = recordTime == null ? null : recordTime.trim();
-    }
-
-    public Integer getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(Integer serverId) {
-        this.serverId = serverId;
     }
 
     public String getAmmeterCode() {

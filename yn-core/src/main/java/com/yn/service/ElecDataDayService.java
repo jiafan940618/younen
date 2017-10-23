@@ -113,38 +113,38 @@ public class ElecDataDayService {
      * @param stations
      * @return
      */
-	public List<Map<Object,Object>> monthKwh(List<Station> stations){
-    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-    	List<Map<Object, Object>> lists=new ArrayList<>();
-    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-    	for (Station station : stations) {
-    		List<Map<Object, Object>> list=elecDataDayDao.sumMonthKwh(station.getId());
-           if (!list.isEmpty()) {
-	          lists.addAll(list);
-			}
-    			
-    	}
-    	for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-    	Object[] key = objectMap.keySet().toArray();
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-    		listsMap.add(listMap);
-        	}
-    	return listsMap;
-    }
+//	public List<Map<Object,Object>> monthKwh(List<Station> stations){
+//    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+//    	List<Map<Object, Object>> lists=new ArrayList<>();
+//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+//    	for (Station station : stations) {
+//    		List<Map<Object, Object>> list=elecDataDayDao.sumMonthKwh(station.getId());
+//           if (!list.isEmpty()) {
+//	          lists.addAll(list);
+//			}
+//    			
+//    	}
+//    	for(Map<Object, Object> map : lists) {
+//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+//    			
+//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+//			}else{
+//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+//				objectMap.put(map.get("create_dtm"), (Object)kwh);
+//			}
+//    		
+//    	}
+//    	Object[] key = objectMap.keySet().toArray();
+//    	for (int i = 0; i < key.length; i++) { 
+//    		Map<Object, Object> listMap=new LinkedHashMap<>();
+//    		linkHashMap.put(key[i], objectMap.get(key[i]));
+//    		listMap.put("createDtm", key[i]);
+//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+//    		listsMap.add(listMap);
+//        	}
+//    	return listsMap;
+//    }
 	
 	/**
      * 用户每月发电量
@@ -152,50 +152,50 @@ public class ElecDataDayService {
      * @param stations
      * @return
      */
-	public List<Map<Object,Object>> numKwh(List<Station> stations ,Integer type ,String dateStr){
-    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-    	List<Map<Object, Object>> lists=new ArrayList<>();
-    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-    	
-    	   String dateFormat="";
-       	if (type == 0) {
-       		 dateFormat="%Y";
-   		} else if (type == 1) {
-   			dateFormat="%Y-%m";
-   		} else if (type == 2) {
-   			dateFormat="%Y-%m-%d";	
-   		} 
-    	for (Station station : stations) {
-    		List<Map<Object, Object>> list=elecDataDayDao.sumKwh(station.getId(),dateFormat,dateStr);
-           if (!list.isEmpty()) {
-	          lists.addAll(list);
-			}
-    			
-    	}
-    	for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-    	Object[] key = objectMap.keySet().toArray();
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-    		listsMap.add(listMap);
-        	}
-    	
-    	
-    	return listsMap;
-    }
-	
+//	public List<Map<Object,Object>> numKwh(List<Station> stations ,Integer type ,String dateStr){
+//    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+//    	List<Map<Object, Object>> lists=new ArrayList<>();
+//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+//    	
+//    	   String dateFormat="";
+//       	if (type == 0) {
+//       		 dateFormat="%Y";
+//   		} else if (type == 1) {
+//   			dateFormat="%Y-%m";
+//   		} else if (type == 2) {
+//   			dateFormat="%Y-%m-%d";	
+//   		} 
+//    	for (Station station : stations) {
+//    		List<Map<Object, Object>> list=elecDataDayDao.sumKwh(station.getId(),dateFormat,dateStr);
+//           if (!list.isEmpty()) {
+//	          lists.addAll(list);
+//			}
+//    			
+//    	}
+//    	for(Map<Object, Object> map : lists) {
+//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+//    			
+//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+//			}else{
+//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+//				objectMap.put(map.get("create_dtm"), (Object)kwh);
+//			}
+//    		
+//    	}
+//    	Object[] key = objectMap.keySet().toArray();
+//    	for (int i = 0; i < key.length; i++) { 
+//    		Map<Object, Object> listMap=new LinkedHashMap<>();
+//    		linkHashMap.put(key[i], objectMap.get(key[i]));
+//    		listMap.put("createDtm", key[i]);
+//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+//    		listsMap.add(listMap);
+//        	}
+//    	
+//    	
+//    	return listsMap;
+//    }
+//	
 	/**
 	 * 用户发电/用电统计图
 	 */

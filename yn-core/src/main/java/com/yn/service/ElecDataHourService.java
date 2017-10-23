@@ -156,27 +156,27 @@ public class ElecDataHourService {
      *
      * @return
      */
-    public List<ElecDataHour> getTodayKwh(Long serverId, Long  dAddr) {
-
-        Date[] todaySpace = DateUtil.getTodaySpace();
-        Date start = todaySpace[0];
-        Date end = todaySpace[1];
-
-
-        List<ElecDataHour> ElecDataHourList = new ArrayList<>();
-        if (serverId == null) {
-            ElecDataHourList = elecDataHourDao.findByDAddrAndCreateDtmBetween(dAddr, start, end);
-        }
-        if (serverId != null) {
-            ElecDataHourList = elecDataHourDao.findByServerIdAndDAddrAndCreateDtmBetween(serverId, dAddr, start, end);
-        }
-
-
-        List<ElecDataHour> eachHourElecDataHourList = groupByEachHourInOneDay(ElecDataHourList);
-
-
-        return eachHourElecDataHourList;
-    }
+//    public List<ElecDataHour> getTodayKwh(Long serverId, Long  dAddr) {
+//
+//        Date[] todaySpace = DateUtil.getTodaySpace();
+//        Date start = todaySpace[0];
+//        Date end = todaySpace[1];
+//
+//
+//        List<ElecDataHour> ElecDataHourList = new ArrayList<>();
+//        if (serverId == null) {
+//            ElecDataHourList = elecDataHourDao.findByDAddrAndCreateDtmBetween(dAddr, start, end);
+//        }
+//        if (serverId != null) {
+//            ElecDataHourList = elecDataHourDao.findByServerIdAndDAddrAndCreateDtmBetween(serverId, dAddr, start, end);
+//        }
+//
+//
+//        List<ElecDataHour> eachHourElecDataHourList = groupByEachHourInOneDay(ElecDataHourList);
+//
+//
+//        return eachHourElecDataHourList;
+//    }
 
 
     /**
@@ -319,38 +319,38 @@ public class ElecDataHourService {
      * @param stations
      * @return
      */
-	public List<Map<Object,Object>> monthKwh(List<Station> stations){
-    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-    	List<Map<Object, Object>> lists=new ArrayList<>();
-    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-    	for (Station station : stations) {
-    		List<Map<Object, Object>> list=elecDataHourDao.sumMonthKwh(station.getId());
-           if (!list.isEmpty()) {
-	          lists.addAll(list);
-			}
-    			
-    	}
-    	for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-    	Object[] key = objectMap.keySet().toArray();
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("capacity", objectMap.get(key[i]));
-    		listsMap.add(listMap);
-        	}
-    	return listsMap;
-    }
+//	public List<Map<Object,Object>> monthKwh(List<Station> stations){
+//    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+//    	List<Map<Object, Object>> lists=new ArrayList<>();
+//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+//    	for (Station station : stations) {
+//    		List<Map<Object, Object>> list=elecDataHourDao.sumMonthKwh(station.getId());
+//           if (!list.isEmpty()) {
+//	          lists.addAll(list);
+//			}
+//    			
+//    	}
+//    	for(Map<Object, Object> map : lists) {
+//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+//    			
+//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+//			}else{
+//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
+//				objectMap.put(map.get("create_dtm"), (Object)kwh);
+//			}
+//    		
+//    	}
+//    	Object[] key = objectMap.keySet().toArray();
+//    	for (int i = 0; i < key.length; i++) { 
+//    		Map<Object, Object> listMap=new LinkedHashMap<>();
+//    		linkHashMap.put(key[i], objectMap.get(key[i]));
+//    		listMap.put("createDtm", key[i]);
+//    		listMap.put("capacity", objectMap.get(key[i]));
+//    		listsMap.add(listMap);
+//        	}
+//    	return listsMap;
+//    }
 	
 	/**
 	 * 获取当前时间的发电/用电总量

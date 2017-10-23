@@ -11,8 +11,6 @@ public class ElecDataDay extends IDomain implements Serializable {
 
     @Column(updatable = true, columnDefinition = "varchar(255) comment '[电站码]'")
     private String ammeterCode;
-    @Column(columnDefinition = "int(11) comment '[服务商id]'")
-    private Long serverId;
     @Column(columnDefinition = "varchar(255) comment '[采集器码]'")
     private String devConfCode;
     @Column(columnDefinition = "int(11) comment '[设备地址]'")
@@ -39,14 +37,6 @@ public class ElecDataDay extends IDomain implements Serializable {
 	public void setAmmeterCode(String ammeterCode) {
 		this.ammeterCode = ammeterCode;  
 	}
-
-	public Long getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(Long serverId) {
-        this.serverId = serverId;
-    }
 
     public String getDevConfCode() {
         return devConfCode;

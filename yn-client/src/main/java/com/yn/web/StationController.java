@@ -169,16 +169,16 @@ public class StationController {
 	/**
 	 * web 查询用户的装机容量
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/numCapacity",method = {RequestMethod.POST, RequestMethod.GET})
-    public Object numCapacity(Station station,Integer type,String dateStr) {
-
-	    List<Map<Object, Object>> capacityAll=new ArrayList<>();
-		    List<Station> stations=stationDao.findAllStation();
-		    capacityAll = stationService.checkCapacity(stations,type,dateStr);
-		    
-		return ResultVOUtil.success(capacityAll);
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/numCapacity",method = {RequestMethod.POST, RequestMethod.GET})
+//    public Object numCapacity(Station station,Integer type,String dateStr) {
+//
+//	    List<Map<Object, Object>> capacityAll=new ArrayList<>();
+//		    List<Station> stations=stationDao.findAllStation();
+//		    capacityAll = stationService.checkCapacity(stations,type,dateStr);
+//		    
+//		return ResultVOUtil.success(capacityAll);
+//	}
     
 	/**
 	 * 实时数据里的电站分布

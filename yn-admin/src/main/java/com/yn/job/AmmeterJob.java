@@ -54,7 +54,7 @@ public class AmmeterJob {
         for (Ammeter ammeter : findAll) {
             AmPhaseRecord aprR = new AmPhaseRecord();
             aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-            aprR.setdAddr(ammeter.getdAddr());
+           // aprR.setdAddr(ammeter.getdAddr());
             aprR.setdType(ammeter.getdType());
             aprR.setiAddr(ammeter.getiAddr());
             aprR.setDealt(0);
@@ -83,7 +83,7 @@ public class AmmeterJob {
     private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         ammeterRecord.setcAddr(ammeter.getcAddr());
-        ammeterRecord.setdAddr(ammeter.getdAddr());
+        //ammeterRecord.setdAddr(ammeter.getdAddr());
         ammeterRecord.setdType(ammeter.getdType());
         ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
         if (ammeter.getStation() != null) {
@@ -91,7 +91,7 @@ public class AmmeterJob {
             ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
         }
         ammeterRecord.setStatusCode(ammeter.getStatusCode());
-        ammeterRecord.setType(ammeter.getType());
+        //ammeterRecord.setType(ammeter.getType());
         ammeterRecordService.save(ammeterRecord);
     }
 
@@ -114,8 +114,8 @@ public class AmmeterJob {
         Double kwhTol = getKwhTol(apr);
         ammeter.setStatusCode(statusCode);
         ammeter.setNowKw(apr.getKw());
-        ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
-        ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
+       // ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
+       // ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
         ammeterDao.save(ammeter);
 
         Long stationId = ammeter.getStationId();
@@ -150,13 +150,14 @@ public class AmmeterJob {
 
         if (ammeter.getStationId() != null) {
             String cAddr = ammeter.getcAddr();
-            Long dAddr = ammeter.getdAddr();
+            Long dAddr = apr.getdAddr();
             Integer dType = ammeter.getdType();
             Integer wAddr = apr.getwAddr();
             Long stationId = station.getId();
-            String stationCode = station.getStationCode();
+            String ammeterCode = ammeter.getcAddr();
             Long serverId = station.getServerId();
-            Integer type = ammeter.getType();
+           // Integer type = ammeter.getType();
+            CharSequence subSequence = dAddr.toString().subSequence(0, 1);
 
             // 每小时的
             ElecDataHour temStationR = new ElecDataHour();
@@ -166,8 +167,9 @@ public class AmmeterJob {
             temStationR.setwAddr(wAddr);
 //            temStationR.setStationId(stationId);
 //            temStationR.setStationCode(stationCode);
-            temStationR.setServerId(serverId);
-            temStationR.setType(type);
+            temStationR.setAmmeterCode(ammeterCode);
+            //temStationR.setServerId(serverId);
+           // temStationR.setType(type);
             temStationR.setRecordTime(temStationRecordTime);
             ElecDataHour temStation = elecDataHourService.findOne(temStationR);
             if (temStation == null) {
@@ -178,11 +180,14 @@ public class AmmeterJob {
                 newTemStation.setwAddr(wAddr);
 //                newTemStation.setStationId(stationId);
 //                newTemStation.setStationCode(stationCode);
-                newTemStation.setServerId(serverId);
-                newTemStation.setType(type);
                 newTemStation.setKw(apr.getKw());
                 newTemStation.setKwh(tolKwh);
                 newTemStation.setRecordTime(temStationRecordTime);
+                if(subSequence.equals("1")){
+					newTemStation.setType(1);
+				}else if(subSequence.equals("2")){
+					newTemStation.setType(2);
+				}
                 elecDataHourService.save(newTemStation);
             } else {
                 temStation.setKw(apr.getKw());
@@ -198,8 +203,7 @@ public class AmmeterJob {
             temStationYearR.setwAddr(wAddr);
             /*temStationYearR.setStationId(stationId);
             temStationYearR.setStationCode(stationCode);*/
-            temStationYearR.setServerId(serverId);
-            temStationYearR.setType(type);
+            temStationYearR.setAmmeterCode(ammeterCode);
             temStationYearR.setRecordTime(temStationYearRecordTime);
             ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
             if (temStationYear == null) {
@@ -210,11 +214,14 @@ public class AmmeterJob {
                 newTemStationYear.setwAddr(wAddr);
                 /*newTemStationYear.setStationId(stationId);
                 newTemStationYear.setStationCode(stationCode);*/
-                newTemStationYear.setServerId(serverId);
-                newTemStationYear.setType(type);
                 newTemStationYear.setKw(apr.getKw());
                 newTemStationYear.setKwh(tolKwh);
                 newTemStationYear.setRecordTime(temStationYearRecordTime);
+                if(subSequence.equals("1")){
+					newTemStationYear.setType(1);
+				}else if(subSequence.equals("2")){
+					newTemStationYear.setType(2);
+				}
                 elecDataDayService.save(newTemStationYear);
             } else {
                 temStationYear.setKw(apr.getKw());

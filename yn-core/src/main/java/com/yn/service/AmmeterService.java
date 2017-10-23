@@ -171,30 +171,13 @@ public class AmmeterService {
     public Ammeter saveAndbindStation(AmmeterVo ammeterVo) {
         Ammeter ammeter = new Ammeter();
         BeanCopy.copyProperties(ammeterVo, ammeter);
-
-        // 设置cityText provinceText
-        City city = cityService.findOne(ammeter.getCityId());
-        Province province = provinceService.findOne(ammeter.getProvinceId());
-        ammeter.setCityText(city.getCityText());
-        ammeter.setProvinceText(province.getProvinceText());
-
-        // 根据dAddr设置发电用电
-        String dAddr = ammeter.getdAddr().toString();
-        if (dAddr.substring(0, 1).equalsIgnoreCase(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().toString())) {
-            ammeter.setType(AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
-        } else if (dAddr.substring(0, 1).equalsIgnoreCase(AmmeterTypeEnum.USE_ELECTRICITY.getCode().toString())) {
-            ammeter.setType(AmmeterTypeEnum.USE_ELECTRICITY.getCode());
-        }
-
         // 判断是否有关联电站
         if (ammeter.getStationId() == null) {
             throw new MyException(ResultEnum.NO_CHOOSE_STATION);
         }
-
         // 判断电表是否已经存在
         Ammeter ammeterR = new Ammeter();
         ammeterR.setcAddr(ammeter.getcAddr());
-        ammeterR.setdAddr(ammeter.getdAddr());
         ammeterR.setDel(DeleteEnum.NOT_DEL.getCode());
         Ammeter findOne = ammeterDao.findOne(Example.of(ammeterR));
         if (findOne != null) {

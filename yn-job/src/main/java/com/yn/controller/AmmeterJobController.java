@@ -84,7 +84,7 @@ public class AmmeterJobController {
 			for (Ammeter ammeter : findAll) {
 				AmPhaseRecord aprR = new AmPhaseRecord();
 				aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-				aprR.setdAddr(ammeter.getdAddr());
+				//aprR.setdAddr(ammeter.getdAddr());
 				aprR.setdType(ammeter.getdType());
 				aprR.setiAddr(ammeter.getiAddr());
 				aprR.setDealt(0);
@@ -138,7 +138,7 @@ public class AmmeterJobController {
 	private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
 		AmmeterRecord ammeterRecord = new AmmeterRecord();
 		ammeterRecord.setcAddr(ammeter.getcAddr());
-		ammeterRecord.setdAddr(ammeter.getdAddr());
+		//ammeterRecord.setdAddr(ammeter.getdAddr());
 		ammeterRecord.setdType(ammeter.getdType());
 		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
 		// if (ammeter.getStation() != null) {
@@ -146,7 +146,7 @@ public class AmmeterJobController {
 		// ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
 		// }
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
-		ammeterRecord.setType(ammeter.getType());
+		//ammeterRecord.setType(ammeter.getType());
 		// ammeterRecordService.save(ammeterRecord);
 		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
@@ -171,8 +171,8 @@ public class AmmeterJobController {
 		Double kwhTol = getKwhTol(apr);
 		ammeter.setStatusCode(statusCode);
 		ammeter.setNowKw(apr.getKw());
-		ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
-		ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
+		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
+		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		// ammeterDao.save(ammeter);
 		// ammeterMapper.insert(ammeter);
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
@@ -232,38 +232,38 @@ public class AmmeterJobController {
 
 		if (ammeter.getStationId() != null) {
 			String cAddr = ammeter.getcAddr();
-			Long dAddr = ammeter.getdAddr();
+			//Long dAddr = ammeter.getdAddr();
 			Integer dType = ammeter.getdType();
 			Integer wAddr = apr.getwAddr();
 			/*Long stationId = station.getId();
 			String stationCode = station.getStationCode();*/
 			Long serverId = station.getServerId();
-			Integer type = ammeter.getType();
+			//Integer type = ammeter.getType();
 			String ammeterCode = ammeter.getcAddr();
 
 			// 每小时的
 			ElecDataHour temStationR = new ElecDataHour();
 			temStationR.setDevConfCode(cAddr);
-			temStationR.setdAddr(dAddr);
+			//temStationR.setdAddr(dAddr);
 			temStationR.setdType(dType);
 			temStationR.setwAddr(wAddr);
 //			temStationR.setStationId(stationId);
 //			temStationR.setStationCode(stationCode);
 			temStationR.setAmmeterCode(ammeterCode);
-			temStationR.setServerId(serverId);
+			//temStationR.setServerId(serverId);
 //			temStationR.setType(type);
 			temStationR.setRecordTime(temStationRecordTime);
 			ElecDataHour temStation = elecDataHourService.findOne(temStationR);
 			if (temStation == null) {
 				ElecDataHour newTemStation = new ElecDataHour();
 				newTemStation.setDevConfCode(cAddr);
-				newTemStation.setdAddr(dAddr);
+				//newTemStation.setdAddr(dAddr);
 				newTemStation.setdType(dType);
 				newTemStation.setwAddr(wAddr);
 				/*newTemStation.setStationId(stationId);
 				newTemStation.setStationCode(stationCode);*/
 				newTemStation.setAmmeterCode(ammeterCode);
-				newTemStation.setServerId(serverId);
+				//newTemStation.setServerId(serverId);
 //				newTemStation.setType(type);
 				newTemStation.setKw(apr.getKw());
 				newTemStation.setKwh(tolKwh);
@@ -284,12 +284,12 @@ public class AmmeterJobController {
 			// 每天的
 			ElecDataDay temStationYearR = new ElecDataDay();
 			temStationYearR.setDevConfCode(cAddr);
-			temStationYearR.setdAddr(dAddr);
+			//temStationYearR.setdAddr(dAddr);
 			temStationYearR.setdType(dType);
 			temStationYearR.setwAddr(wAddr);
 			/*temStationYearR.setStationId(stationId);
 			temStationYearR.setStationCode(stationCode);*/
-			temStationYearR.setServerId(serverId);
+			//temStationYearR.setServerId(serverId);
 			temStationYearR.setAmmeterCode(ammeterCode);
 //			temStationYearR.setType(type);
 			temStationYearR.setRecordTime(temStationYearRecordTime);
@@ -297,12 +297,12 @@ public class AmmeterJobController {
 			if (temStationYear == null) {
 				ElecDataDay newTemStationYear = new ElecDataDay();
 				newTemStationYear.setDevConfCode(cAddr);
-				newTemStationYear.setdAddr(dAddr);
+				//newTemStationYear.setdAddr(dAddr);
 				newTemStationYear.setdType(dType);
 				newTemStationYear.setwAddr(wAddr);
 				/*newTemStationYear.setStationId(stationId);
 				newTemStationYear.setStationCode(stationCode)*/;
-				newTemStationYear.setServerId(serverId);
+				//newTemStationYear.setServerId(serverId);
 				newTemStationYear.setAmmeterCode(ammeterCode);
 //				newTemStationYear.setType(type);
 				newTemStationYear.setKw(apr.getKw());

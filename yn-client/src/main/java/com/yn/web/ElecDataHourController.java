@@ -96,31 +96,31 @@ public class ElecDataHourController {
      * 根据用户查找每月的发电量
      * @return
      */
-    @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public Object monthKwh(HttpSession session,Station station) {
-    	NewUserVo userVo=(NewUserVo)session.getAttribute("user");
-    	 List<Map<Object, Object>> monthKwh=new ArrayList<>();
-
-    	
-    	 if (userVo!=null) {
-    		 station.setUserId(userVo.getId());
-    		 if (stationDao.findByUserId(station.getUserId())!=null) {
-    		List<Station> stations=stationDao.findByUserId(station.getUserId());
-    		monthKwh=elecDataHourService.monthKwh(stations);
-			}
-			
-			List<Station> stations=stationDao.findAll();
-			monthKwh=elecDataHourService.monthKwh(stations);
-			
-		} else {
-			List<Station> stations=stationDao.findAll();
-			monthKwh=elecDataHourService.monthKwh(stations);
-		}
-        
-        return ResultVOUtil.success(monthKwh);
-    }
-    
+//    @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST, RequestMethod.GET})
+//    @ResponseBody
+//    public Object monthKwh(HttpSession session,Station station) {
+//    	NewUserVo userVo=(NewUserVo)session.getAttribute("user");
+//    	 List<Map<Object, Object>> monthKwh=new ArrayList<>();
+//
+//    	
+//    	 if (userVo!=null) {
+//    		 station.setUserId(userVo.getId());
+//    		 if (stationDao.findByUserId(station.getUserId())!=null) {
+//    		List<Station> stations=stationDao.findByUserId(station.getUserId());
+//    		monthKwh=elecDataHourService.monthKwh(stations);
+//			}
+//			
+//			List<Station> stations=stationDao.findAll();
+//			monthKwh=elecDataHourService.monthKwh(stations);
+//			
+//		} else {
+//			List<Station> stations=stationDao.findAll();
+//			monthKwh=elecDataHourService.monthKwh(stations);
+//		}
+//        
+//        return ResultVOUtil.success(monthKwh);
+//    }
+//    
     /**
      * 根据用户查找每小时的发电量
      * @return

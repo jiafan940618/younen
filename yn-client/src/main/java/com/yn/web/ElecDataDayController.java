@@ -90,17 +90,17 @@ public class ElecDataDayController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/monthKwh", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public Object monthKwh(HttpSession session, Station station) {
-
-		List<Map<Object, Object>> monthKwh = new ArrayList<>();
-
-		List<Station> stations = stationDao.findAllStation();
-		monthKwh = elecDataDayService.monthKwh(stations);
-
-		return ResultVOUtil.success(monthKwh);
-	}
+//	@RequestMapping(value = "/monthKwh", method = { RequestMethod.POST, RequestMethod.GET })
+//	@ResponseBody
+//	public Object monthKwh(HttpSession session, Station station) {
+//
+//		List<Map<Object, Object>> monthKwh = new ArrayList<>();
+//
+//		List<Station> stations = stationDao.findAllStation();
+//		monthKwh = elecDataDayService.monthKwh(stations);
+//
+//		return ResultVOUtil.success(monthKwh);
+//	}
 	
 //	@ResponseBody
 //	@RequestMapping(value = "/huanbao")
@@ -176,16 +176,17 @@ public class ElecDataDayController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/numKwh", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public Object numKwh(HttpSession session, Station station, Integer type, String dateStr) {
-
-		List<Map<Object, Object>> monthKwh = new ArrayList<>();
-		List<Station> stations = stationDao.findAllStation();
-		monthKwh = elecDataDayService.numKwh(stations, type, dateStr);
-
-		return ResultVOUtil.success(monthKwh);
-	}
+//	@RequestMapping(value = "/numKwh", method = { RequestMethod.POST, RequestMethod.GET })
+//	@ResponseBody
+//	public Object numKwh(HttpSession session, Station station, Integer type, String dateStr) {
+//
+//		List<Map<Object, Object>> monthKwh = new ArrayList<>();
+//		List<Station> stations = stationDao.findAllStation();
+//		monthKwh = elecDataDayService.numKwh(stations, type, dateStr);
+//
+//		return ResultVOUtil.success(monthKwh);
+//	}
+//	
 	
 	/**
 	 * 

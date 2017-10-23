@@ -26,8 +26,8 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	@Query("SELECT COUNT(*) FROM Ammeter u WHERE u.createDtm>=?1 AND u.createDtm<?2 AND u.del=0")
 	long countNum(Date startDtm, Date endDtm);
 
-	@Query("SELECT DISTINCT(a.dAddr) FROM Ammeter a WHERE a.stationId=?1 AND a.type=?2 AND a.del=0")
-	List<Long> findDAddr(Long stationId, Integer type);
+//	@Query("SELECT DISTINCT(a.dAddr) FROM Ammeter a WHERE a.stationId=?1 AND a.type=?2 AND a.del=0")
+//	List<Long> findDAddr(Long stationId, Integer type);
 	
 	/**
 	 * 通过stationId找到电表
