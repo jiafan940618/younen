@@ -29,5 +29,6 @@ public interface ElecDataHourMapper {
 	int updateByPrimaryKey(ElecDataHour record);
 
 	List<ElecDataHour> selectByQuery(ElecDataHour elecDataHour);
-
+	
+	List<ElecDataHour> findAllDataByMonthOrYear(ElecDataHour elecDataHour);
 }

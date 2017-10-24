@@ -21,6 +21,9 @@ public class TestDemo {
 	}
 
 	public static void main(String[] as) throws ParseException {
+		
+		int inMonth = DateUtil.countDaysInMonth(8);
+		System.out.println(inMonth);
 		 
 		System.out.println();
 		int y, m, d, h, mi, s;
