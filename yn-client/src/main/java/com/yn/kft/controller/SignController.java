@@ -63,8 +63,6 @@ public class SignController {
 		@RequestMapping(value="/payonline")
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
 		public Object doOnline(HttpServletRequest request,HttpSession session,BillOrderVo billOrderVo){
-			/** pc端支付宝支付为二维码支付*/ /** alipayQR*/
-			/** pc端微信支付为二维码支付*/  /** wxPubQR*/
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 
 			/*billOrderVo.setMoney(new BigDecimal("0.01"));
@@ -79,11 +77,6 @@ public class SignController {
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
 			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+billOrderVo.getMoney());
-
-			/*String description = billOrderVo.getOrderId().toString()+","+billOrderVo.getUserId();
-		
-			billOrderVo.setDescription(description);*/
-
 
 			session.setAttribute("tradeNo", billOrderVo.getTradeNo());
 			 //等于1是余额支付

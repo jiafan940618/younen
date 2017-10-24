@@ -16,6 +16,6 @@ public interface TransactionRecordMapper {
 	
 	List<TransactionRecord> GivePage(Page<TransactionRecord> page);
 	
-	int FindByNum(Long userId);
+	int FindByNum(Page<TransactionRecord> page);
 
 }

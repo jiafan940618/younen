@@ -32,6 +32,11 @@ public class TransactionRecordService {
 		return transactionRecordDao.FindByNum(userId); 
 	 }
 	
+	public int FindBynewNum(Page<TransactionRecord> page){
+		
+		return transactionRecordMapper.FindByNum(page);
+	}
+	
   public List<TransactionRecord> FindByTransactionRecord(Long userId){
 		
 		return transactionRecordDao.FindByTransactionRecord(userId);

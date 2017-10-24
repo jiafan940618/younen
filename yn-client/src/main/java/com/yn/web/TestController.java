@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.model.Page;
 import com.yn.model.Recharge;
 import com.yn.model.TransactionRecord;
 import com.yn.model.Wallet;
@@ -65,11 +66,15 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
+	    	   
+	    	   Page<TransactionRecord> page = new Page<TransactionRecord>();
+	    	   page.setUserId(2L);
+	    	   
 	    
-	    	   List<TransactionRecord> list = transactionRecordService.FindByTransactionRecord(3L);
+	    	    int total =	transactionRecordService.FindBynewNum(page);
 	    	   
 
-	            return ResultVOUtil.success(list);  
+	            return ResultVOUtil.success(total);  
 	       } 
 	       
 	       @ResponseBody

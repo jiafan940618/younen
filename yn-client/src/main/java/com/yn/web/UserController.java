@@ -334,8 +334,8 @@ public class UserController {
     @RequestMapping("/userTransactionRecord") 
     @ResponseBody
     public Object helloJsp01(com.yn.model.Page<TransactionRecord>  page){
-    	page.setUserId(2L);
-    	page.setTime_to("2017-10-20");
+    	/*page.setUserId(2L);
+    	page.setTime_to("2017-10-20");*/
     	
     	
     	logger.info("传递参数 ---- ----- ----- userId："+page.getUserId());
@@ -345,6 +345,8 @@ public class UserController {
     	logger.info("传递参数 ---- ----- ----- type："+page.getType());
     	logger.info("传递参数 ---- ----- ----- status："+page.getStatus());
     	logger.info("传递参数 ---- ----- ----- payWay："+page.getPayWay());
+    	
+    int total =	transactionRecordService.FindBynewNum(page);
     	
     	 List<TransactionRecord> list = transactionRecordService.GivePage(page);
     	 for (TransactionRecord transactionRecord : list) {
@@ -361,6 +363,9 @@ public class UserController {
     			 transactionRecord.setRemark("快付通");
     		 }
     	 }
+    	 
+    	 page.setTotal(total);
+    	 
 		return ResultVOUtil.newsuccess(page, list);  
     }
     
