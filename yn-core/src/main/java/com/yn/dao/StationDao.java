@@ -22,12 +22,12 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     @Query("update Station set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
-    @Query("select COALESCE(sum(s.nowKw),0) from Station s WHERE s.del=0")
-    double sumNowKw();
+//    @Query("select COALESCE(sum(s.nowKw),0) from Station s WHERE s.del=0")
+//    double sumNowKw();
     
-    @Query("select COALESCE(sum(s.nowKw),0) from Station s WHERE s.serverId=?1 AND s.del=0")
-    double sumNowKw(Long serverId);
-    
+//    @Query("select COALESCE(sum(s.nowKw),0) from Station s WHERE s.serverId=?1 AND s.del=0")
+//    double sumNowKw(Long serverId);
+//    
     @Query("select s.id from Station s WHERE s.del=0")
     List<Long> findId();
     
@@ -64,15 +64,15 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     
     
     /** 根据userid查询出电站的信息*/
-    @Query("select new Station(id,capacity,workTotaTm,electricityGenerationTol,status,userId,stationName) from Station s WHERE s.userId = :userId and s.del=0")
-    List<Station> getstation(@Param("userId") Long userId);
-    
+//    @Query("select new Station(id,capacity,workTotaTm,electricityGenerationTol,status,userId,stationName) from Station s WHERE s.userId = :userId and s.del=0")
+//    List<Station> getstation(@Param("userId") Long userId);
+//    
     
     /*
      * 按时间查询装机并网总量
      */
     
-    @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.createDtm LIKE CONCAT('%',:dateStr,'%') AND t.id=:stationId GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
-    List<Map<Object,Object>> numCapacity(@Param("stationId")Long stationId,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
-    
+//    @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.createDtm LIKE CONCAT('%',:dateStr,'%') AND t.id=:stationId GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
+//    List<Map<Object,Object>> numCapacity(@Param("stationId")Long stationId,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
+//    
 }

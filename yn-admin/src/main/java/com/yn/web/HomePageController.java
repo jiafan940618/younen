@@ -1,17 +1,10 @@
 
 package com.yn.web;
 
-import com.yn.dao.*;
-import com.yn.domain.EachHourTemStation;
-import com.yn.enums.AmmeterTypeEnum;
-import com.yn.enums.DeleteEnum;
-import com.yn.enums.NoticeEnum;
-import com.yn.model.Order;
-import com.yn.model.Station;
-import com.yn.model.User;
-import com.yn.service.TemStationService;
-import com.yn.session.SessionCache;
-import com.yn.vo.re.ResultVOUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +12,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.yn.dao.AmmeterDao;
+import com.yn.dao.ElecDataDayDao;
+import com.yn.dao.FeedbackDao;
+import com.yn.dao.NoticeDao;
+import com.yn.dao.OrderDao;
+import com.yn.dao.ServerDao;
+import com.yn.dao.StationDao;
+import com.yn.dao.UserDao;
+import com.yn.domain.EachHourTemStation;
+import com.yn.enums.AmmeterTypeEnum;
+import com.yn.enums.DeleteEnum;
+import com.yn.enums.NoticeEnum;
+import com.yn.model.Order;
+import com.yn.model.Station;
+import com.yn.model.User;
+import com.yn.service.ElecDataDayService;
+import com.yn.session.SessionCache;
+import com.yn.vo.re.ResultVOUtil;
 
 @RestController
 @RequestMapping("/server/homePage")
@@ -31,9 +39,9 @@ public class HomePageController {
     @Autowired
     StationDao stationDao;
     @Autowired
-    TemStationService temStationService;
+    ElecDataDayService elecDataDayService;
     @Autowired
-    TemStationDao temStationDao;
+    ElecDataDayDao elecDataDayDao;
     @Autowired
     FeedbackDao feedbackDao;
     @Autowired
@@ -53,26 +61,26 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/tolNowKwAndTolKwh", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object tolNowKwAndTolKwh(Long serverId) {
-
-        double sumNowKw = 0;
-        double sumKwh = 0;
-        if (serverId == null) {
-            sumNowKw = stationDao.sumNowKw();
-            sumKwh = temStationDao.sumKwh(1L);
-        } else {
-            sumNowKw = stationDao.sumNowKw(serverId);
-            sumKwh = temStationDao.sumKwh(1L, serverId);
-        }
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("tolNowKw", sumNowKw);
-        map.put("tolKwh", sumKwh);
-
-        return ResultVOUtil.success(map);
-    }
+//    @RequestMapping(value = "/tolNowKwAndTolKwh", method = {RequestMethod.POST})
+//    @ResponseBody
+//    public Object tolNowKwAndTolKwh(Long serverId) {
+//
+//        double sumNowKw = 0;
+//        double sumKwh = 0;
+//        if (serverId == null) {
+//            sumNowKw = stationDao.sumNowKw();
+//            sumKwh = elecDataDayDao.sumKwh(1L);
+//        } else {
+//            sumNowKw = stationDao.sumNowKw(serverId);
+//            sumKwh = elecDataDayDao.sumKwh(1L, serverId);
+//        }
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("tolNowKw", sumNowKw);
+//        map.put("tolKwh", sumKwh);
+//
+//        return ResultVOUtil.success(map);
+//    }
 
     /**
      * 最新动态
@@ -202,12 +210,12 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
-    @ResponseBody
-    public Object todayKwh(Long serverId) {
-        List<EachHourTemStation> todayKwh = temStationService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().longValue());
-        return ResultVOUtil.success(todayKwh);
-    }
+//    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
+//    @ResponseBody
+//    public Object todayKwh(Long serverId) {
+//        List<EachHourTemStation> todayKwh = elecDataDayService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode().longValue());
+//        return ResultVOUtil.success(todayKwh);
+//    }
 
 }
 

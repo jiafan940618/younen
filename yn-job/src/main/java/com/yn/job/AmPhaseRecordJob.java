@@ -62,7 +62,7 @@ public class AmPhaseRecordJob {
 	private void collectAmPhaseRecord() throws Exception {
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
-		taskExecuteRecord.setJobName(this.getClass().getName());
+		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
@@ -134,7 +134,7 @@ public class AmPhaseRecordJob {
 			e.printStackTrace();
 		}
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
-		taskExecuteRecord.setJobName(this.getClass().getName());
+		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
 		taskExecuteRecordMapper.insert(taskExecuteRecord);
 		System.out.println("日志记录："+taskExecuteRecord.getStatus());
 	}
@@ -149,7 +149,7 @@ public class AmPhaseRecordJob {
 			Long meterTime = apr.getMeterTime();
 			Ammeter ammeterR = new Ammeter();
 			ammeterR.setcAddr(apr.getcAddr().toString());
-			ammeterR.setdAddr(apr.getdAddr());
+			//ammeterR.setdAddr(apr.getdAddr());
 			ammeterR.setdType(apr.getdType());
 			ammeterR.setiAddr(apr.getiAddr());
 			Ammeter ammeter = ammeterService.findOne(ammeterR);
@@ -165,7 +165,7 @@ public class AmPhaseRecordJob {
 				}
 
 				ammeter.setNowKw(apr.getKw());
-				ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
+				ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 				// ammeterDao.save(ammeter);
 				if(ammeterDao.findOne(ammeter.getId())!=null){
 					ammeterMapper.updateByPrimaryKeySelective(ammeter);
@@ -176,7 +176,7 @@ public class AmPhaseRecordJob {
 				// 插入电表状态记录
 				AmmeterRecord ammeterRecord = new AmmeterRecord();
 				ammeterRecord.setcAddr(ammeter.getcAddr());
-				ammeterRecord.setdAddr(ammeter.getdAddr());
+				//ammeterRecord.setdAddr(ammeter.getdAddr());
 				ammeterRecord.setdType(ammeter.getdType());
 				ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
 				if (ammeter.getStation() != null) {
@@ -184,7 +184,7 @@ public class AmPhaseRecordJob {
 					ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
 				}
 				ammeterRecord.setStatusCode(statusCode);
-				ammeterRecord.setType(ammeter.getType());
+				//ammeterRecord.setType(ammeter.getType());
 				// ammeterRecordService.save(ammeterRecord);
 				ammeterRecordService.saveByMapper(ammeterRecord);
 			}

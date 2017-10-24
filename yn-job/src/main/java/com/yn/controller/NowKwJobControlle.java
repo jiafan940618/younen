@@ -9,7 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yn.dao.StationDao;
 import com.yn.dao.mapper.StationMapper;
@@ -57,7 +56,7 @@ public class NowKwJobControlle {
 			for (Ammeter ammeter : ammeters) {
 				tolNowKw += ammeter.getNowKw();
 			}
-			station.setNowKw(tolNowKw);
+			//station.setNowKw(tolNowKw);
 			// stationDao.save(station);
 			if (stationDao.findOne(station.getId()) != null){
 				stationMapper.updateByPrimaryKeySelective(station);

@@ -45,16 +45,6 @@ public class Station extends IDomain implements Serializable {
 	private String cityText;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[电站地址]'")
 	private String addressText;
-	@Column(insertable=false, columnDefinition = "int(11) default 0 comment '[工作总时长 分钟]'")
-	private Integer workTotaTm;
-	@Column(insertable=false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[累计发电总量]'")
-	private Double electricityGenerationTol;
-	@Column(insertable=false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[累计用电总量]'")
-	private Double electricityUseTol;
-	@Column(insertable=false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[当前功率]'")
-	private Double nowKw;
-	@Column(columnDefinition = "datetime comment '[开始发电时间]'")
-	private Date workDtm;
 	@Column(columnDefinition = "varchar(255) comment '[采集器码]'")
 	private String devConfCode;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[电站状态]{0:未绑定电表,1:正在发电,2:电表异常}'")
@@ -106,18 +96,6 @@ public class Station extends IDomain implements Serializable {
 	private Set<Ammeter> ammeter;
 
     public Station() {}
-
-	public Station(Long id, Double capacity, Integer workTotaTm, Double electricityGenerationTol, Integer status,Long userId,String stationName) {
-		this.id = id;
-		this.capacity = capacity;
-		this.workTotaTm = workTotaTm;
-		this.electricityGenerationTol = electricityGenerationTol;
-		this.status = status;
-		this.userId = userId;
-		this.stationName = stationName;
-	}
-
-
 
 	public String getStationName() {
         return stationName;
@@ -233,46 +211,6 @@ public class Station extends IDomain implements Serializable {
 
     public void setAddressText(String addressText) {
         this.addressText = addressText;
-    }
-
-    public Integer getWorkTotaTm() {
-        return workTotaTm;
-    }
-
-    public void setWorkTotaTm(Integer workTotaTm) {
-        this.workTotaTm = workTotaTm;
-    }
-
-    public Double getElectricityGenerationTol() {
-        return electricityGenerationTol;
-    }
-
-    public void setElectricityGenerationTol(Double electricityGenerationTol) {
-        this.electricityGenerationTol = electricityGenerationTol;
-    }
-
-    public Double getElectricityUseTol() {
-        return electricityUseTol;
-    }
-
-    public void setElectricityUseTol(Double electricityUseTol) {
-        this.electricityUseTol = electricityUseTol;
-    }
-
-    public Double getNowKw() {
-        return nowKw;
-    }
-
-    public void setNowKw(Double nowKw) {
-        this.nowKw = nowKw;
-    }
-
-    public Date getWorkDtm() {
-        return workDtm;
-    }
-
-    public void setWorkDtm(Date workDtm) {
-        this.workDtm = workDtm;
     }
 
     public String getDevConfCode() {

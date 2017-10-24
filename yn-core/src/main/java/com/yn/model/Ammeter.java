@@ -17,8 +17,6 @@ public class Ammeter extends IDomain implements Serializable {
 	private String cAddr;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[接口地址]'")
 	private Integer iAddr;
-	@Column(columnDefinition = "int(11) NOT NULL comment '[设备地址]'")
-	private Long dAddr;
 	@Column(columnDefinition = "int(11) NOT NULL comment '[设备类型]'")
 	private Integer dType;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[dName]'")
@@ -29,24 +27,12 @@ public class Ammeter extends IDomain implements Serializable {
 	private String wMask;
 	@Column(columnDefinition = "varchar(255) NOT NULL comment '[wConf]'")
 	private String wConf;
-	
-	
-	@Column(columnDefinition = "int(11) comment '[省id]'")
-	private Long provinceId;
-	@Column(columnDefinition = "varchar(255) comment '[省名字]'")
-	private String provinceText;
-	@Column(columnDefinition = "int(11) comment '[市id]'")
-	private Long cityId;
-	@Column(columnDefinition = "varchar(255) comment '[市名字]'")
-	private String cityText;
-	@Column(columnDefinition = "varchar(255) comment '[地址]'")
-	private String addressText;
 	@Column(columnDefinition = "int(11) comment '[电站id]'")
 	private Long stationId;
 	@Column(insertable=false, columnDefinition = "int(11) default 0 comment '[工作总时长 分钟]'")
-	private Integer workTotaTm;
+	private Integer workTotalTm;
 	@Column(insertable=false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[累计发电/用电]'")
-	private Double workTotaKwh;
+	private Double workTotalKwh;
 	@Column(insertable = false, precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[当前功率]'")
 	private Double nowKw;
 	@Column(columnDefinition = "datetime comment '[开始发电日期]'")
@@ -57,8 +43,6 @@ public class Ammeter extends IDomain implements Serializable {
 	private String sim;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) NOT NULL comment '[初始电量]'")
 	private Double initKwh;
-	@Column(columnDefinition = "int(1) NOT NULL comment '[电表类型]{1:发电,2:用电}'")
-	private Integer type;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[运行状态]{0:正常,1:不正常}'")
 	private Integer status;
 	@Column(columnDefinition = "varchar(255) comment '[电表状态码]'")
@@ -94,14 +78,6 @@ public class Ammeter extends IDomain implements Serializable {
 
     public void setiAddr(Integer iAddr) {
         this.iAddr = iAddr;
-    }
-
-    public Long getdAddr() {
-        return dAddr;
-    }
-
-    public void setdAddr(Long dAddr) {
-        this.dAddr = dAddr;
     }
 
     public Integer getdType() {
@@ -144,46 +120,6 @@ public class Ammeter extends IDomain implements Serializable {
         this.wConf = wConf;
     }
 
-    public Long getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(Long provinceId) {
-        this.provinceId = provinceId;
-    }
-
-    public String getProvinceText() {
-        return provinceText;
-    }
-
-    public void setProvinceText(String provinceText) {
-        this.provinceText = provinceText;
-    }
-
-    public Long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Long cityId) {
-        this.cityId = cityId;
-    }
-
-    public String getCityText() {
-        return cityText;
-    }
-
-    public void setCityText(String cityText) {
-        this.cityText = cityText;
-    }
-
-    public String getAddressText() {
-        return addressText;
-    }
-
-    public void setAddressText(String addressText) {
-        this.addressText = addressText;
-    }
-
     public Long getStationId() {
         return stationId;
     }
@@ -192,20 +128,20 @@ public class Ammeter extends IDomain implements Serializable {
         this.stationId = stationId;
     }
 
-    public Integer getWorkTotaTm() {
-        return workTotaTm;
+    public Integer getWorkTotalTm() {
+        return workTotalTm;
     }
 
-    public void setWorkTotaTm(Integer workTotaTm) {
-        this.workTotaTm = workTotaTm;
+    public void setWorkTotalTm(Integer workTotalTm) {
+        this.workTotalTm = workTotalTm;
     }
 
-    public Double getWorkTotaKwh() {
-        return workTotaKwh;
+    public Double getWorkTotalKwh() {
+        return workTotalKwh;
     }
 
-    public void setWorkTotaKwh(Double workTotaKwh) {
-        this.workTotaKwh = workTotaKwh;
+    public void setWorkTotalKwh(Double workTotalKwh) {
+        this.workTotalKwh = workTotalKwh;
     }
 
     public Double getNowKw() {
@@ -246,14 +182,6 @@ public class Ammeter extends IDomain implements Serializable {
 
     public void setInitKwh(Double initKwh) {
         this.initKwh = initKwh;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public Integer getStatus() {

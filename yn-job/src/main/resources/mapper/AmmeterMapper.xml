@@ -11,7 +11,7 @@
 		<result column="c_addr" property="cAddr" jdbcType="INTEGER" />
 		<result column="city_id" property="cityId" jdbcType="INTEGER" />
 		<result column="city_text" property="cityText" jdbcType="VARCHAR" />
-		<result column="d_addr" property="dAddr" jdbcType="INTEGER" />
+		<!-- <result column="d_addr" property="dAddr" jdbcType="INTEGER" /> -->
 		<result column="d_name" property="dName" jdbcType="VARCHAR" />
 		<result column="d_opt" property="dOpt" jdbcType="VARCHAR" />
 		<result column="d_type" property="dType" jdbcType="INTEGER" />
@@ -37,7 +37,7 @@
 	<sql id="Base_Column_List">
 		id, create_dtm, del, del_dtm, update_dtm, address_text, c_addr,
 		city_id, city_text,
-		d_addr, d_name, d_opt, d_type, i_addr, init_kwh, now_kw, outfactory_dtm,
+		<!-- d_addr, --> d_name, d_opt, d_type, i_addr, init_kwh, now_kw, outfactory_dtm,
 		province_id,
 		province_text, sim, station_id, status, status_code, type, w_conf, w_mask, work_dtm,
 		work_tota_kwh, work_tota_tm
@@ -69,7 +69,7 @@
 		del_dtm, update_dtm, address_text,
 		c_addr, city_id,
 		city_text,
-		d_addr, d_name, d_opt,
+		<!-- d_addr,  -->d_name, d_opt,
 		d_type, i_addr, init_kwh,
 		now_kw,
 		outfactory_dtm, province_id,
@@ -134,9 +134,9 @@
 			<if test="cityText != null">
 				city_text,
 			</if>
-			<if test="dAddr != null">
+		<!-- 	<if test="dAddr != null">
 				d_addr,
-			</if>
+			</if> -->
 			<if test="dName != null">
 				d_name,
 			</if>
@@ -312,9 +312,9 @@
 			<if test="cityText != null">
 				city_text = #{cityText,jdbcType=VARCHAR},
 			</if>
-			<if test="dAddr != null">
+			<!-- <if test="dAddr != null">
 				d_addr = #{dAddr,jdbcType=INTEGER},
-			</if>
+			</if> -->
 			<if test="dName != null">
 				d_name = #{dName,jdbcType=VARCHAR},
 			</if>
@@ -389,7 +389,7 @@
 		city_id = #{cityId,jdbcType=INTEGER},
 		city_text =
 		#{cityText,jdbcType=VARCHAR},
-		d_addr = #{dAddr,jdbcType=INTEGER},
+		<!-- d_addr = #{dAddr,jdbcType=INTEGER}, -->
 		d_name = #{dName,jdbcType=VARCHAR},
 		d_opt = #{dOpt,jdbcType=VARCHAR},
 		d_type = #{dType,jdbcType=INTEGER},

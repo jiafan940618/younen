@@ -38,7 +38,7 @@ public class NowKwJob {
 				tolNowKw += ammeter.getNowKw();
 			}
 			
-			station.setNowKw(tolNowKw);
+			//station.setNowKw(tolNowKw);
 			stationDao.save(station);
 		}
 	}

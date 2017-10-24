@@ -14,23 +14,22 @@ import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.AmmeterRecordDao;
 import com.yn.dao.StationDao;
-import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.dao.mapper.AmmeterMapper;
 import com.yn.dao.mapper.StationMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.model.Ammeter;
 import com.yn.model.AmmeterRecord;
 import com.yn.model.AmmeterStatusCode;
+import com.yn.model.ElecDataDay;
+import com.yn.model.ElecDataHour;
 import com.yn.model.Station;
-import com.yn.model.TemStation;
-import com.yn.model.TemStationYear;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmmeterRecordService;
 import com.yn.service.AmmeterService;
 import com.yn.service.AmmeterStatusCodeService;
+import com.yn.service.ElecDataDayService;
+import com.yn.service.ElecDataHourService;
 import com.yn.service.StationService;
-import com.yn.service.TemStationService;
-import com.yn.service.TemStationYearService;
 import com.yn.utils.DateUtil;
 
 /**
@@ -59,9 +58,9 @@ public class AmmeterJob {
 	@Autowired
 	StationMapper stationMapper;
 	@Autowired
-	TemStationService temStationService;
+	ElecDataHourService elecDataHourService;
 	@Autowired
-	TemStationYearService temStationYearService;
+	ElecDataDayService elecDataDayService;
 	@Autowired
 	AmmeterMapper ammeterMapper;
 
@@ -75,7 +74,7 @@ public class AmmeterJob {
 			for (Ammeter ammeter : findAll) {
 				AmPhaseRecord aprR = new AmPhaseRecord();
 				aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-				aprR.setdAddr(ammeter.getdAddr());
+				//aprR.setdAddr(ammeter.getdAddr());
 				aprR.setdType(ammeter.getdType());
 				aprR.setiAddr(ammeter.getiAddr());
 				aprR.setDealt(0);
@@ -128,7 +127,7 @@ public class AmmeterJob {
 	private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
 		AmmeterRecord ammeterRecord = new AmmeterRecord();
 		ammeterRecord.setcAddr(ammeter.getcAddr());
-		ammeterRecord.setdAddr(ammeter.getdAddr());
+		//ammeterRecord.setdAddr(ammeter.getdAddr());
 		ammeterRecord.setdType(ammeter.getdType());
 		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
 		 if (ammeter.getStation() != null) {
@@ -136,7 +135,7 @@ public class AmmeterJob {
 			 ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
 		 }
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
-		ammeterRecord.setType(ammeter.getType());
+		//ammeterRecord.setType(ammeter.getType());
 		// ammeterRecordService.save(ammeterRecord);
 		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
@@ -160,8 +159,8 @@ public class AmmeterJob {
 		Double kwhTol = getKwhTol(apr);
 		ammeter.setStatusCode(statusCode);
 		ammeter.setNowKw(apr.getKw());
-		ammeter.setWorkTotaTm(ammeter.getWorkTotaTm() + 10);
-		ammeter.setWorkTotaKwh(ammeter.getWorkTotaKwh() + kwhTol);
+		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
+		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		// ammeterDao.save(ammeter);
 		// ammeterMapper.insert(ammeter);
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
@@ -178,15 +177,15 @@ public class AmmeterJob {
 		Long stationId = ammeter.getStationId();
 		if (stationId != null) {
 			Station station = stationService.findOne(stationId);
-			if (station.getWorkDtm() == null) {
-				station.setWorkDtm(new Date());
-			}
-			station.setWorkTotaTm(station.getWorkTotaTm() + 10);
-			if (ammeter.getType() == 1) {
-				station.setElectricityGenerationTol(station.getElectricityGenerationTol() + kwhTol);
-			} else if (ammeter.getType() == 2) {
-				station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
-			}
+//			if (station.getWorkDtm() == null) {
+//				station.setWorkDtm(new Date());
+//			}
+//			station.setWorkTotaTm(station.getWorkTotaTm() + 10);
+//			if (ammeter.getType() == 1) {
+//				station.setElectricityGenerationTol(station.getElectricityGenerationTol() + kwhTol);
+//			} else if (ammeter.getType() == 2) {
+//				station.setElectricityUseTol(station.getElectricityUseTol() + kwhTol);
+//			}
 			System.err.println(ammeter.getNowKw());
 			// stationDao.save(station);
 			// stationMapper.insert(station);
@@ -212,87 +211,102 @@ public class AmmeterJob {
 
 		//if (ammeter.getStationId() != null) {
 			String cAddr = ammeter.getcAddr();
-			Long dAddr = ammeter.getdAddr();
+			Long dAddr = apr.getdAddr();
 			Integer dType = ammeter.getdType();
 			Integer wAddr = apr.getwAddr();
-			Long stationId = station.getId();
-			String stationCode = station.getStationCode();
+			//Long stationId = station.getId();
+			//String stationCode = station.getStationCode();
 			String ammeterCode = ammeter.getcAddr();
 			Long serverId = station.getServerId();
-			Integer type = ammeter.getType();
+			//Integer type = ammeter.getType();
+			CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+
 
 			// 每小时的
-			TemStation temStationR = new TemStation();
+			ElecDataHour temStationR = new ElecDataHour();
 			temStationR.setDevConfCode(cAddr);
-			temStationR.setdAddr(dAddr);
+			//temStationR.setdAddr(dAddr);
 			temStationR.setdType(dType);
 			temStationR.setwAddr(wAddr);
-			temStationR.setStationId(stationId);
-			temStationR.setStationCode(stationCode);
-			temStationR.setServerId(serverId);
+//			temStationR.setStationId(stationId);
+//			temStationR.setStationCode(stationCode);
+			temStationR.setAmmeterCode(ammeterCode);
+			//temStationR.setServerId(serverId);
 			//temStationR.setType(type);
 			temStationR.setRecordTime(temStationRecordTime);
-			TemStation temStation = temStationService.findOne(temStationR);
+			ElecDataHour temStation = elecDataHourService.findOne(temStationR);
 			if (temStation == null) {
-				TemStation newTemStation = new TemStation();
+				ElecDataHour newTemStation = new ElecDataHour();
 				newTemStation.setDevConfCode(cAddr);
-				newTemStation.setdAddr(dAddr);
+				//newTemStation.setdAddr(dAddr);
 				newTemStation.setdType(dType);
 				newTemStation.setwAddr(wAddr);
-				newTemStation.setStationId(stationId);
-				newTemStation.setStationCode(stationCode);
-				newTemStation.setServerId(serverId);
+//				newTemStation.setStationId(stationId);
+//				newTemStation.setStationCode(stationCode);
+				newTemStation.setAmmeterCode(ammeterCode);
+				//newTemStation.setServerId(serverId);
 //				newTemStation.setType(type);
 				newTemStation.setKw(apr.getKw());
 				newTemStation.setKwh(tolKwh);
 				newTemStation.setRecordTime(temStationRecordTime);
 				// temStationService.save(newTemStation);
-				temStationService.saveByMapper(newTemStation);
+				if(subSequence.equals("1")){
+									newTemStation.setType(1);
+								}else if(subSequence.equals("2")){
+									newTemStation.setType(2);
+								}
+				elecDataHourService.saveByMapper(newTemStation);
 				System.out.println("AmmeterJob--> temStation更新成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				temStation.setKw(apr.getKw());
 				temStation.setKwh(temStation.getKwh() + tolKwh);
 				// temStationService.save(temStation);;
-				temStationService.saveByMapper(temStation);
+				elecDataHourService.saveByMapper(temStation);
 				System.out.println("AmmeterJob--> temStation更新成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 
 			// 每天的
-			TemStationYear temStationYearR = new TemStationYear();
+			ElecDataDay temStationYearR = new ElecDataDay();
 			temStationYearR.setDevConfCode(cAddr);
-			temStationYearR.setdAddr(dAddr);
+			//temStationYearR.setdAddr(dAddr);
 			temStationYearR.setdType(dType);
 			temStationYearR.setwAddr(wAddr);
-			temStationYearR.setStationId(stationId);
-			temStationYearR.setStationCode(stationCode);
-			temStationYearR.setServerId(serverId);
+			//temStationYearR.setStationId(stationId);
+			//temStationYearR.setStationCode(stationCode);
+			temStationYearR.setAmmeterCode(ammeterCode);
+			//temStationYearR.setServerId(serverId);
 			//temStationYearR.setType(type);
 			temStationYearR.setRecordTime(temStationYearRecordTime);
-			TemStationYear temStationYear = temStationYearService.findOne(temStationYearR);
+			ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
 			if (temStationYear == null) {
-				TemStationYear newTemStationYear = new TemStationYear();
+				ElecDataDay newTemStationYear = new ElecDataDay();
 				newTemStationYear.setDevConfCode(cAddr);
-				newTemStationYear.setdAddr(dAddr);
+				//newTemStationYear.setdAddr(dAddr);
 				newTemStationYear.setdType(dType);
 				newTemStationYear.setwAddr(wAddr);
-				newTemStationYear.setStationId(stationId);
-				newTemStationYear.setStationCode(stationCode);
-				newTemStationYear.setServerId(serverId);
-				//newTemStationYear.setType(type);
+				/*newTemStationYear.setStationId(stationId);
+				newTemStationYear.setStationCode(stationCode);*/
+				newTemStationYear.setAmmeterCode(ammeterCode);
+				//newTemStationYear.setServerId(serverId);
 				newTemStationYear.setKw(apr.getKw());
 				newTemStationYear.setKwh(tolKwh);
 				newTemStationYear.setRecordTime(temStationYearRecordTime);
 				// temStationYearService.save(newTemStationYear);
-				temStationYearService.saveByMapper(newTemStationYear);
+				if(subSequence.equals("1")){
+					newTemStationYear.setType(1);
+				}else if(subSequence.equals("2")){
+					newTemStationYear.setType(2);
+				}
+				elecDataDayService.saveByMapper(newTemStationYear);
 				System.out.println("AmmeterJob--> temStationYear新增成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				temStationYear.setKw(apr.getKw());
 				temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
 				// temStationYearService.save(temStationYear);
-				temStationYearService.saveByMapper(temStationYear);
+				elecDataDayService.saveByMapper(temStationYear);
 				System.out.println("AmmeterJob--> temStationYear更新成功！-->"
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
