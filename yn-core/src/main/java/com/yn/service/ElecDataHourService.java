@@ -41,21 +41,30 @@ public class ElecDataHourService {
 	/**
 	 * 
 	    * @Title: findAllDataByMonthOrYear
-	    * @Description: TODO(查询到当月/当年所有的总发电、用电量。)
-	    * @param @param flag：大于0，查月、小于0，查年
+	    * @Description: TODO(查询到当月/当年所有的总发电、用电量。也可以指定年或者月)
+	    * @param @param flag 大于0是月，小于0是年。
+	    * @param @param selectYear 指定年。
+	    * @param @param selectMonth 指定月。
 	    * @param @return    参数
 	    * @return List<ElecDataHour>    返回类型
 	    * @throws
 	 */
-	public List<ElecDataHour> findAllDataByMonthOrYear(int flag) {
+	public List<ElecDataHour> findAllDataByMonthOrYear(int flag, int selectYear, int selectMonth) {
 		Calendar calendar = Calendar.getInstance();
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		String dayQuery = "";
-		if(flag>0){
-			dayQuery = String.valueOf(year) + "-" + (month <= 9 ? String.valueOf(0) + month : month) + "-";
-		}else{
+		if (flag > 0) {
+			dayQuery = String.valueOf(year) + "-" + (month <= 9 ? String.valueOf(0) + month : month);
+		} else {
 			dayQuery = String.valueOf(year);
+		}
+		if(selectYear!=-1){
+			if(selectMonth==-1){
+				dayQuery = String.valueOf(selectYear);
+			}else{
+				dayQuery = String.valueOf(selectYear) + "-" + (selectMonth <= 9 ? String.valueOf(0) + selectMonth : selectMonth);
+			}
 		}
 		System.out.println(dayQuery);
 		return elecDataHourMapper.findAllDataByMonthOrYear(new ElecDataHour(dayQuery));

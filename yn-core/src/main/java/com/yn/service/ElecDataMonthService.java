@@ -1,14 +1,11 @@
 package com.yn.service;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yn.dao.mapper.ElecDataHourMapper;
 import com.yn.dao.mapper.ElecDataMonthMapper;
-import com.yn.model.ElecDataHour;
 import com.yn.model.ElecDataMonth;
 import com.yn.model.ElecDataMonthExample;
 import com.yn.model.ElecDataMonthExample.Criteria;

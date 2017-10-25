@@ -45,14 +45,18 @@ public class ElecDataYearJob {
 	 */
 	@Scheduled(cron = "0 0 0 1 * ? ")
 	private void job() {
+		importData();
+	}
+
+	public void importData() {
 		String recordTime = new SimpleDateFormat("yyyy").format(new Date());
-		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(-1);
+		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(-1,-1,-1);
 		for (ElecDataHour elecDataHour : data) {
 			String ammeterCode = elecDataHour.getAmmeterCode()==null?"":elecDataHour.getAmmeterCode();
 			ElecDataYear elecDataYear = new ElecDataYear();
 			elecDataYear.setRecordTime(recordTime);
 			elecDataYear.setAmmeterCode(ammeterCode);
-			elecDataYear.setdAddr(elecDataHour.getdAddr().intValue());
+			elecDataYear.setdAddr(elecDataHour.getdAddr()==null?0:elecDataHour.getdAddr().intValue());
 			List<ElecDataYear> condition = elecDataYearService.findByCondition(elecDataYear);
 			Double totalKw = 0d;
 			Double totalKwh = 0d;
@@ -100,6 +104,5 @@ public class ElecDataYearJob {
 					logger.info("报错异常！");
 			}
 		}
-
 	}
 }

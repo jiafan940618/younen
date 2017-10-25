@@ -52,7 +52,7 @@ public class TestScheduled {
 	
 	//@Scheduled(fixedDelay = 10 * 1000)
 	private void job(){
-		List<ElecDataHour> dataByMonth = elecDataHourService.findAllDataByMonthOrYear(1);
+		List<ElecDataHour> dataByMonth = elecDataHourService.findAllDataByMonthOrYear(1,-1,-1);
 		System.out.println(dataByMonth.size());
 	}
 	
