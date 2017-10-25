@@ -35,7 +35,7 @@ import com.yn.utils.DateUtil;
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
  */
-//@Component
+@Component
 public class AmPhaseRecordJob {
 	@Autowired
 	AmPhaseRecordService amPhaseRecordService;
@@ -62,7 +62,9 @@ public class AmPhaseRecordJob {
 	private void collectAmPhaseRecord() throws Exception {
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
+		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
 		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
+		taskExecuteRecordMapper.insert(taskExecuteRecord);
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
@@ -88,7 +90,6 @@ public class AmPhaseRecordJob {
 									"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							taskExecuteRecord.setStatus("正常");
 							System.out.println("AmPhaseRecordJob--> am1Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							taskExecuteRecord.setStatus(e.getMessage());
@@ -120,7 +121,6 @@ public class AmPhaseRecordJob {
 							// --> 执行返回select语句。保存不失败，但数据库没有数据。
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							taskExecuteRecord.setStatus("正常");
 							System.out.println("AmPhaseRecordJob--> am3Phase::"+amPhaseRecord.getAmPhaseRecordId()+"新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
@@ -129,13 +129,12 @@ public class AmPhaseRecordJob {
 					}
 				}
 			}
+			taskExecuteRecord.setStatus("正常");
 		} catch (Exception e) {
 			taskExecuteRecord.setStatus(e.getMessage());
 			e.printStackTrace();
 		}
-		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
-		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
-		taskExecuteRecordMapper.insert(taskExecuteRecord);
+		taskExecuteRecordMapper.updateByPrimaryKey(taskExecuteRecord);
 		System.out.println("日志记录："+taskExecuteRecord.getStatus());
 	}
 

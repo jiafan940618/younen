@@ -16,7 +16,7 @@ public interface TaskExecuteRecordMapper {
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(TaskExecuteRecord record);
+    Long insert(TaskExecuteRecord record);
 
     int insertSelective(TaskExecuteRecord record);
 
