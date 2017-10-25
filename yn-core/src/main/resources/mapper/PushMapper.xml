@@ -33,14 +33,51 @@
 				 		AND is_read = 1
 				 	</if>
 	 
-				 </if>  
-				 <if test =" null != time_from  and null != time_to">
-				   AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
-				  </if> 
+				 </if> 
+				 
+				  <if test= "null != time_from and null == time_to ">
+					 AND create_dtm >=  #{time_from}
+				 </if>
+				  <if test= "null == time_from and null != time_to ">
+					 AND create_dtm &lt;=  #{time_to}
+				 </if>
+				 
+				<if test =" null != time_from  and null != time_to">
+					AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
+				</if>  
+				
 				     ORDER BY create_dtm DESC
 				    limit #{start},#{limit}
 			
-			</select>			
+			</select>	
+			
+			<select id="FindBycount" parameterType="com.yn.model.Page" resultType="Integer">
+				SELECT 
+					COUNT(1)
+				 FROM push WHERE  user_id = #{userId} and del =0 
+				 <if test =" 2 != isRead">
+				 	<if test=" 0 == isRead">
+				 		AND is_read = 0
+				 	</if>
+					  <if test="1 == isRead">
+				 		AND is_read = 1
+				 	</if>
+	 
+				 </if> 
+				 
+				  <if test= "null != time_from and null == time_to ">
+					 AND create_dtm >=  #{time_from}
+				 </if>
+				  <if test= "null == time_from and null != time_to ">
+					 AND create_dtm &lt;=  #{time_to}
+				 </if>
+				 
+				<if test =" null != time_from  and null != time_to">
+					AND create_dtm BETWEEN  #{time_from} AND #{time_to} 
+				</if>
+			</select>
+			
+					
 </mapper>
 
 

@@ -64,6 +64,11 @@ public class PushService {
         return findAll;
     }
     
+    public int FindBycount(com.yn.model.Page<Push> page){
+    	
+		return pushMapper.FindBycount(page);
+    }
+    
     /** 条件查询系统消息*/
     public List<Push> findByPush(com.yn.model.Page<Push> page){
     	

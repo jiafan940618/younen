@@ -87,6 +87,11 @@ public class PushController {
 		page.setIndex(1);
 		page.setIsRead(1);
 		page.setUserId(3L);*/
+		if(null != page.getTime_to()){
+  	    	page.setTime_to(page.getTime_to()+" "+"23:59:59");
+  	    }
+    	
+		
 		logger.info("---- ----- ---- ----- 传递的用户id,userId："+page.getTime_from());
 		logger.info("---- ----- ---- ----- 传递的开始时间:time_from："+page.getTime_from());
 		logger.info("---- ----- ---- ----- 传递的结束时间:time_to："+page.getTime_to());
@@ -95,6 +100,10 @@ public class PushController {
 		
 		List<Push> list = pushService.findByPush(page);
 		
+		int count = pushService.FindBycount(page);
+		
+		page.setTotal(count/page.getLimit() == 1 ? count/page.getLimit() : count/page.getLimit()+1);
+		
 		return ResultVOUtil.newsuccess(page, list);
 	}
 	
@@ -102,7 +111,7 @@ public class PushController {
 	@ResponseBody
 	@RequestMapping(value = "/queryIdFind")
 	public Object QueryPushId(PushVo pushVo) {
-		
+	
 		logger.info("---- ----- ---- ----- 传递的id："+pushVo.getId());
 		Push push = new Push();
 		push.setId(pushVo.getId());

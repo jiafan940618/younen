@@ -14,6 +14,8 @@ public interface PushMapper {
 	
 	List<Push> findByPush(Page<Push> page);
 	
+	int FindBycount(Page<Push> page);
+	
 	
 	
 	
