@@ -387,9 +387,11 @@ public class OrderController {
 	//, @RequestParam("orderId") Long OrderId
 	@ResponseBody
 	@RequestMapping(value = "/IosIngorder")
-	public Object LookIosOrder(HttpSession session) {
+	public Object LookIosOrder(HttpSession session,@RequestParam("orderId") Long OrderId) {
 
-		Long OrderId=1L;
+		//Long OrderId=1L;
+		
+		logger.info("OrderId为：----------- " + OrderId);
 		
 		Object object = ordService.getIosInfoOrder(OrderId);
 

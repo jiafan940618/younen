@@ -289,14 +289,14 @@ public class UserController {
   @ResponseBody
   @RequestMapping(value = "/findiosQueryOrder")
   public Object findStation(HttpSession httpSession) {
-	/* NewUserVo newuserVo =(NewUserVo) httpSession.getAttribute("user");
+	  User newuserVo = SessionCache.instance().getUser();
 	  	
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
-	  	}*/
-	  NewUserVo newuserVo = new NewUserVo();
-	  newuserVo.setId(2l);
-	 
+	  	}
+	  /* User newuserVo = new User();
+	  newuserVo.setId(2l);*/
+	
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());

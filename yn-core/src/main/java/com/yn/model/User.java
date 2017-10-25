@@ -60,13 +60,9 @@ public class User extends IDomain implements Serializable {
     protected String openIdc;
     @Column(columnDefinition = "int(11) NOT NULL comment '[角色id]'")
     protected Long roleId;
-   
+    @Column(columnDefinition = "varchar(255) NOT NULL comment '[备注]'")
     protected String ipoMemo;
     
-    
-   
-
-	
 
 	public String getIpoMemo() {
 		return ipoMemo;

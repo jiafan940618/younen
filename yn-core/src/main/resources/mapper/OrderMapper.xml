@@ -54,11 +54,7 @@
 		<result column="build_is_pay" property="buildIsPay" jdbcType="INTEGER" />
 		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
 		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
-		<result column="ipo_memo" property="ipoMemo" jdbcType="INTEGER" />
-		
-		
-		
-		
+		<result column="ipo_memo" property="ipoMemo" jdbcType="VARCHAR" />
 		
 	</resultMap>
 
@@ -233,7 +229,7 @@
 
 	</select> 
 	
-	<select id="findByiosstatus" parameterType="com.yn.vo.UserVo" resultMap="BaseResultMap">
+	<select id="findByiosstatus" parameterType="com.yn.model.User" resultMap="BaseResultMap">
 	SELECT 
 		
 		id,order_code,STATUS,server_name,capacity,had_pay_price,total_price,address_text

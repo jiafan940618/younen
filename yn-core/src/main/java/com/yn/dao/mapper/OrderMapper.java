@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.yn.model.Order;
 import com.yn.model.Page;
+import com.yn.model.User;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.UserVo;
 
@@ -34,7 +35,7 @@ public interface OrderMapper {
 	void UpdateOrderStatus(Order order);
 	
 	/** ios端无分页 */
-	List<Order> findByiosstatus(NewUserVo userVo);
+	List<Order> findByiosstatus(User user);
 	
 	/** [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}*/
 	List<Order> findBystatus(Page<Order> page);

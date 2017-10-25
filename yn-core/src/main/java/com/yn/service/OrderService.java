@@ -34,6 +34,7 @@ import com.yn.domain.OrderDetailAccounts;
 import com.yn.enums.NoticeEnum;
 import com.yn.enums.OrderEnum;
 import com.yn.model.Order;
+import com.yn.model.User;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.JsonUtil;
@@ -65,7 +66,7 @@ public class OrderService {
 		return mapper.findBystatus(page);
 	}
 	
-	public List<Order> findByiosstatus(NewUserVo userVo){
+	public List<Order> findByiosstatus(User userVo){
 		
 		return mapper.findByiosstatus(userVo);
 	}
