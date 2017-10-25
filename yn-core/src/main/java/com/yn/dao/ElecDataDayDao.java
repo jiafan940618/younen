@@ -22,12 +22,19 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     @Query("update ElecDataDay set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
-//    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t WHERE t.createDtm is not null AND t.stationId=?1 AND t.dAddr like CONCAT(1,'%') GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
-//    List<Map<Object,Object>> sumMonthKwh(Long stationId);
+    @Query(value="SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, "
+    		+ "SUM(kwh) AS kwh FROM elec_data_day t WHERE"
+    		+ " t.create_dtm is not null AND t.ammeter_code in (?1) AND "
+    		+ "t.type =1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m') ORDER BY create_dtm ASC",nativeQuery=true)
+    List<Object[]> sumMonthKwh(List<Long> ammeterCodes);
     
-//    @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t WHERE t.createDtm is not null AND t.stationId=:stationId AND t.dAddr like CONCAT(1,'%') AND t.createDtm LIKE CONCAT('%',:dateStr,'%') GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
-//    List<Map<Object,Object>> sumKwh(@Param("stationId")Long stationId,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
-//    
-//    @Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t WHERE t.createDtm is not null AND t.stationId=?1 AND t.dAddr like CONCAT(?2,'%') GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
-//    List<Map<Object,Object>> workUseCount(Long stationId,Long dAddr);
+    @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t "
+    		+ "WHERE t.createDtm is not null AND t.ammeterCode in (:ammeterCodes) AND t.type =1 AND "
+    		+ "t.createDtm LIKE CONCAT('%',:dateStr,'%') GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
+    List<Object[]> sumKwh(@Param("ammeterCodes")List<Long> ammeterCodes,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
+    
+    @Query(value="SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM elec_data_day t "
+    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type=?2 GROUP BY "
+    		+ "DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC",nativeQuery=true)
+    List<Object[]> workUseCount(List<Long> ammeterCodes,Integer type);
 }

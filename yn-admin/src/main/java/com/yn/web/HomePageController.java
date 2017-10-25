@@ -69,10 +69,10 @@ public class HomePageController {
 //        double sumKwh = 0;
 //        if (serverId == null) {
 //            sumNowKw = stationDao.sumNowKw();
-//            sumKwh = elecDataDayDao.sumKwh(1L);
+//            sumKwh = elecDataDayDao.sumKwh(1);
 //        } else {
 //            sumNowKw = stationDao.sumNowKw(serverId);
-//            sumKwh = elecDataDayDao.sumKwh(1L, serverId);
+//            sumKwh = elecDataDayDao.sumKwh(1, serverId);
 //        }
 //
 //        Map<String, Object> map = new HashMap<>();

@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
 import com.yn.model.ElecDataDay;
 import com.yn.model.Station;
 import com.yn.service.ElecDataDayService;
 import com.yn.service.SystemConfigService;
 import com.yn.utils.BeanCopy;
-import com.yn.utils.PageInfo;
+import com.yn.vo.ElecDataDayVo;
 import com.yn.vo.TemStationYearVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -45,6 +44,9 @@ public class ElecDataDayController {
 		ElecDataDay findOne = elecDataDayService.findOne(id);
 		return ResultVOUtil.success(findOne);
 	}
+	
+	
+	
 
 	@ResponseBody
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
@@ -64,25 +66,29 @@ public class ElecDataDayController {
 
 	@ResponseBody
 	@RequestMapping(value = "/findOne", method = { RequestMethod.POST })
-	public Object findOne(TemStationYearVo temStationYearVo) {
-		ElecDataDay temStationYear = new ElecDataDay();
-		BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		ElecDataDay findOne = elecDataDayService.findOne(temStationYear);
+	public Object findOne(ElecDataDayVo elecDataDayVo) {
+		ElecDataDay elecDataDay = new ElecDataDay();
+		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
+		ElecDataDay findOne = elecDataDayService.findOne(elecDataDay);
 		return ResultVOUtil.success(findOne);
 	}
 
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object findAll(TemStationYearVo temStationYearVo,Integer pageIndex) {
-		
-		ElecDataDay temStationYear = new ElecDataDay();
-		BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		temStationYear.setdAddr(temStationYearVo.getD_addr());
-		System.out.println(temStationYear.getQueryStartDtm());
-		PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-		List<ElecDataDay> list = elecDataDayService.findByMapper(temStationYear);
-		PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
-        return ResultVOUtil.success(pageInfo);
+	public Object findAll(ElecDataDayVo elecDataDayVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) 
+	Pageable pageable) {
+		ElecDataDay elecDataDay = new ElecDataDay();
+        BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
+        Page<ElecDataDay> findAll = elecDataDayService.findAll(elecDataDay, pageable);
+        return ResultVOUtil.success(findAll);		
+//		ElecDataDay temStationYear = new ElecDataDay();
+//		BeanCopy.copyProperties(temStationYearVo, temStationYear);
+//		temStationYear.setdAddr(temStationYearVo.getD_addr());
+//		System.out.println(temStationYear.getQueryStartDtm());
+//		PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
+//		List<ElecDataDay> list = elecDataDayService.findByMapper(temStationYear);
+//		PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
+//        return ResultVOUtil.success(pageInfo);
 	}
 
 	/**
@@ -90,17 +96,17 @@ public class ElecDataDayController {
 	 * 
 	 * @return
 	 */
-//	@RequestMapping(value = "/monthKwh", method = { RequestMethod.POST, RequestMethod.GET })
-//	@ResponseBody
-//	public Object monthKwh(HttpSession session, Station station) {
-//
-//		List<Map<Object, Object>> monthKwh = new ArrayList<>();
-//
-//		List<Station> stations = stationDao.findAllStation();
-//		monthKwh = elecDataDayService.monthKwh(stations);
-//
-//		return ResultVOUtil.success(monthKwh);
-//	}
+	@RequestMapping(value = "/monthKwh", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object monthKwh(HttpSession session, Station station) {
+
+		List<Map<Object, Object>> monthKwh = new ArrayList<>();
+
+		List<Station> stations = stationDao.findAllStation();
+		monthKwh = elecDataDayService.monthKwh(stations);
+
+		return ResultVOUtil.success(monthKwh);
+	}
 	
 //	@ResponseBody
 //	@RequestMapping(value = "/huanbao")
@@ -176,39 +182,39 @@ public class ElecDataDayController {
 	 * 
 	 * @return
 	 */
-//	@RequestMapping(value = "/numKwh", method = { RequestMethod.POST, RequestMethod.GET })
-//	@ResponseBody
-//	public Object numKwh(HttpSession session, Station station, Integer type, String dateStr) {
-//
-//		List<Map<Object, Object>> monthKwh = new ArrayList<>();
-//		List<Station> stations = stationDao.findAllStation();
-//		monthKwh = elecDataDayService.numKwh(stations, type, dateStr);
-//
-//		return ResultVOUtil.success(monthKwh);
-//	}
-//	
+	@RequestMapping(value = "/numKwh", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object numKwh(HttpSession session, Station station, Integer type, String dateStr) {
+
+		List<Map<Object, Object>> monthKwh = new ArrayList<>();
+		List<Station> stations = stationDao.findAllStation();
+		monthKwh = elecDataDayService.numKwh(stations, type, dateStr);
+
+		return ResultVOUtil.success(monthKwh);
+	}
+	
 	
 	/**
 	 * 
 	 */
-//	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
-//	@ResponseBody
-//	public Object workUseCount(Long stationId, Long type) {
-//
-//		Map<String, Object> workUseCount = new HashMap<>();
-//
-//		workUseCount = elecDataDayService.workUseCount(stationId, type);
-//
-//		return ResultVOUtil.success(workUseCount);
-//	}
+	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object workUseCount(Long stationId, Integer type) {
+
+		Map<String, Object> workUseCount = new HashMap<>();
+
+		workUseCount = elecDataDayService.workUseCount(stationId, type);
+
+		return ResultVOUtil.success(workUseCount);
+	}
 	
 	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object listCount(TemStationYearVo temStationYearVo,
+	public Object listCount(ElecDataDayVo elecDataDayVo,
 			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
-		ElecDataDay temStationYear = new ElecDataDay();
-		BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		Page<ElecDataDay> listCount = elecDataDayService.listCount(temStationYear, pageable);
+		ElecDataDay elecDataDay = new ElecDataDay();
+		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
+		Page<ElecDataDay> listCount = elecDataDayService.listCount(elecDataDay, pageable);
 		return ResultVOUtil.success(listCount);
 	}
 }

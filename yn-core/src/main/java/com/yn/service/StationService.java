@@ -215,56 +215,61 @@ public class StationService {
      * @param stationId
      * @return
      */
-	// public Map<String, Object> stationInfo(Long stationId) {
-	// Station station = stationDao.findOne(stationId);
-	// station.setUser(null);
-	// station.setServer(null);
-	// station.setAmmeter(null);
-	//
-	// Map<String, Object> objectMap = ObjToMap.getObjectMap(station);
-	//
-	// // 今日发电量
-	// double todayKwh = elecDataHourService.todayKwh(stationId, 1L);
-	// objectMap.put("todayEG", todayKwh);
-	// // 昨日发电量
-	// double yesterdayKwh = elecDataHourService.yesterdayKwh(stationId, 1L);
-	// objectMap.put("yesterdayEG", yesterdayKwh);
-	// // 当月发电量
-	// double thisMonthKwh = elecDataHourService.thisMonthKwh(stationId, 1L);
-	// objectMap.put("thisMonthEG", thisMonthKwh);
-	// // 上月发电量
-	// double lastMonthKwh = elecDataHourService.lastMonthKwh(stationId, 1L);
-	// objectMap.put("lastMonthEG", lastMonthKwh);
-	// // 今年发电量
-	// double thisYearKwh = elecDataHourService.thisYearKwh(stationId, 1L);
-	// objectMap.put("thisYearEG", thisYearKwh);
-	// // 去年发电量
-	// double lastYearKwh = elecDataHourService.lastYearKwh(stationId, 1L);
-	// objectMap.put("lastYearEG", lastYearKwh);
-	//
-	// // 电站总发电量
-	// Double egt = station.getElectricityGenerationTol();
-	// // 电站装机容量
-	// Double capacity = station.getCapacity();
-	// // 相当于植树
-	// double plantTreesPrm =
-	// Double.valueOf(systemConfigService.get("plant_trees_prm"));
-	// objectMap.put("plantTreesPrm",
-	// NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
-	// // 相当于减排二氧化碳
-	// Double CO2Prm = Double.valueOf(systemConfigService.get("CO2_prm"));
-	// objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt));
-	// // 相当于减排二氧化硫
-	// Double SOPrm = Double.valueOf(systemConfigService.get("SO_prm"));
-	// objectMap.put("SOPrm", NumberUtil.accurateToTwoDecimal(SOPrm * egt));
-	// // 节省面积
-	// Double saveSqmPrm =
-	// Double.valueOf(systemConfigService.get("save_sqm_prm"));
-	// objectMap.put("saveSqmPrm", NumberUtil.accurateToTwoDecimal(saveSqmPrm *
-	// capacity));
-	//
-	// return objectMap;
-	// }
+	 public Map<String, Object> stationInfo(Long stationId) {
+	 Station station = stationDao.findOne(stationId);
+	 station.setUser(null);
+	 station.setServer(null);
+	 station.setAmmeter(null);
+	
+	 Map<String, Object> objectMap = ObjToMap.getObjectMap(station);
+	
+	 // 今日发电量
+	 double todayKwh = elecDataHourService.todayKwh(stationId, 1);
+	 objectMap.put("todayEG", todayKwh);
+	 // 昨日发电量
+	 double yesterdayKwh = elecDataHourService.yesterdayKwh(stationId, 1);
+	 objectMap.put("yesterdayEG", yesterdayKwh);
+	 // 当月发电量
+	 double thisMonthKwh = elecDataHourService.thisMonthKwh(stationId, 1);
+	 objectMap.put("thisMonthEG", thisMonthKwh);
+	 // 上月发电量
+	 double lastMonthKwh = elecDataHourService.lastMonthKwh(stationId, 1);
+	 objectMap.put("lastMonthEG", lastMonthKwh);
+	 // 今年发电量
+	 double thisYearKwh = elecDataHourService.thisYearKwh(stationId, 1);
+	 objectMap.put("thisYearEG", thisYearKwh);
+	 // 去年发电量
+	 double lastYearKwh = elecDataHourService.lastYearKwh(stationId, 1);
+	 objectMap.put("lastYearEG", lastYearKwh);
+	
+	 // 电站总发电量
+	 Double egt=0D;
+	 List<Ammeter> ammeters=ammeterDao.findByStationId(stationId);
+	 for (Ammeter ammeter : ammeters) {
+		 egt+=ammeter.getInitKwh()+ammeter.getWorkTotalKwh();
+	   }
+	 // 电站装机容量
+	 Double capacity = station.getCapacity();
+	 // 相当于植树
+	 double plantTreesPrm =
+	 Double.valueOf(systemConfigService.get("plant_trees_prm"));
+	 objectMap.put("plantTreesPrm",
+	 NumberUtil.accurateToTwoDecimal(plantTreesPrm * egt));
+	 // 相当于减排二氧化碳
+	 Double CO2Prm = Double.valueOf(systemConfigService.get("CO2_prm"));
+	 objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * egt));
+	 // 相当于减排二氧化硫
+	 Double SOPrm = Double.valueOf(systemConfigService.get("SO_prm"));
+	 objectMap.put("SOPrm", NumberUtil.accurateToTwoDecimal(SOPrm * egt));
+	 // 节省面积
+	 Double saveSqmPrm =
+	 Double.valueOf(systemConfigService.get("save_sqm_prm"));
+	 objectMap.put("saveSqmPrm", NumberUtil.accurateToTwoDecimal(saveSqmPrm *
+	 capacity));
+	
+	 return objectMap;
+	 }
+
     
     /**
      * 25年收益
@@ -406,95 +411,91 @@ public class StationService {
     /**
      * 用户的所有电站信息
      */
-//    public Map<String, Object> stationByUser(List<Station> stations){
-//    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
-//    	double  egt=0;
-//    	double nowKw=0;
-//    	double capacity=0;
-//    	double efficiency=0;
-//    	for(Station station2 :stations){	
-//            //发电功率
-//         nowKw=nowKw+station2.getNowKw();
-//            //发电总量
-//         egt=egt+station2.getElectricityGenerationTol();
-//            //装机容量
-//         capacity=capacity+station2.getCapacity();
-//    	}
-//    	 if (capacity>nowKw) {
-//        	 //发电效率（百分比）
-//       	  efficiency=(nowKw/capacity)*100;
-//		 }
-//    		// 相当于植树
-//    	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
-//            // 相当于减排二氧化碳
-//         double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
-//    	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
-//    	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
-//    	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
-//    	objectMap.put("egt", NumberUtil.getTenThousand(egt));
-//    	objectMap.put("efficiency", (int)efficiency);
-//    	return objectMap;
-//    }
-    
-    /**
-     * 用户的装机容量
-     * 
-     */
-    public List<Map<Object,Object>> checkCapacity(List<Station> stations){
-    	Map<Object, Object> objectMap=new HashMap<>();
-    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-    	List<Map<Object, Object>> lists=new ArrayList<>();
-    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-    	for (Station station : stations) {
-    		List<Map<Object, Object>> list=stationDao.findUserCapacity(station.getId());
-           if (!list.isEmpty()) {
-	          lists.addAll(list);
+    public Map<String, Object> stationByUser(List<Station> stations){
+    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
+    	double  egt=0;
+    	double nowKw=0;
+    	double capacity=0;
+    	double efficiency=0;
+    	for (Station station : stations) {	
+    		List<Ammeter>  ammeters=ammeterDao.findByStationId(station.getId());
+    		for (Ammeter ammeter : ammeters) {
+                //发电功率
+    	        nowKw=nowKw+ammeter.getNowKw();
+    	        //发电总量
+    	        egt=egt+ammeter.getInitKwh()+ammeter.getWorkTotalKwh();  
 			}
-    			
-    	}
-    	for(Map<Object, Object> map : lists) {
-    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-    			
-    			objectMap.put(map.get("create_dtm"), map.get("capacity"));
-			}else{
-				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
-				objectMap.put(map.get("create_dtm"), (Object)kwh);
-			}
-    		
-    	}
-    	Object[] key = objectMap.keySet().toArray();
-    	Arrays.sort(key);
-    	for (int i = 0; i < key.length; i++) { 
-    		Map<Object, Object> listMap=new LinkedHashMap<>();
-    		linkHashMap.put(key[i], objectMap.get(key[i]));
-    		listMap.put("createDtm", key[i]);
-    		listMap.put("capacity", NumberUtil.getTenThousand((Double)objectMap.get(key[i])));
-    		listsMap.add(listMap);
-        	}
-    	return listsMap;	
+    		    //装机容量
+              capacity=capacity+station.getCapacity();
+		}  
+   	   if (capacity>nowKw) {
+   	      //发电效率（百分比）
+  	  efficiency=(nowKw/capacity)*100;
+	 }
+		// 相当于植树
+	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
+       // 相当于减排二氧化碳
+    double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
+	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
+	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
+	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
+	objectMap.put("egt", NumberUtil.getTenThousand(egt));
+	objectMap.put("efficiency", (int)efficiency);
+	return objectMap;
+
     }
     
+
     /**
-     * 用户的装机容量
-     * 
+     * 全网所有电站信息
      */
-//    public List<Map<Object,Object>> checkCapacity(List<Station> stations,Integer type ,String dateStr){
+    public Map<String, Object> stationByAll(List<Station> stations){
+    	Map<String, Object> objectMap = new LinkedHashMap<String, Object>();
+    	double  egt=0;
+    	double nowKw=0;
+    	double capacity=0;
+    	double efficiency=0;
+    	for (Station station : stations) {
+    		 //装机容量
+            capacity=capacity+station.getCapacity();
+    	}	
+    		List<Ammeter>  ammeters=ammeterDao.findAll();
+    		for (Ammeter ammeter : ammeters) {
+                //发电功率
+    	        nowKw=nowKw+ammeter.getNowKw();
+    	        //发电总量
+    	        egt=egt+ammeter.getInitKwh()+ammeter.getWorkTotalKwh();  
+			}	    
+   	   if (capacity>nowKw) {
+   	      //发电效率（百分比）
+  	  efficiency=(nowKw/capacity)*100;
+	 }
+		// 相当于植树
+	 double  plantTreesPrm=egt*Double.valueOf(systemConfigService.get("plant_trees_prm"));
+       // 相当于减排二氧化碳
+    double  CO2Prm =egt*Double.valueOf(systemConfigService.get("CO2_prm"))/1000;
+	objectMap.put("plantTreesPrm", NumberUtil.getIntegerTenThousand(plantTreesPrm));
+	objectMap.put("CO2Prm", NumberUtil.getTenThousand(CO2Prm));
+	objectMap.put("nowKw",NumberUtil.accurateToTwoDecimal(nowKw));
+	objectMap.put("egt", NumberUtil.getTenThousand(egt));
+	objectMap.put("efficiency", (int)efficiency);
+	return objectMap;
+
+    } 
+    
+    
+    
+//    /**
+//     * 用户的装机容量
+//     * 
+//     */
+//    public List<Map<Object,Object>> checkCapacity(List<Station> stations){
 //    	Map<Object, Object> objectMap=new HashMap<>();
 //    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
 //    	List<Map<Object, Object>> lists=new ArrayList<>();
 //    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-//    	
-//    	  String dateFormat="";
-//         	if (type == 0) {
-//         		 dateFormat="%Y";
-//     		} else if (type == 1) {
-//     			dateFormat="%Y-%m";
-//     		} else if (type == 2) {
-//     			dateFormat="%Y-%m-%d";	
-//     		} 
-//         	
 //    	for (Station station : stations) {
-//    		List<Map<Object, Object>> list=stationDao.numCapacity(station.getId(), dateFormat, dateStr);
+//    		List<Map<Object, Object>> list=stationDao.findUserCapacity(station.getId());
 //           if (!list.isEmpty()) {
 //	          lists.addAll(list);
 //			}
@@ -516,12 +517,59 @@ public class StationService {
 //    		Map<Object, Object> listMap=new LinkedHashMap<>();
 //    		linkHashMap.put(key[i], objectMap.get(key[i]));
 //    		listMap.put("createDtm", key[i]);
-//    		listMap.put("capacity", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+//    		listMap.put("capacity", NumberUtil.getTenThousand((Double)objectMap.get(key[i])));
 //    		listsMap.add(listMap);
 //        	}
 //    	return listsMap;	
 //    }
-    
+//    
+    /**
+     * 用户的装机容量
+     * 
+     */
+    public List<Map<Object,Object>> checkCapacity(List<Station> stations,Integer type ,String dateStr){
+    	Map<Object, Object> objectMap=new HashMap<>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+    	
+    	  String dateFormat="";
+         	if (type == 0) {
+         		 dateFormat="%Y";
+     		} else if (type == 1) {
+     			dateFormat="%Y-%m";
+     		} else if (type == 2) {
+     			dateFormat="%Y-%m-%d";	
+     		} 
+         	
+    	for (Station station : stations) {
+    		List<Map<Object, Object>> list=stationDao.numCapacity(station.getId(), dateFormat, dateStr);
+           if (!list.isEmpty()) {
+	          lists.addAll(list);
+			}
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("capacity"));
+			}else{
+				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
+				objectMap.put(map.get("create_dtm"), (Object)kwh);
+			}
+    		
+    	}
+    	Object[] key = objectMap.keySet().toArray();
+    	Arrays.sort(key);
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("capacity", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
+    		listsMap.add(listMap);
+        	}
+    	return listsMap;	
+    }
     
     //0:未绑定电表,1:正在发电,2:电表异常
   public  List<StationVo> getnewstation(Long userId){
@@ -575,13 +623,13 @@ public class StationService {
 //   }
 //   
 //    
-   /**
+  /**
 	 * 查询用户电站,电表等信息
 	 * 
 	 */
-/*	public Map<String, Object> stationInformation(Long stationId) {
+	public Map<String, Object> stationInformation(Long stationId) {
 
-          Station station=stationDao.findOne(stationId);
+         Station station=stationDao.findOne(stationId);
 			Map<String, Object> map = new LinkedHashMap<>();
 			map.put("stationCode", station.getStationCode());
 			map.put("stationName", station.getStationName());
@@ -589,21 +637,21 @@ public class StationService {
 			map.put("orderCode", orderDao.findByStationId(station.getOrderId()));
 			map.put("status", station.getStatus());
 			map.put("addressText", station.getAddressText());
-			map.put("workTotaTm", station.getWorkTotaTm());
 			List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
 			System.out.println(station.getId());
 			for (Ammeter ammeter : ammeters) {
 				System.out.println(ammeter.getId());
 				Map<String, Object> map2 = new LinkedHashMap<>();
-				map2.put("ammeterId", ammeter.getId());
+				map2.put("workTotaTm", ammeter.getWorkTotalTm()+ammeter.getInitKwh());
+				map2.put("ammeterCode", ammeter.getcAddr());
 				map2.put("ammeterScale", ammeter.getInitKwh());
 				map.put("ammeterRecode", map2);
 			}
 			Date date = station.getCreateDtm();
-			map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1L, date));
-			map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2L, date));
+			map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1, date));
+			map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2, date));
 		return map;
-	}*/
+	}
 
 	/**
 	 * 根据session按时间获取用户收益
