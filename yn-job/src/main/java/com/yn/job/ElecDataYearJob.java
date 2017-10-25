@@ -52,6 +52,7 @@ public class ElecDataYearJob {
 			ElecDataYear elecDataYear = new ElecDataYear();
 			elecDataYear.setRecordTime(recordTime);
 			elecDataYear.setAmmeterCode(ammeterCode);
+			elecDataYear.setdAddr(elecDataHour.getdAddr().intValue());
 			List<ElecDataYear> condition = elecDataYearService.findByCondition(elecDataYear);
 			Double totalKw = 0d;
 			Double totalKwh = 0d;

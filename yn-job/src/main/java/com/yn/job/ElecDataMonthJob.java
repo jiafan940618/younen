@@ -51,6 +51,7 @@ public class ElecDataMonthJob {
 			ElecDataMonth elecDataMonth = new ElecDataMonth();
 			elecDataMonth.setRecordTime(recordTime);
 			elecDataMonth.setAmmeterCode(ammeterCode);
+			elecDataMonth.setdAddr(elecDataHour.getdAddr().intValue());
 			List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
 			Double totalKw = 0d;
 			Double totalKwh = 0d;

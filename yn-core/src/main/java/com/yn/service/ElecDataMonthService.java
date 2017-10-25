@@ -32,7 +32,7 @@ public class ElecDataMonthService {
 	public List<ElecDataMonth> findByCondition(ElecDataMonth elecDataMonth) {
 		ElecDataMonthExample example = new ElecDataMonthExample();
 		Criteria criteria = example.createCriteria();
-		// criteria.andDAddrEqualTo(elecDataMonth.getdAddr());
+		criteria.andDAddrEqualTo(elecDataMonth.getdAddr());
 		// criteria.andDTypeEqualTo(elecDataMonth.getdType());
 		// criteria.andWAddrEqualTo(elecDataMonth.getwAddr());
 		// criteria.andDevConfCodeEqualTo(elecDataMonth.getDevConfCode());
