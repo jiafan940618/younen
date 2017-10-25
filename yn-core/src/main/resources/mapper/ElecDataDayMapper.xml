@@ -417,15 +417,5 @@
 		ORDER BY create_dtm DESC
 	</select>
 
-	<select id="findAllDataByHour" parameterType="list" resultMap="BaseResultMap">
-			select
-			<include refid="Base_Column_List" />
-			from elec_data_day
-			where record_time in
-			<foreach item="item" index="index" collection="list" open="("
-				separator="," close=")">
-				#{item}
-			</foreach>
-		</select>
 
 </mapper>
