@@ -1,15 +1,17 @@
 package com.yn.test;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.CommentDao;
 import com.yn.model.Comment;
+import com.yn.model.ElecDataHour;
+import com.yn.service.ElecDataHourService;
 
 /**
  * 
@@ -29,10 +31,13 @@ public class TestScheduled {
 
 	@Autowired
 	private CommentDao commentDao;
+
+	@Autowired
+	private ElecDataHourService elecDataHourService;
 	
 	private int index = 0;
 	
-	@Scheduled(fixedDelay = 10 * 1000)
+	//@Scheduled(fixedDelay = 10 * 1000)
 	public void myTest() {
 		Comment comment = new Comment();
 		comment.setCreateDtm(new Date());
@@ -43,6 +48,14 @@ public class TestScheduled {
 		Comment save = commentDao.save(comment);
 		System.out.println(save.getId());
 	}
+	
+	
+	//@Scheduled(fixedDelay = 10 * 1000)
+	private void job(){
+		List<ElecDataHour> dataByMonth = elecDataHourService.findAllDataByMonthOrYear(1);
+		System.out.println(dataByMonth.size());
+	}
+	
 	
 	@RequestMapping("/doSave")
 	public Object myTestC() {

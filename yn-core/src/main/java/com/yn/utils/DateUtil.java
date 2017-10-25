@@ -3,6 +3,7 @@ package com.yn.utils;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -369,6 +370,19 @@ public class DateUtil {
 			hourList1.add(now.getTime());
 		}
 		return hourList1;
+	}
+	
+	/**
+	 * 
+	 * @Title: countDaysInMonth 
+	 * @Description: TODO(返回指定月份的总天数)
+	 * @param @param month 传入的月份 
+	 * @param @return 参数 指定月份的天数 
+	 * @return int 返回类型
+	 * @throws
+	 */
+	public static int countDaysInMonth(int month) {
+		return LocalDate.now().withMonth(month).lengthOfMonth();
 	}
 	
 }

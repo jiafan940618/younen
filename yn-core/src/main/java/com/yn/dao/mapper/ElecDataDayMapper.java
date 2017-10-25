@@ -1,11 +1,12 @@
 package com.yn.dao.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
 import com.yn.model.ElecDataHour;
-
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 public interface ElecDataDayMapper {
 	int countByExample(ElecDataDayExample example);
@@ -33,4 +34,5 @@ public interface ElecDataDayMapper {
 	List<ElecDataDay> selectByQuery(ElecDataDay elecDataDay);
 
 	ElecDataDay findHuanbao(Integer id);
+
 }

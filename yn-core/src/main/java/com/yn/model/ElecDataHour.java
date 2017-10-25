@@ -30,8 +30,30 @@ public class ElecDataHour extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017072109]'")
     private String recordTime;
 
+    
 
-    public String getAmmeterCode() {
+    public ElecDataHour() {
+	}
+
+	public ElecDataHour(String ammeterCode, String devConfCode, Long dAddr, Integer dType, Integer wAddr, Double kw,
+			Double kwh, Integer type, String recordTime) {
+		super();
+		this.ammeterCode = ammeterCode;
+		this.devConfCode = devConfCode;
+		this.dAddr = dAddr;
+		this.dType = dType;
+		this.wAddr = wAddr;
+		this.kw = kw;
+		this.kwh = kwh;
+		this.type = type;
+		this.recordTime = recordTime;
+	}
+
+	public ElecDataHour(String recordTime) {
+    	this.recordTime = recordTime;
+	}
+
+	public String getAmmeterCode() {
 		return ammeterCode;
 	}
 
