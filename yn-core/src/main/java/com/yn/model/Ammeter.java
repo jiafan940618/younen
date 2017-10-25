@@ -64,7 +64,16 @@ public class Ammeter extends IDomain implements Serializable {
 	@JsonIgnoreProperties(value = {"order","user","server","ammeter"})
     private Station station;
 
-    public String getcAddr() {
+	
+	
+    public Ammeter() {}
+
+	public Ammeter(Double workTotalKwh, Double initKwh) {
+		this.workTotalKwh = workTotalKwh;
+		this.initKwh = initKwh;
+	}
+
+	public String getcAddr() {
         return cAddr;
     }
 

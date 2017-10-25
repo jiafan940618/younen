@@ -25,7 +25,18 @@ public class ResultData<T> {
 		
 		private Map<String, String> map;
 
+		private Object object;
 		
+		
+		
+		public Object getObject() {
+			return object;
+		}
+
+		public void setObject(Object object) {
+			this.object = object;
+		}
+
 		public Map<String, String> getMap() {
 			return map;
 		}
@@ -41,6 +52,8 @@ public class ResultData<T> {
 		public void setSuccess(Boolean success) {
 			this.success = success;
 		}
+
+		
 
 		public List<T> getNewlist() {
 			return newlist;

@@ -1,8 +1,10 @@
 package com.yn.dao.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.yn.model.Station;
 
-
+@Mapper
 public interface StationMapper {
 
 
@@ -19,4 +21,6 @@ public interface StationMapper {
     int updateByPrimaryKeySelective(Station record);
 
     int updateByPrimaryKey(Station record);
+    
+    Station FindById(Long id);
 }

@@ -92,6 +92,7 @@ public class UserLoginController {
 	        userService.updateToken(user);
 
 	        SessionCache.instance().setUser(user);
+	        
 	        user.setPassword(null);
 	        Object object = ResultVOUtil.success(user);
 	        
@@ -106,7 +107,6 @@ public class UserLoginController {
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
 	        
-	        session.setAttribute("user", userVo);
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
@@ -161,7 +161,7 @@ public class UserLoginController {
 	        userVo01.setToken(userService.getToken(newuser)); 
 	        userVo01.setHeadImgUrl(newuser.getHeadImgUrl());
 	        
-	        httpSession.setAttribute("user", userVo01);
+	      //  httpSession.setAttribute("user", userVo01);
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        

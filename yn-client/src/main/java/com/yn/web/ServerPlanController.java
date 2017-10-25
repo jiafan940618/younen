@@ -175,7 +175,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         
         String orderCode = serverService.getOrderCode(findOne.getServerId());
         
-        session.setAttribute("orderCode", orderCode);
+       session.setAttribute("orderCode", orderCode);
        session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
        session.setAttribute("list", checkedId);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());

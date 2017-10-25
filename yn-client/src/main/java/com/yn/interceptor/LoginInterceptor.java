@@ -65,12 +65,18 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
+        String token = request.getHeader("token");
+        
+        logger.info("传过来的token为: ---- ---->"+token);
+        
         User user = SessionCache.instance().getUser();
         if (user == null) {
             BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
             UserService userService = (UserService) factory.getBean("userService");
-            String token = request.getHeader("token");
+           
+            logger.info("验证的token为: ---- ---->"+StringUtil.isEmpty(token));
             if (!StringUtil.isEmpty(token)) {
+            	
                 User userE = new User();
                 userE.setToken(token);
                 user = userService.findOne(userE);

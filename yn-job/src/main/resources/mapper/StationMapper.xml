@@ -42,6 +42,12 @@
 		work_tota_tm, passage_model,
 		link_man, link_phone, type, update_dtm
 	</sql>
+	
+	<select id="FindById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	  select station_code from station
+		where id = #{id}
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select

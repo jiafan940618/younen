@@ -97,11 +97,25 @@ public class Station extends IDomain implements Serializable {
 
     public Station() {}
 
+    
+    //id,capacity,workTotaTm,status,userId,stationName
+    
+    public Station(Long id, String stationName, Long userId, Double capacity, Integer status,String stationCode) {
+  		super();
+  		this.id = id;
+  		this.stationName = stationName;
+  		this.userId = userId;
+  		this.capacity = capacity;
+  		this.status = status;
+  		this.stationCode = stationCode;
+  	}
+    
+    
 	public String getStationName() {
         return stationName;
     }
 
-    public Long getId() {
+	public Long getId() {
 		return id;
 	}
 

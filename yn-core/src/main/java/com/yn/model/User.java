@@ -61,8 +61,24 @@ public class User extends IDomain implements Serializable {
     @Column(columnDefinition = "int(11) NOT NULL comment '[角色id]'")
     protected Long roleId;
    
-  
-    /**
+    protected String ipoMemo;
+    
+    
+   
+
+	
+
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+
+
+
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
+
+	/**
      * 是否已读
      */
     @Transient

@@ -98,7 +98,7 @@ public class TransactionRecordService {
 	    		transactionRecord.setRemark(billWithdrawals.getRemark());	
 	 
 	    		transactionRecord.setMoney(billWithdrawals.getMoney());
-	    		transactionRecord.setPayWay(9);
+	    		transactionRecord.setPayWay(4);
 	    		transactionRecord.setType(3);
 	    		transactionRecord.setStatus(billWithdrawals.getStatus());
 	    		transactionRecord.setOrderNo(billWithdrawals.getTradeNo());

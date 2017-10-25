@@ -23,11 +23,14 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
+
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,7 +54,8 @@ public class StationService {
     AmmeterDao ammeterDao;
     @Autowired
     ServerService serverService;
-    
+    @Autowired
+    AmmeterService ammeterService;
     @Autowired
     private NoticeService noticeService;
     
@@ -71,6 +75,13 @@ public class StationService {
     public Station findOne(Long id) {
         return stationDao.findOne(id);
     }
+    
+ 
+   
+   public  Station FindByStationCode(Long orderId){
+	   
+	return stationDao.FindByStationCode(orderId);
+   }
     
     public Station selectByPrimaryKey(Integer id){
     	
@@ -513,28 +524,50 @@ public class StationService {
     
     
     //0:未绑定电表,1:正在发电,2:电表异常
-//   public  List<StationVo> getnewstation(Long userId){
-//	   
-//	   List<StationVo> newlist = new LinkedList<StationVo>();
-//	  
-//	 List<Station> list = stationDao.getstation(userId);
-//	 for (Station station : list) {
-//		 StationVo stationVo = new StationVo();
-//		 BeanCopy.copyProperties(station, stationVo);
-//		 
-//		 if(stationVo.getStatus() == 0){
-//			 stationVo.setRemark("未绑定电表");
-//		 }else if(stationVo.getStatus() == 1){
-//			 stationVo.setRemark("正在发电");
-//		 }else if(stationVo.getStatus() == 2){
-//			 stationVo.setRemark("电表异常");
-//		 }
-//		 newlist.add(stationVo);
-//	}
-// 
-//	 return newlist; 	
-//    }
-    
+  public  List<StationVo> getnewstation(Long userId){
+	   
+	   List<StationVo> newlist = new LinkedList<StationVo>();
+	  
+	 List<Station> list = stationDao.getstation(userId);
+	 for (Station station : list) {
+		 StationVo stationVo = new StationVo();
+		 BeanCopy.copyProperties(station, stationVo);
+		 
+		 if(stationVo.getStatus() == 0){
+			 stationVo.setRemark("未绑定电表");
+		 }else if(stationVo.getStatus() == 1){
+			 stationVo.setRemark("正在发电");
+		 }else if(stationVo.getStatus() == 2){
+			 stationVo.setRemark("电表异常");
+		 }
+		 
+		 List<Object> liststa = ammeterDao.findBynewStationId(station.getId());
+		  /** 累计发电量*/
+		  Double power =0.0; 
+		  for (Object object : liststa) {
+			   
+			  Object[] obj = (Object[])object;
+			  BigDecimal initKwh = (BigDecimal)obj[0];
+			  BigDecimal workTotalKwh = (BigDecimal)obj[1];
+			  Integer workTotalTm  = (Integer)obj[2];
+			
+				  if(null != initKwh){
+					  power +=  initKwh.doubleValue();  
+				  }
+				  if(null != workTotalKwh){
+					  power +=  workTotalKwh.doubleValue();  
+				  }
+				  
+				  stationVo.setElectricityGenerationTol(power); 
+				  /** 工作时长*/
+				  stationVo.setWorkTotaTm(workTotalTm); 
+		}	 
+		 newlist.add(stationVo);
+	}
+
+	 return newlist; 	
+   }
+ 
     
 //   public  List<Station> getstation(Long userId){
 //	   

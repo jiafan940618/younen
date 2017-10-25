@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,9 +39,11 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.JsonUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.NewPlanVo;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.OrderVo;
 import com.yn.vo.ResVo;
 import com.yn.vo.SVo2;
+import com.yn.vo.UserVo;
 
 @Service
 public class OrderService {
@@ -60,6 +63,17 @@ public class OrderService {
 	public List<Order> findBystatus(com.yn.model.Page<Order> page){
 		
 		return mapper.findBystatus(page);
+	}
+	
+	public List<Order> findByiosstatus(NewUserVo userVo){
+		
+		return mapper.findByiosstatus(userVo);
+	}
+	
+	public	int findByNum(com.yn.model.Page<Order> page){
+	
+	
+		return mapper.findByNum(page);
 	}
 	
 	/** 修改退款状态*/
@@ -89,6 +103,10 @@ public class OrderService {
 		return order01;
 	}
     
+   public Object getIosInfoOrder( Long orderId){
+	   
+	return orderDao.getIosInfoOrder(orderId);
+}
 	
 	public Order findOne(Long id) {
 		return orderDao.findOne(id);
@@ -340,7 +358,7 @@ public class OrderService {
 		orderVo.setStatus(status);
 		return orderVo;
 	}
-
+   /**pc端订单详情数据*/
 	public NewPlanVo getVoNewPlan(Object object) {
 
 		NewPlanVo newPlanVo = new NewPlanVo();
@@ -365,6 +383,7 @@ public class OrderService {
 		BigDecimal totalprice = (BigDecimal) obj[14];
 		Integer warPeriod = (Integer) obj[15];
 		Integer status = (Integer) obj[16];
+
 		newPlanVo.setUserName(userName);
 		newPlanVo.setPhone(phone);
 		newPlanVo.setAddress(addressText);
@@ -380,8 +399,81 @@ public class OrderService {
 		newPlanVo.setSerPrice(totalprice.doubleValue());
 		newPlanVo.setIds(ids);
 		newPlanVo.setStatus(status);
+
 		return newPlanVo;
 	}
+	
+	 /** ios端的数据处理*/
+	public NewPlanVo getIOsNewPlan(Object object) {
+
+		NewPlanVo newPlanVo = new NewPlanVo();
+
+		Object[] obj = (Object[]) object;
+
+		String userName = (String) obj[0];
+		String phone = (String) obj[1];
+		String addressText = (String) obj[2];
+		String serverName = (String) obj[3];
+		String orderCode = (String) obj[4];
+
+		String solName = (String) obj[5] + "   " + (String) obj[6];
+		String InvestName = (String) obj[7] + "   " + (String) obj[8];
+
+		String jsonText = (String) obj[9];
+		BigDecimal capacity = (BigDecimal) obj[10];
+		BigDecimal planPrice = (BigDecimal) obj[11];
+		String ids = (String) obj[12];
+
+		BigDecimal price = (BigDecimal) obj[13];
+		BigDecimal totalprice = (BigDecimal) obj[14];
+		Integer warPeriod = (Integer) obj[15];
+		Integer status = (Integer) obj[16];
+		
+		String ipoMemo  =(String)obj[17];
+		
+		Integer loanStatus =(Integer)obj[18];
+		
+		Date createDtm =(Date)obj[19];
+		
+		BigDecimal hadPayPrice = (BigDecimal) obj[20];
+		
+		DecimalFormat df = new DecimalFormat("#0.00");
+	   String speed =	df.format(hadPayPrice.doubleValue()/totalprice.doubleValue()*100);
+		
+		
+		
+		newPlanVo.setUserName(userName);
+		newPlanVo.setPhone(phone);
+		newPlanVo.setAddress(addressText);
+		newPlanVo.setCompanyName(serverName);
+		newPlanVo.setOrderCode(orderCode);
+		newPlanVo.setInvstername(InvestName);
+		newPlanVo.setBrandname(solName);
+		newPlanVo.setMaterialJson(jsonText);
+		newPlanVo.setWarPeriod(warPeriod);
+		newPlanVo.setNum(capacity.intValue());
+		newPlanVo.setAllMoney(planPrice.doubleValue());
+		newPlanVo.setApoPrice(price.doubleValue());
+		newPlanVo.setSerPrice(totalprice.doubleValue());
+		newPlanVo.setIds(ids);
+		newPlanVo.setStatus(status);
+		
+		if(null ==ipoMemo){
+			newPlanVo.setIpoMemo("暂无");
+		}else{
+			newPlanVo.setIpoMemo(ipoMemo);
+		}
+		
+		newPlanVo.setLoanStatus(loanStatus);
+		newPlanVo.setCreateDtm(createDtm);
+		newPlanVo.setSpeed(speed);
+		
+		return newPlanVo;
+	}
+	
+	/** */
+	
+	
 
 	/** 根据订单记录号修改状态 */
 

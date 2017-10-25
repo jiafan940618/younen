@@ -55,6 +55,11 @@
 		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
 		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
 		<result column="ipo_memo" property="ipoMemo" jdbcType="INTEGER" />
+		
+		
+		
+		
+		
 	</resultMap>
 
 	<update id="updateByCondition" parameterType="com.yn.model.Order">
@@ -213,6 +218,31 @@
 		ORDER BY create_dtm DESC
 		  
 		  LIMIT #{start},#{limit}
+
+	</select>
+	
+	<select id="findByNum" parameterType="com.yn.model.Page" resultType="Integer">
+	  SELECT 	
+		 COUNT(1)
+		 FROM t_order WHERE
+		user_id = #{userId} and del = 0 
+		 
+		  <if test="status != 9">
+		 	 and STATUS = #{status} 
+		</if>
+
+	</select> 
+	
+	<select id="findByiosstatus" parameterType="com.yn.vo.UserVo" resultMap="BaseResultMap">
+	SELECT 
+		
+		id,order_code,STATUS,server_name,capacity,had_pay_price,total_price,address_text
+		
+		 FROM t_order WHERE
+		 
+		user_id = #{id} and del = 0 
+
+		ORDER BY create_dtm DESC
 
 	</select>
 	

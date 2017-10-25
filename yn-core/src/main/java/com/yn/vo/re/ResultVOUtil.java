@@ -47,6 +47,19 @@ public class ResultVOUtil {
         return resultData;
     }
     
+    public static <T> ResultData<Object> Thirdsuccess(Object object,List<T> list,Object object01) {
+        ResultData resultData = new ResultData();
+        
+        resultData.setCode(200);
+        resultData.setMsg("成功");
+        resultData.setSuccess(true);
+        resultData.setData(object);
+        resultData.setList(list);
+        resultData.setObject(object01);
+    
+        return resultData;
+    }
+    
     public static <T> ResultData<Object> newsuccess(Object object,List<T> list) {
         ResultData resultData = new ResultData();
         

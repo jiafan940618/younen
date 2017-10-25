@@ -1,6 +1,7 @@
 package com.yn.vo;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class NewPlanVo {
 	
@@ -41,7 +42,48 @@ public class NewPlanVo {
 	
 	private String ids;
 	
+	private Date createDtm;
 	
+	private String ipoMemo;
+	
+	private Integer loanStatus;
+	
+	private Double hadPayPrice;
+	
+	private String speed;
+	
+	
+	
+	public Double getHadPayPrice() {
+		return hadPayPrice;
+	}
+	public void setHadPayPrice(Double hadPayPrice) {
+		this.hadPayPrice = hadPayPrice;
+	}
+	public String getSpeed() {
+		return speed;
+	}
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+	public Integer getLoanStatus() {
+		return loanStatus;
+	}
+	public void setLoanStatus(Integer loanStatus) {
+		this.loanStatus = loanStatus;
+	}
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
+	public Date getCreateDtm() {
+		return createDtm;
+	}
+	public void setCreateDtm(Date createDtm) {
+		this.createDtm = createDtm;
+	}
 	public String getIds() {
 		return ids;
 	}

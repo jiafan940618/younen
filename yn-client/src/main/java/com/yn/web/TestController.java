@@ -15,6 +15,7 @@ import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
 import com.yn.model.Page;
 import com.yn.model.Recharge;
+import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
@@ -80,6 +81,7 @@ public class TestController {
 	       @ResponseBody
 	       @RequestMapping("/test")  
 	       public Object helloJsp001(RechargeVo rechargeVo){
+	    	
 	    	
 	    	   
 	              return ResultVOUtil.success(null);  

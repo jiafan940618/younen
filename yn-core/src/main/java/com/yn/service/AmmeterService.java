@@ -15,17 +15,22 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.StringUtil;
 import com.yn.vo.AmmeterVo;
+import com.yn.vo.UserVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.*;
+
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -69,6 +74,30 @@ public class AmmeterService {
         }
     }
 
+    /** 根据userId查询总电量并相加*/
+  public  Double findByUserId(UserVo userVo){
+
+	  List<Object> list = ammeterDao.findByUserId(userVo);
+	  /** 累计发电量*/
+	  Double power =0.0; 
+	  for (Object object : list) {
+		   
+		  Object[] obj = (Object[])object;
+		  BigDecimal initKwh = (BigDecimal)obj[0];
+		  BigDecimal workTotalKwh = (BigDecimal)obj[1];
+		  
+		   //.add(workTotalKwh))
+		
+			  if(null != initKwh){
+				  power +=  initKwh.doubleValue();  
+			  }
+			  if(null != workTotalKwh){
+				  power +=  workTotalKwh.doubleValue();  
+			  }
+	   
+	}
+	return power;
+    }
 
     @Transactional
     public void delete(Long id) {

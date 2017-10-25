@@ -28,9 +28,8 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 //    @Query("select COALESCE(sum(s.nowKw),0) from Station s WHERE s.serverId=?1 AND s.del=0")
 //    double sumNowKw(Long serverId);
 //    
-    @Query("select s.id from Station s WHERE s.del=0")
-    List<Long> findId();
     
+
     @Query("select s.id from Station s WHERE s.serverId=?1 AND s.del=0")
     List<Long> findId(Long serverId);
     
@@ -64,9 +63,12 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
     
     
     /** 根据userid查询出电站的信息*/
-//    @Query("select new Station(id,capacity,workTotaTm,electricityGenerationTol,status,userId,stationName) from Station s WHERE s.userId = :userId and s.del=0")
-//    List<Station> getstation(@Param("userId") Long userId);
-//    
+    @Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.userId = :userId and s.del=0")
+    List<Station> getstation(@Param("userId") Long userId);
+    
+    @Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.orderId = :orderId and s.del=0")
+    Station FindByStationCode(@Param("orderId") Long orderId);
+    
     
     /*
      * 按时间查询装机并网总量

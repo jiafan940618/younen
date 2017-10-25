@@ -24,6 +24,7 @@ public class OrderVo extends QueryVo{
 	private String privilegeCode;
 	private Integer type;
 	private String tradeNo;
+	private String stationCode;
 	
 	private Long orderPlanId;
 	private Double capacity; 
@@ -33,7 +34,7 @@ public class OrderVo extends QueryVo{
 	private Double factoragePrice;
 	private Double hadPayPrice;
 	private Integer loanStatus;
-	
+	private String ipoMemo;
 	private Double speed;
 	
 	private Integer status;
@@ -55,6 +56,18 @@ public class OrderVo extends QueryVo{
 	
 	
 	
+	public String getStationCode() {
+		return stationCode;
+	}
+	public void setStationCode(String stationCode) {
+		this.stationCode = stationCode;
+	}
+	public String getIpoMemo() {
+		return ipoMemo;
+	}
+	public void setIpoMemo(String ipoMemo) {
+		this.ipoMemo = ipoMemo;
+	}
 	public Integer getWaPeriod() {
 		return waPeriod;
 	}

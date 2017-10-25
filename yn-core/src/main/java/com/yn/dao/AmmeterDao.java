@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.model.Ammeter;
+import com.yn.vo.UserVo;
 
 public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificationExecutor<Ammeter> {
 	@Modifying
@@ -35,5 +36,11 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	 */
 	@Query(value="select * from ammeter as a where a.station_id=?1 ",nativeQuery=true)
     List<Ammeter> findByStationId(Long stationId);
+	
+    @Query(value="SELECT a.init_kwh,a.work_total_kwh,a.work_total_tm  FROM station s  LEFT JOIN ammeter a ON s.id = a.station_id WHERE s.user_id = :#{#userVo.id} AND s.del = 0",nativeQuery=true)
+    List<Object> findByUserId(@Param("userVo") UserVo userVo);
+    
+    @Query(value="SELECT a.init_kwh,a.work_total_kwh,a.work_total_tm FROM station s  LEFT JOIN ammeter a ON s.id = a.station_id WHERE s.id = :stationId AND s.del = 0 ",nativeQuery=true)
+    List<Object> findBynewStationId(@Param("stationId") Long stationId);
 	
 }

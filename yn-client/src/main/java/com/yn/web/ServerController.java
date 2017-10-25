@@ -49,6 +49,7 @@ import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ResultData;
 import com.yn.utils.RongLianSMS;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.ServerVo;
 import com.yn.vo.SolarPanelVo;
@@ -171,10 +172,9 @@ public class ServerController {
 
 	        user.setToken(userService.getToken(user));
 	        userService.updateToken(user);
-
-	        SessionCache.instance().setUser(user);
+	       
 	        user.setPassword(null);
-	    //    Object object = ResultVOUtil.success(user);  
+
 	        httpSession.setAttribute("server", server);
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");

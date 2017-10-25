@@ -206,7 +206,7 @@ public class SubsidyController {
 			// 收益
 			rm.put("twentyYearTotalIncome", df.format(twentyYearTotalIncome));
 			rm.put("yearIncome", df.format(everyYearTotalIncome)); // 发电收益(元/年)
-			rm.put("selfuse", sobe.getSellPrice()); // 当地电价
+			rm.put("selfuse", df.format(sobe.getSellPrice())); // 当地电价
 			rm.put("guojiabutie", countrySub); // 国家补贴(元/度)
 			rm.put("subsidy", sobe.getAreaSubsidyPrice()); // 地方补贴(元/度)
 			rm.put("unlsubsidy", sobe.getUnSubsidyPrice()); // 优能补贴(元/度)

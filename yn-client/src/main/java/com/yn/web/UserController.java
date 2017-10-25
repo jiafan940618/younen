@@ -1,10 +1,15 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +25,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.model.Ammeter;
 import com.yn.model.Order;
 import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.User;
+import com.yn.service.AmmeterService;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
@@ -45,6 +53,9 @@ public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
+	
+	@Autowired
+	AmmeterService ammeterService;
 	@Autowired
 	SystemConfigService systemConfigService;
     @Autowired
@@ -109,10 +120,15 @@ public class UserController {
     /** 查询出用户的资料*/
     @ResponseBody
     @RequestMapping(value = "/findUser", method = {RequestMethod.POST})
-    public Object findByOne(UserVo userVo) {
+    public Object findByOne(UserVo userVo,HttpSession httpSession) {
        
-    	//userVo
-    	  WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+    	 User newuserVo = SessionCache.instance().getUser();
+    	
+    	if(null == newuserVo){
+    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    	}
+    	
+    	  WalletVo walletVo =  userService.findUserPrice(newuserVo.getId());
 
     	
         return ResultVOUtil.success(walletVo);
@@ -128,7 +144,11 @@ public class UserController {
     	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
     	userVo.setPhone("13530895662");*/
     	
-    	NewUserVo newuserVo =(NewUserVo) httpSession.getAttribute("user");
+    	User newuserVo =(User) httpSession.getAttribute("SessionCache");
+    	
+    	if(null == newuserVo){
+    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    	}
     	
     	if(!PhoneFormatCheckUtils.isPhoneLegal(userVo.getPhone())){
 			
@@ -186,90 +206,152 @@ public class UserController {
 
         return ResultVOUtil.success(userVo01);
     }
-    
+   
     /** PC端*/
-//    @ResponseBody
-//    @RequestMapping(value = "/findSomeUs")
-//    public Object findSomeUs(UserVo userVo) {
-//    	
-//    	//userVo.setId(3L);
-//    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
-//    	/** 电站信息*/
-//    List<StationVo> list = stationService.getnewstation(userVo.getId());
-//     
-//    	/** 个人资料*/
-//    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
-//    
-//    
-//     
-//    	
-//    	 return ResultVOUtil.newsuccess(walletVo, list);
-//    }
-//    
-    /** ios端的个人中心*/
-//    @ResponseBody
-//    @RequestMapping(value = "/iosFindSomeUs")
-//    public Object iosfindSomeUs(UserVo userVo) {
-//    	
-//    Map<String, String> newmap = new HashMap<String, String>();
-//    	//userVo.setId(3L);
-//    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
-//    	/** 电站信息*/
-//    List<Station> list = stationService.getstation(userVo.getId());
-//    Double power = 0.0;
-//    
-////    for (Station station : list) {
-////    	power += station.getElectricityGenerationTol();
-////	}
-////     
-//    Map<String, String> map = systemConfigService.getlist(); 
-//	// 植树参数
-//	Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));
-//	// co2减排参数
-//	Double CO2_prm = Double.valueOf(map.get("CO2_prm"));
-//	
-//	DecimalFormat df = new DecimalFormat("#0.00");
-//	
-//	newmap.put("CO2_prm", df.format(power * CO2_prm));
-//	newmap.put("plant_trees_prm", df.format(power * plant_trees_prm));
-//    
-//    	/** 个人资料*/
-//    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
-//    
-//    String num = transactionRecordService.FindByNum(userVo.getId())+"";
-//  
-//    newmap.put("num",num);
-//    newmap.put("Integral",walletVo.getIntegral().toString() );
-//    	
-//    	 return ResultVOUtil.newhsuccess(walletVo, newmap);
-//    }
-//    
+    @ResponseBody
+    @RequestMapping(value = "/findSomeUs")
+    public Object findSomeUs(UserVo userVo,HttpSession httpSession) {
+    	
+    	User newuserVo = SessionCache.instance().getUser();
+    	
+    	if(null == newuserVo){
+    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    	}
+    	
+    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+    	//** 电站信息*//*
+    List<StationVo> list = stationService.getnewstation(newuserVo.getId());
+     
+    	//** 个人资料*//*
+    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+    
+
+    	 return ResultVOUtil.newsuccess(walletVo, list);
+    }
+    
+/** ios端的个人中心*/
+  @ResponseBody
+  @RequestMapping(value = "/iosFindSomeUs")
+  public Object iosfindSomeUs(UserVo userVo,HttpSession httpSession) {
+	  User newuserVo = SessionCache.instance().getUser();
+  	
+  	if(null == newuserVo){
+  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  	}
+  	
+  Map<String, String> newmap = new HashMap<String, String>();
+  	//userVo.setId(3L);
+  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+  	/** 通过userId找到总的发电量*/
+  
+  		Double power = ammeterService.findByUserId(userVo);
+ 
+    Map<String, String> map = systemConfigService.getlist(); 
+	/**植树参数*/
+	Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));
+	/**co2减排参数*/
+	Double CO2_prm = Double.valueOf(map.get("CO2_prm"));
+	
+	DecimalFormat df = new DecimalFormat("#0.00");
+	 /** co2排放量*/
+	newmap.put("CO2_prm", df.format(power * CO2_prm));
+	 /** 植树参数*/
+	newmap.put("plant_trees_prm", df.format(power * plant_trees_prm));
+	  
+  	/** 个人资料*/
+  WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+  
+  String num = transactionRecordService.FindByNum(userVo.getId())+"";
+
+  newmap.put("num",num);
+  newmap.put("Integral",walletVo.getIntegral().toString() );
+  	
+  	 return ResultVOUtil.newhsuccess(walletVo, newmap);
+  }
+  
     
     
     
-     /** 后面版本要改为分页的形式*/
-//    @ResponseBody
-//    @RequestMapping(value = "/findStationUs")
-//    public Object findStation(UserVo userVo) {
-//    	
-//    	 List<Station> list = stationService.getstation(userVo.getId());
-//    	
-//    	return ResultVOUtil.success(list);
-//    }
-//    
-//    
+   /** 后面版本要改为分页的形式*/
+   @ResponseBody
+    @RequestMapping(value = "/findStationUs")
+    public Object findnewStation(HttpSession httpSession) {
+	   User newuserVo = SessionCache.instance().getUser();
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  	}
+
+    	 List<StationVo> list = stationService.getnewstation(newuserVo.getId());
+    	
+    	return ResultVOUtil.success(list);
+    }
+  @ResponseBody
+  @RequestMapping(value = "/findiosQueryOrder")
+  public Object findStation(HttpSession httpSession) {
+	/* NewUserVo newuserVo =(NewUserVo) httpSession.getAttribute("user");
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  	}*/
+	  NewUserVo newuserVo = new NewUserVo();
+	  newuserVo.setId(2l);
+	 
+	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
+	  	
+	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());
+  	
+	  List<Order>	list = orderService.findByiosstatus(newuserVo);
+	  
+	  for (Order order : list) {
+		  OrderVo orderVo = new OrderVo();  
+		  Double   memo =0.0;
+			// 进度条
+			Double a = order.getTotalPrice(), b = order.getHadPayPrice();
+			if(b ==null ){
+				order.setIpoMemo("已支付总工程款的0%");
+			}else{
+				DecimalFormat df = new DecimalFormat("#.00");
+				memo =	Double.parseDouble(df.format(Double.valueOf((b / a)) * 100));
+				order.setIpoMemo("已支付总工程款的"+memo+"%");
+			}
+			
+			BeanCopy.copyProperties(order, orderVo);
+			
+		Station station = stationService.FindByStationCode(orderVo.getId());
+		orderVo.setStationCode(station.getStationCode());
+	 
+		listVo.add(orderVo);
+	}
+  	return ResultVOUtil.success(listVo);
+  }
+    
     
     /** 个人中心订单管理*/
     @ResponseBody
     @RequestMapping(value = "/findQueryOrder")
-    public Object findOrder(com.yn.model.Page<Order> page) {
+    public Object findOrder(com.yn.model.Page<Order> page,HttpSession httpSession) {
+    	//page.setUserId(3l);
+    	User newuserVo = SessionCache.instance().getUser();
+ 	  	
+ 	  	if(null == newuserVo){
+ 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+ 	  	}
+    	
+    	if(null == page.getStatus()){
+    		page.setStatus(9);
+    	}
+    	page.setUserId(newuserVo.getId());
     	
     	logger.info("需要传递的参数为: ---- ----- ----- index->"+page.getIndex());
     	logger.info("需要传递的参数为: ---- ----- ----- userId->"+page.getUserId());
     	logger.info("需要传递的参数为: ---- ----- ----- status->"+page.getStatus());
     	
-    List<Order>	list = orderService.findBystatus(page);
-    	
+    List<Order>	list = orderService.findBystatus(page); 
+     
+    int num = orderService.findByNum(page);
+    
+    page.setTotal(num/page.getLimit() == 1 ? num/page.getLimit() : num/page.getLimit()+1);	
     	
 		return ResultVOUtil.newsuccess(page, list);
     }
@@ -333,9 +415,20 @@ public class UserController {
     /** 查询交易记录*/
     @RequestMapping("/userTransactionRecord") 
     @ResponseBody
-    public Object helloJsp01(com.yn.model.Page<TransactionRecord>  page){
+    public Object helloJsp01(com.yn.model.Page<TransactionRecord>  page,HttpSession httpSession){
     	/*page.setUserId(2L);
     	page.setTime_to("2017-10-20");*/
+    	//page.setTime_from("2017-10-03");
+    	User newuserVo = SessionCache.instance().getUser();
+  	  	
+  	  	if(null == newuserVo){
+  	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  	  	}
+    	
+  	    page.setUserId(2l);
+  	    if(null != page.getTime_to()){
+  	    	page.setTime_to(page.getTime_to()+" "+"23:59:59");
+  	    }
     	
     	
     	logger.info("传递参数 ---- ----- ----- userId："+page.getUserId());
@@ -346,25 +439,25 @@ public class UserController {
     	logger.info("传递参数 ---- ----- ----- status："+page.getStatus());
     	logger.info("传递参数 ---- ----- ----- payWay："+page.getPayWay());
     	
-    int total =	transactionRecordService.FindBynewNum(page);
+    	int total =	transactionRecordService.FindBynewNum(page);
     	
     	 List<TransactionRecord> list = transactionRecordService.GivePage(page);
     	 for (TransactionRecord transactionRecord : list) {
     		 
-    		 if(transactionRecord.getType() == 1){
+    		 if(transactionRecord.getPayWay()== 1){
     			 transactionRecord.setRemark("余额支付");
-    		 }else if(transactionRecord.getType() == 2){
+    		 }else if(transactionRecord.getPayWay() == 2){
     			 transactionRecord.setRemark("微信");
-    		 }else if(transactionRecord.getType() == 3){
+    		 }else if(transactionRecord.getPayWay() == 3){
     			 transactionRecord.setRemark("支付宝");
-    		 }else if(transactionRecord.getType() == 4){
+    		 }else if(transactionRecord.getPayWay() == 4){
     			 transactionRecord.setRemark("网银支付");
-    		 }else if(transactionRecord.getType() == 5){
+    		 }else if(transactionRecord.getPayWay() == 5){
     			 transactionRecord.setRemark("快付通");
     		 }
     	 }
-    	 
-    	 page.setTotal(total);
+    	 /** 总页数*/
+    	 page.setTotal(total/page.getLimit() == 1 ? total/page.getLimit() : total/page.getLimit()+1);
     	 
 		return ResultVOUtil.newsuccess(page, list);  
     }
@@ -373,7 +466,15 @@ public class UserController {
     
     @RequestMapping("/iosTransactionRecord") 
     @ResponseBody
-    public Object ioshelloJs(TransactionRecordVo transactionRecordVo){
+    public Object ioshelloJs(TransactionRecordVo transactionRecordVo,HttpSession httpSession){
+    	
+    	User newuserVo = SessionCache.instance().getUser();
+  	  	
+  	  	if(null == newuserVo){
+  	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  	  	}
+    	
+  	  transactionRecordVo.setUserId(newuserVo.getId());
     	
     	//transactionRecordVo.setUserId(3L);
     	logger.info("传递参数 ---- ----- ----- userId："+transactionRecordVo.getUserId());
@@ -411,6 +512,7 @@ public class UserController {
 
 		if(countType == 1){
 			httpSession.removeAttribute("user");
+			httpSession.removeAttribute("SessionCache");
 		} else if(countType == 2) {
 			httpSession.removeAttribute("server");
 		} else if(countType == 3) {

@@ -3,6 +3,8 @@ package com.yn.session;
 import com.yn.exception.MyException;
 import com.yn.model.User;
 import com.yn.utils.Constant;
+import com.yn.vo.NewUserVo;
+
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -54,15 +56,15 @@ public class SessionCache {
         this.code = code;
     }
 
-    public User getUser() {
-        return user;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    private SessionCache() {
+	private SessionCache() {
 
     }
 

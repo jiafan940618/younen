@@ -106,7 +106,7 @@ public class PushController {
 		logger.info("---- ----- ---- ----- 传递的id："+pushVo.getId());
 		Push push = new Push();
 		push.setId(pushVo.getId());
-		
+		push.setIsRead(1);
 		pushService.save(push);
 		
 		return ResultVOUtil.success();	

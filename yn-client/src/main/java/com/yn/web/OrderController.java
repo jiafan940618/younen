@@ -54,6 +54,7 @@ import com.yn.service.StationService;
 import com.yn.service.UploadPhotoService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.JsonUtil;
@@ -70,6 +71,7 @@ import com.yn.vo.re.ResultVOUtil;
 public class OrderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -380,6 +382,33 @@ public class OrderController {
 
 		return ResultVOUtil.newsuccess(newPlanVo, list);
 	}
+	
+	/** ios 订单详情状态*/
+	//, @RequestParam("orderId") Long OrderId
+	@ResponseBody
+	@RequestMapping(value = "/IosIngorder")
+	public Object LookIosOrder(HttpSession session) {
+
+		Long OrderId=1L;
+		
+		Object object = ordService.getIosInfoOrder(OrderId);
+
+		NewPlanVo newPlanVo = ordService.getIOsNewPlan(object);
+		
+		List<BillOrder> billlist = billOrderService.findByOrderId(OrderId);
+
+		List<String> newlist = billOrderService.getSay(billlist);
+		
+		String ids = newPlanVo.getIds();
+
+		List<Long> listids = APOservice.Transformation(ids);
+
+		List<Apolegamy> list = apolegamyService.findAll(listids);
+		
+
+		return ResultVOUtil.Thirdsuccess(newPlanVo, list, newlist);
+	}
+	
 
 	/** 修改电站信息 */
 	@RequestMapping(value = "/updateInfo")
@@ -425,7 +454,7 @@ public class OrderController {
 
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
-		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+		User newuser = SessionCache.instance().getUser();
 
 		/** 前端页面地址的参数 */
 		newuser.setFullAddressText(user01.getAddressText());
@@ -444,8 +473,9 @@ public class OrderController {
 		plan.setAddress(user01.getAddressText());
 		plan.setPhone(user01.getPhone());
 		plan.setUserName(user01.getUserName());
-
-		session.setAttribute("User", newuser);
+		
+		SessionCache.instance().setUser(newuser);
+	//	session.setAttribute("user", newuser);
 		session.setAttribute("newPlanVo", plan);
 
 		return ResultVOUtil.success(newuser);
@@ -544,8 +574,8 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/iosorderPrice")
 	public ResultData<Object> findIocordprice(HttpSession session, @RequestParam("capacity") Integer capacity) {
-		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
-
+		//NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+		User newuser = SessionCache.instance().getUser();
 		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
 		String orderCode = (String) session.getAttribute("orderCode");
 
@@ -740,7 +770,7 @@ public class OrderController {
 		}
 		logger.info("添加图片为：-- --- --- ----- --- --- ----" + finaltime);
 
-		NewUserVo newuser = (NewUserVo) session.getAttribute("user");
+		User newuser = SessionCache.instance().getUser();
 
 		UploadPhoto uploadPhoto = new UploadPhoto();
 		uploadPhoto.setLoadImg(finaltime);

@@ -362,7 +362,7 @@ public class KFTpayService {
 			//TradeResultDTO [orderNo=8o6615079499770435677, status=1, errorCode=, failureDetails=]
 			
 			BillWithdrawals billWithdrawals = new BillWithdrawals();
-			billWithdrawals.setStatus(0);
+			billWithdrawals.setStatus(1);
 			billWithdrawals.setDel(0);
 			billWithdrawals.setWalletId(billWithdrawalsVo.getWalletId());
 			billWithdrawals.setUserId(billWithdrawalsVo.getUserId());
@@ -377,7 +377,7 @@ public class KFTpayService {
 			
 			
 			if(result.getStatus() == 1){
-				billWithdrawals.setStatus(1);
+				billWithdrawals.setStatus(0);
 				
 				Wallet wallet  = walletService.findWalletByUser(billWithdrawals.getUserId());
 				 //subtract
@@ -391,7 +391,7 @@ public class KFTpayService {
 				
 				return ResultVOUtil.success("提现成功!");
 			}else{
-				billWithdrawals.setStatus(2);
+				billWithdrawals.setStatus(1);
 				billWithdrawals.setRemark(result.getFailureDetails());
 				
 				transactionRecordService.InsertBillAll(billWithdrawals);
