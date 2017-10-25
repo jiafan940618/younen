@@ -92,12 +92,12 @@ public class ElecDataHourController {
     /**
      * 设备地址
      */
-    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
-        Set<Long> findDAddr = elecDataHourDao.findDAddr(stationId, type);
-        return ResultVOUtil.success(findDAddr);
-    }
+//    @RequestMapping(value = "/findDAddr", method = {RequestMethod.POST, RequestMethod.GET})
+//    @ResponseBody
+//    public Object test(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
+//        Set<Long> findDAddr = elecDataHourDao.findDAddr(stationId, type);
+//        return ResultVOUtil.success(findDAddr);
+//    }
 
 
 }
