@@ -114,7 +114,7 @@ public class ReadDataSource extends Thread {
 		} else if (year > nowYear) {// 明年
 		} else if (year < nowYear) {// 去年
 		}
-		for (int i = 18; i <= days; i++) {
+		for (int i = 1; i <= days; i++) {
 			selectDate = year + "" + m + "" + i;// 20101111
 			date = parseDate(year, month, i);// 2017_11_11
 			amPhaseRecordService.dropTmpTable(date);
@@ -134,8 +134,6 @@ public class ReadDataSource extends Thread {
 					amPhaseRecordR.setdType(am1Phase.getdType());
 					amPhaseRecordR.setwAddr(am1Phase.getwAddr());
 					amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
-					// AmPhaseRecord findOne =
-					// amPhaseRecordService.findOne(amPhaseRecordR);
 					amPhaseRecordR.setDate(date);
 					AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 					if (findOne == null) {
@@ -146,10 +144,6 @@ public class ReadDataSource extends Thread {
 									"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							// System.out.println("ReadDataSource--> am1Phase::"
-							// + amPhaseRecord.getAmPhaseRecordId()
-							// + "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日
-							// HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -166,8 +160,6 @@ public class ReadDataSource extends Thread {
 					amPhaseRecordR.setdType(am3Phase.getdType());
 					amPhaseRecordR.setwAddr(am3Phase.getwAddr());
 					amPhaseRecordR.setMeterTime(am3Phase.getMeterTime());
-					// AmPhaseRecord findOne =
-					// amPhaseRecordService.findOne(amPhaseRecordR);
 					amPhaseRecordR.setDate(date);
 					AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 					if (findOne == null) {
@@ -176,15 +168,8 @@ public class ReadDataSource extends Thread {
 							BeanUtils.copyProperties(am3Phase, amPhaseRecord);
 							amPhaseRecord.setAmPhaseRecordId(
 									"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
-							// amPhaseRecordService.save(amPhaseRecord);//springdata
-							// jpa
-							// --> 执行返回select语句。保存不失败，但数据库没有数据。
 							amPhaseRecord.setDate(date);
 							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							// System.out.println("ReadDataSource--> am3Phase::"
-							// + amPhaseRecord.getAmPhaseRecordId()
-							// + "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日
-							// HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
