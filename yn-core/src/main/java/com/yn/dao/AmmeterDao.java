@@ -42,4 +42,22 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 ",nativeQuery=true)
     List<Long> selectAmmeterCode(Long stationId);
 	
+    @Query("select COALESCE(sum(s.nowKw),0) from Ammeter s WHERE s.del=0")
+    double sumNowKw();
+    
+    @Query("select COALESCE(sum(s.nowKw),0) from Ammeter s WHERE s.stationId in (?1) AND s.del=0")
+    double sumNowKw(List<Long> stationIds);
+    
+    @Query("select COALESCE(sum(s.workTotalKwh),0) from Ammeter s WHERE s.stationId in (?1) AND s.del=0")
+    double sumWorkTotalKwh(List<Long> stationIds);
+    
+    @Query("select COALESCE(sum(s.workTotalKwh),0) from Ammeter s WHERE s.stationId in (?1) AND s.del=0")
+    double sumWorkTotalKwh();
+    
+    @Query("select COALESCE(sum(s.initKwh),0) from Ammeter s WHERE s.stationId in (?1) AND s.del=0")
+    double sumInitKwh(List<Long> stationIds);
+    
+    @Query("select COALESCE(sum(s.initKwh),0) from Ammeter s WHERE s.stationId in (?1) AND s.del=0")
+    double sumInitKwh();
+    
 }
