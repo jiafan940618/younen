@@ -416,6 +416,7 @@ public class OrderController {
 	@RequestMapping(value = "/updateInfo")
 	@ResponseBody
 	public Object udatestation(UserVo userVo, HttpSession session) {
+		
 		User user01 = new User();
 
 		BeanCopy.copyProperties(userVo, user01);
@@ -456,14 +457,16 @@ public class OrderController {
 
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
-		User newuser = SessionCache.instance().getUser();
+/*		User newuser = SessionCache.instance().getUser();
 
 		/** 前端页面地址的参数 */
-		newuser.setFullAddressText(user01.getAddressText());
+		/*newuser.setFullAddressText(user01.getAddressText());
 		newuser.setIpoMemo(userVo.getIpoMemo());
 		newuser.setPhone(user01.getPhone());
-		newuser.setUserName(user01.getUserName());
+		newuser.setUserName(user01.getUserName());*/
 		Long userid = (Long) session.getAttribute("userid");
+
+
 		User user = userservice.findOne(userid);
 
 		user.setFullAddressText(user01.getAddressText());
@@ -475,12 +478,12 @@ public class OrderController {
 		plan.setAddress(user01.getAddressText());
 		plan.setPhone(user01.getPhone());
 		plan.setUserName(user01.getUserName());
+		User newuser = userservice.findOne(userid);
 		
 		SessionCache.instance().setUser(newuser);
-	//	session.setAttribute("user", newuser);
 		session.setAttribute("newPlanVo", plan);
 
-		return ResultVOUtil.success(newuser);
+		return ResultVOUtil.success(user);
 	}
 
 	/** 点击确定 , 居民状态的放在session中 */

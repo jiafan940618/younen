@@ -387,12 +387,15 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 
-	<!-- <select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap"> 
-		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day 
-		t1 LEFT JOIN t_station t2 ON t1.station_code = t2.station_code INNER JOIN 
-		t_user t3 ON t2.user_id = t3.id AND t2.user_id = #{userId} AND t1.create_dtm 
-		LIKE CONCAT('%',#{createDtm},'%') GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m') 
-		</select> -->
+	 <select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap"> 
+		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day t1
+ 			LEFT JOIN ammeter_record a ON a.c_addr = t1.`ammeter_code` 
+ 			LEFT JOIN station s ON s.station_code = a.station_code
+ 			INNER JOIN USER u ON s.user_id = u.id
+			 AND s.user_id = #{userId}
+			AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%')
+		    GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
+		</select> 
 
 	<select id="selectByQuery" parameterType="com.yn.model.ElecDataDay"
 		resultMap="BaseResultMap">

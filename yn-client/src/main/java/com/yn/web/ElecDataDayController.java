@@ -1,9 +1,15 @@
 package com.yn.web;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +27,10 @@ import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
 import com.yn.model.ElecDataDay;
 import com.yn.model.Station;
+import com.yn.model.User;
 import com.yn.service.ElecDataDayService;
 import com.yn.service.SystemConfigService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.PageInfo;
 import com.yn.vo.TemStationYearVo;
@@ -102,74 +110,76 @@ public class ElecDataDayController {
 //		return ResultVOUtil.success(monthKwh);
 //	}
 	
-//	@ResponseBody
-//	@RequestMapping(value = "/huanbao")
-//	public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
-//		
-//		NewUserVo user = (NewUserVo)httpSession.getAttribute("user");
-//		if(user == null){
-//			return  ResultVOUtil.error(777, "抱歉，你没有登录!");
-//		}
-//		
-//		DecimalFormat df = new DecimalFormat("0.00");
-//		
-//		Map<String, String> newmap = systemConfigService.getlist();
-//		
-//		// 植树参数
-//		Double plant_trees_prm = Double.valueOf(newmap.get("plant_trees_prm"));
-//		// co2减排参数
-//		Double CO2_prm = Double.valueOf(newmap.get("CO2_prm"));
-//		// SO减排参数
-//		Double SO_prm = Double.valueOf(newmap.get("SO_prm"));
-//		
-//		Date date = new Date();
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-//		String year = sdf.format(date);
-//
-//		List<Map<String, Object>> rl = new ArrayList<>();
-//		List<Map<String, Object>> rl2 = new ArrayList<>();
-//		List<Map<String, Object>> rl3 = new ArrayList<>();
-//		String [] time = {year+"-01",year+"-02",year+"-03",year+"-04",year+"-05",year+"-06",year+"-07",year+"-08",year+"-09",year+"-10",year+"-11",year+"-12"};
-//		for(String timeStr:time){
-//			Map<String, Object> map = new HashMap<>();
-//			map.put("userId", user.getId());
-//			map.put("createDtm", timeStr);
-//			ElecDataDay tsy = elecDataDayService.findHuanbao(map);
-//			Map<String, Object> map2 = new HashMap<>();
-//			Map<String, Object> map3 = new HashMap<>();
-//			Map<String, Object> map4 = new HashMap<>();
-//			if(tsy != null){
-//				map2.put("co2", df.format(Double.valueOf(tsy.getKwh()) * CO2_prm));
-//				map2.put("createDtm", timeStr);
-//				map3.put("treeNum", df.format(Double.valueOf(tsy.getKwh()) * plant_trees_prm));
-//				map3.put("createDtm", timeStr);
-//				map4.put("SONum", df.format(Double.valueOf(tsy.getKwh()) * SO_prm));
-//				map4.put("createDtm", timeStr);
-//				
-//				rl.add(map2);
-//				rl2.add(map3);
-//				rl3.add(map4);
-//			} else{
-//				map2.put("co2", 0);
-//				map2.put("createDtm", timeStr);
-//				map3.put("treeNum", 0);
-//				map3.put("createDtm", timeStr);
-//				map4.put("SONum", 0);
-//				map4.put("createDtm", timeStr);
-//				
-//				rl.add(map2);
-//				rl2.add(map3);
-//				rl3.add(map4);
-//			}
-//		}
-//		
-//		Map<String, Object> rm = new HashMap<>();
-//		rm.put("co2data", rl);
-//		rm.put("treeData", rl2);
-//		rm.put("SOData", rl3);
-//		
-//		return ResultVOUtil.success(rm);
-//	}
+@ResponseBody
+@RequestMapping(value = "/huanbao")
+public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
+	
+	User user = SessionCache.instance().getUser();
+	if(user == null){
+		return  ResultVOUtil.error(777, "抱歉，你没有登录!");
+	}
+	
+	DecimalFormat df = new DecimalFormat("0.00");
+	
+	Map<String, String> newmap = systemConfigService.getlist();
+	
+	// 植树参数
+	Double plant_trees_prm = Double.valueOf(newmap.get("plant_trees_prm"));
+	// co2减排参数
+	Double CO2_prm = Double.valueOf(newmap.get("CO2_prm"));
+	// SO减排参数
+	Double SO_prm = Double.valueOf(newmap.get("SO_prm"));
+	
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+	String year = sdf.format(date);
+
+	List<Map<String, Object>> rl = new ArrayList<>();
+	List<Map<String, Object>> rl2 = new ArrayList<>();
+	List<Map<String, Object>> rl3 = new ArrayList<>();
+	String [] time = {year+"-01",year+"-02",year+"-03",year+"-04",year+"-05",year+"-06",year+"-07",year+"-08",year+"-09",year+"-10",year+"-11",year+"-12"};
+	for(String timeStr:time){
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", user.getId());
+		map.put("createDtm", timeStr);
+		ElecDataDay tsy = elecDataDayService.findHuanbao(map);
+		Map<String, Object> map2 = new HashMap<>();
+		Map<String, Object> map3 = new HashMap<>();
+		Map<String, Object> map4 = new HashMap<>();
+		if(tsy != null){
+			map2.put("co2", df.format(Double.valueOf(tsy.getKwh()) * CO2_prm));
+			map2.put("createDtm", timeStr);
+			map3.put("treeNum", df.format(Double.valueOf(tsy.getKwh()) * plant_trees_prm));
+			map3.put("createDtm", timeStr);
+			map4.put("SONum", df.format(Double.valueOf(tsy.getKwh()) * SO_prm));
+			map4.put("createDtm", timeStr);
+			
+			rl.add(map2);
+			rl2.add(map3);
+			rl3.add(map4);
+		} else{
+			map2.put("co2", 0);
+			map2.put("createDtm", timeStr);
+			map3.put("treeNum", 0);
+			map3.put("createDtm", timeStr);
+			map4.put("SONum", 0);
+			map4.put("createDtm", timeStr);
+			
+			rl.add(map2);
+			rl2.add(map3);
+			rl3.add(map4);
+		}
+	}
+	
+
+	Map<String, Object> rm = new HashMap<>();
+	rm.put("co2data", rl);
+	rm.put("treeData", rl2);
+	rm.put("SOData", rl3);
+	
+
+	return ResultVOUtil.success(rm);	
+	}
 
 	/**
 	 * 根据用户查找每月的发电量

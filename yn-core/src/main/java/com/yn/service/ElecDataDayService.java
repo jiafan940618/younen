@@ -101,9 +101,10 @@ public class ElecDataDayService {
         return elecDataDayDao.findAll(spec);
     }
     
-//   public ElecDataDay findHuanbao(Map<String, Object> map){
-//		return temStationYearMapper.findHuanbao(map);	
-//    }
+   public ElecDataDay findHuanbao(Map<String, Object> map){
+	   
+		return elecDataDayMapper.findHuanbao(map);	
+    }
     
     
     

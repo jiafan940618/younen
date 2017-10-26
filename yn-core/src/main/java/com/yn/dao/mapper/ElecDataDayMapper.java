@@ -1,6 +1,7 @@
 package com.yn.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -33,6 +34,6 @@ public interface ElecDataDayMapper {
 
 	List<ElecDataDay> selectByQuery(ElecDataDay elecDataDay);
 
-	ElecDataDay findHuanbao(Integer id);
+	ElecDataDay findHuanbao(Map<String, Object> map);
 
 }
