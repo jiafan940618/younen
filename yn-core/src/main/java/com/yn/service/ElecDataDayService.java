@@ -1,6 +1,7 @@
 package com.yn.service;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.model.ElecDataDay;
@@ -40,6 +42,8 @@ public class ElecDataDayService {
     ElecDataDayMapper elecDataDayMapper;
     @Autowired
     ElecDataHourService elecDataHourService;
+    @Autowired
+    AmmeterDao ammeterDao;
 
     public ElecDataDay findOne(Long id) {
         return elecDataDayDao.findOne(id);
@@ -114,38 +118,55 @@ public class ElecDataDayService {
      * @param stations
      * @return
      */
-//	public List<Map<Object,Object>> monthKwh(List<Station> stations){
-//    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-//    	List<Map<Object, Object>> lists=new ArrayList<>();
-//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-//    	for (Station station : stations) {
-//    		List<Map<Object, Object>> list=elecDataDayDao.sumMonthKwh(station.getId());
-//           if (!list.isEmpty()) {
-//	          lists.addAll(list);
-//			}
-//    			
-//    	}
-//    	for(Map<Object, Object> map : lists) {
-//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-//    			
-//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-//			}else{
+	public List<Map<Object,Object>> monthKwh(List<Station> stations){
+    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+    	for (Station station : stations) {
+    		List<Long> ammeterCodes=ammeterDao.selectAmmeterCode(station.getId());
+    		if (ammeterCodes.size()>0) {
+        		 List<Object[]> kwh = elecDataDayDao.sumMonthKwh(ammeterCodes);
+        		for (Object[] objects : kwh) {
+					Map<Object, Object> map=new HashMap<>();
+					map.put("create_dtm", objects[0]);
+					map.put("kwh", objects[1]);
+					lists.add(map);
+				}
+			}
+    		
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			//objectMap.put(map.get("create_dtm"), map.get("kwh"));
+    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			}else{
+				
 //				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
 //				objectMap.put(map.get("create_dtm"), (Object)kwh);
-//			}
-//    		
-//    	}
-//    	Object[] key = objectMap.keySet().toArray();
-//    	for (int i = 0; i < key.length; i++) { 
-//    		Map<Object, Object> listMap=new LinkedHashMap<>();
-//    		linkHashMap.put(key[i], objectMap.get(key[i]));
-//    		listMap.put("createDtm", key[i]);
-//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-//    		listsMap.add(listMap);
-//        	}
-//    	return listsMap;
-//    }
+				//System.out.println(objectMap.get(map.get("create_dtm")));
+				BigDecimal kwh=new BigDecimal(Double.parseDouble(objectMap.get(map.get("create_dtm")).toString())+
+						Double.parseDouble(map.get("kwh").toString()));
+				objectMap.put(map.get("create_dtm"),kwh);
+				
+//				String kwh=objectMap.get(map.get("create_dtm"))+","+map.get("kwh").toString()  ;
+//				String[] split = kwh.split(",");
+//				objectMap.put(map.get("create_dtm"),kwh);
+			}
+    		
+    	}
+    	Object[] key = objectMap.keySet().toArray();
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString()))
+    				);
+    		listsMap.add(listMap);
+        	}
+    	return listsMap;
+    }
 	
 	/**
      * 用户每月发电量
@@ -153,101 +174,117 @@ public class ElecDataDayService {
      * @param stations
      * @return
      */
-//	public List<Map<Object,Object>> numKwh(List<Station> stations ,Integer type ,String dateStr){
-//    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-//    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-//    	List<Map<Object, Object>> lists=new ArrayList<>();
-//    	List<Map<Object, Object>> listsMap=new ArrayList<>();
-//    	
-//    	   String dateFormat="";
-//       	if (type == 0) {
-//       		 dateFormat="%Y";
-//   		} else if (type == 1) {
-//   			dateFormat="%Y-%m";
-//   		} else if (type == 2) {
-//   			dateFormat="%Y-%m-%d";	
-//   		} 
-//    	for (Station station : stations) {
-//    		List<Map<Object, Object>> list=elecDataDayDao.sumKwh(station.getId(),dateFormat,dateStr);
-//           if (!list.isEmpty()) {
-//	          lists.addAll(list);
-//			}
-//    			
-//    	}
-//    	for(Map<Object, Object> map : lists) {
-//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-//    			
-//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-//			}else{
-//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-//				objectMap.put(map.get("create_dtm"), (Object)kwh);
-//			}
-//    		
-//    	}
-//    	Object[] key = objectMap.keySet().toArray();
-//    	for (int i = 0; i < key.length; i++) { 
-//    		Map<Object, Object> listMap=new LinkedHashMap<>();
-//    		linkHashMap.put(key[i], objectMap.get(key[i]));
-//    		listMap.put("createDtm", key[i]);
-//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-//    		listsMap.add(listMap);
-//        	}
-//    	
-//    	
-//    	return listsMap;
-//    }
-//	
+	public List<Map<Object,Object>> numKwh(List<Station> stations ,Integer type ,String dateStr){
+    	Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+    	Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+    	List<Map<Object, Object>> lists=new ArrayList<>();
+    	List<Map<Object, Object>> listsMap=new ArrayList<>();
+    	
+    	   String dateFormat="";
+       	if (type == 0) {
+       		 dateFormat="%Y";
+   		} else if (type == 1) {
+   			dateFormat="%Y-%m";
+   		} else if (type == 2) {
+   			dateFormat="%Y-%m-%d";	
+   		} 
+    	for (Station station : stations) {
+    		List<Long> ammeterCodes=ammeterDao.selectAmmeterCode(station.getId());
+    		List<Object[]> list=elecDataDayDao.sumKwh(ammeterCodes,dateFormat,dateStr);
+    		for (Object[] objects : list) {
+				Map<Object, Object> map=new HashMap<>();
+				map.put("create_dtm", objects[0]);
+				map.put("kwh", objects[1]);
+				lists.add(map);
+			}
+    			
+    	}
+    	for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			}else{
+				BigDecimal kwh=new BigDecimal(Double.parseDouble(objectMap.get(map.get("create_dtm")).toString())+
+						Double.parseDouble(map.get("kwh").toString()));
+				objectMap.put(map.get("create_dtm"),kwh);
+			}
+    		
+    	}
+    	Object[] key = objectMap.keySet().toArray();
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString()))
+    				);
+    		listsMap.add(listMap);
+        	}
+    	
+    	
+    	return listsMap;
+    }
+	
 	/**
 	 * 用户发电/用电统计图
 	 */
-//	public Map<String,Object> workUseCount(Long stationId ,Long dAddr) {
-//		
-//		List<Map<Object, Object>> lists=elecDataDayDao.workUseCount(stationId, dAddr);
-//		Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-//		List<Map<Object, Object>> listsMap=new ArrayList<>();
-//		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-//		for(Map<Object, Object> map : lists) {
-//    		if (!objectMap.containsKey(map.get("create_dtm"))) {
-//    			
-//    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
-//			}else{
-//				double kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-//				objectMap.put(map.get("create_dtm"), (Object)kwh);
-//			}
-//    		
-//    	}
-//		Object[] key = objectMap.keySet().toArray();
-//    	for (int i = 0; i < key.length; i++) { 
-//    		Map<Object, Object> listMap=new LinkedHashMap<>();
-//    		linkHashMap.put(key[i], objectMap.get(key[i]));
-//    		listMap.put("createDtm", key[i]);
-//    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal((Double)objectMap.get(key[i])));
-//    		listsMap.add(listMap);
-//        	}
-//    	
-//    	
-//    	Map<String, Object> map=new HashMap<>();
-//    	map.put("workUseCount", listsMap);
-//    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.thisYearKwh(stationId, dAddr)) );
-//    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisMonthKwh(stationId, dAddr)));
-//    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.lastYearKwh(stationId, dAddr)) );
-//    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, dAddr)));
-//    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.elecDataHourService(stationId, dAddr)));
-//    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, dAddr)));
-//    	return map;
-//	}
+	public Map<String,Object> workUseCount(Long stationId ,Integer type) {
+		List<Long> ammeterCodes=ammeterDao.selectAmmeterCode(stationId);
+		List<Object[]> list=elecDataDayDao.workUseCount(ammeterCodes, type);
+		Map<Object, Object> linkHashMap=new LinkedHashMap<>();
+		List<Map<Object, Object>> listsMap=new ArrayList<>();
+		List<Map<Object, Object>> lists=new ArrayList<>();
+		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+		for (Object[] objects : list) {
+			Map<Object, Object> map=new HashMap<>();
+			map.put("create_dtm", objects[0]);
+			map.put("kwh", objects[1]);
+			lists.add(map);
+		}
+		
+		for(Map<Object, Object> map : lists) {
+    		if (!objectMap.containsKey(map.get("create_dtm"))) {
+    			
+    			objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			}else{
+				BigDecimal kwh=new BigDecimal(Double.parseDouble(objectMap.get(map.get("create_dtm")).toString())+
+						Double.parseDouble(map.get("kwh").toString()));
+				objectMap.put(map.get("create_dtm"),kwh);
+			}
+    		
+    	}
+		Object[] key = objectMap.keySet().toArray();
+    	for (int i = 0; i < key.length; i++) { 
+    		Map<Object, Object> listMap=new LinkedHashMap<>();
+    		linkHashMap.put(key[i], objectMap.get(key[i]));
+    		listMap.put("createDtm", key[i]);
+    		listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString()))
+    				);
+    		listsMap.add(listMap);
+        	}
+    	
+    	
+    	Map<String, Object> map=new HashMap<>();
+    	map.put("workUseCount", listsMap);
+    	map.put("thisYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.thisYearKwh(stationId, type)) );
+    	map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisMonthKwh(stationId, type)));
+    	map.put("lastYearKwh",NumberUtil.accurateToTwoDecimal(elecDataHourService.lastYearKwh(stationId, type)) );
+    	map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, type)));
+    	map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.todayKwh(stationId, type)));
+    	map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, type)));
+    	return map;
+	}
 	
-	 public Page<ElecDataDay> listCount(ElecDataDay temStationYear, Pageable pageable) {
-		 Specification<ElecDataDay> spec = getSpecification(temStationYear);
+	 public Page<ElecDataDay> listCount(ElecDataDay elecDataDay, Pageable pageable) {
+		 Specification<ElecDataDay> spec = getSpecification(elecDataDay);
 	        Page<ElecDataDay> findAll = elecDataDayDao.findAll(spec, pageable);
 	        
 	        return findAll;
 	    }
 	
 	 @SuppressWarnings({"unchecked", "rawtypes"})
-	    public static Specification<ElecDataDay> getSpecification(ElecDataDay temStationYear) {
-		 temStationYear.setDel(0);
-	        Map<String, Object> objectMap = ObjToMap.getObjectMap(temStationYear);
+	    public static Specification<ElecDataDay> getSpecification(ElecDataDay elecDataDay) {
+		 elecDataDay.setDel(0);
+	        Map<String, Object> objectMap = ObjToMap.getObjectMap(elecDataDay);
 	        return (Root<ElecDataDay> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
 
 	            Predicate conjunction = cb.conjunction();
@@ -271,12 +308,8 @@ public class ElecDataDayService {
 	            }
 
 	            // 根据日期筛选
-	            String queryStartDtm = temStationYear.getQueryStartDtm();
-	            String queryEndDtm = temStationYear.getQueryEndDtm();
-	            Long  dAddr= temStationYear.getdAddr();
-	            if (!StringUtils.isEmpty(dAddr)) {
-	            	expressions.add(cb.like(root.get("dAddr"), dAddr+"%"));
-	            }
+	            String queryStartDtm = elecDataDay.getQueryStartDtm();
+	            String queryEndDtm = elecDataDay.getQueryEndDtm();
 	            if (!StringUtils.isEmpty(queryStartDtm)) {
 	                expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"), DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd)));
 	            }

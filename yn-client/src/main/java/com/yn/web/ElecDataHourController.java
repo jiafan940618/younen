@@ -7,20 +7,28 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
+import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataHour;
 import com.yn.model.Station;
 import com.yn.service.ElecDataHourService;
 import com.yn.service.StationService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.PageInfo;
+import com.yn.vo.ElecDataDayVo;
+import com.yn.vo.ElecDataHourVo;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.TemStationVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -67,16 +75,26 @@ public class ElecDataHourController {
         return ResultVOUtil.success(findOne);
     }
 
-    @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
-    @ResponseBody
-    public Object findAll(TemStationVo temStationVo, Integer pageIndex) {
-    	ElecDataHour temStation = new ElecDataHour();
-        BeanCopy.copyProperties(temStationVo, temStation);
-        temStation.setdAddr(temStationVo.getD_addr());
-        PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-		List<ElecDataHour> list = elecDataHourService.findByMapper(temStation);
-		PageInfo<ElecDataHour> pageInfo=new PageInfo<>(list);
-        return ResultVOUtil.success(pageInfo);
+//    @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
+//    @ResponseBody
+//    public Object findAll(TemStationVo temStationVo, Integer pageIndex) {
+//    	ElecDataHour temStation = new ElecDataHour();
+//        BeanCopy.copyProperties(temStationVo, temStation);
+//        temStation.setdAddr(temStationVo.getD_addr());
+//        PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
+//		List<ElecDataHour> list = elecDataHourService.findByMapper(temStation);
+//		PageInfo<ElecDataHour> pageInfo=new PageInfo<>(list);
+//        return ResultVOUtil.success(pageInfo);
+//    }
+    @RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object findAll(ElecDataHourVo elecDataHourVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) 
+	Pageable pageable) {
+		ElecDataHour elecDataHour = new ElecDataHour();
+        BeanCopy.copyProperties(elecDataHourVo, elecDataHour);
+        Page<ElecDataHour> findAll = elecDataHourService.findAll(elecDataHour, pageable);
+        return ResultVOUtil.success(findAll);	
+        
     }
     
     /**
@@ -85,12 +103,12 @@ public class ElecDataHourController {
      * @param type
      * @return
      */
-//    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
-//    @ResponseBody
-//    public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Long type) {
-//        List<EachHourTemStation> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
-//        return ResultVOUtil.success(todayKwhByStationId);
-//    }
+    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST, RequestMethod.GET })
+    @ResponseBody
+    public Object todayKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+        List<ElecDataHour> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
+        return ResultVOUtil.success(todayKwhByStationId);
+    }
     
     /**
      * 根据用户查找每月的发电量
@@ -122,14 +140,14 @@ public class ElecDataHourController {
 //    }
 //    
     /**
-     * 根据用户查找每小时的发电量
+     * 功率检测
      * @return
      */
-//    @RequestMapping(value = "/oneHourKwh", method = {RequestMethod.POST, RequestMethod.GET})
-//    @ResponseBody 
-//    public Object oneHourKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Long type) {
-//       List<Map<String, Object>> list =new ArrayList<>();
-//       list=elecDataHourService.oneHourKwh(stationId, type);
-//        return ResultVOUtil.success(list);
-//    }
+    @RequestMapping(value = "/oneHourKwh", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody 
+    public Object oneHourKwh(@RequestParam(value="stationId",required=true)Long stationId, @RequestParam(value="type",required=true)Integer type) {
+       List<Map<String, Object>> list =new ArrayList<>();
+       list=elecDataHourService.oneHourKwh(stationId, type);
+        return ResultVOUtil.success(list);
+    }
 }

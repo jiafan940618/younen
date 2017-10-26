@@ -43,6 +43,8 @@ public class ElecDataMonthJobController {
 	    * @param @param month 指定月<非必需，在不等于-1的情况下，视为指定某年某月导入。>
 	    * @param @return    参数
 	    * @return Object    返回类型
+	    * http://localhost:40403/client/edmjc/importData4Month/2016
+	    * http://localhost:40403/client/edmjc/importData4Month/2016?month=12
 	    * @throws
 	 */
 	@RequestMapping("/importData4Month/{year}")

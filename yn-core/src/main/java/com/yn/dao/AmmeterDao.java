@@ -26,10 +26,6 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 
 	@Query("SELECT COUNT(*) FROM Ammeter u WHERE u.createDtm>=?1 AND u.createDtm<?2 AND u.del=0")
 	long countNum(Date startDtm, Date endDtm);
-
-//	@Query("SELECT DISTINCT(a.dAddr) FROM Ammeter a WHERE a.stationId=?1 AND a.type=?2 AND a.del=0")
-//	List<Long> findDAddr(Long stationId, Integer type);
-	
 	/**
 	 * 通过stationId找到电表
 	 * 
@@ -42,5 +38,8 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
     @Query(value="SELECT a.init_kwh,a.work_total_kwh,a.work_total_tm FROM station s  LEFT JOIN ammeter a ON s.id = a.station_id WHERE s.id = :stationId AND s.del = 0 ",nativeQuery=true)
     List<Object> findBynewStationId(@Param("stationId") Long stationId);
+    
+	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 ",nativeQuery=true)
+    List<Long> selectAmmeterCode(Long stationId);
 	
 }

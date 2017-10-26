@@ -21,7 +21,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -53,7 +54,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -96,7 +98,8 @@
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from task_execute_record
+		delete from
+		task_execute_record
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 	<delete id="deleteByExample" parameterType="com.yn.model.TaskExecuteRecordExample">
@@ -106,11 +109,16 @@
 		</if>
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.TaskExecuteRecord">
-		insert into task_execute_record (id, end_date, status,
+		insert into
+		task_execute_record (id, end_date, status,
 		job_name)
-		values (#{id,jdbcType=BIGINT}, #{endDate,jdbcType=TIMESTAMP},
+		values
+		(#{id,jdbcType=BIGINT}, #{endDate,jdbcType=TIMESTAMP},
 		#{status,jdbcType=VARCHAR},
 		#{jobName,jdbcType=VARCHAR})
+		<selectKey resultType="long" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
 	</insert>
 	<insert id="insertSelective" parameterType="com.yn.model.TaskExecuteRecord">
 		insert into task_execute_record
@@ -174,8 +182,10 @@
 		update task_execute_record
 		set id = #{record.id,jdbcType=BIGINT},
 		end_date = #{record.endDate,jdbcType=TIMESTAMP},
-		status = #{record.status,jdbcType=VARCHAR},
-		job_name = #{record.jobName,jdbcType=VARCHAR}
+		status =
+		#{record.status,jdbcType=VARCHAR},
+		job_name =
+		#{record.jobName,jdbcType=VARCHAR}
 		<if test="_parameter != null">
 			<include refid="Update_By_Example_Where_Clause" />
 		</if>
@@ -196,10 +206,12 @@
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.TaskExecuteRecord">
-		update task_execute_record
+		update
+		task_execute_record
 		set end_date = #{endDate,jdbcType=TIMESTAMP},
 		status = #{status,jdbcType=VARCHAR},
-		job_name = #{jobName,jdbcType=VARCHAR}
+		job_name =
+		#{jobName,jdbcType=VARCHAR}
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	<select id="findByEndDate" resultType="com.yn.model.TaskExecuteRecord">

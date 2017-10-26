@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,12 +24,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataHourDao;
+import com.yn.dao.StationDao;
 import com.yn.dao.mapper.ElecDataHourMapper;
+import com.yn.model.Ammeter;
 import com.yn.model.ElecDataHour;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
+import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 
 @Service
@@ -37,17 +42,30 @@ public class ElecDataHourService {
 	ElecDataHourDao elecDataHourDao;
 	@Autowired
 	ElecDataHourMapper elecDataHourMapper;
-
+	@Autowired
+	AmmeterDao ammeterDao;
+	@Autowired
+	StationDao stationDao;
 	/**
+
 	 * 
+
 	    * @Title: findAllDataByMonthOrYear
+
 	    * @Description: TODO(查询到当月/当年所有的总发电、用电量。也可以指定年或者月)
+
 	    * @param @param flag 大于0是月，小于0是年。
+
 	    * @param @param selectYear 指定年。
+
 	    * @param @param selectMonth 指定月。
+
 	    * @param @return    参数
+
 	    * @return List<ElecDataHour>    返回类型
+
 	    * @throws
+
 	 */
 	public List<ElecDataHour> findAllDataByMonthOrYear(int flag, int selectYear, int selectMonth) {
 		Calendar calendar = Calendar.getInstance();
@@ -69,7 +87,7 @@ public class ElecDataHourService {
 		System.out.println(dayQuery);
 		return elecDataHourMapper.findAllDataByMonthOrYear(new ElecDataHour(dayQuery));
 	}
-
+	
 	public ElecDataHour findOne(Long id) {
 		return elecDataHourDao.findOne(id);
 	}
@@ -172,10 +190,7 @@ public class ElecDataHourService {
 			// 根据日期筛选
 			String queryStartDtm = ElecDataHour.getQueryStartDtm();
 			String queryEndDtm = ElecDataHour.getQueryEndDtm();
-			Long dAddr = ElecDataHour.getdAddr();
-			if (!StringUtils.isEmpty(dAddr)) {
-				expressions.add(cb.like(root.get("dAddr"), dAddr + "%"));
-			}
+
 			if (!StringUtils.isEmpty(queryStartDtm)) {
 				expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"),
 						DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
@@ -194,59 +209,62 @@ public class ElecDataHourService {
 	 *
 	 * @return
 	 */
-	// public List<ElecDataHour> getTodayKwh(Long serverId, Long dAddr) {
-	//
-	// Date[] todaySpace = DateUtil.getTodaySpace();
-	// Date start = todaySpace[0];
-	// Date end = todaySpace[1];
-	//
-	//
-	// List<ElecDataHour> ElecDataHourList = new ArrayList<>();
-	// if (serverId == null) {
-	// ElecDataHourList = elecDataHourDao.findByDAddrAndCreateDtmBetween(dAddr,
-	// start, end);
-	// }
-	// if (serverId != null) {
-	// ElecDataHourList =
-	// elecDataHourDao.findByServerIdAndDAddrAndCreateDtmBetween(serverId,
-	// dAddr, start, end);
-	// }
-	//
-	//
-	// List<ElecDataHour> eachHourElecDataHourList =
-	// groupByEachHourInOneDay(ElecDataHourList);
-	//
-	//
-	// return eachHourElecDataHourList;
-	// }
+	public List<ElecDataHour> getTodayKwh(Long serverId, Integer type) {
+
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		Date start = todaySpace[0];
+		Date end = todaySpace[1];
+
+		List<ElecDataHour> ElecDataHourList = new ArrayList<>();
+		if (serverId == null) {
+			ElecDataHourList = elecDataHourDao.findByTypeAndCreateDtmBetween(type, start, end);
+		}
+		if (serverId != null) {
+			List<Long> stationIds = stationDao.findId(serverId);
+			for (Long stationId : stationIds) {
+				List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+				for (Ammeter ammeter : ammeters) {
+					List<ElecDataHour> ElecDataHourLists = new ArrayList<>();
+					ElecDataHourLists = elecDataHourDao.findByAmmeterCodeAndTypeAndCreateDtmBetween(ammeter.getcAddr(),
+							type, start, end);
+					for (ElecDataHour elecDataHour : ElecDataHourLists) {
+						ElecDataHourList.add(elecDataHour);
+					}
+				}
+			}
+
+		}
+		List<ElecDataHour> eachHourElecDataHourList = groupByEachHourInOneDay(ElecDataHourList);
+		return eachHourElecDataHourList;
+	}
 
 	/**
 	 * 根据电站id查找今日每个时刻的发电量/用电量
-	 *
+	 * 
+	 * 
 	 * @return
 	 */
-	// public List<ElecDataHour> getTodayKwhByStationId(Long stationId, Long
-	// dAddr) {
-	//
-	// Date[] todaySpace = DateUtil.getTodaySpace();
-	// Date start = todaySpace[0];
-	// Date end = todaySpace[1];
-	//
-	//
-	// List<ElecDataHour> ElecDataHourList =
-	// elecDataHourDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId,
-	// dAddr, start, end);
-	//
-	//
-	// List<ElecDataHour> eachHourElecDataHourList =
-	// groupByEachHourInOneDay(ElecDataHourList);
-	//
-	//
-	// return eachHourElecDataHourList;
-	// }
+	public List<ElecDataHour> getTodayKwhByStationId(Long stationId, Integer type) {
+
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		Date start = todaySpace[0];
+		Date end = todaySpace[1];
+		List<ElecDataHour> ElecDataHourList = new ArrayList<>();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		for (Ammeter ammeter : ammeters) {
+			List<ElecDataHour> ElecDataHourLists = elecDataHourDao
+					.findByAmmeterCodeAndTypeAndCreateDtmBetween(ammeter.getcAddr(), type, start, end);
+			for (ElecDataHour elecDataHour : ElecDataHourLists) {
+				ElecDataHourList.add(elecDataHour);
+			}
+		}
+		List<ElecDataHour> eachHourElecDataHourList = groupByEachHourInOneDay(ElecDataHourList);
+		return eachHourElecDataHourList;
+	}
 
 	/**
 	 * 计算某一天内每个小时的 发电/用电
+	 * 
 	 * @param ElecDataHourList
 	 * @return
 	 */
@@ -258,7 +276,6 @@ public class ElecDataHourService {
 		for (Date each : todayEachHourBegin) {
 			String timeStr = sdf.format(each);
 			ElecDataHour eachHourElecDataHour = new ElecDataHour();
-			// eachHourElecDataHour.setTimeStr(timeStr);
 			eachHourElecDataHour.setKw(0D);
 			eachHourElecDataHour.setKwh(0D);
 
@@ -282,12 +299,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double todayKwh(Long stationId, Long dAddr) {
-	// Date[] todaySpace = DateUtil.getTodaySpace();
-	// double todayKwh = elecDataHourDao.sumKwhByStationId(todaySpace[0],
-	// todaySpace[1], dAddr, stationId);
-	// return todayKwh;
-	// }
+	public double todayKwh(Long stationId, Integer type) {
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		double todayKwh = 0D;
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		for (Ammeter ammeter : ammeters) {
+			todayKwh += elecDataHourDao.sumKwhByAmmeterCode(todaySpace[0], todaySpace[1], type, ammeter.getcAddr());
+		}
+
+		return todayKwh;
+	}
 
 	/**
 	 * 昨日发电/用电
@@ -296,13 +317,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double yesterdayKwh(Long stationId, Long dAddr) {
-	// Date[] yesterdaySpace = DateUtil.getYesterdaySpace();
-	// double yesterdayKwh =
-	// elecDataHourDao.sumKwhByStationId(yesterdaySpace[0], yesterdaySpace[1],
-	// dAddr, stationId);
-	// return yesterdayKwh;
-	// }
+	public double yesterdayKwh(Long stationId, Integer type) {
+		Date[] yesterdaySpace = DateUtil.getYesterdaySpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double yesterdayKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			yesterdayKwh += elecDataHourDao.sumKwhByAmmeterCode(yesterdaySpace[0], yesterdaySpace[1], type,
+					ammeter.getcAddr());
+		}
+		return yesterdayKwh;
+	}
 
 	/**
 	 * 当月发电/用电
@@ -311,13 +335,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double thisMonthKwh(Long stationId, Long dAddr) {
-	// Date[] thisMonthSpace = DateUtil.getThisMonthSpace();
-	// double thisMonthKwh =
-	// elecDataHourDao.sumKwhByStationId(thisMonthSpace[0], thisMonthSpace[1],
-	// dAddr, stationId);
-	// return thisMonthKwh;
-	// }
+	public double thisMonthKwh(Long stationId, Integer type) {
+		Date[] thisMonthSpace = DateUtil.getThisMonthSpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double thisMonthKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			thisMonthKwh += elecDataHourDao.sumKwhByAmmeterCode(thisMonthSpace[0], thisMonthSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return thisMonthKwh;
+	}
 
 	/**
 	 * 上月发电/用电
@@ -326,13 +353,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double lastMonthKwh(Long stationId, Long dAddr) {
-	// Date[] lastMonthSpace = DateUtil.getLastMonthSpace();
-	// double lastMonthKwh =
-	// elecDataHourDao.sumKwhByStationId(lastMonthSpace[0], lastMonthSpace[1],
-	// dAddr, stationId);
-	// return lastMonthKwh;
-	// }
+	public double lastMonthKwh(Long stationId, Integer type) {
+		Date[] lastMonthSpace = DateUtil.getLastMonthSpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double lastMonthKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			lastMonthKwh += elecDataHourDao.sumKwhByAmmeterCode(lastMonthSpace[0], lastMonthSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return lastMonthKwh;
+	}
 
 	/**
 	 * 当年发电/用电
@@ -341,12 +371,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double thisYearKwh(Long stationId, Long dAddr) {
-	// Date[] thisYearSpace = DateUtil.getThisYearSpace();
-	// double thisYearKwh = elecDataHourDao.sumKwhByStationId(thisYearSpace[0],
-	// thisYearSpace[1], dAddr, stationId);
-	// return thisYearKwh;
-	// }
+	public double thisYearKwh(Long stationId, Integer type) {
+		Date[] thisYearSpace = DateUtil.getThisYearSpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double thisYearKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			thisYearKwh += elecDataHourDao.sumKwhByAmmeterCode(thisYearSpace[0], thisYearSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return thisYearKwh;
+	}
 
 	/**
 	 * 去年发电/用电
@@ -355,12 +389,16 @@ public class ElecDataHourService {
 	 * @param type
 	 * @return
 	 */
-	// public double lastYearKwh(Long stationId, Long dAddr) {
-	// Date[] lastYearSpace = DateUtil.getLastYearSpace();
-	// double lastYearKwh = elecDataHourDao.sumKwhByStationId(lastYearSpace[0],
-	// lastYearSpace[1], dAddr, stationId);
-	// return lastYearKwh;
-	// }
+	public double lastYearKwh(Long stationId, Integer type) {
+		Date[] lastYearSpace = DateUtil.getLastYearSpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double lastYearKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			lastYearKwh += elecDataHourDao.sumKwhByAmmeterCode(lastYearSpace[0], lastYearSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return lastYearKwh;
+	}
 
 	/**
 	 * 用户每月发电量
@@ -406,59 +444,70 @@ public class ElecDataHourService {
 	/**
 	 * 获取当前时间的发电/用电总量
 	 */
-	// public Map<String, Object> getNowToalKwh(Long stationId, Long dAddr, Date
-	// date) {
-	//
-	// Date start = date;
-	//
-	// Date end = new Date();
-	//
-	// List<ElecDataHour> ElecDataHourList =
-	// elecDataHourDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId,
-	// dAddr,
-	// start, end);
-	// Double toalKwh = 0D;
-	// Double kw = 0D;
-	// Map<String, Object> map = new HashMap<>();
-	// for (ElecDataHour ElecDataHour : ElecDataHourList) {
-	// toalKwh += ElecDataHour.getKwh();
-	// kw=ElecDataHour.getKw();
-	//
-	// }
-	// map.put("toalKwh", NumberUtil.accurateToTwoDecimal(toalKwh));
-	//
-	// map.put("kw",NumberUtil.accurateToTwoDecimal(kw) );
-	// map.put("todayKwh",NumberUtil.accurateToTwoDecimal(todayKwh(stationId,
-	// dAddr)));
-	//
-	// return map;
-	//
-	// }
+	public Map<String, Object> getNowToalKwh(Long stationId, Integer type, Date date) {
+
+		Date start = date;
+
+		Date end = new Date();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		Double toalKwh = 0D;
+		Double kw = 0D;
+		for (Ammeter ammeter : ammeters) {
+
+			List<ElecDataHour> ElecDataHourList = elecDataHourDao
+					.findByAmmeterCodeAndTypeAndCreateDtmBetween(ammeter.getcAddr(), type, start, end);
+			for (ElecDataHour ElecDataHour : ElecDataHourList) {
+				toalKwh += ElecDataHour.getKwh();
+				kw = ElecDataHour.getKw();
+			}
+		}
+
+		Map<String, Object> map = new HashMap<>();
+
+		map.put("toalKwh", NumberUtil.accurateToTwoDecimal(toalKwh));
+
+		map.put("kw", NumberUtil.accurateToTwoDecimal(kw));
+		map.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh(stationId, type)));
+
+		return map;
+
+	}
 
 	/**
-	 * 当前一个小时内的发电、用电量
+	 * 当前12小时内的发电、用电量
 	 */
-	// public List<Map<String, Object>> oneHourKwh(Long stationId, Long dAddr) {
-	// List<Map<String, Object>> list=new ArrayList<>();
-	// Date time = new Date();
-	// Calendar calendar = Calendar.getInstance();
-	// calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) -
-	// 12);
-	// SimpleDateFormat dFormat=new SimpleDateFormat("HHmm");
-	// List<ElecDataHour> ElecDataHourList =
-	// elecDataHourDao.findByStationIdAndDAddrAndCreateDtmBetween(stationId,
-	// dAddr,
-	// calendar.getTime(), time);
-	//
-	// for (ElecDataHour ElecDataHour : ElecDataHourList) {
-	// Map<String, Object> map = new HashMap<>();
-	// map.put("time", dFormat.format(ElecDataHour.getCreateDtm()));
-	// map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
-	// list.add(map);
-	// }
-	// return list;
-	//
-	// }
+	public List<Map<String, Object>> oneHourKwh(Long stationId, Integer type) {
+
+		List<Map<String, Object>> list = new ArrayList<>();
+
+		Date time = new Date();
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 12);
+
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH:mm");
+
+		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+		// String ammeterCode=NumberUtil.listToString(ammeterCodes);
+
+		List<ElecDataHour> ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
+
+				calendar.getTime(), time);
+
+		for (ElecDataHour ElecDataHour : ElecDataHourList) {
+
+			Map<String, Object> map = new HashMap<>();
+
+			map.put("time", dFormat.format(ElecDataHour.getCreateDtm()));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
+
+			list.add(map);
+
+		}
+
+		return list;
+	}
 
 	public List<ElecDataHour> findByMapper(ElecDataHour elecDataHour) {
 		List<ElecDataHour> list = elecDataHourMapper.selectByQuery(elecDataHour);
