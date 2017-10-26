@@ -72,8 +72,8 @@ public class HomePageController {
         	sumKwh=ammeterDao.sumInitKwh()+ammeterDao.sumWorkTotalKwh();
         } else {
         	List<Long> stationIds=stationDao.findId(serverId);
-        	sumNowKw=ammeterDao.sumNowKw(stationIds);
-            sumKwh =ammeterDao.sumInitKwh(stationIds)+ammeterDao.sumWorkTotalKwh(stationIds);
+        	sumNowKw=ammeterDao.sumNowKwByStationIds(stationIds);
+            sumKwh =ammeterDao.sumInitKwhByStationIds(stationIds)+ammeterDao.sumWorkTotalKwhByStationIds(stationIds);
         }
 
         Map<String, Object> map = new HashMap<>();
