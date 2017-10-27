@@ -387,19 +387,26 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 
-	 <select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap"> 
-		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day t1
- 			LEFT JOIN ammeter_record a ON a.c_addr = t1.`ammeter_code` 
- 			LEFT JOIN station s ON s.station_code = a.station_code
- 			INNER JOIN USER u ON s.user_id = u.id
-			 AND s.user_id = #{userId}
-			AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%')
-		    GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
-		</select> 
+	<select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap">
+		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day
+		t1
+		LEFT JOIN ammeter_record a ON a.c_addr = t1.`ammeter_code`
+		LEFT JOIN station s ON s.station_code = a.station_code
+		INNER JOIN USER u ON s.user_id = u.id
+		AND s.user_id = #{userId}
+		AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%')
+		GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
+	</select>
 
-	<select id="selectByQuery" parameterType="com.yn.model.ElecDataDay"
-		resultMap="BaseResultMap">
-		select * from elec_data_day where 1=1
+	<select id="selectByQuery" parameterType="map" resultMap="BaseResultMap">
+		select id,kwh,record_time from elec_data_day where 1=1
+		<if test="ammeterCode != null">
+			AND ammeter_code in
+			<foreach item="item" index="index" collection="ammeterCode"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<if test="queryStartDtm != null">
 			AND create_dtm <![CDATA[ >= ]]>#{queryStartDtm}
 		</if>
@@ -408,15 +415,12 @@
 			#{queryEndDtm}
 		</if>
 		<if test="del != null">
-			AND del = #{del},
+			AND del = 0
 		</if>
-		<if test="dAddr != null">
-			AND d_addr like '${dAddr}%'
+		<if test="type != null">
+			AND type=#{type}
 		</if>
-		<if test="query != null">
-			AND (kwh like '%${query}%' or kw like '%${query}%')
-		</if>
-		<!-- <if test="stationId != null"> AND station_id = #{stationId} </if> -->
+
 		ORDER BY create_dtm DESC
 	</select>
 

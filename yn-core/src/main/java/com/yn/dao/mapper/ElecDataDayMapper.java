@@ -32,7 +32,7 @@ public interface ElecDataDayMapper {
 
 	int updateByPrimaryKey(ElecDataDay record);
 
-	List<ElecDataDay> selectByQuery(ElecDataDay elecDataDay);
+	List<ElecDataDay> selectByQuery(Map<String, Object> map);
 
 	ElecDataDay findHuanbao(Map<String, Object> map);
 

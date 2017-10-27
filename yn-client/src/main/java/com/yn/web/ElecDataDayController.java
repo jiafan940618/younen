@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageHelper;
 import com.yn.dao.StationDao;
 import com.yn.model.ElecDataDay;
 import com.yn.model.Station;
@@ -30,9 +30,11 @@ import com.yn.service.ElecDataDayService;
 import com.yn.service.SystemConfigService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.PageInfo;
 import com.yn.vo.ElecDataDayVo;
 import com.yn.vo.TemStationYearVo;
 import com.yn.vo.re.ResultVOUtil;
+
 
 @RestController
 @RequestMapping("/client/temStationYear")
@@ -204,7 +206,7 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 	
 	
 	/**
-	 * 
+	 * 用电/发电统计
 	 */
 	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
@@ -216,14 +218,20 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 
 		return ResultVOUtil.success(workUseCount);
 	}
-	
+	/**
+	 * 用电/发电记录
+	 */
 	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object listCount(ElecDataDayVo elecDataDayVo,
-			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
+	public Object listCount(ElecDataDayVo elecDataDayVo,Long stationId,Integer pageIndex) {
+		System.out.println(pageIndex);
 		ElecDataDay elecDataDay = new ElecDataDay();
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
-		Page<ElecDataDay> listCount = elecDataDayService.listCount(elecDataDay, pageable);
-		return ResultVOUtil.success(listCount);
+		PageHelper.startPage( pageIndex==null?1:pageIndex,15);
+		List<ElecDataDay> elecDataDays=elecDataDayService.findByMapper(elecDataDay, stationId);
+		PageInfo<ElecDataDay> pageInfo=new PageInfo<>(elecDataDays);
+		Map<String, Object> map=new HashMap<>();
+		map.put("pageInfo", pageInfo);
+		return ResultVOUtil.success(map);
 	}
 }
