@@ -40,7 +40,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 		
 	 /** 用来标识方案的，方便查询出该id下的所有方案*/
 	@Column(columnDefinition = "int(11) comment '[标识id]'")
-	private Long identiId;
+	private Long factionId;
 	
 	private Double capacity;
 
@@ -69,16 +69,14 @@ public class NewServerPlan extends IDomain implements Serializable {
 	}
 
 	
-	
-
-	public Long getIdentiId() {
-		return identiId;
+	public Long getFactionId() {
+		return factionId;
 	}
 
 
 
-	public void setIdentiId(Long identiId) {
-		this.identiId = identiId;
+	public void setFactionId(Long factionId) {
+		this.factionId = factionId;
 	}
 
 

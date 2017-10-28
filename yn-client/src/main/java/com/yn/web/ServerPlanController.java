@@ -184,7 +184,9 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
        
         return ResultVOUtil.success(null);
     }
-
+ //git commit -m "更新电站的分页动态条件查询，修改支付不能小数的BUG"
+    
+    
  //@RequestParam("serverId") Long serverId
     /** 方案接口*/
     @ResponseBody

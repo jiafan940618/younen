@@ -399,9 +399,16 @@
 
 		</select> 
 
-	<select id="selectByQuery" parameterType="com.yn.model.ElecDataDay"
-		resultMap="BaseResultMap">
-		select * from elec_data_day where 1=1
+
+	<select id="selectByQuery" parameterType="map" resultMap="BaseResultMap">
+		select id,kwh,record_time from elec_data_day where 1=1
+		<if test="ammeterCode != null">
+			AND ammeter_code in
+			<foreach item="item" index="index" collection="ammeterCode"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<if test="queryStartDtm != null">
 			AND create_dtm <![CDATA[ >= ]]>#{queryStartDtm}
 		</if>
@@ -410,15 +417,12 @@
 			#{queryEndDtm}
 		</if>
 		<if test="del != null">
-			AND del = #{del},
+			AND del = 0
 		</if>
-		<if test="dAddr != null">
-			AND d_addr like '${dAddr}%'
+		<if test="type != null">
+			AND type=#{type}
 		</if>
-		<if test="query != null">
-			AND (kwh like '%${query}%' or kw like '%${query}%')
-		</if>
-		<!-- <if test="stationId != null"> AND station_id = #{stationId} </if> -->
+
 		ORDER BY create_dtm DESC
 	</select>
 
