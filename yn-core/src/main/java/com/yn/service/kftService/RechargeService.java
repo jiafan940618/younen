@@ -26,6 +26,7 @@ import com.lycheepay.gateway.client.security.SignProvider;
 import com.yn.dao.RechargeDao;
 import com.yn.model.Recharge;
 import com.yn.service.OrderService;
+import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.CashierSignUtil;
@@ -43,6 +44,8 @@ public class RechargeService {
 	 
 		InitiativePayService service;
 		
+		@Autowired
+		TransactionRecordService transactionRecordService;
 		@Autowired
 		RechargeDao rechargeDao;
 		@Autowired
@@ -203,6 +206,8 @@ public class RechargeService {
 					
 					recharge.setRemark(resp.getErrorCode()+":"+resp.getFailureDetails());
 					rechargeService.save(recharge);
+					
+					transactionRecordService.InsertBillAll(recharge);
 					
 					return ResultVOUtil.error(777,"抱歉,充值失败,详请咨询客服!");
 				}

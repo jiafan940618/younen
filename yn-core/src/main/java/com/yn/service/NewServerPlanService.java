@@ -285,9 +285,9 @@ public class NewServerPlanService {
 	    }
 	    
 	    
-	    public  List<Object> selectServerPlan(Long serverId){
+	    public  List<Object> selectServerPlan(Long Id){
 			  
-			return planDao.selectServerPlan(serverId);	
+			return planDao.selectServerPlan(Id);	
 		    }
 
 		  /** 处理服务方案*/

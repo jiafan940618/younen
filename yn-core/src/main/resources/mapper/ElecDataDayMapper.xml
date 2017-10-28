@@ -388,13 +388,15 @@
 	</update>
 
 	 <select id="findHuanbao" parameterType="Map" resultMap="BaseResultMap"> 
-		SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day t1
- 			LEFT JOIN ammeter_record a ON a.c_addr = t1.`ammeter_code` 
- 			LEFT JOIN station s ON s.station_code = a.station_code
- 			INNER JOIN USER u ON s.user_id = u.id
+
+		    SELECT ROUND(SUM(kwh),3) AS kwh, ROUND(SUM(kw),3) AS kw FROM elec_data_day t1
+ 			INNER JOIN ammeter_record a ON a.c_addr = t1.`ammeter_code` 
+ 			RIGHT JOIN station s ON s.station_code = a.station_code
+ 			INNER JOIN user u ON u.id = s.user_id
 			 AND s.user_id = #{userId}
 			AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%')
 		    GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
+
 		</select> 
 
 	<select id="selectByQuery" parameterType="com.yn.model.ElecDataDay"

@@ -202,7 +202,7 @@ public class KFTpayService {
 			BillOrder billOrder = new BillOrder();
 			billOrder.setOrderId(billOrderVo.getOrderId());
 			billOrder.setUserId(billOrderVo.getUserId());
-			billOrder.setMoney(billOrderVo.getMoney().doubleValue());
+			billOrder.setMoney(billOrderVo.getMoney().doubleValue()*0.01);
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
 	    	billOrder.setPayWay(5);
 	  
@@ -294,7 +294,7 @@ public class KFTpayService {
 			
 			Recharge recharge = new Recharge();
 			recharge.setWalletId(rechargeVo.getWalletId());
-			recharge.setMoney(rechargeVo.getMoney().doubleValue());
+			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
 			recharge.setRechargeCode(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
 			recharge.setUserId(rechargeVo.getUserId());
@@ -314,7 +314,7 @@ public class KFTpayService {
             	/** 根据订单号查询金额 */
             	RechargeVo rechargeVo01 = rechargeService.findRecharge(recharge);
             	
-            	BigDecimal addMoney = rechargeVo.getMoney().add(rechargeVo01.getTotalmoney());
+            	BigDecimal addMoney = new BigDecimal(recharge.getMoney()).add(rechargeVo01.getTotalmoney());
             	
             	 /** 在钱包哪里添加充值订单号*/
             	Wallet wallet = new Wallet();

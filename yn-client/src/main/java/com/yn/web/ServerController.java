@@ -590,26 +590,27 @@ public class ServerController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/find")
-	public ResultData<Object> find(String cityName, newPage<Server> page) {
+	public ResultData<Object> find(String cityName,com.yn.model.Page<Server> page) {
+		page.setIndex(1);
 		
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
 		List<Object> list = null;
-		Long totalCount =0L;
+		Integer totalCount =0;
 		if(null == cityName || cityName.equals("")){
 			
-		 list =  solarService.findObject(page.getStart(), page.getLimit());
+		 list =  solarService.findObject(page);
 		 	
-		 totalCount = serverService.findCount();
+		 totalCount = serverService.findCount(page);
 			
-		 page.setTotal(totalCount.intValue());
+		 page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);
 		}else{
 			
-			 list =  solarService.findtwoObject(cityName,page.getStart(), page.getLimit());
+			 list =  solarService.findtwoObject(page);
 			 
-			 totalCount = serverService.findcityCount(cityName);
+			 totalCount = serverService.findcityCount(page);
 			 	
-			 page.setTotal(totalCount.intValue());
+			 page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);
 		}
 			solar  =solarService.getpanel(list);
 			
@@ -632,10 +633,5 @@ public class ServerController {
 			}
 
 		return ResultVOUtil.newsuccess(page, solar);
-	}
-	
-	
-	
-	
-	
+	}	
 }

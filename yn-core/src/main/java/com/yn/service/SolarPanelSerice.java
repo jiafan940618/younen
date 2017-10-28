@@ -6,11 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.ServerDao;
 import com.yn.dao.SolarPanelDao;
+import com.yn.model.Server;
 import com.yn.model.SolarPanel;
 import com.yn.vo.QualificationsVo;
 import com.yn.vo.SolarPanelVo;
@@ -24,14 +26,14 @@ public class SolarPanelSerice {
 	@Autowired
 	private SolarPanelDao solarPanelDao;
 	
-	  public  List<Object> findObject( Integer start, Integer limit){
+	  public  List<Object> findObject(com.yn.model.Page<Server> page){
 	    	
-			return serverdao.findObject(start, limit);
+			return serverdao.findObject(page);
 	    }
 
-	    public List<Object> findtwoObject(String CityName ,Integer start, Integer limit){
+	    public List<Object> findtwoObject(com.yn.model.Page<Server> page){
 		    	
-				return serverdao.findtwoObject(CityName, start, limit);
+				return serverdao.findtwoObject(page);
 		  }
 	    
 	    public   List<Object> findquatwoObject(List<Long> ids){
@@ -40,9 +42,9 @@ public class SolarPanelSerice {
 	    	
 	    }
 	    
-	    public  List<Object> findquaObject(List<Long> ids){
+	    public  List<Object> findquaObject(String cityName,List<Long> ids){
 	    	
-	    	return serverdao.findquaObject(ids);
+	    	return serverdao.findquaObject(cityName,ids);
 	    }
 	    
 	    public List<SolarPanel> getsolar(){
@@ -83,15 +85,17 @@ public class SolarPanelSerice {
 				String typeName = type == 1 ? "单晶硅":"多晶硅";
 				
 				Integer conversionEfficiency =(Integer)object[3];
-				//qualityAssurance
-				
+
 					BigDecimal quality =(BigDecimal)object[4];
+
 					if(null != quality){
 					Double qualityAssurance = quality.doubleValue();
 					//boardYear
 					BigDecimal board =(BigDecimal)object[5];
 					Double boardYear = board.doubleValue();
 					String companyLogo =(String)object[6];
+					
+					Integer p_id = (Integer)object[7];
 					
 					solarPanelVo.setS_id(s_id.longValue());
 					solarPanelVo.setCompanyName(companyName);
@@ -101,7 +105,7 @@ public class SolarPanelSerice {
 					solarPanelVo.setBoardYear(boardYear);
 					solarPanelVo.setCompanyLogo(companyLogo);
 					solarPanelVo.setTypeName(typeName);
-					
+					solarPanelVo.setId(p_id);
 					listsolar.add(solarPanelVo);
 				}
 			}

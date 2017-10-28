@@ -82,7 +82,7 @@ public class RechargeController {
 			
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+rechargeVo.getPayWay());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+rechargeVo.getRechargeCode());
-			logger.info("--- ---- ---- --- --- -- --  传递的金额为："+rechargeVo.getMoney());
+		
 
 
 			session.setAttribute("rechargeCode", rechargeVo.getRechargeCode());
@@ -94,6 +94,7 @@ public class RechargeController {
 				
 				System.out.println(df.format(rechargeVo.getMoney().multiply(xmoney)));
 				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
+				logger.info("--- ---- ---- --- --- -- --  传递的金额为："+rechargeVo.getMoney());
 				logger.info("--- ---- ---- ---- ----- ---- --- 进入方法->：");
 					
 				try {
@@ -111,7 +112,7 @@ public class RechargeController {
 				
 				System.out.println(df.format(rechargeVo.getMoney().multiply(xmoney)));
 				rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
-				
+				logger.info("--- ---- ---- --- --- -- --  传递的金额为："+rechargeVo.getMoney());
 				return rechargeService.findSign(rechargeVo); 
 			}
 

@@ -2,41 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.yn.dao.mapper.ServerMapper">
 
-<resultMap id="ServerMap" type="com.yn.model.Server">
+	<resultMap id="ServerMap" type="com.yn.vo.NewServer">
 
-		<id column="s_id" property="id" jdbcType="INTEGER" />
-		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
-		
-		  <association property="newServerPlan" javaType="com.yn.model.NewServerPlan" >
-				<collection property="solarPanel" javaType="com.yn.model.SolarPanel">
-					<result column="type" property="type" jdbcType="VARCHAR"/>
-					<result column="conversion_efficiency" property="conversionEfficiency" jdbcType="INTEGER"/>
-					<result column="quality_assurance" property="qualityAssurance" jdbcType="DOUBLE"/>
-					<result column="board_year" property="boardYear" jdbcType="DOUBLE"/>
-				</collection>
-		</association>
-		
+		<id column="s_id" property="id" />
+		<result column="company_name" property="companyName" />
+		<result column="company_logo" property="companyLogo" />
+		<result column="server_id" property="serverId" />
+			 	
+				
+
+		<collection property="newServerPlan02"  javaType="com.yn.vo.NewServerPlan02" resultMap="ServerMap">
+			<id column="p_id" property="id" /> 
+			<id column="batteryboard_id" property="batteryboardId" />
+			<association property="newsolarPanel"  javaType="com.yn.vo.newSolarPanel" resultMap="ServerMap">
+				<id column="o_id" property="id" />
+				<result column="type" property="type" />
+				<result column="conversion_efficiency" property="conversionEfficiency" />
+				<result column="quality_assurance" property="qualityAssurance" />
+				<result column="board_year" property="boardYear" />
+			</association>
+		</collection>
 	</resultMap>
 
-<sql id="server_Column_List">
-		DISTINCT(s.id) s_id,s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year 
+	<sql id="server_Column_List">
+		DISTINCT(s.id)
+		s_id,s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year
 	</sql>
 
 
-<select id="find" parameterType="com.yn.model.Server" resultMap="ServerMap" >
-		SELECT 
+	<select id="find" parameterType="com.yn.model.Server" resultMap="ServerMap">
+		SELECT
 		<include refid="server_Column_List" />
-		 FROM server s
- 				LEFT JOIN new_server_plan p ON s.id = p.server_id
- 				LEFT JOIN solar_panel o ON  p.batteryboard_id = o.id  WHERE s.del=0 
- 				
- 				<if test="_parameter != null">
- 				  and s.server_city_text= #{serverCityText}
- 				</if>
+		FROM server s
+		LEFT JOIN new_server_plan p ON s.id = p.server_id
+		LEFT JOIN solar_panel o ON p.batteryboard_id = o.id WHERE s.del=0
+
+		<if test="_parameter != null">
+			and s.server_city_text= #{serverCityText}
+		</if>
 	</select>
-	
-	
-	
+
+	<select id="gitNewServerPlan" parameterType="com.yn.model.Page"
+		resultMap="ServerMap">
+		SELECT s.id
+		s_id,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,s.company_name,s.company_logo
+		FROM server s
+		LEFT JOIN new_server_plan p ON s.id = p.`server_id`
+		LEFT JOIN solar_panel o ON p.`batteryboard_id` = o.id
+		WHERE s.del=0 AND p.planid=1 and s.server_city_text like CONCAT
+		('%',#{cityName},'%')
+	</select>
+
 
 
 

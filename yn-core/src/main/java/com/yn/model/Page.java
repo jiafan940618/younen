@@ -22,13 +22,23 @@ public class Page<T> {
 	private String time_from;
 	private String time_to;
 	
-	private Integer type;
+	private Integer type = 0;
 
 	private Integer payWay;
 	private Integer isRead;
 	
+	private String cityName;
 	
 	
+	
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
 	public Integer getType() {
 		return type;
 	}

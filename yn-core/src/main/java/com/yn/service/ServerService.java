@@ -14,6 +14,7 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
 import com.yn.vo.NewPlanVo;
+import com.yn.vo.NewServer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,8 @@ import java.util.Map.Entry;
 @Service
 public class ServerService {
 	
-	
+	@Autowired
+	ServerMapper serverMapper;
 	@Autowired
 	UserService uservice;
     @Autowired
@@ -94,6 +96,10 @@ public class ServerService {
 		}
 		return str;
 	}   
+	
+	public List<NewServer> gitNewServerPlan(com.yn.model.Page<NewServer> page){
+		return serverMapper.gitNewServerPlan(page);
+	}
     
 	 /** 生成订单号*/
     public String getOrderCode(Long serverId){
@@ -107,14 +113,14 @@ public class ServerService {
     	return toSerialCode(serverId, 4)+(System.currentTimeMillis()-110)+ df1.format(rd.nextInt(9999));
     }
 
-    public Long findcityCount(String cityName){
+    public Integer findcityCount(com.yn.model.Page<Server> page){
     	
-    	return serverDao.findcityCount(cityName);
+    	return serverDao.findcityCount(page);
     }
   
-  public  Long findCount(){
+  public  Integer findCount(com.yn.model.Page<Server> page){
 	  
-	return serverDao.findCount();
+	return serverDao.findCount(page);
     }
     
     public Server findOne(Long id) {

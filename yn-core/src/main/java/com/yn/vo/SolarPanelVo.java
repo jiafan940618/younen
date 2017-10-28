@@ -20,12 +20,22 @@ public class SolarPanelVo {
 	
 	private String typeName;
 	
+	private int id; 
+	
 	
 	
 	private List<QualificationsVo> list;
 	
 
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getTypeName() {
 		return typeName;
 	}

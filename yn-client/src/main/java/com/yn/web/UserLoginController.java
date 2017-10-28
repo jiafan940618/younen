@@ -235,6 +235,9 @@ public class UserLoginController {
 			logger.info("---- ---- ---- ---- 用户不存在！ ");
 			return ResultVOUtil.error(777, Constant.NO_THIS_USER);
 		}
+		
+		Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
+		
 		Object attribute2 = httpSession.getAttribute("codeUser");
 		if (attribute2 == null) {
 			logger.info("---- ---- ---- ---- 短信验证码不能为空！ ");
@@ -340,6 +343,68 @@ public class UserLoginController {
     	return  ResultVOUtil.success(code); 
        }
    
+    /** 手机端的注册*/
+    @ResponseBody
+	@RequestMapping(value = "/register_phone",method = {RequestMethod.POST})
+	public ResultData<Object> register_phone(UserVo user, String code4register, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
+    	
+    	 User newUser = new User();
+         BeanCopy.copyProperties(user, newUser);
+
+		if (user.getPhone() == null || user.getPhone().equals("") ) {
+			logger.info(" -- -- --- 电话不能为空");
+			 return ResultVOUtil.error(777, Constant.PHONE_NULL);
+		}
+		
+		User user2 = new User();
+		user2.setPhone(user.getPhone());
+		User selectByPhone = userService.findByPhone(user.getPhone());
+		if (selectByPhone != null) {
+			logger.info(" -- -- --- 该电话已注册");
+			return ResultVOUtil.error(777, Constant.PHONE_EXIST);
+		}
+		
+		Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
+		
+		if (code4registerTime==null) {
+			logger.info(" -- -- --- 短信验证码不能为空！");
+			return ResultVOUtil.error(777, Constant.CODE_NULL);
+		}
+		
+		// 如果短信验证码超过了5分钟,获得短信验证码的时间
+		Long spaceTime = System.currentTimeMillis() - code4registerTime;
+		if(spaceTime > 300000){
+			logger.info(" -- -- --- 短信验证码已失效！");
+			return ResultVOUtil.error(777, Constant.CODE_AGAIN);
+		}
+		
+		String attribute2 = (String)httpSession.getAttribute("codeUser");
+		if (attribute2 == null) {
+			logger.info(" -- -- --- 短信验证码不能为空！");
+			
+			return ResultVOUtil.error(777, Constant.CODE_NULL);
+		}
+		/** 比较俩次的验证码是否一样 或者 俩次电话不一样都返回一个验证码错误*/
+		if (!code4register.equals(attribute2) || !user.getPhone().equals(httpSession.getAttribute("user_phone"))) {
+			
+			logger.info(" -- -- --- 验证码错误");
+			
+			return ResultVOUtil.error(777, Constant.CODE_ERROR);
+		}
+
+
+		newUser.setPassword(MD5Util.GetMD5Code(newUser.getPassword()));
+		
+		String privilegeCodeInit =	RandomUtil.generateOnlyNumber(); 
+		newUser.setPrivilegeCodeInit(privilegeCodeInit);
+		
+		/** 此时添加时，会添加俩张表，wallet，user表*/
+		userService.save(newUser);
+    	
+    	
+		return ResultVOUtil.success(newUser);
+    }
+    
    /**
     * 用户注册 第一步
     * */
@@ -363,12 +428,13 @@ public class UserLoginController {
 			return ResultVOUtil.error(777, Constant.PHONE_EXIST);
 		}
 		
-		
 		Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
+		
 		if (code4registerTime==null) {
 			logger.info(" -- -- --- 短信验证码不能为空！");
 			return ResultVOUtil.error(777, Constant.CODE_NULL);
 		}
+		
 		// 如果短信验证码超过了5分钟,获得短信验证码的时间
 		Long spaceTime = System.currentTimeMillis() - code4registerTime;
 		if(spaceTime > 300000){

@@ -1,6 +1,7 @@
 package com.yn.kft.controller;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +95,11 @@ public class PayOrderAction {
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
 		bankCardVo.setTreatyId("21000000000773");*/
+		BigDecimal xmoney = BigDecimal.valueOf(100);
+		DecimalFormat   df   =new DecimalFormat("#");
 		
+		System.out.println(df.format(billOrderVo.getMoney().multiply(xmoney)));
+		billOrderVo.setMoney(new BigDecimal(df.format(billOrderVo.getMoney().multiply(xmoney))));
 		
 		
 		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
@@ -321,6 +326,12 @@ public class PayOrderAction {
 		Wallet wallet = walletService.findWalletByUser(rechargeVo.getUserId());
 		rechargeVo.setWalletId(wallet.getId());
 		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
+		BigDecimal xmoney = BigDecimal.valueOf(100);
+		DecimalFormat   df   =new DecimalFormat("#");
+		
+		System.out.println(df.format(rechargeVo.getMoney().multiply(xmoney)));
+		rechargeVo.setMoney(new BigDecimal(df.format(rechargeVo.getMoney().multiply(xmoney))));
+		
 		logger.info("======= ========= ======== =======传递的WalletId():"+rechargeVo.getWalletId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+rechargeVo.getRechargeCode());
 		logger.info("======= ========= ======== =======传递的money:"+rechargeVo.getMoney());

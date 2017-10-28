@@ -27,12 +27,9 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Long batteryboardId;
 	@Column(columnDefinition = "String(255) comment '[服务方案图片]'")
 	private String planImgUrl;
-	
-
 	@Column(columnDefinition = "int(11) comment '[逆变器id]'")
 	private Long inverterId;
-	
-	
+
 	@Column(columnDefinition = "text comment '[其他材料jsonText]'")
 	private String materialJson;
 	
@@ -40,7 +37,17 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Integer minPurchase;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
 	private Double unitPrice;
+		
+	 /** 用来标识方案的，方便查询出该id下的所有方案*/
+	@Column(columnDefinition = "int(11) comment '[标识id]'")
+	private Long identiId;
+	
+	private Double capacity;
 
+	
+	
+	
+	
 
 	/** 电池板*/
 	@OneToOne
@@ -63,6 +70,30 @@ public class NewServerPlan extends IDomain implements Serializable {
 
 	
 	
+
+	public Long getIdentiId() {
+		return identiId;
+	}
+
+
+
+	public void setIdentiId(Long identiId) {
+		this.identiId = identiId;
+	}
+
+
+
+	public Double getCapacity() {
+		return capacity;
+	}
+
+
+
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
+
+
 
 	public BigDecimal getWarPeriod() {
 		return warPeriod;

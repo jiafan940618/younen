@@ -32,6 +32,8 @@ public class NewPlanVo {
 	private Integer warPeriod;
 	
 	private Integer status;
+	
+
 
 	//订单服务商与用户的信息
 	private String companyName;
@@ -51,8 +53,6 @@ public class NewPlanVo {
 	private Double hadPayPrice;
 	
 	private String speed;
-	
-	
 	
 	public Double getHadPayPrice() {
 		return hadPayPrice;

@@ -442,13 +442,13 @@ public class OrderService {
 	   String speed =	df.format(hadPayPrice.doubleValue()/totalprice.doubleValue()*100);
 		
 		
-		
 		newPlanVo.setUserName(userName);
 		newPlanVo.setPhone(phone);
 		newPlanVo.setAddress(addressText);
 		newPlanVo.setCompanyName(serverName);
 		newPlanVo.setOrderCode(orderCode);
 		newPlanVo.setInvstername(InvestName);
+		newPlanVo.setCapacity(capacity.intValue());
 		newPlanVo.setBrandname(solName);
 		newPlanVo.setMaterialJson(jsonText);
 		newPlanVo.setWarPeriod(warPeriod);

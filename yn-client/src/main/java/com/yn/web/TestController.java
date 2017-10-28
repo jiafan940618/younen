@@ -15,6 +15,7 @@ import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
 import com.yn.model.Page;
 import com.yn.model.Recharge;
+import com.yn.model.Server;
 import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.Wallet;
@@ -29,6 +30,7 @@ import com.yn.service.StationService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
+import com.yn.vo.NewServer;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -44,7 +46,7 @@ public class TestController {
 	@Autowired
 	TransactionRecordService transactionRecordService;
 	@Autowired
-	private RechargeService rechargeService;
+	private ServerService serverService;
 	@Autowired
 	WalletService  walletService;
 	@Autowired
@@ -68,14 +70,12 @@ public class TestController {
 	       @ResponseBody
 	       public Object helloJsp01(){  
 	    	   
-	    	   Page<TransactionRecord> page = new Page<TransactionRecord>();
-	    	   page.setUserId(2L);
+	    	   Page<Server> page = new  Page<Server>();
 	    	   
-	    
-	    	    int total =	transactionRecordService.FindBynewNum(page);
+	    	  Integer totalCount = serverService.findCount(page);
 	    	   
 
-	            return ResultVOUtil.success(total);  
+	            return ResultVOUtil.success(totalCount);  
 	       } 
 	       
 	       @ResponseBody

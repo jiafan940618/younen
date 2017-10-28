@@ -143,8 +143,7 @@ public class UserController {
     	userVo.setEmail("974426563@163.com");
     	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
     	userVo.setPhone("13530895662");*/
-    	
-    	User newuserVo =(User) httpSession.getAttribute("SessionCache");
+    	 User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(777, "抱歉,您未登录!");
@@ -191,6 +190,7 @@ public class UserController {
     	} 
     	 User user = new User();
          BeanCopy.copyProperties(userVo, user);
+         user.setId(newuserVo.getId());
     	
         userService.updateNewUser(user);
         
@@ -350,8 +350,8 @@ public class UserController {
     List<Order>	list = orderService.findBystatus(page); 
      
     int num = orderService.findByNum(page);
-    
-    page.setTotal(num/page.getLimit() == 1 ? num/page.getLimit() : num/page.getLimit()+1);	
+   
+    page.setTotal( num%page.getLimit() == 0 ? num/page.getLimit() : (num-num%page.getLimit())/page.getLimit()+1);	
     	
 		return ResultVOUtil.newsuccess(page, list);
     }
@@ -457,7 +457,8 @@ public class UserController {
     		 }
     	 }
     	 /** 总页数*/
-    	 page.setTotal(total/page.getLimit() == 1 ? total/page.getLimit() : total/page.getLimit()+1);
+    	 
+    	 page.setTotal(total%page.getLimit() == 0 ? total/page.getLimit() : (total-total%page.getLimit())/page.getLimit()+1);
     	 
 		return ResultVOUtil.newsuccess(page, list);  
     }
@@ -511,7 +512,7 @@ public class UserController {
 	public Object logout(@RequestParam("countType") Integer countType, HttpSession httpSession) {
 
 		if(countType == 1){
-			httpSession.removeAttribute("user");
+			//httpSession.removeAttribute("user");
 			httpSession.removeAttribute("SessionCache");
 		} else if(countType == 2) {
 			httpSession.removeAttribute("server");

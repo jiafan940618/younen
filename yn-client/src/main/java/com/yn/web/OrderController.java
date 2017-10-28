@@ -397,6 +397,7 @@ public class OrderController {
 
 		NewPlanVo newPlanVo = ordService.getIOsNewPlan(object);
 		
+		
 		List<BillOrder> billlist = billOrderService.findByOrderId(OrderId);
 
 		List<String> newlist = billOrderService.getSay(billlist);
