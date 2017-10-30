@@ -59,7 +59,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	@Query(value = " SELECT DISTINCT(e.id),t.img_url,t.text  FROM server e"
 			+ " LEFT JOIN qualifications_server q ON q.`server_id` =e.`id` "
 			+ " LEFT JOIN qualifications t ON  t.id= q.qualifications_id WHERE"
-			+ " e.del=0 and s.`server_city_text` like CONCAT ('%',:cityName,'%') and e.id in (:ids)", nativeQuery = true)
+			+ " e.del=0 and e.`server_city_text` like CONCAT ('%',:cityName,'%') and e.id in (:ids)", nativeQuery = true)
 	List<Object> findquaObject(@Param("cityName") String  cityName, @Param("ids") List<Long> ids);
 
 	/** 查存储总页数 */
@@ -76,9 +76,9 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 
 	@Query(value = "SELECT "
 			+ " COUNT(1) FROM server e"
-			+ " LEFT JOIN new_server_plan p ON s.id = p.`server_id`"
-			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE s.del=0 AND "
-			+ " p.planid=1 and s.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
+			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
+			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE e.del=0 AND "
+			+ " p.planid=1 and e.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
 		    + " and p.type =:#{#page.type} ",nativeQuery =true)
 
 	Integer findcityCount(@Param("page") com.yn.model.Page<Server> page);

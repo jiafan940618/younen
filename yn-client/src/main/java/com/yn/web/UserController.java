@@ -192,7 +192,8 @@ public class UserController {
          BeanCopy.copyProperties(userVo, user);
          user.setId(newuserVo.getId());
     	
-        userService.updateNewUser(user);
+      //  userService.updateNewUser(user);
+         userService.save(user);
         
         NewUserVo userVo01 = new NewUserVo(); 
         userVo01.setEmail(userVo.getEmail());
@@ -219,10 +220,10 @@ public class UserController {
     	}
     	
     logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
-    	//** 电站信息*//*
+    	/** 电站信息*/
     List<StationVo> list = stationService.getnewstation(newuserVo.getId());
      
-    	//** 个人资料*//*
+    	/** 个人资料*/
     WalletVo walletVo =  userService.findUserPrice(userVo.getId());
     
 
@@ -272,8 +273,8 @@ public class UserController {
     
     
     
-   /** 后面版本要改为分页的形式*/
-   @ResponseBody
+   /** pc端 0.0 后面版本要改为分页的形式*/
+    @ResponseBody
     @RequestMapping(value = "/findStationUs")
     public Object findnewStation(HttpSession httpSession) {
 	   User newuserVo = SessionCache.instance().getUser();
@@ -286,6 +287,28 @@ public class UserController {
     	
     	return ResultVOUtil.success(list);
     }
+   
+   /** 移动端，显示我的电站*/
+    @ResponseBody
+    @RequestMapping(value = "/findiosStationUs")
+    public Object findioaStation(HttpSession httpSession) {
+	   User newuserVo = SessionCache.instance().getUser();
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  	}
+	  	
+	  	Map<String, String> map = systemConfigService.getlist(); 
+	 	
+	 	
+    	 List<StationVo> list = stationService.findByUserIdS(newuserVo.getId(), map);
+    	 
+    	 
+    	
+    	return ResultVOUtil.success(list);
+    }
+   
+   
   @ResponseBody
   @RequestMapping(value = "/findiosQueryOrder")
   public Object findStation(HttpSession httpSession) {
@@ -294,9 +317,6 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
 	  	}
-	  /* User newuserVo = new User();
-	  newuserVo.setId(2l);*/
-	
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());
@@ -350,9 +370,12 @@ public class UserController {
     List<Order>	list = orderService.findBystatus(page); 
      
     int num = orderService.findByNum(page);
-   
-    page.setTotal( num%page.getLimit() == 0 ? num/page.getLimit() : (num-num%page.getLimit())/page.getLimit()+1);	
-    	
+    if(num <=  0){
+			page.setTotal(1);
+		}else{
+			page.setTotal( num%page.getLimit() == 0 ? num/page.getLimit() : (num-num%page.getLimit())/page.getLimit()+1);	
+		}
+    
 		return ResultVOUtil.newsuccess(page, list);
     }
     
@@ -457,8 +480,12 @@ public class UserController {
     		 }
     	 }
     	 /** 总页数*/
+    	 if(total <= 0){
+ 			page.setTotal(1);
+ 		}else{
+ 			page.setTotal(total%page.getLimit() == 0 ? total/page.getLimit() : (total-total%page.getLimit())/page.getLimit()+1);
+ 		}
     	 
-    	 page.setTotal(total%page.getLimit() == 0 ? total/page.getLimit() : (total-total%page.getLimit())/page.getLimit()+1);
     	 
 		return ResultVOUtil.newsuccess(page, list);  
     }

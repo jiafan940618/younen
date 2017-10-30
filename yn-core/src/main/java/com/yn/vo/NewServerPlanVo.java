@@ -20,7 +20,7 @@ public class NewServerPlanVo {
 	
 	private String materialJson;
 	
-	private Integer minPurchase;
+	private Double minPurchase;
 	private Double unitPrice;
 	
 	private Double warrantyYear;
@@ -28,6 +28,12 @@ public class NewServerPlanVo {
 	
 	
 	
+	public Double getMinPurchase() {
+		return minPurchase;
+	}
+	public void setMinPurchase(Double minPurchase) {
+		this.minPurchase = minPurchase;
+	}
 	public Double getWarrantyYear() {
 		return warrantyYear;
 	}
@@ -82,12 +88,7 @@ public class NewServerPlanVo {
 		public void setMaterialJson(String materialJson) {
 			this.materialJson = materialJson;
 		}
-		public Integer getMinPurchase() {
-			return minPurchase;
-		}
-		public void setMinPurchase(Integer minPurchase) {
-			this.minPurchase = minPurchase;
-		}
+		
 		public Double getUnitPrice() {
 			return unitPrice;
 		}

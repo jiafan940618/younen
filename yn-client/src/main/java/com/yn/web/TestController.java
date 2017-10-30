@@ -2,6 +2,7 @@ package com.yn.web;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -27,11 +28,13 @@ import com.yn.service.NewServerPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.vo.NewServer;
 import com.yn.vo.RechargeVo;
+import com.yn.vo.StationVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -62,20 +65,18 @@ public class TestController {
 	@Autowired
 	NewServerPlanService newserverPlanService;
 	@Autowired
-	BillWithdrawalsService  billWithdrawalsService;
+	SystemConfigService  systemConfigService;
 	
 	
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
+	    	   Map<String, String> map = systemConfigService.getlist(); 
 	    	   
-	    	   Page<Server> page = new  Page<Server>();
-	    	   
-	    	  Integer totalCount = serverService.findCount(page);
-	    	   
+	    	  List<StationVo> list =  stationService.findByUserIdS(2L,map);
 
-	            return ResultVOUtil.success(totalCount);  
+	            return ResultVOUtil.success(list);  
 	       } 
 	       
 	       @ResponseBody

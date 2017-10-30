@@ -10,7 +10,7 @@ public class NewPlanVo {
 	private Integer id; 
 	private Integer serverId;
 	private String materialJson;
-	private Integer minPurchase;
+	private Double minPurchase;
 	private BigDecimal unitPrice;
 	private String img_url;
 	
@@ -25,9 +25,9 @@ public class NewPlanVo {
 	
 	private String conent;
 	
-	private Integer capacity;
+	private Double capacity;
 	
-	private Integer num;
+	private Double num;
 	
 	private Integer warPeriod;
 	
@@ -104,10 +104,11 @@ public class NewPlanVo {
 		this.warPeriod = warPeriod;
 	}
 	
-	public Integer getNum() {
+	
+	public Double getNum() {
 		return num;
 	}
-	public void setNum(Integer num) {
+	public void setNum(Double num) {
 		this.num = num;
 	}
 	public Double getApoPrice() {
@@ -122,10 +123,11 @@ public class NewPlanVo {
 	public void setSerPrice(Double serPrice) {
 		this.serPrice = serPrice;
 	}
-	public Integer getCapacity() {
+	
+	public Double getCapacity() {
 		return capacity;
 	}
-	public void setCapacity(Integer capacity) {
+	public void setCapacity(Double capacity) {
 		this.capacity = capacity;
 	}
 	public String getConent() {
@@ -188,10 +190,11 @@ public class NewPlanVo {
 	public void setMaterialJson(String materialJson) {
 		this.materialJson = materialJson;
 	}
-	public Integer getMinPurchase() {
+	
+	public Double getMinPurchase() {
 		return minPurchase;
 	}
-	public void setMinPurchase(Integer minPurchase) {
+	public void setMinPurchase(Double minPurchase) {
 		this.minPurchase = minPurchase;
 	}
 	public BigDecimal getUnitPrice() {

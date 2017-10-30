@@ -34,7 +34,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private String materialJson;
 	
 	@Column(columnDefinition = "int(11) comment '[最低购买千瓦数]'")
-	private Integer minPurchase;
+	private Double minPurchase;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[元/千瓦]'")
 	private Double unitPrice;
 		
@@ -44,10 +44,6 @@ public class NewServerPlan extends IDomain implements Serializable {
 	
 	private Double capacity;
 
-	
-	
-	
-	
 
 	/** 电池板*/
 	@OneToOne
@@ -62,7 +58,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 	
 	
 
-	public NewServerPlan(Long serverId, Integer minPurchase, Double unitPrice) {
+	public NewServerPlan(Long serverId, Double minPurchase, Double unitPrice) {
 		this.serverId = serverId;
 		this.minPurchase = minPurchase;
 		this.unitPrice = unitPrice;
@@ -148,13 +144,17 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.materialJson = materialJson;
 	}
 
-	public Integer getMinPurchase() {
+	public Double getMinPurchase() {
 		return minPurchase;
 	}
 
-	public void setMinPurchase(Integer minPurchase) {
+
+
+	public void setMinPurchase(Double minPurchase) {
 		this.minPurchase = minPurchase;
 	}
+
+
 
 	public Double getUnitPrice() {
 		return unitPrice;

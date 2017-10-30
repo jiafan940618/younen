@@ -36,7 +36,42 @@ public class StationVo extends QueryVo{
 	
 	private String remark;
 	
+	private Double initKwh;
+
+	private String userName;
 	
+	private String CO2_PM;
+	
+	private String trees_prm;
+	
+
+	
+
+	public String getCO2_PM() {
+		return CO2_PM;
+	}
+	public void setCO2_PM(String cO2_PM) {
+		CO2_PM = cO2_PM;
+	}
+	public String getTrees_prm() {
+		return trees_prm;
+	}
+	public void setTrees_prm(String trees_prm) {
+		this.trees_prm = trees_prm;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public Double getInitKwh() {
+		return initKwh;
+	}
+	public void setInitKwh(Double initKwh) {
+		this.initKwh = initKwh;
+	}
+
 	public Double getElectricityGenerationTol() {
 		return electricityGenerationTol;
 	}

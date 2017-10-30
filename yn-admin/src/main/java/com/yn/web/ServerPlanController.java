@@ -124,7 +124,7 @@ public class ServerPlanController {
         
         NewServerPlan findOne = newserverPlanService.findOne(newserverPlanVo.getId());
         
-        Integer minpur =	findOne.getMinPurchase();
+        Double minpur =	findOne.getMinPurchase().doubleValue();
         
         if(null == minpur || minpur < newserverPlanVo.getCapacity().intValue() ){
         	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
@@ -190,7 +190,7 @@ public class ServerPlanController {
             	Integer id = (Integer) object[0];
             	Integer serverid =(Integer) object[1];
             	String materialJson =(String) object[2];
-            	Integer minPurchase =(Integer)object[3];
+            	BigDecimal minPurchase =(BigDecimal)object[3];
             	BigDecimal unitPrice =(BigDecimal)object[4];
             	String img_url = (String)object[5];
             	String invstername = (String)object[6] +"   " +(String)object[7];
@@ -201,7 +201,7 @@ public class ServerPlanController {
             	Integer capacity =	bigcapacity.intValue();
             	
             	
-            	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
+            	BigDecimal  allMoney = unitPrice.multiply(minPurchase);
             	
             	newPlanVo.setId(id);
             	newPlanVo.setServerId(serverid);
@@ -212,8 +212,8 @@ public class ServerPlanController {
             	newPlanVo.setBrandname(brandname);
             	newPlanVo.setAllMoney(allMoney.doubleValue());
             	newPlanVo.setConent(conent);
-            	newPlanVo.setCapacity(capacity);
-            	newPlanVo.setMinPurchase(minPurchase);
+            	newPlanVo.setCapacity(capacity.doubleValue());
+            	newPlanVo.setMinPurchase(minPurchase.doubleValue());
             	
             	list.add(newPlanVo);
     		}

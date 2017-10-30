@@ -483,6 +483,65 @@ public class StationService {
 
     } 
     
+   public  List<StationVo> findByUserIdS(Long userId,Map<String, String> map){
+	   
+	 List<StationVo> staList = new LinkedList<StationVo>();   
+	   
+	 List<Object>  list = stationDao.findByUserIdS(userId);
+	 
+	 Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));
+	 	/**co2减排参数*/
+	 Double CO2_prm = Double.valueOf(map.get("CO2_prm"));
+	 
+	 for (Object object : list) {
+		Object[] obj = (Object[]) object;
+		
+		Integer s_id = (Integer)obj[0];
+		String stationName = (String) obj[1];
+		Integer user_id = (Integer)obj[2];
+		BigDecimal capacity = (BigDecimal) obj[3];
+		Integer status = (Integer)obj[4];
+		String stationCode = (String) obj[5];
+		BigDecimal initkwh = (BigDecimal) obj[6];
+		BigDecimal workTotalKwh = (BigDecimal) obj[7];
+		Integer workTotalTm = (Integer)obj[8];
+		String userName = (String) obj[9];
+		BigDecimal nowKwh = (BigDecimal) obj[10];
+		Double electricityGenerationTol = 0.0;
+	if(null == initkwh && null == workTotalKwh){
+		 electricityGenerationTol = 0.0;
+	}else{
+		
+		 electricityGenerationTol =initkwh.doubleValue()+workTotalKwh.doubleValue();
+	}	
+		
+		
+		StationVo stationVo = new StationVo();
+		stationVo.setId(s_id.longValue());
+		stationVo.setStationName(stationName);
+		stationVo.setCapacity(capacity.doubleValue());
+		stationVo.setStatus(status);
+		stationVo.setStationCode(stationCode);
+		stationVo.setWorkTotaTm(workTotalTm);
+		stationVo.setElectricityGenerationTol(electricityGenerationTol);
+		stationVo.setUserName(userName);
+		
+		DecimalFormat df = new DecimalFormat("#0.00");
+		 /** co2排放量*/
+		stationVo.setCO2_PM(df.format(electricityGenerationTol * CO2_prm));
+		stationVo.setTrees_prm(df.format(electricityGenerationTol * plant_trees_prm));
+		
+		if(null == nowKwh){
+			stationVo.setNowKw(0.0);
+		}else{
+			stationVo.setNowKw(nowKwh.doubleValue());
+		}
+
+		staList.add(stationVo);
+	}  
+	return staList;  
+   }
+    
     
     
 //    /**

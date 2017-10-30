@@ -144,7 +144,7 @@ public class NewServerPlanService {
 	            	Integer id = (Integer) object[0];
 	            	Integer serverid =(Integer) object[1];
 	            	String materialJson =(String) object[2];
-	            	Integer minPurchase =(Integer)object[3];
+	            	BigDecimal minPurchase =(BigDecimal)object[3];
 	            	BigDecimal unitPrice =(BigDecimal)object[4];
 	            	String img_url = (String)object[5];
 	            	String invstername = (String)object[6] +"   " +(String)object[7];
@@ -154,7 +154,7 @@ public class NewServerPlanService {
 	            	Integer warPeriod =	warPer.intValue();
 	            	
 	            	
-	            	BigDecimal  allMoney = unitPrice.multiply(new BigDecimal(minPurchase));
+	            	BigDecimal  allMoney = unitPrice.multiply(minPurchase);
 	            	
 	            	newPlanVo.setId(id);
 	            	newPlanVo.setServerId(serverid);
@@ -165,7 +165,7 @@ public class NewServerPlanService {
 	            	newPlanVo.setBrandname(brandname);
 	            	newPlanVo.setAllMoney(allMoney.doubleValue());
 	            	newPlanVo.setWarPeriod(warPeriod);
-	            	newPlanVo.setMinPurchase(minPurchase);
+	            	newPlanVo.setMinPurchase(minPurchase.doubleValue());
 	            	list01.add(newPlanVo);
 	    		}
 			return list01;

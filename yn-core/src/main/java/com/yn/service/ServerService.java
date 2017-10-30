@@ -299,7 +299,7 @@ public class ServerService {
 		return list;
    }
    
-   public NewPlanVo getPlan(NewServerPlan newserverPlan,User user,Integer num, Double serPrice,Double apoPrice,Double price){
+   public NewPlanVo getPlan(NewServerPlan newserverPlan,User user,Double num, Double serPrice,Double apoPrice,Double price){
 	   
 	   Server server = findOne(newserverPlan.getServerId());
 	   NewPlanVo newPlanVo = new NewPlanVo();

@@ -590,27 +590,40 @@ public class ServerController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/find")
-	public ResultData<Object> find(String cityName,com.yn.model.Page<Server> page) {
-		page.setIndex(1);
-		
+	public ResultData<Object> find(com.yn.model.Page<Server> page) {
+		/*page.setIndex(1);
+		page.setType(0);
+		page.setCityName("南京市");*/
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
 		List<Object> list = null;
 		Integer totalCount =0;
-		if(null == cityName || cityName.equals("")){
+		if(null == page.getCityName() || page.getCityName().equals("")){
 			
 		 list =  solarService.findObject(page);
 		 	
 		 totalCount = serverService.findCount(page);
 			
-		 page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);
+		if(totalCount <= 0){
+			page.setTotal(1);
+		}else{
+			 page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);	
+		}
+		
+		 
+		 logger.info("--- --- --- --- --- --- --- "+page.getTotal());
 		}else{
 			
 			 list =  solarService.findtwoObject(page);
 			 
 			 totalCount = serverService.findcityCount(page);
-			 	
-			 page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);
+			 if(totalCount <= 0){
+					page.setTotal(1);
+				}else{
+				page.setTotal(totalCount%page.getLimit() == 0 ? totalCount/page.getLimit() : (totalCount-totalCount%page.getLimit())/page.getLimit()+1);
+				}
+			
+			 logger.info("--- --- --- --- --- --- --- "+page.getTotal());
 		}
 			solar  =solarService.getpanel(list);
 			

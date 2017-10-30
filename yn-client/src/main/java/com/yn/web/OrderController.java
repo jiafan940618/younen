@@ -326,7 +326,7 @@ public class OrderController {
 		 * Double price =7700.00; Long planid =1L;
 		 */
 
-		Integer num = (Integer) session.getAttribute("num");
+		Double num = (Double) session.getAttribute("num");
 		Long userid = (Long) session.getAttribute("userid");
 
 		List<Long> list = (List<Long>) session.getAttribute("list");
@@ -517,7 +517,7 @@ public class OrderController {
 
 			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
-			newserverPlan.setMinPurchase(plan.getNum());
+			newserverPlan.setMinPurchase(plan.getNum().doubleValue());
 
 			User user02 = userservice.findByPhone(plan.getPhone());
 			/** 添加订单*/

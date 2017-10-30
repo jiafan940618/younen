@@ -129,11 +129,11 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
 
         NewServerPlan findOne = newserverPlanService.findOne(newserverPlanVo.getId());
         
-        Integer minpur =	findOne.getMinPurchase();
+        Double minpur =	findOne.getMinPurchase().doubleValue();
         
-        logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+newserverPlanVo.getCapacity().intValue());
+        logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+newserverPlanVo.getCapacity().doubleValue());
         
-	        if(null == minpur || minpur > newserverPlanVo.getCapacity().intValue() ){
+	        if(null == minpur || minpur > newserverPlanVo.getCapacity().doubleValue() ){
 	        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
 	        	
 	        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
@@ -141,7 +141,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         
         Double utilprice =  findOne.getUnitPrice();
       
-        Integer minpurchase =  newserverPlanVo.getCapacity().intValue();
+        Double minpurchase =  newserverPlanVo.getCapacity().doubleValue();
          /** 计算总价格*/
         Double AllMoney = utilprice * minpurchase;
          /*** 计算备选项目价格*/
@@ -176,7 +176,7 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         String orderCode = serverService.getOrderCode(findOne.getServerId());
         
        session.setAttribute("orderCode", orderCode);
-       session.setAttribute("num", newserverPlanVo.getCapacity().intValue());
+       session.setAttribute("num", newserverPlanVo.getCapacity().doubleValue());
        session.setAttribute("list", checkedId);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
        session.setAttribute("userid", userVo.getUserid());

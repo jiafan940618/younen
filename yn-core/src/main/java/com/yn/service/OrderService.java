@@ -394,7 +394,7 @@ public class OrderService {
 		newPlanVo.setBrandname(solName);
 		newPlanVo.setMaterialJson(jsonText);
 		newPlanVo.setWarPeriod(warPeriod);
-		newPlanVo.setNum(capacity.intValue());
+		newPlanVo.setNum(capacity.doubleValue());
 		newPlanVo.setAllMoney(planPrice.doubleValue());
 		newPlanVo.setApoPrice(price.doubleValue());
 		newPlanVo.setSerPrice(totalprice.doubleValue());
@@ -448,11 +448,11 @@ public class OrderService {
 		newPlanVo.setCompanyName(serverName);
 		newPlanVo.setOrderCode(orderCode);
 		newPlanVo.setInvstername(InvestName);
-		newPlanVo.setCapacity(capacity.intValue());
+		newPlanVo.setCapacity(capacity.doubleValue());
 		newPlanVo.setBrandname(solName);
 		newPlanVo.setMaterialJson(jsonText);
 		newPlanVo.setWarPeriod(warPeriod);
-		newPlanVo.setNum(capacity.intValue());
+		newPlanVo.setNum(capacity.doubleValue());
 		newPlanVo.setAllMoney(planPrice.doubleValue());
 		newPlanVo.setApoPrice(price.doubleValue());
 		newPlanVo.setSerPrice(totalprice.doubleValue());
