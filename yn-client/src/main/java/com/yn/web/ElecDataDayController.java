@@ -145,6 +145,9 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 	List<Map<String, Object>> rl2 = new ArrayList<>();
 	List<Map<String, Object>> rl3 = new ArrayList<>();
 	String [] time = {year+"-01",year+"-02",year+"-03",year+"-04",year+"-05",year+"-06",year+"-07",year+"-08",year+"-09",year+"-10",year+"-11",year+"-12"};
+	
+	Double kwh = 0.0;
+	
 	for(String timeStr:time){
 		Map<String, Object> map = new HashMap<>();
 		map.put("userId", user.getId());
@@ -164,6 +167,9 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 			rl.add(map2);
 			rl2.add(map3);
 			rl3.add(map4);
+			
+			kwh += tsy.getKwh();
+			
 		} else{
 			map2.put("co2", 0);
 			map2.put("createDtm", timeStr);
@@ -175,15 +181,16 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 			rl.add(map2);
 			rl2.add(map3);
 			rl3.add(map4);
-		}
+		}	
 	}
-	
 
 	Map<String, Object> rm = new HashMap<>();
 	rm.put("co2data", rl);
 	rm.put("treeData", rl2);
-	rm.put("SOData", rl3);
+	rm.put("SOData", rl3);	
 	
+	rm.put("CO2_prm", kwh * CO2_prm);
+	rm.put("plant_trees_prm", kwh * plant_trees_prm);
 
 	return ResultVOUtil.success(rm);	
 	}

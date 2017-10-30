@@ -50,12 +50,20 @@ public class OrderVo extends QueryVo{
 	private Integer gridConnectedIsPay;
 	private Integer gridConnectedStepA;
 	private Integer waPeriod ;
+	private String userName ;
+	
 	
 	private Set<ApolegamyOrderVo> apolegamyOrder;
 	private OrderPlanVo orderPlan;
 	
 	
 	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public String getStationCode() {
 		return stationCode;
 	}

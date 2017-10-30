@@ -104,6 +104,35 @@ public class OrderService {
 		return order01;
 	}
     
+     public List<OrderVo> findByUserId(User user){
+		
+		List<OrderVo> orderlist = new LinkedList<OrderVo>();
+		
+		List<Object> list = orderDao.findsome(user.getId());
+		
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+		Integer id = (Integer) obj[0];	
+		BigDecimal capacity = (BigDecimal) obj[1];		
+		String serverName = (String) obj[2];
+		String orderCode = (String) obj[3];
+		Integer gridConnectedStepa = (Integer) obj[4];
+		
+		OrderVo order = new OrderVo();
+		order.setId(Long.valueOf(id));
+		order.setCapacity(capacity.doubleValue());
+		order.setServerName(serverName);
+		order.setOrderCode(orderCode);
+		order.setGridConnectedStepA(gridConnectedStepa);
+		order.setUserName(user.getUserName());
+		
+		orderlist.add(order);
+		}
+		
+		
+		return orderlist;
+	}
+    
    public Object getIosInfoOrder( Long orderId){
 	   
 	return orderDao.getIosInfoOrder(orderId);
@@ -378,7 +407,11 @@ public class OrderService {
 		String jsonText = (String) obj[9];
 		BigDecimal capacity = (BigDecimal) obj[10];
 		BigDecimal planPrice = (BigDecimal) obj[11];
+		
 		String ids = (String) obj[12];
+		if(null ==ids){
+			ids ="0";
+		}
 
 		BigDecimal price = (BigDecimal) obj[13];
 		BigDecimal totalprice = (BigDecimal) obj[14];

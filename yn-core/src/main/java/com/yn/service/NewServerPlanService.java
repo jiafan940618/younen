@@ -229,7 +229,7 @@ public class NewServerPlanService {
 	        /** 状态*/
 	        order.setStatus(0);
 	        order.setGridConnectedIsPay(0);
-	        order.setGridConnectedStepA(0);
+	        order.setGridConnectedStepA(1);
 	        order.setApplyIsPay(0);
 	        order.setApplyStepA(0);
 	        order.setApplyStepB(0);

@@ -80,5 +80,9 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
   
   	@Query("select o.orderCode from Order o where o.del=0 and o.id=?1")
     String findByStationId(Long orderId);
+  	
+  	@Query(value ="SELECT t.`id`,t.`capacity`,t.`server_name`,t.`order_code`,t.grid_connected_stepa FROM t_order t "
+			+ "  WHERE t.grid_connected_stepa = 1  AND t.`status` <> 3 AND t.`del` = 0 AND user_id = :userId", nativeQuery = true)
+	List<Object> findsome(@Param("userId") Long userId);
 
 }

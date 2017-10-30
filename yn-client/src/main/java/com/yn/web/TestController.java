@@ -19,6 +19,7 @@ import com.yn.model.Recharge;
 import com.yn.model.Server;
 import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
+import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
@@ -33,6 +34,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.vo.NewServer;
+import com.yn.vo.OrderVo;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.StationVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -72,10 +74,12 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(){  
-	    	   Map<String, String> map = systemConfigService.getlist(); 
 	    	   
-	    	  List<StationVo> list =  stationService.findByUserIdS(2L,map);
-
+	    	   User user = new  User();
+	    	   user.setId(3L);
+	    	   user.setUserName("xiaosais");
+	    	   
+	    	   List<OrderVo> list = orderService.findByUserId(user);
 	            return ResultVOUtil.success(list);  
 	       } 
 	       

@@ -365,12 +365,13 @@ public class OrderController {
 		return ResultVOUtil.newsuccess(newPlanVo, list01);
 	}
 
+	//, @RequestParam("orderId") Long OrderId
 	/** 订单详情状态 */
 	@ResponseBody
 	@RequestMapping(value = "/ingorder")
-	public Object LookOrder1(HttpSession session, @RequestParam("orderId") Long OrderId) {
+	public Object LookOrder1(HttpSession session) {
 
-		Object object = ordService.getInformOrder(OrderId);
+		Object object = ordService.getInformOrder(573l);
 
 		NewPlanVo newPlanVo = ordService.getVoNewPlan(object);
 

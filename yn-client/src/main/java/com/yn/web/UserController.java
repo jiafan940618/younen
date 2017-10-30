@@ -260,12 +260,12 @@ public class UserController {
 	newmap.put("plant_trees_prm", df.format(power * plant_trees_prm));
 	  
   	/** 个人资料*/
-  WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+   WalletVo walletVo =  userService.findUserPrice(userVo.getId());
   
-  String num = transactionRecordService.FindByNum(userVo.getId())+"";
+   String num = transactionRecordService.FindByNum(userVo.getId())+"";
 
-  newmap.put("num",num);
-  newmap.put("Integral",walletVo.getIntegral().toString() );
+   newmap.put("num",num);
+   newmap.put("Integral",walletVo.getIntegral().toString() );
   	
   	 return ResultVOUtil.newhsuccess(walletVo, newmap);
   }
@@ -288,7 +288,7 @@ public class UserController {
     	return ResultVOUtil.success(list);
     }
    
-   /** 移动端，显示我的电站*/
+   /** 移动端,显示我的电站*/
     @ResponseBody
     @RequestMapping(value = "/findiosStationUs")
     public Object findioaStation(HttpSession httpSession) {
@@ -306,6 +306,20 @@ public class UserController {
     	 
     	
     	return ResultVOUtil.success(list);
+    }
+    /** 移动端,建设中的电站*/
+    @ResponseBody
+    @RequestMapping(value = "/buildStationUs")
+    public Object buildStation(HttpSession httpSession) {
+    	User newuserVo = SessionCache.instance().getUser();
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  	}
+    	
+    	List<OrderVo> list = orderService.findByUserId(newuserVo);
+    	
+		return ResultVOUtil.success(list);	
     }
    
    

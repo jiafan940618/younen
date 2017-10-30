@@ -24,6 +24,7 @@ import com.yn.model.Apolegamy;
 import com.yn.model.NewServerPlan;
 import com.yn.model.ProductionDetail;
 import com.yn.model.ServerPlan;
+import com.yn.model.User;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.NewServerPlanService;
@@ -34,6 +35,7 @@ import com.yn.service.QualificationsServerService;
 import com.yn.service.ServerPlanService;
 import com.yn.service.ServerService;
 import com.yn.service.UserService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.ResultData;
@@ -120,6 +122,9 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     @RequestMapping(value = "/findPlan")
     public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> checkedId,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
     	
+    	 User newuserVo = SessionCache.instance().getUser();
+    	
+    	
     	for (Long long1 : checkedId) {
 			logger.info("id串为：-------- ----- ----- ---- "+long1);
 		}
@@ -165,7 +170,8 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         
         logger.info("num为:--- --- ---- "+newserverPlanVo.getCapacity().intValue());
         logger.info("方案的id为： ------ ------ ------"+newserverPlanVo.getId());
-        logger.info("用户的id为： ------ ------ ------"+userVo.getUserid());
+       
+        logger.info("用户的id为： ------ ------ ------"+newuserVo.getId());
         logger.info("总的金额为： ------ ------ ------"+(AllMoney+apoPrice));
         if(checkedId.size() !=0 ){
 	        for (Long id : checkedId) {
@@ -179,14 +185,13 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
        session.setAttribute("num", newserverPlanVo.getCapacity().doubleValue());
        session.setAttribute("list", checkedId);
        session.setAttribute("newserverplanid", newserverPlanVo.getId());
-       session.setAttribute("userid", userVo.getUserid());
+       session.setAttribute("userid", newuserVo.getId());
        session.setAttribute("price", AllMoney);
        
         return ResultVOUtil.success(null);
     }
- //git commit -m "更新电站的分页动态条件查询，修改支付不能小数的BUG"
-    
-    
+
+
  //@RequestParam("serverId") Long serverId
     /** 方案接口*/
     @ResponseBody
