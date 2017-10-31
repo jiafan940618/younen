@@ -2,6 +2,8 @@ package com.yn.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -25,11 +27,15 @@ import org.springframework.util.StringUtils;
 
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
+import com.yn.dao.ElecDataMonthDao;
+import com.yn.dao.ElecDataYearDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
+import com.yn.model.ElecDataHour;
 import com.yn.model.ElecDataDayExample.Criteria;
 import com.yn.model.ElecDataMonth;
+import com.yn.model.ElecDataYear;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
@@ -47,18 +53,22 @@ public class ElecDataDayService {
 	ElecDataHourService elecDataHourService;
 	@Autowired
 	AmmeterDao ammeterDao;
-	
+	@Autowired
+	ElecDataMonthDao elecDataMonthDao;
+	@Autowired
+	ElecDataYearDao elecDataYearDao;
 
-	public List<ElecDataDay> selectByExample(ElecDataDayExample example){
+	public List<ElecDataDay> selectByExample(ElecDataDayExample example) {
 		return elecDataDayMapper.selectByExample(example);
 	}
+
 	public List<ElecDataDay> findByCondition(ElecDataDay elecDataDay) {
 		ElecDataDayExample example = new ElecDataDayExample();
 		Criteria criteria = example.createCriteria();
-		if(elecDataDay.getRecordTime()!=null){
+		if (elecDataDay.getRecordTime() != null) {
 			criteria.andRecordTimeEqualTo(elecDataDay.getRecordTime());
 		}
-		if(elecDataDay.getAmmeterCode()!=null){
+		if (elecDataDay.getAmmeterCode() != null) {
 			criteria.andAmmeterCodeEqualTo(elecDataDay.getAmmeterCode());
 		}
 		return elecDataDayMapper.selectByExample(example);
@@ -350,6 +360,35 @@ public class ElecDataDayService {
 		return list;
 	}
 
-	
+	/**
+	 * 移动端获取每天每月每年发电详情
+	 */
+	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) {
+		Map<String, Object> maps = new HashMap<>();
+
+		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+		Date end = new Date();
+		// 获取当前天的发电详情
+		Date[] todaySpace = DateUtil.getThisMonthSpace();
+		Date dayStart = todaySpace[0];
+		List<ElecDataDay> elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
+		double historyTotalElec = elecDataDayDao.sumKwhByDays(dayStart, end, type, ammeterCodes);
+		maps.put("dayList", elecDataDays);
+		maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
+
+		// 获取当前月的发电详情
+		Date[] monthSpace = DateUtil.getThisYearSpace();
+		Date monthStart = monthSpace[0];
+		List<ElecDataMonth> elecDataMonths = elecDataMonthDao.findByMonths(ammeterCodes, type, monthStart, end);
+		double monthTotalElec = elecDataMonthDao.sumKwhByMonths(dayStart, end, type, ammeterCodes);
+		maps.put("monthList", elecDataMonths);
+		maps.put("monthTotalElec", NumberUtil.accurateToTwoDecimal(monthTotalElec));
+		// 获取当前年的发电详情
+		List<ElecDataYear> elecDataYear = elecDataYearDao.findByYear(ammeterCodes, type);
+		double yearTotalElec = elecDataYearDao.sumKwhByYear(type, ammeterCodes);
+		maps.put("yearList", elecDataYear);
+		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));
+		return maps;
+	}
 
 }

@@ -57,5 +57,8 @@ public interface ElecDataHourDao extends JpaRepository<ElecDataHour, Long>, JpaS
     List<Map<Object,Object>> sumMonthKwh(String ammeterCode);
     
     @Query(value="select * from elec_data_hour as t WHERE t.create_dtm>=?3 AND t.create_dtm<?4 AND t.type =?2 AND t.ammeter_code in (?1) AND t.del=0",nativeQuery=true)
-    List<ElecDataHour> findByAmmeterCodes(List<Long> ammeterCodes, Integer type, Date start, Date end);   
+    List<ElecDataHour> findByAmmeterCodes(List<Long> ammeterCodes, Integer type, Date start, Date end); 
+    
+    @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_hour as t WHERE t.create_dtm>=?1 AND t.create_dtm<?2 AND t.type=?3 AND t.ammeter_code in (?4) AND t.del=0",nativeQuery=true)
+    double sumKwhByAmmeterCodes(Date startDtm, Date endDtm, Integer type, List<Long> ammeterCodes);
 }
