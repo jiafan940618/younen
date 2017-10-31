@@ -119,12 +119,13 @@ public class OrderService {
 		String serverName = (String) obj[2];
 		String orderCode = (String) obj[3];
 		Integer gridConnectedStepa = (Integer) obj[4];
-		
 		Integer s_id = (Integer) obj[5];	
 		String stationName = (String) obj[6];
-		
 		BigDecimal totalPrice = (BigDecimal) obj[7];		
-		BigDecimal hadPayPrice = (BigDecimal) obj[8];	
+		BigDecimal hadPayPrice = (BigDecimal) obj[8];
+		Integer status = (Integer) obj[9];
+		
+		
 		
 		DecimalFormat df = new DecimalFormat("#0.00");
 		String speed =	df.format(hadPayPrice.doubleValue()/totalPrice.doubleValue()*100);
@@ -139,6 +140,18 @@ public class OrderService {
 		order.setStationId(s_id);
 		order.setStationName(stationName);
 		order.setSpeed(Double.valueOf(speed));
+		//[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}
+		if(status == 0){
+			order.setIpoMemo("申请中");
+		}else if(status == 1){
+			order.setIpoMemo("施工中");
+		}else if(status == 2){
+			order.setIpoMemo("并网发电申请中");
+		}else if(status == 4){
+			order.setIpoMemo("退款中");
+		}else if(status == 5){
+			order.setIpoMemo("退款成功");
+		}
 		
 		orderlist.add(order);
 		}

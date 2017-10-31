@@ -316,7 +316,9 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
 	  	}
-    	
+	  /*	User newuserVo = new User();
+	  	newuserVo.setId(2L);*/
+	  	
     	List<OrderVo> list = orderService.findByUserId(newuserVo);
     	
 		return ResultVOUtil.success(list);	
@@ -324,8 +326,9 @@ public class UserController {
     
     /** 修改移动端电站名*/
     @ResponseBody
-    @RequestMapping(value = "/updateUs")
+	@RequestMapping(value = "/updateUs")
     public Object updateStation(HttpSession httpSession,StationVo stationVo) {
+    
     	
     	logger.info("修改的id为 -- ---- --- --- --- "+stationVo.getId());
     	logger.info("修改的电站名为 -- ---- --- --- --- "+stationVo.getStationName());
