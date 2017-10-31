@@ -17,15 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yn.dao.PatchDataRecordMapper;
 import com.yn.model.Am1Phase;
 import com.yn.model.Am3Phase;
 import com.yn.model.AmPhaseRecord;
 import com.yn.model.Ammeter;
+import com.yn.model.PatchDataRecord;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmPhaseService;
 import com.yn.service.AmmeterRecordService;
 import com.yn.service.AmmeterService;
 import com.yn.service.StationService;
+import com.yn.utils.DateUtil;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -48,6 +51,9 @@ public class AmPhaseRecordJobController {
 	@Autowired
 	AmmeterRecordService ammeterRecordService;
 
+	@Autowired
+	PatchDataRecordMapper patchDataRecordMapper;
+	
 	/**
 	 * 模拟测试。两个数据源。
 	 * 
@@ -200,6 +206,7 @@ public class AmPhaseRecordJobController {
 		List<Am3Phase> am3Phases = null;
 		am1Phases = amPhaseService.findAllAm1PhaseByDate(selectDate);
 		am3Phases = amPhaseService.findAllAm3PhaseByDate(selectDate);
+		String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
 		if (am1Phases != null && am1Phases.size() > 0) {
 			jsonResult.put("am1Phases.size() ", am1Phases.size());
 			for (Am1Phase am1Phase : am1Phases) {
@@ -211,8 +218,6 @@ public class AmPhaseRecordJobController {
 				amPhaseRecordR.setdType(am1Phase.getdType());
 				amPhaseRecordR.setwAddr(am1Phase.getwAddr());
 				amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
-				// AmPhaseRecord findOne =
-				// amPhaseRecordService.findOne(amPhaseRecordR);
 				amPhaseRecordR.setDate(date);
 				AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 				if (findOne == null) {
@@ -221,13 +226,25 @@ public class AmPhaseRecordJobController {
 						BeanUtils.copyProperties(am1Phase, amPhaseRecord);
 						amPhaseRecord.setAmPhaseRecordId(
 								"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
-						if (!amPhaseRecord.getAmPhaseRecordId().contains("am1Phase170714")) {
-							amPhaseRecord.setDate(date);
-							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							System.out.println("AmPhaseRecordJobController--> am1Phase::"
-									+ amPhaseRecord.getAmPhaseRecordId() + "新增成功！-->"
-									+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+						Long checkMeterTime = am1Phase.getMeterTime();
+						// 判断数据是不是当天的。
+						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
+							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
+									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
+							PatchDataRecord patchDataRecord = new PatchDataRecord();
+							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
+							patchDataRecord.setDealt(0);
+							patchDataRecord.setCreateDtm(new Date());
+							// 存临时表。
+							patchDataRecordMapper.insert(patchDataRecord);
+							continue;
 						}
+						amPhaseRecord.setDealt(0);
+						amPhaseRecord.setDate(date);
+						amPhaseRecordService.saveByMapper(amPhaseRecord);
+						System.out.println("AmPhaseRecordJobController--> am1Phase::"
+								+ amPhaseRecord.getAmPhaseRecordId() + "新增成功！-->"
+								+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
@@ -255,16 +272,26 @@ public class AmPhaseRecordJobController {
 						BeanUtils.copyProperties(am3Phase, amPhaseRecord);
 						amPhaseRecord.setAmPhaseRecordId(
 								"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
-						// amPhaseRecordService.save(amPhaseRecord);//springdata
-						// jpa
-						// --> 执行返回select语句。保存不失败，但数据库没有数据。
-						if (!amPhaseRecord.getAmPhaseRecordId().contains("am3Phase170714")) {
-							amPhaseRecord.setDate(date);
-							amPhaseRecordService.saveByMapper(amPhaseRecord);
-							System.out.println("AmPhaseRecordJobController--> am3Phase::"
-									+ amPhaseRecord.getAmPhaseRecordId() + "新增成功！-->"
-									+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+						Long checkMeterTime = am3Phase.getMeterTime();
+						// 判断数据是不是当天的。
+						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
+							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
+									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
+							PatchDataRecord patchDataRecord = new PatchDataRecord();
+							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
+							patchDataRecord.setCreateDtm(new Date());
+							patchDataRecord.setDealt(0);
+							// 存临时表。
+							patchDataRecordMapper.insert(patchDataRecord);
+							//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
+							continue;
 						}
+						amPhaseRecord.setDate(date);
+						amPhaseRecord.setDealt(0);
+						amPhaseRecordService.saveByMapper(amPhaseRecord);
+						System.out.println("AmPhaseRecordJobController--> am3Phase::"
+								+ amPhaseRecord.getAmPhaseRecordId() + "新增成功！-->"
+								+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}

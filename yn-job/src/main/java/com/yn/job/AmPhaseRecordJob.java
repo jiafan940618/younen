@@ -78,16 +78,14 @@ public class AmPhaseRecordJob {
 		taskExecuteRecord.setJobName(this.getClass().getSimpleName());
 		taskExecuteRecordMapper.insert(taskExecuteRecord);
 		try {
-			List<Am1Phase> am1Phases = null;
-			//am1PhaseService.findAllAm1Phase();
-			List<Am3Phase> am3Phases = null;
-			//am1PhaseService.findAllAm3Phase();
-			am1Phases = am1PhaseService.findAllAm1PhaseByDate("20171004");
-			am3Phases = am1PhaseService.findAllAm3PhaseByDate("20171004");
+			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
+			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
+//			am1Phases = am1PhaseService.findAllAm1PhaseByDate("20171004");
+//			am3Phases = am1PhaseService.findAllAm3PhaseByDate("20171004");
 			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 			String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
-			date = "2017_10_04";
-			checkDate = "171004";
+//			date = "2017_10_04";
+//			checkDate = "171004";
 			if (am1Phases.size() > 0) {
 				for (Am1Phase am1Phase : am1Phases) {
 					AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -121,10 +119,10 @@ public class AmPhaseRecordJob {
 								continue;
 							}
 							amPhaseRecord.setDealt(0);
-//							amPhaseRecord.setDate(date);
-//							amPhaseRecordService.saveByMapper(amPhaseRecord);
-//							System.out.println("AmPhaseRecordJob--> am1Phase::" + amPhaseRecord.getAmPhaseRecordId()
-//									+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+							amPhaseRecord.setDate(date);
+							amPhaseRecordService.saveByMapper(amPhaseRecord);
+							System.out.println("AmPhaseRecordJob--> am1Phase::" + amPhaseRecord.getAmPhaseRecordId()
+									+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							taskExecuteRecord.setStatus(e.getMessage());
 							System.out.println(e.getMessage());
@@ -163,10 +161,11 @@ public class AmPhaseRecordJob {
 								//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
 								continue;
 							}
-//							amPhaseRecord.setDate(date);
-//							amPhaseRecordService.saveByMapper(amPhaseRecord);
-//							System.out.println("AmPhaseRecordJob--> am3Phase::" + amPhaseRecord.getAmPhaseRecordId()
-//									+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+							amPhaseRecord.setDate(date);
+							amPhaseRecord.setDealt(0);
+							amPhaseRecordService.saveByMapper(amPhaseRecord);
+							System.out.println("AmPhaseRecordJob--> am3Phase::" + amPhaseRecord.getAmPhaseRecordId()
+									+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 							taskExecuteRecord.setStatus(e.getMessage());
