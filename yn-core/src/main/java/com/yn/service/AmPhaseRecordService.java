@@ -69,8 +69,8 @@ public class AmPhaseRecordService {
 		return amPhaseRecordMapper.updateByPrimaryKey(record);
 	}
 
-	public AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId,String date) {
-		return amPhaseRecordMapper.selectByPrimaryKey(amPhaseRecordId,date);
+	public AmPhaseRecord selectByPrimaryKey(AmPhaseRecord record) {
+		return amPhaseRecordMapper.selectByPrimaryKey(record);
 	}
 
 	public void delete(Long id) {
@@ -116,12 +116,32 @@ public class AmPhaseRecordService {
 		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
 		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
 		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
-		criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		if(amPhaseRecord.getdAddr()!=null){
+			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		}
 		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 		example.setDate(date);
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
+	
+	public List<AmPhaseRecord> findAllByMapper2(AmPhaseRecord amPhaseRecord) throws ParseException {
+		AmPhaseRecordExample example = new AmPhaseRecordExample();
+		Criteria criteria = example.createCriteria();
+		// Dealt iAddr dType cAddr dAddr
+		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
+		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
+		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
+		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
+		if(amPhaseRecord.getdAddr()!=null){
+			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		}
+		String date = DateUtil.formatDate(DateUtil.formatString(amPhaseRecord.getDate(), "yyyy_MM_dd"),"yyyy_MM_dd");
+		example.setDate(date);
+		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
+		return byExample;
+	}
+
 
 	/**
 	 * 删除记录表某一天的数据，。

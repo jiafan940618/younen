@@ -27,9 +27,14 @@ import org.springframework.util.StringUtils;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataHourDao;
 import com.yn.dao.StationDao;
+import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.dao.mapper.ElecDataHourMapper;
 import com.yn.model.Ammeter;
+import com.yn.model.ElecDataDay;
+import com.yn.model.ElecDataDayExample;
 import com.yn.model.ElecDataHour;
+import com.yn.model.ElecDataHourExample;
+import com.yn.model.ElecDataHourExample.Criteria;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
@@ -46,6 +51,8 @@ public class ElecDataHourService {
 	AmmeterDao ammeterDao;
 	@Autowired
 	StationDao stationDao;
+	@Autowired
+	ElecDataDayMapper elecDataDayMapper;
 	/**
 
 	 * 
@@ -512,6 +519,19 @@ public class ElecDataHourService {
 	public List<ElecDataHour> findByMapper(ElecDataHour elecDataHour) {
 		List<ElecDataHour> list = elecDataHourMapper.selectByQuery(elecDataHour);
 		return list;
+	}
+
+
+	public List<ElecDataHour> selectByExample(ElecDataHour elecDataHour){
+		ElecDataHourExample example = new ElecDataHourExample();
+		Criteria criteria = example.createCriteria();
+		if(elecDataHour.getRecordTime()!=null){
+			criteria.andRecordTimeEqualTo(elecDataHour.getRecordTime());
+		}
+		if(elecDataHour.getAmmeterCode()!=null){
+			criteria.andAmmeterCodeEqualTo(elecDataHour.getAmmeterCode().toString());
+		}
+		return elecDataHourMapper.selectByExample(example);
 	}
 
 }

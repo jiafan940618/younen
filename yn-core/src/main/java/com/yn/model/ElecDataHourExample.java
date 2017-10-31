@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.yn.model.ElecDataMonthExample.Criteria;
+
 public class ElecDataHourExample {
     protected String orderByClause;
 
@@ -1095,6 +1097,10 @@ public class ElecDataHourExample {
             addCriterion("w_addr not between", value1, value2, "wAddr");
             return (Criteria) this;
         }
+        public Criteria andAmmeterCodeEqualTo(String value) {
+            addCriterion("ammeter_code =", value, "ammeterCode");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -1102,7 +1108,13 @@ public class ElecDataHourExample {
         protected Criteria() {
             super();
         }
+
+//		public Criteria andAmmeterCodeEqualTo(String string) {
+//			addCriterion("ammeter_code not =", string, "ammeterCode");
+//            return (Criteria) this;
+//		}
     }
+    
 
     public static class Criterion {
         private String condition;

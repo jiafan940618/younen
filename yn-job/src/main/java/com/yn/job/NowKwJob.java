@@ -18,7 +18,7 @@ import com.yn.service.StationService;
 /**
  * 更新电站的实时功率
  */
-@Component
+//@Component
 public class NowKwJob {
 	@Autowired
 	AmmeterService ammeterService;

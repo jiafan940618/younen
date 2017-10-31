@@ -126,44 +126,46 @@ public class OrderController {
 			order.setStatus(1);
 		}
 		Integer buildStepB = order.getBuildStepB();
-		//修改施工状态。
-		if(buildStepB==0){
-			//初始化操作
-			orderService.updateConstructionStatus(order, null,null);
-		}else{
-			ResVo rv = new ResVo();
-			if(buildStepB==1){
-				rv.setTarget("materialapproac");
-				rv.setTitle("材料进场");
-			}else if(buildStepB==2){
-				rv.setTarget("foundationbuilding");
-				rv.setTitle("基础建筑");
-			}else if(buildStepB==3){
-				rv.setTarget("supportinstallation");
-				rv.setTitle("支架安装");
-			}else if(buildStepB==4){
-				rv.setTarget("photovoltaicpanelinstallation");
-				rv.setTitle("光伏板安装");
-			}else if(buildStepB==5){
-				rv.setTarget("dcconnection");
-				rv.setTitle("直流接线");
-			}else if(buildStepB==6){
-				rv.setTarget("electricboxinverter");
-				rv.setTitle("电箱逆变器");
-			}else if(buildStepB==7){
-				rv.setTarget("busboxinstallation");
-				rv.setTitle("汇流箱安装");
-			}else if(buildStepB==8){
-				rv.setTarget("acline");
-				rv.setTitle("交流辅线");
-			}else if(buildStepB==8){
-				rv.setTarget("lightningprotectiongroundingtest");
-				rv.setTitle("防雷接地测试");
-			}else if(buildStepB==10){
-				rv.setTarget("gridconnectedacceptance");
-				rv.setTitle("材料并网验收场");
+		if(order.getStatus()==1){
+			//修改施工状态。
+			if(buildStepB==0){
+				//初始化操作
+				orderService.updateConstructionStatus(order, null,null);
+			}else{
+				ResVo rv = new ResVo();
+				if(buildStepB==1){
+					rv.setTarget("materialapproac");
+					rv.setTitle("材料进场");
+				}else if(buildStepB==2){
+					rv.setTarget("foundationbuilding");
+					rv.setTitle("基础建筑");
+				}else if(buildStepB==3){
+					rv.setTarget("supportinstallation");
+					rv.setTitle("支架安装");
+				}else if(buildStepB==4){
+					rv.setTarget("photovoltaicpanelinstallation");
+					rv.setTitle("光伏板安装");
+				}else if(buildStepB==5){
+					rv.setTarget("dcconnection");
+					rv.setTitle("直流接线");
+				}else if(buildStepB==6){
+					rv.setTarget("electricboxinverter");
+					rv.setTitle("电箱逆变器");
+				}else if(buildStepB==7){
+					rv.setTarget("busboxinstallation");
+					rv.setTitle("汇流箱安装");
+				}else if(buildStepB==8){
+					rv.setTarget("acline");
+					rv.setTitle("交流辅线");
+				}else if(buildStepB==8){
+					rv.setTarget("lightningprotectiongroundingtest");
+					rv.setTitle("防雷接地测试");
+				}else if(buildStepB==10){
+					rv.setTarget("gridconnectedacceptance");
+					rv.setTitle("材料并网验收场");
+				}
+				orderService.updateConstructionStatus(order, buildStepB, rv);
 			}
-			orderService.updateConstructionStatus(order, buildStepB, rv);
 		}
 		Integer gridConnectedStepA = order.getGridConnectedStepA();
 		//并网申请中
@@ -173,10 +175,14 @@ public class OrderController {
 		//并网发电。
 		if (gridConnectedStepA == 2) {
 			order.setStatus(3);
+			/** 添加电站 */
+			stationService.insertStation(order);
+			//绑定电表
 		}
 		orderService.save(order);
 		return ResultVOUtil.success(order);
 	}
+
 
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST })

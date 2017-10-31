@@ -24,7 +24,7 @@ public interface AmPhaseRecordMapper {
 
 	    List<AmPhaseRecord> selectByExample(AmPhaseRecordExample example);
 
-	    AmPhaseRecord selectByPrimaryKey(String amPhaseRecordId,String date);
+	    AmPhaseRecord selectByPrimaryKey(AmPhaseRecord amPhaseRecord);
 
 	    int updateByExampleSelective(@Param("record") AmPhaseRecord record, @Param("example") AmPhaseRecordExample example);
 

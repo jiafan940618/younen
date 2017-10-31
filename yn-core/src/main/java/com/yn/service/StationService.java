@@ -387,26 +387,34 @@ public class StationService {
     }
     
     
-    public void insertStation(Order order){
-    	/** 生成电站码*/
-     String stradNo =  format.format(System.currentTimeMillis())+ df1.format(rd.nextInt(9999));
-     
-     Station station = new Station();
-     station.setStationCode(stradNo);
-     station.setAddressText(order.getAddressText());
-     station.setStationName(order.getServerName());
-     station.setCapacity(order.getCapacity());
-     station.setOrderId(order.getId());
-     station.setLinkMan(order.getLinkMan());
-     station.setLinkPhone(order.getLinkPhone());
-     station.setUserId(order.getUserId());
-      /** 默认为居民*/
-     station.setType(0);
-     station.setServerId(order.getServerId());
-     station.setStatus(0);
-     
-     save(station);
-    }
+    public void insertStation(Order order) {
+		/** 生成电站码*/
+		String stradNo = format.format(System.currentTimeMillis()) + df1.format(rd.nextInt(9999));
+
+		Station station = new Station();
+		station.setStationCode(stradNo);
+		station.setAddressText(order.getAddressText());
+		station.setStationName(order.getServerName());
+		station.setCapacity(order.getCapacity());
+		station.setOrderId(order.getId());
+		station.setLinkMan(order.getLinkMan());
+		station.setLinkPhone(order.getLinkPhone());
+		station.setUserId(order.getUserId());
+		station.setType(order.getType());
+		station.setServerId(order.getServerId());
+		station.setStatus(0);//默认未绑定。
+		Ammeter ammeter = new Ammeter();
+		ammeter.setcAddr(station.getDevConfCode());
+		if (ammeter != null) {
+			Ammeter findOne = ammeterService.findOne(ammeter);
+			if(findOne.getStatus()==0){
+				station.setStatus(1);
+			}else if(findOne.getStatus()==1){
+				station.setStatus(2);
+			}
+		}
+		save(station);
+	}
     
     /**
      * 用户的所有电站信息

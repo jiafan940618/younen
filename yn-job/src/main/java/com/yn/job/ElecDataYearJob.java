@@ -24,7 +24,7 @@ import com.yn.service.ElecDataYearService;
     * @date 2017年10月24日
     *
  */
-@Component
+// @Component
 public class ElecDataYearJob {
 
 	@Autowired
@@ -45,18 +45,14 @@ public class ElecDataYearJob {
 	 */
 	@Scheduled(cron = "0 0 0 1 * ? ")
 	private void job() {
-		importData();
-	}
-
-	public void importData() {
 		String recordTime = new SimpleDateFormat("yyyy").format(new Date());
-		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(-1,-1,-1);
+		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(-1, -1, -1);
 		for (ElecDataHour elecDataHour : data) {
-			String ammeterCode = elecDataHour.getAmmeterCode()==null?"":elecDataHour.getAmmeterCode();
+			String ammeterCode = elecDataHour.getAmmeterCode() == null ? "" : elecDataHour.getAmmeterCode();
 			ElecDataYear elecDataYear = new ElecDataYear();
 			elecDataYear.setRecordTime(recordTime);
 			elecDataYear.setAmmeterCode(ammeterCode);
-			elecDataYear.setdAddr(elecDataHour.getdAddr()==null?0:elecDataHour.getdAddr().intValue());
+			elecDataYear.setdAddr(elecDataHour.getdAddr() == null ? 0 : elecDataHour.getdAddr().intValue());
 			List<ElecDataYear> condition = elecDataYearService.findByCondition(elecDataYear);
 			Double totalKw = 0d;
 			Double totalKwh = 0d;
@@ -71,7 +67,7 @@ public class ElecDataYearJob {
 					}
 					totalKw += elecDataHour.getKw().doubleValue() + elecDataYear2.getKw().doubleValue();
 					totalKwh += elecDataHour.getKwh().doubleValue() + elecDataYear2.getKwh().doubleValue();
-				
+
 				}
 				elecDataYear.setKw(BigDecimal.valueOf(totalKw));
 				elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
@@ -105,4 +101,5 @@ public class ElecDataYearJob {
 			}
 		}
 	}
+
 }

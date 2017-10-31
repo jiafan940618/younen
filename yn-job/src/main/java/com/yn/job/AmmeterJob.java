@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
@@ -35,7 +33,7 @@ import com.yn.utils.DateUtil;
 /**
  * 修改电表/电站信息 保存电表工作状态记录
  */
-@Component
+//@Component
 public class AmmeterJob {
 	@Autowired
 	AmmeterService ammeterService;
@@ -63,9 +61,10 @@ public class AmmeterJob {
 	ElecDataDayService elecDataDayService;
 	@Autowired
 	AmmeterMapper ammeterMapper;
+	
+	
 
 	@Scheduled(fixedDelay = 10 * 1000)
-	@Transactional
 	private void job() {
 		try {
 			System.out.println("AmmeterJob-->job::run");
@@ -81,8 +80,8 @@ public class AmmeterJob {
 				List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
-					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr.getAmPhaseRecordId(),
-							date);
+					apr.setDate(date);
+					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr);
 					apr.setDate(date);
 					if (amPhaseRecord == null) {
 						amPhaseRecordService.saveByMapper(apr);
@@ -113,6 +112,7 @@ public class AmmeterJob {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
