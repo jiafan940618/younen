@@ -219,7 +219,7 @@ public class SignController {
 			                		billorderService.save(billOrder);
 				                	transactionRecordService.InsertBillAll(billOrder);
 			                		
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(resultMap.get("status").equals("3")){
 			                	
 				                	
@@ -227,31 +227,31 @@ public class SignController {
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
 			                		transactionRecordService.InsertBillAll(billOrder);
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(resultMap.get("status").equals("4")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
 			                		transactionRecordService.InsertBillAll(billOrder);
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(resultMap.get("status").equals("5")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
 			                		transactionRecordService.InsertBillAll(billOrder);
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(resultMap.get("status").equals("6")){
 			                		BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 			                		billOrder.setRemark(errorCode+":"+failureDetails);
 			                		billorderService.save(billOrder);
 			                		transactionRecordService.InsertBillAll(billOrder);
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                }else{
 			                	BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);
 		                		billOrder.setRemark(errorCode+":"+failureDetails);
 		                		billorderService.save(billOrder);
 		                		transactionRecordService.InsertBillAll(billOrder);
-			                		return ResultVOUtil.error(777, "抱歉,支付失败，详情请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}
 		               }else{
 		            	   BillOrder billOrder =  billorderService.findByTradeNoandstatus(orderNo);

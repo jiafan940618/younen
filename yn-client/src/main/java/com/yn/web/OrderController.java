@@ -553,7 +553,7 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-			stationService.insertStation(neworder);
+		//	stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
@@ -646,7 +646,7 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-			stationService.insertStation(neworder);
+			//stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);

@@ -210,7 +210,7 @@ public class RechargeController {
 			                		
 			                		transactionRecordService.InsertBillAll(recharge);
 			                		
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(status.equals("3")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
@@ -218,35 +218,35 @@ public class RechargeController {
 			                		
 			                		transactionRecordService.InsertBillAll(recharge);
 			                		
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(status.equals("4")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
 			                		transactionRecordService.InsertBillAll(recharge);
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(status.equals("5")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
 			                		transactionRecordService.InsertBillAll(recharge);
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}else if(status.equals("6")){
 			                		Recharge recharge =rechargeService.findByRecode(orderNo);
 			                		recharge.setRemark(errorCode+":"+failureDetails);
 			                		rechargeService.save(recharge);
 			                		
 			                		transactionRecordService.InsertBillAll(recharge);
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                }else{
 			                	Recharge recharge =rechargeService.findByRecode(orderNo);
 		                		recharge.setRemark(errorCode+":"+failureDetails);
 		                		rechargeService.save(recharge);
 		                		transactionRecordService.InsertBillAll(recharge);
 		                		
-			                		return ResultVOUtil.error(777, "抱歉,充值失败,详请咨询客服!");
+			                		return ResultVOUtil.error(777,"抱歉,充值失败,详请咨询客服!错误提示:"+errorCode);
 			                	}
 		               }else{
 		            	   Recharge recharge =rechargeService.findByRecode(orderNo);
