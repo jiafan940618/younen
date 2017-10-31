@@ -178,7 +178,7 @@ public class PatchDataRecordJob {
 			doUpdateMonthYear();
 			LOGGER.info("整理完成。");
 			LOGGER.info("清空临时表中的数据。");
-			// patchDataRecordMapper.truncateTable();
+			patchDataRecordMapper.truncateTable();
 		}
 	}
 
