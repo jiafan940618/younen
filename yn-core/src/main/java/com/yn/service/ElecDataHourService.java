@@ -562,7 +562,7 @@ public class ElecDataHourService {
 
 			map.put("time", dFormat.format(ElecDataHour.getCreateDtm()));
 			map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKwh()));
-
+			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
 			list.add(map);
 		}
 
@@ -571,8 +571,10 @@ public class ElecDataHourService {
 		if (type == 1) {
 			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
 			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
+			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
 		}
 		maps.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh));
+		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(ElecDataHourList.get(ElecDataHourList.size()-1).getKw()));
 
 		maps.put("list", list);
 

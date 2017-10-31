@@ -369,9 +369,9 @@ public class OrderController {
 	/** 订单详情状态 */
 	@ResponseBody
 	@RequestMapping(value = "/ingorder")
-	public Object LookOrder1(HttpSession session) {
+	public Object LookOrder1(HttpSession session, @RequestParam("orderId") Long OrderId) {
 
-		Object object = ordService.getInformOrder(573l);
+		Object object = ordService.getInformOrder(OrderId);
 
 		NewPlanVo newPlanVo = ordService.getVoNewPlan(object);
 

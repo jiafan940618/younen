@@ -152,11 +152,16 @@ public class ElecDataHourController {
 	 */
 	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId,
-			@RequestParam(value = "type", required = true) Integer type) {
-		List<Map<String, Object>> list = new ArrayList<>();
-		list = elecDataHourService.oneHourKwh(stationId, type);
-		return ResultVOUtil.success(list);
+	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
+			) {
+		List<Map<String, Object>> workList = new ArrayList<>();
+		workList = elecDataHourService.oneHourKwh(stationId, 1);
+		List<Map<String, Object>> userList = new ArrayList<>();
+		userList = elecDataHourService.oneHourKwh(stationId, 2);
+		Map<String, Object> map=new HashMap<>();
+		map.put("workList", workList);
+		map.put("userList", userList);
+		return ResultVOUtil.success(map);
 	}
 
 	/**
