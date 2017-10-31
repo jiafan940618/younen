@@ -125,7 +125,7 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 	if(user == null){
 		return  ResultVOUtil.error(777, "抱歉，你没有登录!");
 	}
-	
+
 	DecimalFormat df = new DecimalFormat("0.00");
 	
 	Map<String, String> newmap = systemConfigService.getlist();
@@ -157,11 +157,11 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 		Map<String, Object> map3 = new HashMap<>();
 		Map<String, Object> map4 = new HashMap<>();
 		if(tsy != null){
-			map2.put("co2", df.format(Double.valueOf(tsy.getKwh()) * CO2_prm));
+			map2.put("co2", Double.valueOf(df.format(tsy.getKwh() * CO2_prm)));
 			map2.put("createDtm", timeStr);
-			map3.put("treeNum", df.format(Double.valueOf(tsy.getKwh()) * plant_trees_prm));
+			map3.put("treeNum", Double.valueOf(df.format(tsy.getKwh() * plant_trees_prm)));
 			map3.put("createDtm", timeStr);
-			map4.put("SONum", df.format(Double.valueOf(tsy.getKwh()) * SO_prm));
+			map4.put("SONum", Double.valueOf(df.format(tsy.getKwh() * SO_prm)));
 			map4.put("createDtm", timeStr);
 			
 			rl.add(map2);
@@ -189,8 +189,8 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 	rm.put("treeData", rl2);
 	rm.put("SOData", rl3);	
 	
-	rm.put("CO2_prm", kwh * CO2_prm);
-	rm.put("plant_trees_prm", kwh * plant_trees_prm);
+	rm.put("CO2_prm",Double.valueOf(df.format(kwh * CO2_prm)));
+	rm.put("plant_trees_prm", Double.valueOf(df.format(kwh * plant_trees_prm)));
 
 	return ResultVOUtil.success(rm);	
 	}

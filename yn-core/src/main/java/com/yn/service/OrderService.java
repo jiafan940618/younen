@@ -106,25 +106,39 @@ public class OrderService {
     
      public List<OrderVo> findByUserId(User user){
 		
+    	 Order neworder = new Order();
+    	 
 		List<OrderVo> orderlist = new LinkedList<OrderVo>();
 		
 		List<Object> list = orderDao.findsome(user.getId());
 		
 		for (Object object : list) {
 			Object[] obj = (Object[]) object;
-		Integer id = (Integer) obj[0];	
+		Integer t_id = (Integer) obj[0];	
 		BigDecimal capacity = (BigDecimal) obj[1];		
 		String serverName = (String) obj[2];
 		String orderCode = (String) obj[3];
 		Integer gridConnectedStepa = (Integer) obj[4];
 		
+		Integer s_id = (Integer) obj[5];	
+		String stationName = (String) obj[6];
+		
+		BigDecimal totalPrice = (BigDecimal) obj[7];		
+		BigDecimal hadPayPrice = (BigDecimal) obj[8];	
+		
+		DecimalFormat df = new DecimalFormat("#0.00");
+		String speed =	df.format(hadPayPrice.doubleValue()/totalPrice.doubleValue()*100);
+
 		OrderVo order = new OrderVo();
-		order.setId(Long.valueOf(id));
+		order.setId(Long.valueOf(t_id));
 		order.setCapacity(capacity.doubleValue());
 		order.setServerName(serverName);
 		order.setOrderCode(orderCode);
 		order.setGridConnectedStepA(gridConnectedStepa);
 		order.setUserName(user.getUserName());
+		order.setStationId(s_id);
+		order.setStationName(stationName);
+		order.setSpeed(Double.valueOf(speed));
 		
 		orderlist.add(order);
 		}

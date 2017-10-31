@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
+import com.yn.model.Order;
 import com.yn.model.Page;
 import com.yn.model.Recharge;
 import com.yn.model.Server;
@@ -21,6 +23,7 @@ import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.User;
 import com.yn.model.Wallet;
+import com.yn.service.ApolegamyOrderService;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
 import com.yn.service.BillWithdrawalsService;
@@ -61,7 +64,8 @@ public class TestController {
 	BankCardService bankCardService;
 	@Autowired
 	StationService  stationService;
-	
+	@Autowired
+	ApolegamyOrderService APOservice;
 	@Autowired
 	OrderService orderService;
 	@Autowired
@@ -86,8 +90,16 @@ public class TestController {
 	       @ResponseBody
 	       @RequestMapping("/test")  
 	       public Object helloJsp001(RechargeVo rechargeVo){
-	    	
-	    	
+	    	   
+	    	   Order neworder = new Order();
+	    	   neworder.setId(574L);
+	    	   neworder.setYnApolegamyPrice(5.00);
+	    	   
+	    	   List<Long> list = new LinkedList<Long>();
+	    	   list.add(0L);
+	    	   
+	    	   APOservice.getapole(neworder, list);
+	    	   
 	    	   
 	              return ResultVOUtil.success(null);  
 	       } 

@@ -52,12 +52,27 @@ public class OrderVo extends QueryVo{
 	private Integer waPeriod ;
 	private String userName ;
 	
+	private String stationName;
+	
+	private Integer stationId;
 	
 	private Set<ApolegamyOrderVo> apolegamyOrder;
 	private OrderPlanVo orderPlan;
 	
 	
 	
+	public String getStationName() {
+		return stationName;
+	}
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
+	}
+	public Integer getStationId() {
+		return stationId;
+	}
+	public void setStationId(Integer stationId) {
+		this.stationId = stationId;
+	}
 	public String getUserName() {
 		return userName;
 	}

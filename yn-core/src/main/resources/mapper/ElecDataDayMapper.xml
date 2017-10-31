@@ -394,7 +394,7 @@
  			RIGHT JOIN station s ON s.station_code = a.station_code
  			INNER JOIN user u ON u.id = s.user_id
 			 AND s.user_id = #{userId}
-			AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%') AND T1.TYPE=1
+			AND t1.create_dtm LIKE CONCAT('%',#{createDtm},'%') AND t1.type=1
 		    GROUP BY DATE_FORMAT(t1.create_dtm,'%Y-%m')
 
 		</select> 

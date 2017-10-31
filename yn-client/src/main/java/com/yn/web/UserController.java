@@ -321,6 +321,22 @@ public class UserController {
     	
 		return ResultVOUtil.success(list);	
     }
+    
+    /** 修改移动端电站名*/
+    @ResponseBody
+    @RequestMapping(value = "/updateUs")
+    public Object updateStation(HttpSession httpSession,StationVo stationVo) {
+    	
+    	logger.info("修改的id为 -- ---- --- --- --- "+stationVo.getId());
+    	logger.info("修改的电站名为 -- ---- --- --- --- "+stationVo.getStationName());
+
+    	Station station = new Station();
+        BeanCopy.copyProperties(stationVo, station);
+         
+        stationService.save(station);
+
+		return ResultVOUtil.success(null);
+    }
    
    
   @ResponseBody
