@@ -23,7 +23,7 @@ import com.yn.service.ElecDataMonthService;
     * @date 2017年10月24日
     *
  */
-@Component
+//@Component
 public class ElecDataMonthJob {
 
 	@Autowired
@@ -52,9 +52,9 @@ public class ElecDataMonthJob {
 			elecDataMonth.setRecordTime(recordTime);
 			elecDataMonth.setAmmeterCode(ammeterCode);
 			elecDataMonth.setdAddr(elecDataHour.getdAddr()==null?0:elecDataHour.getdAddr().intValue());
-			List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
 			Double totalKw = 0d;
 			Double totalKwh = 0d;
+			List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
 			if (condition.size() > 0) {
 				for (ElecDataMonth elecDataMonth2 : condition) {
 					Integer dAddr = elecDataMonth2.getdAddr();
@@ -85,6 +85,7 @@ public class ElecDataMonthJob {
 				edm.setdAddr(elecDataHour.getdAddr().intValue());
 				edm.setDevConfCode(elecDataHour.getDevConfCode());
 				edm.setdType(elecDataHour.getdType());
+				edm.setwAddr(elecDataHour.getwAddr());
 				if (subSequence.equals("1")) {
 					edm.setType(1);// 用电
 				} else if (subSequence.equals("2")) {

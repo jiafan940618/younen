@@ -93,7 +93,8 @@ public class AmmeterJobController {
 				for (AmPhaseRecord apr : amPhaseRecords) {
 					apr.setDealt(1); // 已经处理
 					// amPhaseRecordDao.save(apr);
-					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr.getAmPhaseRecordId(),date);
+					apr.setDate(date);
+					AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr);
 					if (amPhaseRecord == null) {
 						apr.setDate(date);
 						amPhaseRecordService.saveByMapper(apr);

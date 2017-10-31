@@ -69,6 +69,7 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	@Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.orderId = :orderId and s.del=0")
 	Station FindByStationCode(@Param("orderId") Long orderId);
 
+
 	/**
 	 * 按时间查询装机并网总量
 	 */

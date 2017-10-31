@@ -11,11 +11,6 @@
 		<result column="city_id" property="cityId" jdbcType="INTEGER" />
 		<result column="city_text" property="cityText" jdbcType="VARCHAR" />
 		<result column="dev_conf_code" property="devConfCode" jdbcType="VARCHAR" />
-		<result column="electricity_generation_tol" property="electricityGenerationTol"
-			jdbcType="DECIMAL" />
-		<result column="electricity_use_tol" property="electricityUseTol"
-			jdbcType="DECIMAL" />
-		<result column="now_kw" property="nowKw" jdbcType="DECIMAL" />
 		<result column="order_id" property="orderId" jdbcType="INTEGER" />
 		<result column="province_id" property="provinceId" jdbcType="INTEGER" />
 		<result column="province_text" property="provinceText"
@@ -25,8 +20,6 @@
 		<result column="station_name" property="stationName" jdbcType="VARCHAR" />
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="user_id" property="userId" jdbcType="INTEGER" />
-		<result column="work_dtm" property="workDtm" jdbcType="TIMESTAMP" />
-		<result column="work_tota_tm" property="workTotaTm" jdbcType="INTEGER" />
 		<result column="passage_model" property="passageModel"
 			jdbcType="INTEGER" />
 		<result column="link_man" property="linkMan" jdbcType="VARCHAR" />
@@ -35,19 +28,15 @@
 		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, create_dtm, del, del_dtm, address_text, capacity, city_id, city_text,
+		id, create_dtm, del, del_dtm, address_text, capacity,
+		city_id, city_text,
 		dev_conf_code,
-		electricity_generation_tol, electricity_use_tol, now_kw, order_id, province_id, province_text,
-		server_id, station_code, station_name, status, user_id, work_dtm,
-		work_tota_tm, passage_model,
+		order_id, province_id, province_text,
+		server_id, station_code, station_name,
+		status,
+		user_id, passage_model,
 		link_man, link_phone, type, update_dtm
 	</sql>
-	
-	<select id="FindById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-	  select station_code from station
-		where id = #{id}
-	</select>
-	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select
@@ -56,34 +45,41 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from station
+		delete from
+		station
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.Station">
-		insert into station (id, create_dtm, del,
+		insert into station (id,
+		create_dtm, del,
 		del_dtm, address_text, capacity,
-		city_id, city_text, dev_conf_code,
-		electricity_generation_tol, electricity_use_tol,
-		now_kw, order_id, province_id,
-		province_text, server_id, station_code,
-		station_name, status, user_id,
-		work_dtm, work_tota_tm, passage_model,
-		link_man, link_phone, type,
+		city_id, city_text,
+		dev_conf_code,
+		order_id, province_id, province_text,
+		server_id,
+		station_code, station_name,
+		status, user_id, passage_model,
+		link_man,
+		link_phone, type,
 		update_dtm)
-		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
+		values (#{id,jdbcType=INTEGER},
+		#{createDtm,jdbcType=TIMESTAMP},
 		#{del,jdbcType=INTEGER},
-		#{delDtm,jdbcType=TIMESTAMP}, #{addressText,jdbcType=VARCHAR}, #{capacity,jdbcType=DECIMAL},
-		#{cityId,jdbcType=INTEGER}, #{cityText,jdbcType=VARCHAR},
+		#{delDtm,jdbcType=TIMESTAMP}, #{addressText,jdbcType=VARCHAR},
+		#{capacity,jdbcType=DECIMAL},
+		#{cityId,jdbcType=INTEGER},
+		#{cityText,jdbcType=VARCHAR},
 		#{devConfCode,jdbcType=VARCHAR},
-		#{electricityGenerationTol,jdbcType=DECIMAL},
-		#{electricityUseTol,jdbcType=DECIMAL},
-		#{nowKw,jdbcType=DECIMAL}, #{orderId,jdbcType=INTEGER}, #{provinceId,jdbcType=INTEGER},
-		#{provinceText,jdbcType=VARCHAR}, #{serverId,jdbcType=INTEGER},
+		#{orderId,jdbcType=INTEGER}, #{provinceId,jdbcType=INTEGER},
+		#{provinceText,jdbcType=VARCHAR},
+		#{serverId,jdbcType=INTEGER},
 		#{stationCode,jdbcType=VARCHAR},
-		#{stationName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
-		#{workDtm,jdbcType=TIMESTAMP}, #{workTotaTm,jdbcType=INTEGER},
+		#{stationName,jdbcType=VARCHAR},
+		#{status,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
 		#{passageModel,jdbcType=INTEGER},
-		#{linkMan,jdbcType=VARCHAR}, #{linkPhone,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+		#{linkMan,jdbcType=VARCHAR},
+		#{linkPhone,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER},
 		#{updateDtm,jdbcType=TIMESTAMP})
 	</insert>
 	<insert id="insertSelective" parameterType="com.yn.model.Station">
@@ -116,15 +112,6 @@
 			<if test="devConfCode != null">
 				dev_conf_code,
 			</if>
-			<if test="electricityGenerationTol != null">
-				electricity_generation_tol,
-			</if>
-			<if test="electricityUseTol != null">
-				electricity_use_tol,
-			</if>
-			<if test="nowKw != null">
-				now_kw,
-			</if>
 			<if test="orderId != null">
 				order_id,
 			</if>
@@ -148,12 +135,6 @@
 			</if>
 			<if test="userId != null">
 				user_id,
-			</if>
-			<if test="workDtm != null">
-				work_dtm,
-			</if>
-			<if test="workTotaTm != null">
-				work_tota_tm,
 			</if>
 			<if test="passageModel != null">
 				passage_model,
@@ -199,15 +180,6 @@
 			<if test="devConfCode != null">
 				#{devConfCode,jdbcType=VARCHAR},
 			</if>
-			<if test="electricityGenerationTol != null">
-				#{electricityGenerationTol,jdbcType=DECIMAL},
-			</if>
-			<if test="electricityUseTol != null">
-				#{electricityUseTol,jdbcType=DECIMAL},
-			</if>
-			<if test="nowKw != null">
-				#{nowKw,jdbcType=DECIMAL},
-			</if>
 			<if test="orderId != null">
 				#{orderId,jdbcType=INTEGER},
 			</if>
@@ -231,12 +203,6 @@
 			</if>
 			<if test="userId != null">
 				#{userId,jdbcType=INTEGER},
-			</if>
-			<if test="workDtm != null">
-				#{workDtm,jdbcType=TIMESTAMP},
-			</if>
-			<if test="workTotaTm != null">
-				#{workTotaTm,jdbcType=INTEGER},
 			</if>
 			<if test="passageModel != null">
 				#{passageModel,jdbcType=INTEGER},
@@ -282,16 +248,6 @@
 			<if test="devConfCode != null">
 				dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
 			</if>
-			<if test="electricityGenerationTol != null">
-				electricity_generation_tol =
-				#{electricityGenerationTol,jdbcType=DECIMAL},
-			</if>
-			<if test="electricityUseTol != null">
-				electricity_use_tol = #{electricityUseTol,jdbcType=DECIMAL},
-			</if>
-			<if test="nowKw != null">
-				now_kw = #{nowKw,jdbcType=DECIMAL},
-			</if>
 			<if test="orderId != null">
 				order_id = #{orderId,jdbcType=INTEGER},
 			</if>
@@ -316,12 +272,6 @@
 			<if test="userId != null">
 				user_id = #{userId,jdbcType=INTEGER},
 			</if>
-			<if test="workDtm != null">
-				work_dtm = #{workDtm,jdbcType=TIMESTAMP},
-			</if>
-			<if test="workTotaTm != null">
-				work_tota_tm = #{workTotaTm,jdbcType=INTEGER},
-			</if>
 			<if test="passageModel != null">
 				passage_model = #{passageModel,jdbcType=INTEGER},
 			</if>
@@ -339,35 +289,44 @@
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
-	</update>
+	</update>  
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.Station">
 		update station
-		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
-		del = #{del,jdbcType=INTEGER},
+		set
+		create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+		del =
+		#{del,jdbcType=INTEGER},
 		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
 		address_text = #{addressText,jdbcType=VARCHAR},
-		capacity = #{capacity,jdbcType=DECIMAL},
+		capacity =
+		#{capacity,jdbcType=DECIMAL},
 		city_id = #{cityId,jdbcType=INTEGER},
 		city_text = #{cityText,jdbcType=VARCHAR},
-		dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
-		electricity_generation_tol = #{electricityGenerationTol,jdbcType=DECIMAL},
-		electricity_use_tol = #{electricityUseTol,jdbcType=DECIMAL},
-		now_kw = #{nowKw,jdbcType=DECIMAL},
-		order_id = #{orderId,jdbcType=INTEGER},
-		province_id = #{provinceId,jdbcType=INTEGER},
-		province_text = #{provinceText,jdbcType=VARCHAR},
-		server_id = #{serverId,jdbcType=INTEGER},
-		station_code = #{stationCode,jdbcType=VARCHAR},
-		station_name = #{stationName,jdbcType=VARCHAR},
+		dev_conf_code =
+		#{devConfCode,jdbcType=VARCHAR},
+		order_id =
+		#{orderId,jdbcType=INTEGER},
+		province_id =
+		#{provinceId,jdbcType=INTEGER},
+		province_text =
+		#{provinceText,jdbcType=VARCHAR},
+		server_id =
+		#{serverId,jdbcType=INTEGER},
+		station_code =
+		#{stationCode,jdbcType=VARCHAR},
+		station_name =
+		#{stationName,jdbcType=VARCHAR},
 		status = #{status,jdbcType=INTEGER},
 		user_id = #{userId,jdbcType=INTEGER},
-		work_dtm = #{workDtm,jdbcType=TIMESTAMP},
-		work_tota_tm = #{workTotaTm,jdbcType=INTEGER},
-		passage_model = #{passageModel,jdbcType=INTEGER},
-		link_man = #{linkMan,jdbcType=VARCHAR},
-		link_phone = #{linkPhone,jdbcType=VARCHAR},
+		passage_model =
+		#{passageModel,jdbcType=INTEGER},
+		link_man =
+		#{linkMan,jdbcType=VARCHAR},
+		link_phone =
+		#{linkPhone,jdbcType=VARCHAR},
 		type = #{type,jdbcType=INTEGER},
 		update_dtm = #{updateDtm,jdbcType=TIMESTAMP}
-		where id = #{id,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
 	</update>
 </mapper>

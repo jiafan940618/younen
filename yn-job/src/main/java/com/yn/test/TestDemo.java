@@ -9,6 +9,7 @@ import java.util.Date;
 import com.yn.job.RollBack4Exception;
 import com.yn.utils.DateUtil;
 
+
 public class TestDemo {
 	static {
 
@@ -21,6 +22,15 @@ public class TestDemo {
 	}
 
 	public static void main(String[] as) throws ParseException {
+		
+		System.out.println( new SimpleDateFormat("yyyy_MM_dd")
+						.format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
+		
+		//System.out.println( DateUtil.formatDate(DateUtil.formatString("171025235900", "yyMMddHHssmm"), "yyyy_MM_dd"));
+		System.out.println(new SimpleDateFormat("yyyy_MM_dd").format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
+		
+		
+		
 		
 		int inMonth = DateUtil.countDaysInMonth(8);
 		System.out.println(inMonth);

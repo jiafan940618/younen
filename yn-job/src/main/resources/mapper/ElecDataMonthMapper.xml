@@ -1,353 +1,369 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.yn.dao.mapper.ElecDataMonthMapper" >
-  <resultMap id="BaseResultMap" type="com.yn.model.ElecDataMonth" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
-    <result column="del" property="del" jdbcType="INTEGER" />
-    <result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
-    <result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
-    <result column="d_addr" property="dAddr" jdbcType="INTEGER" />
-    <result column="d_type" property="dType" jdbcType="INTEGER" />
-    <result column="dev_conf_code" property="devConfCode" jdbcType="VARCHAR" />
-    <result column="kw" property="kw" jdbcType="DECIMAL" />
-    <result column="kwh" property="kwh" jdbcType="DECIMAL" />
-    <result column="record_time" property="recordTime" jdbcType="VARCHAR" />
-    <result column="ammeter_code" property="ammeterCode" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="w_addr" property="wAddr" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Example_Where_Clause" >
-    <where >
-      <foreach collection="oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause" >
-    <where >
-      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
-        <if test="criteria.valid" >
-          <trim prefix="(" suffix=")" prefixOverrides="and" >
-            <foreach collection="criteria.criteria" item="criterion" >
-              <choose >
-                <when test="criterion.noValue" >
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue" >
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue" >
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue" >
-                  and ${criterion.condition}
-                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
-            </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List" >
-    id, create_dtm, del, del_dtm, update_dtm, d_addr, d_type, dev_conf_code, kw, kwh, 
-    record_time, ammeter_code, type, w_addr
-  </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.yn.model.ElecDataMonthExample" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from elec_data_month
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null" >
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from elec_data_month
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from elec_data_month
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <delete id="deleteByExample" parameterType="com.yn.model.ElecDataMonthExample" >
-    delete from elec_data_month
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.yn.model.ElecDataMonth" >
-    insert into elec_data_month (id, create_dtm, del, 
-      del_dtm, update_dtm, d_addr, 
-      d_type, dev_conf_code, kw, 
-      kwh, record_time, ammeter_code, 
-      type, w_addr)
-    values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP}, #{del,jdbcType=INTEGER}, 
-      #{delDtm,jdbcType=TIMESTAMP}, #{updateDtm,jdbcType=TIMESTAMP}, #{dAddr,jdbcType=INTEGER}, 
-      #{dType,jdbcType=INTEGER}, #{devConfCode,jdbcType=VARCHAR}, #{kw,jdbcType=DECIMAL}, 
-      #{kwh,jdbcType=DECIMAL}, #{recordTime,jdbcType=VARCHAR}, #{ammeterCode,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{wAddr,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.yn.model.ElecDataMonth" >
-    insert into elec_data_month
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="createDtm != null" >
-        create_dtm,
-      </if>
-      <if test="del != null" >
-        del,
-      </if>
-      <if test="delDtm != null" >
-        del_dtm,
-      </if>
-      <if test="updateDtm != null" >
-        update_dtm,
-      </if>
-      <if test="dAddr != null" >
-        d_addr,
-      </if>
-      <if test="dType != null" >
-        d_type,
-      </if>
-      <if test="devConfCode != null" >
-        dev_conf_code,
-      </if>
-      <if test="kw != null" >
-        kw,
-      </if>
-      <if test="kwh != null" >
-        kwh,
-      </if>
-      <if test="recordTime != null" >
-        record_time,
-      </if>
-      <if test="ammeterCode != null" >
-        ammeter_code,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="wAddr != null" >
-        w_addr,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="createDtm != null" >
-        #{createDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="del != null" >
-        #{del,jdbcType=INTEGER},
-      </if>
-      <if test="delDtm != null" >
-        #{delDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDtm != null" >
-        #{updateDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="dAddr != null" >
-        #{dAddr,jdbcType=INTEGER},
-      </if>
-      <if test="dType != null" >
-        #{dType,jdbcType=INTEGER},
-      </if>
-      <if test="devConfCode != null" >
-        #{devConfCode,jdbcType=VARCHAR},
-      </if>
-      <if test="kw != null" >
-        #{kw,jdbcType=DECIMAL},
-      </if>
-      <if test="kwh != null" >
-        #{kwh,jdbcType=DECIMAL},
-      </if>
-      <if test="recordTime != null" >
-        #{recordTime,jdbcType=VARCHAR},
-      </if>
-      <if test="ammeterCode != null" >
-        #{ammeterCode,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="wAddr != null" >
-        #{wAddr,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="com.yn.model.ElecDataMonthExample" resultType="java.lang.Integer" >
-    select count(*) from elec_data_month
-    <if test="_parameter != null" >
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map" >
-    update elec_data_month
-    <set >
-      <if test="record.id != null" >
-        id = #{record.id,jdbcType=INTEGER},
-      </if>
-      <if test="record.createDtm != null" >
-        create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.del != null" >
-        del = #{record.del,jdbcType=INTEGER},
-      </if>
-      <if test="record.delDtm != null" >
-        del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.updateDtm != null" >
-        update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.dAddr != null" >
-        d_addr = #{record.dAddr,jdbcType=INTEGER},
-      </if>
-      <if test="record.dType != null" >
-        d_type = #{record.dType,jdbcType=INTEGER},
-      </if>
-      <if test="record.devConfCode != null" >
-        dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.kw != null" >
-        kw = #{record.kw,jdbcType=DECIMAL},
-      </if>
-      <if test="record.kwh != null" >
-        kwh = #{record.kwh,jdbcType=DECIMAL},
-      </if>
-      <if test="record.recordTime != null" >
-        record_time = #{record.recordTime,jdbcType=VARCHAR},
-      </if>
-      <if test="record.ammeterCode != null" >
-        ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.type != null" >
-        type = #{record.type,jdbcType=INTEGER},
-      </if>
-      <if test="record.wAddr != null" >
-        w_addr = #{record.wAddr,jdbcType=INTEGER},
-      </if>
-    </set>
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map" >
-    update elec_data_month
-    set id = #{record.id,jdbcType=INTEGER},
-      create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
-      del = #{record.del,jdbcType=INTEGER},
-      del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
-      update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
-      d_addr = #{record.dAddr,jdbcType=INTEGER},
-      d_type = #{record.dType,jdbcType=INTEGER},
-      dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
-      kw = #{record.kw,jdbcType=DECIMAL},
-      kwh = #{record.kwh,jdbcType=DECIMAL},
-      record_time = #{record.recordTime,jdbcType=VARCHAR},
-      ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=INTEGER},
-      w_addr = #{record.wAddr,jdbcType=INTEGER}
-    <if test="_parameter != null" >
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yn.model.ElecDataMonth" >
-    update elec_data_month
-    <set >
-      <if test="createDtm != null" >
-        create_dtm = #{createDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="del != null" >
-        del = #{del,jdbcType=INTEGER},
-      </if>
-      <if test="delDtm != null" >
-        del_dtm = #{delDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDtm != null" >
-        update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
-      </if>
-      <if test="dAddr != null" >
-        d_addr = #{dAddr,jdbcType=INTEGER},
-      </if>
-      <if test="dType != null" >
-        d_type = #{dType,jdbcType=INTEGER},
-      </if>
-      <if test="devConfCode != null" >
-        dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
-      </if>
-      <if test="kw != null" >
-        kw = #{kw,jdbcType=DECIMAL},
-      </if>
-      <if test="kwh != null" >
-        kwh = #{kwh,jdbcType=DECIMAL},
-      </if>
-      <if test="recordTime != null" >
-        record_time = #{recordTime,jdbcType=VARCHAR},
-      </if>
-      <if test="ammeterCode != null" >
-        ammeter_code = #{ammeterCode,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="wAddr != null" >
-        w_addr = #{wAddr,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.yn.model.ElecDataMonth" >
-    update elec_data_month
-    set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
-      del = #{del,jdbcType=INTEGER},
-      del_dtm = #{delDtm,jdbcType=TIMESTAMP},
-      update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
-      d_addr = #{dAddr,jdbcType=INTEGER},
-      d_type = #{dType,jdbcType=INTEGER},
-      dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
-      kw = #{kw,jdbcType=DECIMAL},
-      kwh = #{kwh,jdbcType=DECIMAL},
-      record_time = #{recordTime,jdbcType=VARCHAR},
-      ammeter_code = #{ammeterCode,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
-      w_addr = #{wAddr,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+<mapper namespace="com.yn.dao.mapper.ElecDataMonthMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.ElecDataMonth">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		<result column="d_addr" property="dAddr" jdbcType="INTEGER" />
+		<result column="d_type" property="dType" jdbcType="INTEGER" />
+		<result column="dev_conf_code" property="devConfCode" jdbcType="VARCHAR" />
+		<result column="kw" property="kw" jdbcType="DECIMAL" />
+		<result column="kwh" property="kwh" jdbcType="DECIMAL" />
+		<result column="record_time" property="recordTime" jdbcType="VARCHAR" />
+		<result column="ammeter_code" property="ammeterCode" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="w_addr" property="wAddr" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		id, create_dtm, del, del_dtm, update_dtm, d_addr, d_type, dev_conf_code,
+		kw, kwh,
+		record_time, ammeter_code, type, w_addr
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.yn.model.ElecDataMonthExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from elec_data_month
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from elec_data_month
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from elec_data_month
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.yn.model.ElecDataMonthExample">
+		delete from elec_data_month
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.yn.model.ElecDataMonth">
+		insert into elec_data_month (id, create_dtm, del,
+		del_dtm, update_dtm, d_addr,
+		d_type, dev_conf_code, kw,
+		kwh, record_time, ammeter_code,
+		type, w_addr)
+		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
+		#{del,jdbcType=INTEGER},
+		#{delDtm,jdbcType=TIMESTAMP}, #{updateDtm,jdbcType=TIMESTAMP}, #{dAddr,jdbcType=INTEGER},
+		#{dType,jdbcType=INTEGER}, #{devConfCode,jdbcType=VARCHAR},
+		#{kw,jdbcType=DECIMAL},
+		#{kwh,jdbcType=DECIMAL}, #{recordTime,jdbcType=VARCHAR}, #{ammeterCode,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER}, #{wAddr,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.yn.model.ElecDataMonth">
+		insert into elec_data_month
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="createDtm != null">
+				create_dtm,
+			</if>
+			<if test="del != null">
+				del,
+			</if>
+			<if test="delDtm != null">
+				del_dtm,
+			</if>
+			<if test="updateDtm != null">
+				update_dtm,
+			</if>
+			<if test="dAddr != null">
+				d_addr,
+			</if>
+			<if test="dType != null">
+				d_type,
+			</if>
+			<if test="devConfCode != null">
+				dev_conf_code,
+			</if>
+			<if test="kw != null">
+				kw,
+			</if>
+			<if test="kwh != null">
+				kwh,
+			</if>
+			<if test="recordTime != null">
+				record_time,
+			</if>
+			<if test="ammeterCode != null">
+				ammeter_code,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="wAddr != null">
+				w_addr,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="createDtm != null">
+				#{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				#{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				#{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateDtm != null">
+				#{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="dAddr != null">
+				#{dAddr,jdbcType=INTEGER},
+			</if>
+			<if test="dType != null">
+				#{dType,jdbcType=INTEGER},
+			</if>
+			<if test="devConfCode != null">
+				#{devConfCode,jdbcType=VARCHAR},
+			</if>
+			<if test="kw != null">
+				#{kw,jdbcType=DECIMAL},
+			</if>
+			<if test="kwh != null">
+				#{kwh,jdbcType=DECIMAL},
+			</if>
+			<if test="recordTime != null">
+				#{recordTime,jdbcType=VARCHAR},
+			</if>
+			<if test="ammeterCode != null">
+				#{ammeterCode,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="wAddr != null">
+				#{wAddr,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.yn.model.ElecDataMonthExample"
+		resultType="java.lang.Integer">
+		select count(*) from elec_data_month
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update elec_data_month
+		<set>
+			<if test="record.id != null">
+				id = #{record.id,jdbcType=INTEGER},
+			</if>
+			<if test="record.createDtm != null">
+				create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.del != null">
+				del = #{record.del,jdbcType=INTEGER},
+			</if>
+			<if test="record.delDtm != null">
+				del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.updateDtm != null">
+				update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.dAddr != null">
+				d_addr = #{record.dAddr,jdbcType=INTEGER},
+			</if>
+			<if test="record.dType != null">
+				d_type = #{record.dType,jdbcType=INTEGER},
+			</if>
+			<if test="record.devConfCode != null">
+				dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.kw != null">
+				kw = #{record.kw,jdbcType=DECIMAL},
+			</if>
+			<if test="record.kwh != null">
+				kwh = #{record.kwh,jdbcType=DECIMAL},
+			</if>
+			<if test="record.recordTime != null">
+				record_time = #{record.recordTime,jdbcType=VARCHAR},
+			</if>
+			<if test="record.ammeterCode != null">
+				ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.type != null">
+				type = #{record.type,jdbcType=INTEGER},
+			</if>
+			<if test="record.wAddr != null">
+				w_addr = #{record.wAddr,jdbcType=INTEGER},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update elec_data_month
+		set id = #{record.id,jdbcType=INTEGER},
+		create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
+		del = #{record.del,jdbcType=INTEGER},
+		del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
+		update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
+		d_addr = #{record.dAddr,jdbcType=INTEGER},
+		d_type = #{record.dType,jdbcType=INTEGER},
+		dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
+		kw = #{record.kw,jdbcType=DECIMAL},
+		kwh = #{record.kwh,jdbcType=DECIMAL},
+		record_time = #{record.recordTime,jdbcType=VARCHAR},
+		ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
+		type = #{record.type,jdbcType=INTEGER},
+		w_addr = #{record.wAddr,jdbcType=INTEGER}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.yn.model.ElecDataMonth">
+		update elec_data_month
+		<set>
+			<if test="createDtm != null">
+				create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateDtm != null">
+				update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="dAddr != null">
+				d_addr = #{dAddr,jdbcType=INTEGER},
+			</if>
+			<if test="dType != null">
+				d_type = #{dType,jdbcType=INTEGER},
+			</if>
+			<if test="devConfCode != null">
+				dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
+			</if>
+			<if test="kw != null">
+				kw = #{kw,jdbcType=DECIMAL},
+			</if>
+			<if test="kwh != null">
+				kwh = #{kwh,jdbcType=DECIMAL},
+			</if>
+			<if test="recordTime != null">
+				record_time = #{recordTime,jdbcType=VARCHAR},
+			</if>
+			<if test="ammeterCode != null">
+				ammeter_code = #{ammeterCode,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="wAddr != null">
+				w_addr = #{wAddr,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.yn.model.ElecDataMonth">
+		update elec_data_month
+		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+		del = #{del,jdbcType=INTEGER},
+		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+		update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
+		d_addr = #{dAddr,jdbcType=INTEGER},
+		d_type = #{dType,jdbcType=INTEGER},
+		dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
+		kw = #{kw,jdbcType=DECIMAL},
+		kwh = #{kwh,jdbcType=DECIMAL},
+		record_time = #{recordTime,jdbcType=VARCHAR},
+		ammeter_code = #{ammeterCode,jdbcType=VARCHAR},
+		type = #{type,jdbcType=INTEGER},
+		w_addr = #{wAddr,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="deleteByRecordTime" parameterType="com.yn.model.ElecDataMonth">
+		delete from elec_data_month
+		where record_time = #{recordTime,jdbcType=VARCHAR} and ammeter_code = #{ammeterCode,jdbcType=VARCHAR}
+	</update>
+
 </mapper>

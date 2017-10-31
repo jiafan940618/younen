@@ -27,6 +27,9 @@ import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.model.ElecDataDay;
+import com.yn.model.ElecDataDayExample;
+import com.yn.model.ElecDataDayExample.Criteria;
+import com.yn.model.ElecDataMonth;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
@@ -44,6 +47,22 @@ public class ElecDataDayService {
 	ElecDataHourService elecDataHourService;
 	@Autowired
 	AmmeterDao ammeterDao;
+	
+
+	public List<ElecDataDay> selectByExample(ElecDataDayExample example){
+		return elecDataDayMapper.selectByExample(example);
+	}
+	public List<ElecDataDay> findByCondition(ElecDataDay elecDataDay) {
+		ElecDataDayExample example = new ElecDataDayExample();
+		Criteria criteria = example.createCriteria();
+		if(elecDataDay.getRecordTime()!=null){
+			criteria.andRecordTimeEqualTo(elecDataDay.getRecordTime());
+		}
+		if(elecDataDay.getAmmeterCode()!=null){
+			criteria.andAmmeterCodeEqualTo(elecDataDay.getAmmeterCode());
+		}
+		return elecDataDayMapper.selectByExample(example);
+	}
 
 	public ElecDataDay findOne(Long id) {
 		return elecDataDayDao.findOne(id);
@@ -330,5 +349,7 @@ public class ElecDataDayService {
 		List<ElecDataDay> list = elecDataDayMapper.selectByQuery(map);
 		return list;
 	}
+
+	
 
 }
