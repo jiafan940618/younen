@@ -134,6 +134,9 @@ public class OrderController {
 			}else{
 				ResVo rv = new ResVo();
 				if(buildStepB==1){
+					/** 添加电站 */
+					stationService.insertStation(order);
+					//绑定电表
 					rv.setTarget("materialapproac");
 					rv.setTitle("材料进场");
 				}else if(buildStepB==2){
@@ -175,9 +178,6 @@ public class OrderController {
 		//并网发电。
 		if (gridConnectedStepA == 2) {
 			order.setStatus(3);
-			/** 添加电站 */
-			stationService.insertStation(order);
-			//绑定电表
 		}
 		orderService.save(order);
 		return ResultVOUtil.success(order);
