@@ -40,7 +40,7 @@ import com.yn.utils.DateUtil;
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
  */
-//@Component
+@Component
 public class AmPhaseRecordJob {
 	@Autowired
 	AmPhaseRecordService amPhaseRecordService;
@@ -97,7 +97,7 @@ public class AmPhaseRecordJob {
 					amPhaseRecordR.setwAddr(am1Phase.getwAddr());
 					amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
 					amPhaseRecordR.setDate(date);
-					AmPhaseRecord findOne = null;//amPhaseRecordService.findOneByMapper(amPhaseRecordR);
+					AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 					if (findOne == null) {
 						try {
 							AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
