@@ -59,7 +59,7 @@ import com.yn.utils.DateUtil;
     * @date 2017年10月27日
     *
  */
-@Component
+//@Component
 public class PatchDataRecordJob {
 
 	@Autowired
