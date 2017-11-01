@@ -55,6 +55,9 @@ public class AmmeterService {
     @Autowired
     private AmmeterMapper ammeterMapper;
 
+    public Ammeter findByCAddr(String caddr){
+    	return ammeterDao.findByCAddr(caddr);
+    }
 
     public Ammeter findOne(Long id) {
         return ammeterDao.findOne(id);

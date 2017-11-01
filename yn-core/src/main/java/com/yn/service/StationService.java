@@ -58,6 +58,9 @@ public class StationService {
 	AmmeterService ammeterService;
 	@Autowired
 	private NoticeService noticeService;
+	@Autowired
+	OrderService orderService;
+	
 
 	private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
@@ -383,7 +386,7 @@ public class StationService {
 	public void insertStation(Order order) {
 		/** 生成电站码*/
 		String stradNo = format.format(System.currentTimeMillis()) + df1.format(rd.nextInt(9999));
-
+		order = orderService.findOne(order.getId());
 		Station station = new Station();
 		station.setStationCode(stradNo);
 		station.setAddressText(order.getAddressText());
@@ -399,7 +402,7 @@ public class StationService {
 		Ammeter ammeter = new Ammeter();
 		ammeter.setcAddr(station.getDevConfCode());
 		if (ammeter != null) {
-			Ammeter findOne = ammeterService.findOne(ammeter);
+			Ammeter findOne = ammeterService.findByCAddr(ammeter.getcAddr());
 			if(findOne!=null){
 				if(findOne.getStatus()==0){
 					station.setStatus(1);

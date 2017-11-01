@@ -93,7 +93,7 @@ public class TestController {
 	       public Object helloJsp01(){  
 	    	   Integer type = 1;
 
-	   		String orderCode = "zoha171031161325";
+	   		String orderCode = "woxs171101141014";
 
 	   		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);
 	   		Order orderSize = orderService.finByOrderCode(orderCode);
@@ -102,10 +102,10 @@ public class TestController {
 	   		
 	   			logger.info("---- ---- ---- ------ ----- 开始生成订单");
 	   			NewPlanVo plan = new  NewPlanVo();
-	   			plan.setOrderCode("zocd171031163529");
-	   			plan.setPhone("13450699433");
+	   			plan.setOrderCode("woxs171101141014");
+	   			plan.setPhone("18820852129");
 	   			plan.setAllMoney(330.0);
-	   			plan.setNum(7.0);
+	   			plan.setNum(10.0);
 
 	   			List<Long> listid = new ArrayList<Long>();
 	   			listid.add(2l);
@@ -117,7 +117,7 @@ public class TestController {
 	   				apoPrice += apolegamy.getPrice();
 	   			}
 
-	   			Long planid = 1L;
+	   			Long planid = 5L;
 
 	   			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 

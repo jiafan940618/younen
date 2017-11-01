@@ -472,6 +472,7 @@ public class OrderController {
 		User user = userservice.findOne(userid);
 
 		user.setFullAddressText(user01.getAddressText());
+		
 		user.setPhone(user01.getPhone());
 		user.setUserName(user01.getUserName());
 
@@ -733,6 +734,8 @@ public class OrderController {
 	public ResultData<Object> order_detail(MultipartHttpServletRequest request, HttpSession session)
 			throws UnsupportedEncodingException {
 
+		logger.info("-- --- ---- ---- ------ -进入上传图片的方法");
+		
 		request.setCharacterEncoding("UTF-8");
 		String finaltime = null;
 

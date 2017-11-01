@@ -215,7 +215,8 @@ public class KFTpayService {
 				/** 修改订单记录状态*/
 				billOrderService.updateOrder(billOrder.getTradeNo());
             	/** 修改订单金额,及3步走，支付状态*/
-            	//orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue());
+				
+            	orderService.UpdateOrStatus(billOrder.getTradeNo(),billOrderVo.getMoney().doubleValue()*0.01);
 
             	 /** 不在这里修改状态*/
             //orderService.givePrice(orderService.FindByTradeNo(billOrder.getTradeNo()));

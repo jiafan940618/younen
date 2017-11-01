@@ -127,6 +127,9 @@ public class OrderController {
 		}
 		Integer buildStepB = order.getBuildStepB();
 		if(order.getStatus()==1){
+			/** 添加电站 */
+			stationService.insertStation(order);
+			//绑定电表
 			//修改施工状态。
 			if(buildStepB==0){
 				//初始化操作
@@ -134,9 +137,6 @@ public class OrderController {
 			}else{
 				ResVo rv = new ResVo();
 				if(buildStepB==1){
-					/** 添加电站 */
-					stationService.insertStation(order);
-					//绑定电表
 					rv.setTarget("materialapproac");
 					rv.setTitle("材料进场");
 				}else if(buildStepB==2){
