@@ -297,6 +297,7 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
 	  	}
+
 	  	
 	  	Map<String, String> map = systemConfigService.getlist(); 
 	 	
@@ -350,6 +351,7 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
 	  	}
+	 
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());
@@ -372,8 +374,12 @@ public class UserController {
 			BeanCopy.copyProperties(order, orderVo);
 			
 		Station station = stationService.FindByStationCode(orderVo.getId());
-		orderVo.setStationCode(station.getStationCode());
-	 
+		if(null != station){
+			orderVo.setStationCode(station.getStationCode());
+		}else{
+			orderVo.setStationCode("该订单未施工");
+		}
+
 		listVo.add(orderVo);
 	}
   	return ResultVOUtil.success(listVo);

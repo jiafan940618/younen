@@ -18,6 +18,7 @@ import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.StationVo;
 
+import org.mockito.exceptions.verification.NeverWantedButInvoked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -507,18 +508,26 @@ public class StationService {
 			BigDecimal capacity = (BigDecimal) obj[3];
 			Integer status = (Integer) obj[4];
 			String stationCode = (String) obj[5];
+			
 			BigDecimal initkwh = (BigDecimal) obj[6];
+			if (null == initkwh ) {
+				initkwh = new BigDecimal(0.0);
+			}
 			BigDecimal workTotalKwh = (BigDecimal) obj[7];
+			if (null == workTotalKwh ) {
+				workTotalKwh = new BigDecimal(0.0);
+			}
+			
 			Integer workTotalTm = (Integer) obj[8];
+			if (null == workTotalTm ) {
+				workTotalTm = 0 ;
+			}
+			
 			String userName = (String) obj[9];
 			BigDecimal nowKwh = (BigDecimal) obj[10];
-			Double electricityGenerationTol = 0.0;
-			if (null == initkwh && null == workTotalKwh) {
-				electricityGenerationTol = 0.0;
-			} else {
-
-				electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
-			}
+			
+			
+			Double	electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
 
 			StationVo stationVo = new StationVo();
 			stationVo.setId(s_id.longValue());
