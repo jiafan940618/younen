@@ -151,8 +151,16 @@ public class AmmeterRecordService {
 		map.put("stationId", ammeterRecord.getStationId());
 		List<String> lStrings=new ArrayList<>();	
 		if (ammeterRecord.getStatusCode()!=null) {
-			lStrings.add(ammeterRecord.getStatusCode());
-			map.put("statusCode",lStrings);
+			if ("0x0".equals(ammeterRecord.getStatusCode())) {
+				lStrings.add("0x0");
+				lStrings.add("0x8");
+				lStrings.add("0x80");
+				lStrings.add("0x00");
+				map.put("statusCode",lStrings );
+			}else {
+				lStrings.add(ammeterRecord.getStatusCode());
+				map.put("statusCode",lStrings);
+			}
 		  }else {
 				if ("1".equals(ammeterRecord.getQuery())) {
 					lStrings.add("0x0");

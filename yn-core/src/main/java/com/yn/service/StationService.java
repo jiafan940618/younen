@@ -704,7 +704,8 @@ public class StationService {
 		
 		System.out.println(station.getId());
 		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
-		if (ammeters != null) {
+		System.out.println(ammeters.size());
+		if (ammeters.size()>0) {
 			for (Ammeter ammeter : ammeters) {
 				System.out.println(ammeter.getId());
 				Map<String, Object> map2 = new LinkedHashMap<>();
