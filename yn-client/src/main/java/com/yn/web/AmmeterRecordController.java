@@ -1,6 +1,12 @@
 package com.yn.web;
 
+
 import com.yn.vo.re.ResultVOUtil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.yn.model.AmmeterRecord;
+import com.yn.model.ElecDataDay;
 import com.yn.service.AmmeterRecordService;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.PageInfo;
 import com.yn.vo.AmmeterRecordVo;
+import com.yn.vo.ElecDataDayVo;
 
 @RestController
 @RequestMapping("/client/ammeterRecord")
@@ -63,4 +73,21 @@ public class AmmeterRecordController {
         Page<AmmeterRecord> findAll = ammeterRecordService.findAll(ammeterRecord, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    /**
+	 * 前端状态日报
+	 */
+	@RequestMapping(value = "/StateDaily", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object listCount(AmmeterRecordVo ammeterRecordVo,Integer pageIndex) {
+		AmmeterRecord ammeterRecord = new AmmeterRecord();
+		BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
+		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 15);
+		List<AmmeterRecord> ammeterRecords = ammeterRecordService.findByMapper(ammeterRecord);
+		PageInfo<AmmeterRecord> pageInfo = new PageInfo<>(ammeterRecords);
+		Map<String, Object> map = new HashMap<>();
+		map.put("pageInfo", pageInfo);
+		return ResultVOUtil.success(map);
+	}
+ 
 }

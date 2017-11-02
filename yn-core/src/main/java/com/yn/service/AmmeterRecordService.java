@@ -1,7 +1,9 @@
 package com.yn.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.springframework.util.StringUtils;
 import com.yn.dao.AmmeterRecordDao;
 import com.yn.dao.mapper.AmmeterRecordMapper;
 import com.yn.model.AmmeterRecord;
+import com.yn.model.ElecDataDay;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
@@ -139,4 +142,89 @@ public class AmmeterRecordService {
 			return conjunction;
 		};
 	}
+	
+	public List<AmmeterRecord> findByMapper(AmmeterRecord ammeterRecord) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("queryStartDtm", ammeterRecord.getQueryStartDtm());
+		map.put("queryEndDtm", ammeterRecord.getQueryEndDtm());
+		map.put("stationId", ammeterRecord.getStationId());
+		List<String> lStrings=new ArrayList<>();	
+		if (ammeterRecord.getStatusCode()!=null) {
+			lStrings.add(ammeterRecord.getStatusCode());
+			map.put("statusCode",lStrings);
+		  }else {
+				if ("1".equals(ammeterRecord.getQuery())) {
+					lStrings.add("0x0");
+					lStrings.add("0x8");
+					lStrings.add("0x80");
+					lStrings.add("0x00");
+					map.put("statusCode",lStrings );
+				}else if("2".equals(ammeterRecord.getQuery())){
+					lStrings.add("0x01");
+					lStrings.add("0x02");
+					lStrings.add("0x04");
+					lStrings.add("0x08");
+					lStrings.add("0x10");
+					lStrings.add("0x20");
+					lStrings.add("0x40");
+					lStrings.add("0x18");
+					map.put("statusCode",lStrings );
+				}
+			}
+		List<AmmeterRecord> list = ammeterRecordMapper.selectByQuery(map);
+		List<AmmeterRecord> listAmmeterRecord = new ArrayList<>();
+		for (AmmeterRecord ammeterRecord2 : list) {
+			if("0x0".equals(ammeterRecord2.getStatusCode())){
+				ammeterRecord2.setStationCode("正常");
+				ammeterRecord2.setQuery("正常发电");
+			}else if ("0x01".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("计量芯片异常计量芯片异常");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x02".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("参数存储区异常");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x04".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("冻结数据存储区异常");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x08".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("电压相序出错");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x10".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("电流相序出错");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x8".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("正常");
+				ammeterRecord2.setQuery("正常发电");
+				
+			}else if ("0x80".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("正常");
+				ammeterRecord2.setQuery("正常发电");
+				
+			}else if ("0x00".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("正常");
+				ammeterRecord2.setQuery("正常发电");
+				
+			}else if ("0x20".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("失压");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x40".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("失流");
+				ammeterRecord2.setQuery("发电异常");
+				
+			}else if ("0x18".equals(ammeterRecord2.getStatusCode())) {
+				ammeterRecord2.setStationCode("未知原因");
+				ammeterRecord2.setQuery("发电异常"); 	
+			}
+			
+			listAmmeterRecord.add(ammeterRecord2);	
+		}	
+		return listAmmeterRecord;
+	}	
 }

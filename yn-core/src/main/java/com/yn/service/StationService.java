@@ -1,5 +1,6 @@
 package com.yn.service;
 
+
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
@@ -18,7 +19,6 @@ import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.StationVo;
 
-import org.mockito.exceptions.verification.NeverWantedButInvoked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -61,7 +61,7 @@ public class StationService {
 	private NoticeService noticeService;
 	@Autowired
 	OrderService orderService;
-
+	
 
 	private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
@@ -508,26 +508,18 @@ public class StationService {
 			BigDecimal capacity = (BigDecimal) obj[3];
 			Integer status = (Integer) obj[4];
 			String stationCode = (String) obj[5];
-			
 			BigDecimal initkwh = (BigDecimal) obj[6];
-			if (null == initkwh ) {
-				initkwh = new BigDecimal(0.0);
-			}
 			BigDecimal workTotalKwh = (BigDecimal) obj[7];
-			if (null == workTotalKwh ) {
-				workTotalKwh = new BigDecimal(0.0);
-			}
-			
 			Integer workTotalTm = (Integer) obj[8];
-			if (null == workTotalTm ) {
-				workTotalTm = 0 ;
-			}
-			
 			String userName = (String) obj[9];
 			BigDecimal nowKwh = (BigDecimal) obj[10];
-			
-			
-			Double	electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
+			Double electricityGenerationTol = 0.0;
+			if (null == initkwh && null == workTotalKwh) {
+				electricityGenerationTol = 0.0;
+			} else {
+
+				electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
+			}
 
 			StationVo stationVo = new StationVo();
 			stationVo.setId(s_id.longValue());
@@ -709,16 +701,26 @@ public class StationService {
 		map.put("orderCode", orderDao.findByStationId(station.getOrderId()));
 		map.put("status", station.getStatus());
 		map.put("addressText", station.getAddressText());
-		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		
 		System.out.println(station.getId());
-		for (Ammeter ammeter : ammeters) {
-			System.out.println(ammeter.getId());
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		if (ammeters != null) {
+			for (Ammeter ammeter : ammeters) {
+				System.out.println(ammeter.getId());
+				Map<String, Object> map2 = new LinkedHashMap<>();
+				map2.put("workTotaTm", ammeter.getWorkTotalTm() + ammeter.getInitKwh());
+				map2.put("ammeterCode", ammeter.getcAddr());
+				map2.put("ammeterScale", ammeter.getInitKwh());
+				map.put("ammeterRecode", map2);
+			}
+		}else {
 			Map<String, Object> map2 = new LinkedHashMap<>();
-			map2.put("workTotaTm", ammeter.getWorkTotalTm() + ammeter.getInitKwh());
-			map2.put("ammeterCode", ammeter.getcAddr());
-			map2.put("ammeterScale", ammeter.getInitKwh());
+			map2.put("workTotaTm", "0");
+			map2.put("ammeterCode", "0");
+			map2.put("ammeterScale","0");
 			map.put("ammeterRecode", map2);
 		}
+		
 		Date date = station.getCreateDtm();
 		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1, date));
 		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2, date));
