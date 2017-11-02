@@ -53,6 +53,8 @@ public class ElecDataHourService {
 	StationDao stationDao;
 	@Autowired
 	ElecDataDayMapper elecDataDayMapper;
+	@Autowired
+	SystemConfigService systemConfigService;
 
 	/**
 	

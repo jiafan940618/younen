@@ -35,11 +35,10 @@ import com.yn.vo.ElecDataDayVo;
 import com.yn.vo.TemStationYearVo;
 import com.yn.vo.re.ResultVOUtil;
 
-
 @RestController
 @RequestMapping("/client/temStationYear")
 public class ElecDataDayController {
-	
+
 	@Autowired
 	SystemConfigService systemConfigService;
 	@Autowired
@@ -53,9 +52,6 @@ public class ElecDataDayController {
 		ElecDataDay findOne = elecDataDayService.findOne(id);
 		return ResultVOUtil.success(findOne);
 	}
-	
-	
-	
 
 	@ResponseBody
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
@@ -84,20 +80,21 @@ public class ElecDataDayController {
 
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object findAll(ElecDataDayVo elecDataDayVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) 
-	Pageable pageable) {
+	public Object findAll(ElecDataDayVo elecDataDayVo,
+			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		ElecDataDay elecDataDay = new ElecDataDay();
-        BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
-        Page<ElecDataDay> findAll = elecDataDayService.findAll(elecDataDay, pageable);
-        return ResultVOUtil.success(findAll);		
-//		ElecDataDay temStationYear = new ElecDataDay();
-//		BeanCopy.copyProperties(temStationYearVo, temStationYear);
-//		temStationYear.setdAddr(temStationYearVo.getD_addr());
-//		System.out.println(temStationYear.getQueryStartDtm());
-//		PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-//		List<ElecDataDay> list = elecDataDayService.findByMapper(temStationYear);
-//		PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
-//        return ResultVOUtil.success(pageInfo);
+		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
+		Page<ElecDataDay> findAll = elecDataDayService.findAll(elecDataDay, pageable);
+		return ResultVOUtil.success(findAll);
+		// ElecDataDay temStationYear = new ElecDataDay();
+		// BeanCopy.copyProperties(temStationYearVo, temStationYear);
+		// temStationYear.setdAddr(temStationYearVo.getD_addr());
+		// System.out.println(temStationYear.getQueryStartDtm());
+		// PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
+		// List<ElecDataDay> list =
+		// elecDataDayService.findByMapper(temStationYear);
+		// PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
+		// return ResultVOUtil.success(pageInfo);
 	}
 
 	/**
@@ -116,83 +113,85 @@ public class ElecDataDayController {
 
 		return ResultVOUtil.success(monthKwh);
 	}
-	
-@ResponseBody
-@RequestMapping(value = "/huanbao")
-public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
-	
-	User user = SessionCache.instance().getUser();
-	if(user == null){
-		return  ResultVOUtil.error(777, "抱歉，你没有登录!");
-	}
 
-	DecimalFormat df = new DecimalFormat("0.00");
-	
-	Map<String, String> newmap = systemConfigService.getlist();
-	
-	// 植树参数
-	Double plant_trees_prm = Double.valueOf(newmap.get("plant_trees_prm"));
-	// co2减排参数
-	Double CO2_prm = Double.valueOf(newmap.get("CO2_prm"));
-	// SO减排参数
-	Double SO_prm = Double.valueOf(newmap.get("SO_prm"));
-	
-	Date date = new Date();
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-	String year = sdf.format(date);
+	@ResponseBody
+	@RequestMapping(value = "/huanbao")
+	public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, HttpServletResponse response,
+			HttpSession httpSession) {
 
-	List<Map<String, Object>> rl = new ArrayList<>();
-	List<Map<String, Object>> rl2 = new ArrayList<>();
-	List<Map<String, Object>> rl3 = new ArrayList<>();
-	String [] time = {year+"-01",year+"-02",year+"-03",year+"-04",year+"-05",year+"-06",year+"-07",year+"-08",year+"-09",year+"-10",year+"-11",year+"-12"};
-	
-	Double kwh = 0.0;
-	
-	for(String timeStr:time){
-		Map<String, Object> map = new HashMap<>();
-		map.put("userId", user.getId());
-		map.put("createDtm", timeStr);
-		ElecDataDay tsy = elecDataDayService.findHuanbao(map);
-		Map<String, Object> map2 = new HashMap<>();
-		Map<String, Object> map3 = new HashMap<>();
-		Map<String, Object> map4 = new HashMap<>();
-		if(tsy != null){
-			map2.put("co2", Double.valueOf(df.format(tsy.getKwh() * CO2_prm)));
-			map2.put("createDtm", timeStr);
-			map3.put("treeNum", Double.valueOf(df.format(tsy.getKwh() * plant_trees_prm)));
-			map3.put("createDtm", timeStr);
-			map4.put("SONum", Double.valueOf(df.format(tsy.getKwh() * SO_prm)));
-			map4.put("createDtm", timeStr);
-			
-			rl.add(map2);
-			rl2.add(map3);
-			rl3.add(map4);
-			
-			kwh += tsy.getKwh();
-			
-		} else{
-			map2.put("co2", 0);
-			map2.put("createDtm", timeStr);
-			map3.put("treeNum", 0);
-			map3.put("createDtm", timeStr);
-			map4.put("SONum", 0);
-			map4.put("createDtm", timeStr);
-			
-			rl.add(map2);
-			rl2.add(map3);
-			rl3.add(map4);
-		}	
-	}
+		User user = SessionCache.instance().getUser();
+		if (user == null) {
+			return ResultVOUtil.error(777, "抱歉，你没有登录!");
+		}
 
-	Map<String, Object> rm = new HashMap<>();
-	rm.put("co2data", rl);
-	rm.put("treeData", rl2);
-	rm.put("SOData", rl3);	
-	
-	rm.put("CO2_prm",Double.valueOf(df.format(kwh * CO2_prm)));
-	rm.put("plant_trees_prm", Double.valueOf(df.format(kwh * plant_trees_prm)));
+		DecimalFormat df = new DecimalFormat("0.00");
 
-	return ResultVOUtil.success(rm);	
+		Map<String, String> newmap = systemConfigService.getlist();
+
+		// 植树参数
+		Double plant_trees_prm = Double.valueOf(newmap.get("plant_trees_prm"));
+		// co2减排参数
+		Double CO2_prm = Double.valueOf(newmap.get("CO2_prm"));
+		// SO减排参数
+		Double SO_prm = Double.valueOf(newmap.get("SO_prm"));
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		String year = sdf.format(date);
+
+		List<Map<String, Object>> rl = new ArrayList<>();
+		List<Map<String, Object>> rl2 = new ArrayList<>();
+		List<Map<String, Object>> rl3 = new ArrayList<>();
+		String[] time = { year + "-01", year + "-02", year + "-03", year + "-04", year + "-05", year + "-06",
+				year + "-07", year + "-08", year + "-09", year + "-10", year + "-11", year + "-12" };
+
+		Double kwh = 0.0;
+
+		for (String timeStr : time) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("userId", user.getId());
+			map.put("createDtm", timeStr);
+			ElecDataDay tsy = elecDataDayService.findHuanbao(map);
+			Map<String, Object> map2 = new HashMap<>();
+			Map<String, Object> map3 = new HashMap<>();
+			Map<String, Object> map4 = new HashMap<>();
+			if (tsy != null) {
+				map2.put("co2", df.format(Double.valueOf(tsy.getKwh()) * CO2_prm));
+				map2.put("createDtm", timeStr);
+				map3.put("treeNum", df.format(Double.valueOf(tsy.getKwh()) * plant_trees_prm));
+				map3.put("createDtm", timeStr);
+				map4.put("SONum", df.format(Double.valueOf(tsy.getKwh()) * SO_prm));
+				map4.put("createDtm", timeStr);
+
+				rl.add(map2);
+				rl2.add(map3);
+				rl3.add(map4);
+
+				kwh += tsy.getKwh();
+
+			} else {
+				map2.put("co2", 0);
+				map2.put("createDtm", timeStr);
+				map3.put("treeNum", 0);
+				map3.put("createDtm", timeStr);
+				map4.put("SONum", 0);
+				map4.put("createDtm", timeStr);
+
+				rl.add(map2);
+				rl2.add(map3);
+				rl3.add(map4);
+			}
+		}
+
+		Map<String, Object> rm = new HashMap<>();
+		rm.put("co2data", rl);
+		rm.put("treeData", rl2);
+		rm.put("SOData", rl3);
+
+		rm.put("CO2_prm", kwh * CO2_prm);
+		rm.put("plant_trees_prm", kwh * plant_trees_prm);
+
+		return ResultVOUtil.success(rm);
 	}
 
 	/**
@@ -210,8 +209,7 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 
 		return ResultVOUtil.success(monthKwh);
 	}
-	
-	
+
 	/**
 	 * 用电/发电统计
 	 */
@@ -225,20 +223,35 @@ public Object huanbao(ElecDataDay temStationYear, HttpServletRequest request, Ht
 
 		return ResultVOUtil.success(workUseCount);
 	}
+
 	/**
 	 * 用电/发电记录
 	 */
 	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object listCount(ElecDataDayVo elecDataDayVo,Long stationId,Integer pageIndex) {
+	public Object listCount(ElecDataDayVo elecDataDayVo, Long stationId, Integer pageIndex) {
 		System.out.println(pageIndex);
 		ElecDataDay elecDataDay = new ElecDataDay();
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
-		PageHelper.startPage( pageIndex==null?1:pageIndex,15);
-		List<ElecDataDay> elecDataDays=elecDataDayService.findByMapper(elecDataDay, stationId);
-		PageInfo<ElecDataDay> pageInfo=new PageInfo<>(elecDataDays);
-		Map<String, Object> map=new HashMap<>();
+		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 15);
+		List<ElecDataDay> elecDataDays = elecDataDayService.findByMapper(elecDataDay, stationId);
+		PageInfo<ElecDataDay> pageInfo = new PageInfo<>(elecDataDays);
+		Map<String, Object> map = new HashMap<>();
 		map.put("pageInfo", pageInfo);
+		return ResultVOUtil.success(map);
+	}
+
+	/**
+	 * 移动端获取实时功率
+	 */
+	@RequestMapping(value = "/getElecDetailByStationCode", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object getElecDetailByStationCode(Long stationId, Integer type) {
+
+		Map<String, Object> map = new HashMap<>();
+
+		map = elecDataDayService.getElecDetailByStationCode(stationId, type);
+
 		return ResultVOUtil.success(map);
 	}
 }

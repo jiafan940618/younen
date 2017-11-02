@@ -198,7 +198,8 @@ public class NewServerPlanService {
 	        order.setProvinceText(user.getProvinceText());
 	        order.setServerName(server.getCompanyName());
 	        /**  转移数据*/
-	        order.setAddressText(user.getAddressText());
+	        order.setAddressText(user.getFullAddressText());
+	        order.setAddressText(user.getFullAddressText());
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());

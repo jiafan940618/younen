@@ -1,146 +1,106 @@
 package com.yn.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ElecDataYear {
-    private Integer id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
-    private Date createDtm;
+import com.yn.domain.IDomain;
 
-    private Integer del;
+@Entity
+public class ElecDataYear extends IDomain implements Serializable {
+	 @Column(updatable = true, columnDefinition = "varchar(255) comment '[电站码]'")
+	    private String ammeterCode;
+	    @Column(columnDefinition = "varchar(255) comment '[采集器码]'")
+	    private String devConfCode;
+	    @Column(columnDefinition = "int(11) comment '[设备地址]'")
+	    private Integer dAddr;
+	    @Column(columnDefinition = "int(11) comment '[设备类型]'")
+	    private Integer dType;
+	    @Column(columnDefinition = "int(11) comment '[回路地址]'")
+	    private Integer wAddr;
+	    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[瞬时功率]'")
+	    private BigDecimal kw;
+	    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[发/用电量]'")
+	    private BigDecimal kwh;
+	    @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
+	    private Integer type;
+	    @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017-07-20]'")
+	    private String recordTime;
 
-    private Date delDtm;
 
-    private Date updateDtm;
 
-    private Integer dAddr;
+	    public String getAmmeterCode() {
+			return ammeterCode;
+		}
 
-    private Integer dType;
+		public void setAmmeterCode(String ammeterCode) {
+			this.ammeterCode = ammeterCode;  
+		}
 
-    private String devConfCode;
+	    public String getDevConfCode() {
+	        return devConfCode;
+	    }
 
-    private BigDecimal kw;
+	    public void setDevConfCode(String devConfCode) {
+	        this.devConfCode = devConfCode;
+	    }
 
-    private BigDecimal kwh;
+	    public Integer getdAddr() {
+	        return dAddr;
+	    }
 
-    private String recordTime;
+	    public void setdAddr(Integer dAddr) {
+	        this.dAddr = dAddr;
+	    }
 
-    private String ammeterCode;
+	    public Integer getdType() {
+	        return dType;
+	    }
 
-    private Integer type;
+	    public void setdType(Integer dType) {
+	        this.dType = dType;
+	    }
 
-    private Integer wAddr;
+	    public Integer getwAddr() {
+	        return wAddr;
+	    }
 
-    public Integer getId() {
-        return id;
-    }
+	    public void setwAddr(Integer wAddr) {
+	        this.wAddr = wAddr;
+	    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	    public BigDecimal getKw() {
+	        return kw;
+	    }
 
-    public Date getCreateDtm() {
-        return createDtm;
-    }
+	    public void setKw(BigDecimal kw) {
+	        this.kw = kw;
+	    }
 
-    public void setCreateDtm(Date createDtm) {
-        this.createDtm = createDtm;
-    }
+	    public BigDecimal getKwh() {
+	        return kwh;
+	    }
 
-    public Integer getDel() {
-        return del;
-    }
+	    public void setKwh(BigDecimal kwh) {
+	        this.kwh = kwh;
+	    }
 
-    public void setDel(Integer del) {
-        this.del = del;
-    }
+	    public Integer getType() {
+	        return type;
+	    }
 
-    public Date getDelDtm() {
-        return delDtm;
-    }
+	    public void setType(Integer type) {
+	        this.type = type;
+	    }
 
-    public void setDelDtm(Date delDtm) {
-        this.delDtm = delDtm;
-    }
+	    public String getRecordTime() {
+	        return recordTime;
+	    }
 
-    public Date getUpdateDtm() {
-        return updateDtm;
-    }
-
-    public void setUpdateDtm(Date updateDtm) {
-        this.updateDtm = updateDtm;
-    }
-
-    public Integer getdAddr() {
-        return dAddr;
-    }
-
-    public void setdAddr(Integer dAddr) {
-        this.dAddr = dAddr;
-    }
-
-    public Integer getdType() {
-        return dType;
-    }
-
-    public void setdType(Integer dType) {
-        this.dType = dType;
-    }
-
-    public String getDevConfCode() {
-        return devConfCode;
-    }
-
-    public void setDevConfCode(String devConfCode) {
-        this.devConfCode = devConfCode == null ? null : devConfCode.trim();
-    }
-
-    public BigDecimal getKw() {
-        return kw;
-    }
-
-    public void setKw(BigDecimal kw) {
-        this.kw = kw;
-    }
-
-    public BigDecimal getKwh() {
-        return kwh;
-    }
-
-    public void setKwh(BigDecimal kwh) {
-        this.kwh = kwh;
-    }
-
-    public String getRecordTime() {
-        return recordTime;
-    }
-
-    public void setRecordTime(String recordTime) {
-        this.recordTime = recordTime == null ? null : recordTime.trim();
-    }
-
-    public String getAmmeterCode() {
-        return ammeterCode;
-    }
-
-    public void setAmmeterCode(String ammeterCode) {
-        this.ammeterCode = ammeterCode == null ? null : ammeterCode.trim();
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getwAddr() {
-        return wAddr;
-    }
-
-    public void setwAddr(Integer wAddr) {
-        this.wAddr = wAddr;
-    }
+	    public void setRecordTime(String recordTime) {
+	        this.recordTime = recordTime;
+	    }
 }

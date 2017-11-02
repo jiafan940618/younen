@@ -1,75 +1,51 @@
 package com.yn.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ElecDataMonth {
-    private Integer id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
-    private Date createDtm;
+import com.yn.domain.IDomain;
+@Entity
+public class ElecDataMonth extends IDomain implements Serializable{
 
-    private Integer del;
-
-    private Date delDtm;
-
-    private Date updateDtm;
-
-    private Integer dAddr;
-
-    private Integer dType;
-
+    @Column(updatable = true, columnDefinition = "varchar(255) comment '[电站码]'")
+    private String ammeterCode;
+    @Column(columnDefinition = "varchar(255) comment '[采集器码]'")
     private String devConfCode;
-
+    @Column(columnDefinition = "int(11) comment '[设备地址]'")
+    private Integer dAddr;
+    @Column(columnDefinition = "int(11) comment '[设备类型]'")
+    private Integer dType;
+    @Column(columnDefinition = "int(11) comment '[回路地址]'")
+    private Integer wAddr;
+    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[瞬时功率]'")
     private BigDecimal kw;
-
+    @Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) default 0 comment '[发/用电量]'")
     private BigDecimal kwh;
-
+    @Column(columnDefinition = "int(1) comment '[类型]{1:发电,2:用电}'")
+    private Integer type;
+    @Column(columnDefinition = "varchar(255) NOT NULL comment'[记录时间,如:2017-07-20]'")
     private String recordTime;
 
-    private String ammeterCode;
 
-    private Integer type;
 
-    private Integer wAddr;
+    public String getAmmeterCode() {
+		return ammeterCode;
+	}
 
-    public Integer getId() {
-        return id;
+	public void setAmmeterCode(String ammeterCode) {
+		this.ammeterCode = ammeterCode;  
+	}
+
+    public String getDevConfCode() {
+        return devConfCode;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Date getCreateDtm() {
-        return createDtm;
-    }
-
-    public void setCreateDtm(Date createDtm) {
-        this.createDtm = createDtm;
-    }
-
-    public Integer getDel() {
-        return del;
-    }
-
-    public void setDel(Integer del) {
-        this.del = del;
-    }
-
-    public Date getDelDtm() {
-        return delDtm;
-    }
-
-    public void setDelDtm(Date delDtm) {
-        this.delDtm = delDtm;
-    }
-
-    public Date getUpdateDtm() {
-        return updateDtm;
-    }
-
-    public void setUpdateDtm(Date updateDtm) {
-        this.updateDtm = updateDtm;
+    public void setDevConfCode(String devConfCode) {
+        this.devConfCode = devConfCode;
     }
 
     public Integer getdAddr() {
@@ -88,12 +64,12 @@ public class ElecDataMonth {
         this.dType = dType;
     }
 
-    public String getDevConfCode() {
-        return devConfCode;
+    public Integer getwAddr() {
+        return wAddr;
     }
 
-    public void setDevConfCode(String devConfCode) {
-        this.devConfCode = devConfCode == null ? null : devConfCode.trim();
+    public void setwAddr(Integer wAddr) {
+        this.wAddr = wAddr;
     }
 
     public BigDecimal getKw() {
@@ -112,22 +88,6 @@ public class ElecDataMonth {
         this.kwh = kwh;
     }
 
-    public String getRecordTime() {
-        return recordTime;
-    }
-
-    public void setRecordTime(String recordTime) {
-        this.recordTime = recordTime == null ? null : recordTime.trim();
-    }
-
-    public String getAmmeterCode() {
-        return ammeterCode;
-    }
-
-    public void setAmmeterCode(String ammeterCode) {
-        this.ammeterCode = ammeterCode == null ? null : ammeterCode.trim();
-    }
-
     public Integer getType() {
         return type;
     }
@@ -136,11 +96,11 @@ public class ElecDataMonth {
         this.type = type;
     }
 
-    public Integer getwAddr() {
-        return wAddr;
+    public String getRecordTime() {
+        return recordTime;
     }
 
-    public void setwAddr(Integer wAddr) {
-        this.wAddr = wAddr;
+    public void setRecordTime(String recordTime) {
+        this.recordTime = recordTime;
     }
 }

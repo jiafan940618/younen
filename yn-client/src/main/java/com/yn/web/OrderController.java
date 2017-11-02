@@ -369,9 +369,9 @@ public class OrderController {
 	/** 订单详情状态 */
 	@ResponseBody
 	@RequestMapping(value = "/ingorder")
-	public Object LookOrder1(HttpSession session) {
+	public Object LookOrder1(HttpSession session, @RequestParam("orderId") Long OrderId) {
 
-		Object object = ordService.getInformOrder(573l);
+		Object object = ordService.getInformOrder(OrderId);
 
 		NewPlanVo newPlanVo = ordService.getVoNewPlan(object);
 
@@ -472,6 +472,7 @@ public class OrderController {
 		User user = userservice.findOne(userid);
 
 		user.setFullAddressText(user01.getAddressText());
+		
 		user.setPhone(user01.getPhone());
 		user.setUserName(user01.getUserName());
 
@@ -553,7 +554,7 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-			stationService.insertStation(neworder);
+		//	stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
@@ -646,7 +647,7 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-			stationService.insertStation(neworder);
+			//stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
@@ -733,6 +734,8 @@ public class OrderController {
 	public ResultData<Object> order_detail(MultipartHttpServletRequest request, HttpSession session)
 			throws UnsupportedEncodingException {
 
+		logger.info("-- --- ---- ---- ------ -进入上传图片的方法");
+		
 		request.setCharacterEncoding("UTF-8");
 		String finaltime = null;
 

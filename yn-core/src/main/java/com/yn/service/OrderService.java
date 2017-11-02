@@ -141,6 +141,7 @@ public class OrderService {
 		order.setStationName(stationName);
 		order.setSpeed(Double.valueOf(speed));
 		//[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}
+		order.setStatus(status);
 		if(status == 0){
 			order.setIpoMemo("申请中");
 		}else if(status == 1){

@@ -352,9 +352,14 @@ public class UserLoginController {
          BeanCopy.copyProperties(user, newUser);
 
 		if (user.getPhone() == null || user.getPhone().equals("") ) {
-			logger.info(" -- -- --- 电话不能为空");
+			logger.info(" -- -- --- 电话不能为空!");
 			 return ResultVOUtil.error(777, Constant.PHONE_NULL);
 		}
+		
+		
+		/*if(user.getAddressText() == null || user.getAddressText().equals("")){
+			 return ResultVOUtil.error(777, "地址不能为空!");
+		}*/
 		
 		User user2 = new User();
 		user2.setPhone(user.getPhone());

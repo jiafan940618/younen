@@ -215,16 +215,16 @@ public class PayOrderAction {
 			TreatyApplyResultDTO resultdto = kftpayService.treatyCollectApply(bankCardVo);
 			
 			if(resultdto.getStatus()==2){
-				logger.info("========= =========== ========== ========="+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
+				logger.info("========= =========== ========== ========="+resultdto.getErrorCode());
 				
-				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode());
 			}
 			
 			if(resultdto.getStatus()!=1){
-				logger.info("========= =========== ========== ========="+ resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
+				logger.info("========= =========== ========== ========="+ resultdto.getErrorCode());
 				
 
-				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode());
 			}
 
 			TreatyConfirmResultDTO configdto=	kftpayService.confirmTreatyCollectApply(resultdto, bankCardVo);
@@ -232,7 +232,7 @@ public class PayOrderAction {
 			if(configdto.getStatus()!=1){
 				logger.info("========= =========== ========== ========="+ configdto.getFailureDetails());
 				
-				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode()+":"+resultdto.getFailureDetails());
+				return ResultVOUtil.error(777, "出现错误,请联系客服,错误提示:"+resultdto.getErrorCode());
 			}else{
 				bankCardVo.setTreatyId(configdto.getTreatyId());
 				
