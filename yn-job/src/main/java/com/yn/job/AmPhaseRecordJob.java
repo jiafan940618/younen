@@ -40,7 +40,7 @@ import com.yn.utils.DateUtil;
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
  */
-@Component
+//@Component
 public class AmPhaseRecordJob {
 	@Autowired
 	AmPhaseRecordService amPhaseRecordService;
@@ -72,6 +72,7 @@ public class AmPhaseRecordJob {
 	 */
 	@Scheduled(fixedDelay = 25 * 1000)
 	private void collectAmPhaseRecord() throws Exception {
+		//建议后期换成拦截器、过滤器处理。
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));

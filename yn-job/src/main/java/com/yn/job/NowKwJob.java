@@ -38,19 +38,23 @@ public class NowKwJob {
 			ammeterR.setStationId(station.getId());
 
 			Double tolNowKw = 0d;
-			//List<Ammeter> ammeters = ammeterService.findAll(ammeterR);
+			// List<Ammeter> ammeters = ammeterService.findAll(ammeterR);
 			List<Ammeter> ammeters = ammeterService.findAllByMapper(ammeterR);
 			for (Ammeter ammeter : ammeters) {
-				tolNowKw += ammeter.getNowKw();
+				if (ammeter.getNowKw() != null) {
+					tolNowKw += ammeter.getNowKw();
+				}
 			}
-			//station.setNowKw(tolNowKw);
+			// station.setNowKw(tolNowKw);
 			// stationDao.save(station);
-			if (stationDao.findOne(station.getId()) != null){
+			if (stationDao.findOne(station.getId()) != null) {
 				stationMapper.updateByPrimaryKeySelective(station);
-				System.out.println("NowKwJob--> station::修改成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			}else{
+				System.out.println("NowKwJob--> station::修改成功！-->"
+						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+			} else {
 				stationMapper.insert(station);
-				System.out.println("NowKwJob--> station::新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+				System.out.println("NowKwJob--> station::新增成功！-->"
+						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 		}
 	}

@@ -300,4 +300,11 @@
 		work_total_tm = #{workTotalTm,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
+	<select id="selectByStationId" parameterType="int" resultType="com.yn.model.Ammeter">
+		select 
+		<include refid="Base_Column_List" />
+		from ammeter
+		where station_id = #{stationId,jdbcType=INTEGER}
+	</select>
+	
 </mapper>

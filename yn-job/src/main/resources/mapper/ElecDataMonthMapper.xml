@@ -118,14 +118,14 @@
 		</if>
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.ElecDataMonth">
-		insert into elec_data_month (id, create_dtm, del,
-		del_dtm, update_dtm, d_addr,
+		insert into elec_data_month (id,   del,
+		del_dtm,   d_addr,
 		d_type, dev_conf_code, kw,
 		kwh, record_time, ammeter_code,
 		type, w_addr)
-		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
-		#{del,jdbcType=INTEGER},
-		#{delDtm,jdbcType=TIMESTAMP}, #{updateDtm,jdbcType=TIMESTAMP}, #{dAddr,jdbcType=INTEGER},
+		values (#{id,jdbcType=INTEGER},  
+		0,
+		#{delDtm,jdbcType=TIMESTAMP} , #{dAddr,jdbcType=INTEGER},
 		#{dType,jdbcType=INTEGER}, #{devConfCode,jdbcType=VARCHAR},
 		#{kw,jdbcType=DECIMAL},
 		#{kwh,jdbcType=DECIMAL}, #{recordTime,jdbcType=VARCHAR}, #{ammeterCode,jdbcType=VARCHAR},
@@ -137,17 +137,11 @@
 			<if test="id != null">
 				id,
 			</if>
-			<if test="createDtm != null">
-				create_dtm,
-			</if>
 			<if test="del != null">
 				del,
 			</if>
 			<if test="delDtm != null">
 				del_dtm,
-			</if>
-			<if test="updateDtm != null">
-				update_dtm,
 			</if>
 			<if test="dAddr != null">
 				d_addr,
@@ -180,9 +174,6 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				#{id,jdbcType=INTEGER},
-			</if>
-			<if test="createDtm != null">
-				#{createDtm,jdbcType=TIMESTAMP},
 			</if>
 			<if test="del != null">
 				#{del,jdbcType=INTEGER},
@@ -235,17 +226,11 @@
 			<if test="record.id != null">
 				id = #{record.id,jdbcType=INTEGER},
 			</if>
-			<if test="record.createDtm != null">
-				create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
-			</if>
 			<if test="record.del != null">
 				del = #{record.del,jdbcType=INTEGER},
 			</if>
 			<if test="record.delDtm != null">
 				del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
-			</if>
-			<if test="record.updateDtm != null">
-				update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
 			</if>
 			<if test="record.dAddr != null">
 				d_addr = #{record.dAddr,jdbcType=INTEGER},
@@ -282,10 +267,8 @@
 	<update id="updateByExample" parameterType="map">
 		update elec_data_month
 		set id = #{record.id,jdbcType=INTEGER},
-		create_dtm = #{record.createDtm,jdbcType=TIMESTAMP},
 		del = #{record.del,jdbcType=INTEGER},
 		del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
-		update_dtm = #{record.updateDtm,jdbcType=TIMESTAMP},
 		d_addr = #{record.dAddr,jdbcType=INTEGER},
 		d_type = #{record.dType,jdbcType=INTEGER},
 		dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
@@ -302,17 +285,11 @@
 	<update id="updateByPrimaryKeySelective" parameterType="com.yn.model.ElecDataMonth">
 		update elec_data_month
 		<set>
-			<if test="createDtm != null">
-				create_dtm = #{createDtm,jdbcType=TIMESTAMP},
-			</if>
 			<if test="del != null">
 				del = #{del,jdbcType=INTEGER},
 			</if>
 			<if test="delDtm != null">
 				del_dtm = #{delDtm,jdbcType=TIMESTAMP},
-			</if>
-			<if test="updateDtm != null">
-				update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
 			</if>
 			<if test="dAddr != null">
 				d_addr = #{dAddr,jdbcType=INTEGER},
@@ -346,10 +323,9 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.ElecDataMonth">
 		update elec_data_month
-		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+		set 
 		del = #{del,jdbcType=INTEGER},
 		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
-		update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
 		d_addr = #{dAddr,jdbcType=INTEGER},
 		d_type = #{dType,jdbcType=INTEGER},
 		dev_conf_code = #{devConfCode,jdbcType=VARCHAR},

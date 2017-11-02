@@ -119,8 +119,7 @@ public class AmPhaseRecordService {
 		if(amPhaseRecord.getdAddr()!=null){
 			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
 		}
-		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
-		example.setDate(date);
+		example.setDate(amPhaseRecord.getDate());
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
@@ -136,8 +135,7 @@ public class AmPhaseRecordService {
 		if(amPhaseRecord.getdAddr()!=null){
 			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
 		}
-		String date = DateUtil.formatDate(DateUtil.formatString(amPhaseRecord.getDate(), "yyyy_MM_dd"),"yyyy_MM_dd");
-		example.setDate(date);
+		example.setDate(amPhaseRecord.getDate());
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
