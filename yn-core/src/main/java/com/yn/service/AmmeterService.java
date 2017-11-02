@@ -54,8 +54,8 @@ public class AmmeterService {
     private UserDao userDao;
     @Autowired
     private AmmeterMapper ammeterMapper;
-
-    public Ammeter findByCAddr(String caddr){
+    
+   public Ammeter findByCAddr(String caddr){
     	return ammeterDao.findByCAddr(caddr);
     }
 

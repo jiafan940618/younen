@@ -145,7 +145,7 @@ public class AmmeterJob {
      */
     private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
         Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
-        String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyyMMddHH");
+        String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyyMMdd HH");
         String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyyMMdd");
 
         if (ammeter.getStationId() != null) {

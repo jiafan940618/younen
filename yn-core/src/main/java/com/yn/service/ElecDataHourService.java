@@ -57,25 +57,25 @@ public class ElecDataHourService {
 	SystemConfigService systemConfigService;
 
 	/**
+	
 	 * 
-	 * 
-	 * 
-	 * @Title: findAllDataByMonthOrYear
-	 * 
-	 * @Description: TODO(查询到当月/当年所有的总发电、用电量。也可以指定年或者月)
-	 * 
-	 * @param @param flag 大于0是月，小于0是年。
-	 * 
-	 * @param @param selectYear 指定年。
-	 * 
-	 * @param @param selectMonth 指定月。
-	 * 
-	 * @param @return 参数
-	 * 
-	 * @return List<ElecDataHour> 返回类型
-	 * 
-	 * @throws
-	 * 
+	
+	    * @Title: findAllDataByMonthOrYear
+	
+	    * @Description: TODO(查询到当月/当年所有的总发电、用电量。也可以指定年或者月)
+	
+	    * @param @param flag 大于0是月，小于0是年。
+	
+	    * @param @param selectYear 指定年。
+	
+	    * @param @param selectMonth 指定月。
+	
+	    * @param @return    参数
+	
+	    * @return List<ElecDataHour>    返回类型
+	
+	    * @throws
+	
 	 */
 	public List<ElecDataHour> findAllDataByMonthOrYear(int flag, int selectYear, int selectMonth) {
 		Calendar calendar = Calendar.getInstance();
@@ -95,8 +95,25 @@ public class ElecDataHourService {
 						+ (selectMonth <= 9 ? String.valueOf(0) + selectMonth : selectMonth);
 			}
 		}
+		//只是玩玩的话，在下面把dayQuery改成想要的格式。
+		//dayQuery="2017-12";//某一个月
+		//dayQuery="2017";//整年
 		System.out.println(dayQuery);
 		return elecDataHourMapper.findAllDataByMonthOrYear(new ElecDataHour(dayQuery));
+	}
+	
+	/**
+	 * 
+	    * @Title: findAllDataByMonthOrYear4C
+	    * @Description: TODO(同上，但这是为Controller准备的方法、。)
+	    * @param @param date
+	    * @param @return    参数
+	    * @return List<ElecDataHour>    返回类型
+	    * @throws
+	 */
+	public List<ElecDataHour> findAllDataByMonthOrYear4C(String date) {
+		System.out.println(date);
+		return elecDataHourMapper.findAllDataByMonthOrYear(new ElecDataHour(date));
 	}
 
 	public ElecDataHour findOne(Long id) {
@@ -536,9 +553,10 @@ public class ElecDataHourService {
 		}
 		return elecDataHourMapper.selectByExample(example);
 	}
-
 	/**
+
 	 * 移动端获取当前时间段的用电发电数据
+
 	 */
 	public Map<String, Object> getMomentPower(Long stationId, Integer type) {
 
@@ -580,4 +598,5 @@ public class ElecDataHourService {
 
 		return maps;
 	}
+
 }

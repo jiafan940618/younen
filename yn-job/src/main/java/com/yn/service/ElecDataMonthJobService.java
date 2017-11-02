@@ -35,7 +35,7 @@ public class ElecDataMonthJobService {
 	@Autowired
 	private ElecDataYearService elecDataYearService;
 
-	private static Logger logger = Logger.getLogger(ElecDataMonthJob.class);
+	private static Logger logger = Logger.getLogger(ElecDataMonthJobService.class);
 
 
 	/**

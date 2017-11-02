@@ -15,9 +15,9 @@ public class DateUtil {
 	public static final String yyyy_MM_dd = "yyyy-MM-dd";
 
 	public static final String yyyy_MM_dd_HHmmss = "yyyy-MM-dd HH:mm:ss";
-	
+
 	public static final String yyMMddHHmmss = "yyMMddHHmmss";
-	
+
 	public static String formatDate(Date date, String format) {
 		String result = "";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -35,7 +35,7 @@ public class DateUtil {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.parse(str);
 	}
-	
+
 	public static Date parseString(String str, String format) {
 		if (StringUtil.isEmpty(str)) {
 			return null;
@@ -48,8 +48,7 @@ public class DateUtil {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		return parse;
 	}
 
@@ -94,7 +93,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取今天的时间区间
 	 */
@@ -112,7 +111,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取今月的时间区间
 	 */
@@ -132,7 +131,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取上个月的时间区间
 	 */
@@ -153,7 +152,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取今年的时间区间
 	 */
@@ -175,7 +174,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取去年的时间区间
 	 */
@@ -198,7 +197,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	/**
 	 * 获取当前小时的时间区间
 	 */
@@ -231,7 +230,7 @@ public class DateUtil {
 		date[1] = now.getTime();
 		return date;
 	}
-	
+
 	public static String getCurrentDateStr() {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -255,24 +254,24 @@ public class DateUtil {
 		cal.set(Calendar.MILLISECOND, 001);
 		return cal.getTimeInMillis();
 	}
-	
+
 	/**
 	 * 查看今天是星期几，如果今天是星期5，则返回5
 	 * @return
 	 */
 	public static String getDayOfWeekNum() {
-    	Date date=new Date();
-	    String[] weeks = {"7","1","2","3","4","5","6"};  
-        Calendar cal = Calendar.getInstance();  
-        cal.setTime(date);  
-        int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1; 
-        if(week_index < 0) {
-            week_index = 0;  
-        }
-    	
-    	return  weeks[week_index];
-    }
-	
+		Date date = new Date();
+		String[] weeks = { "7", "1", "2", "3", "4", "5", "6" };
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if (week_index < 0) {
+			week_index = 0;
+		}
+
+		return weeks[week_index];
+	}
+
 	/**
 	 * 获取当前时间是 几点几分几秒
 	 * @return
@@ -281,7 +280,7 @@ public class DateUtil {
 		Time nowTime = new Time(System.currentTimeMillis() - getDayBeginTimeInMillis());
 		return nowTime;
 	}
-	
+
 	/**
 	 * 毫秒转化
 	 * @param ms
@@ -308,7 +307,7 @@ public class DateUtil {
 
 		return strMinute + " 分钟 " + strSecond + " 秒";
 	}
-	
+
 	/**
 	 * 判断当前时分是否在某两个时分段内
 	 * @param beginTime
@@ -317,27 +316,27 @@ public class DateUtil {
 	 * @throws ParseException
 	 */
 	public static boolean inTimeSpace(Time beginTime, Time endTime) {
-    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		try {
 			String format = sdf.format(new Date());
 			Date now = sdf.parse(format);
-			
+
 			String beginTimeStr = sdf.format(beginTime);
 			Date begin = sdf.parse(beginTimeStr);
-			
+
 			String endTimeStr = sdf.format(endTime);
 			Date end = sdf.parse(endTimeStr);
-			
+
 			if (begin.before(now) && now.before(end)) {
 				return true;
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
-    }
-	
+	}
+
 	/**
 	 * 获取今天每个时刻的整点，当天0点到当天23点
 	 * @return
@@ -371,7 +370,7 @@ public class DateUtil {
 		}
 		return hourList1;
 	}
-	
+
 	/**
 	 * 
 	 * @Title: countDaysInMonth 
@@ -384,5 +383,92 @@ public class DateUtil {
 	public static int countDaysInMonth(int month) {
 		return LocalDate.now().withMonth(month).lengthOfMonth();
 	}
+
+	/**
+	 * 
+	    * @Title: countNowDaysInMonth
+	    * @Description: TODO(获取指定月份的当前日期的天数)
+	    * @param @param month 当前月份的当前天数
+	    *  eg：2017/10/10-->10 
+	    * @param @return    参数
+	    * @return int    返回类型
+	    * @throws
+	 */
+	public static int countNowDaysInMonth(int month) {
+		return LocalDate.now().withMonth(month).now().getDayOfMonth();
+	}
+
+	/**
+	 * 
+	    * @Title: parseDate
+	    * @Description: TODO(返回一个具体的日期)
+	    *  eg：20170631
+	    * @param @param y 年
+	    * @param @param m 月
+	    * @param @param d 日
+	    * @param @return    参数
+	    * @return String    返回类型
+	    * @throws
+	 */
+	public static String parseDate(int y, int m, int d) {
+		String date = "";
+		String day = "";
+		String month = "";
+		if (d <= 9) {
+			day = "0" + d;
+		} else {
+			day = d + "";
+		}
+		if (m <= 9) {
+			month = "0" + m;
+		} else {
+			month = m + "";
+		}
+		date = y + "_" + month + "_" + day;
+		return date;
+	}
+
+	/**
+	 * 
+	    * @Title: getDaysByYearMonth
+	    * @Description: TODO(根据 年、月 获取对应的月份 的 天数)
+	    * @param @param year
+	    * @param @param month
+	    * @param @return    参数
+	    * @return int    返回类型
+	    * @throws
+	 */
+	public static int getDaysByYearMonth(int year, int month) {
+		Calendar a = Calendar.getInstance();
+		a.set(Calendar.YEAR, year);
+		a.set(Calendar.MONTH, month - 1);
+		a.set(Calendar.DATE, 1);
+		a.roll(Calendar.DATE, -1);
+		int maxDate = a.get(Calendar.DATE);
+		return maxDate;
+	}
+
 	
+	/**
+	 * 
+	    * @Title: getDayOfWeekByDate
+	    * @Description: TODO(根据日期 找到对应日期的 星期几)
+	    * @param @param date
+	    * @param @return    参数
+	    * @return String    返回类型
+	    * @throws
+	 */
+	public static String getDayOfWeekByDate(String date) {
+		String dayOfweek = "-1";
+		try {
+			SimpleDateFormat myFormatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date myDate = myFormatter.parse(date);
+			SimpleDateFormat formatter = new SimpleDateFormat("E");
+			String str = formatter.format(myDate);
+			dayOfweek = str;
+		} catch (Exception e) {
+			System.out.println("错误!");
+		}
+		return dayOfweek;
+	}
 }

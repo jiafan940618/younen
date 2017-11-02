@@ -5,16 +5,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.taglibs.standard.tei.ForEachTEI;
 import org.soofa.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
@@ -31,11 +28,8 @@ import com.yn.model.Ammeter;
 import com.yn.model.AmmeterRecord;
 import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
-import com.yn.model.ElecDataDayExample;
-import com.yn.model.ElecDataDayExample.Criteria;
 import com.yn.model.ElecDataHour;
 import com.yn.model.ElecDataMonth;
-import com.yn.model.ElecDataMonthExample;
 import com.yn.model.ElecDataYear;
 import com.yn.model.PatchDataRecord;
 import com.yn.model.Station;
@@ -112,8 +106,8 @@ public class PatchDataRecordJob {
 	    * @return void    返回类型
 	    * @throws
 	 */
-	// @Scheduled(cron = "0 0 0 * * ? ")
-	@Scheduled(fixedDelay = 25 * 1000)
+	@Scheduled(cron = "0 0 0 * * ? ")
+	//@Scheduled(fixedDelay = 25 * 1000)
 	@Transactional
 	private void job() throws ParseException {
 		List<PatchDataRecord> list = patchDataRecordMapper.selectByExample(null);
@@ -180,7 +174,7 @@ public class PatchDataRecordJob {
 			LOGGER.info("清空临时表中的数据。");
 			patchDataRecordMapper.truncateTable();
 		}
-	}
+	} 
 
 	/**
 	 * 保存电表状态记录

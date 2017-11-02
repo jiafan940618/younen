@@ -23,7 +23,7 @@ import com.yn.service.ElecDataMonthService;
     * @date 2017年10月24日
     *
  */
-//@Component
+// @Component
 public class ElecDataMonthJob {
 
 	@Autowired
@@ -45,13 +45,13 @@ public class ElecDataMonthJob {
 	@Scheduled(cron = "0 0 1 * * ? ")
 	private void job() {
 		String recordTime = new SimpleDateFormat("yyyy-MM").format(new Date());
-		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(1,-1,-1);
+		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(1, -1, -1);
 		for (ElecDataHour elecDataHour : data) {
-			String ammeterCode = elecDataHour.getAmmeterCode()==null?"":elecDataHour.getAmmeterCode();
+			String ammeterCode = elecDataHour.getAmmeterCode() == null ? "" : elecDataHour.getAmmeterCode();
 			ElecDataMonth elecDataMonth = new ElecDataMonth();
 			elecDataMonth.setRecordTime(recordTime);
 			elecDataMonth.setAmmeterCode(ammeterCode);
-			elecDataMonth.setdAddr(elecDataHour.getdAddr()==null?0:elecDataHour.getdAddr().intValue());
+			elecDataMonth.setdAddr(elecDataHour.getdAddr() == null ? 0 : elecDataHour.getdAddr().intValue());
 			Double totalKw = 0d;
 			Double totalKwh = 0d;
 			List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
