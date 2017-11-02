@@ -553,5 +553,50 @@ public class ElecDataHourService {
 		}
 		return elecDataHourMapper.selectByExample(example);
 	}
+	/**
+
+	 * 移动端获取当前时间段的用电发电数据
+
+	 */
+	public Map<String, Object> getMomentPower(Long stationId, Integer type) {
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> maps = new HashMap<>();
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		Date start = todaySpace[0];
+		Date end = todaySpace[1];
+
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH:mm");
+
+		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+
+		List<ElecDataHour> ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
+
+				start, end);
+
+		for (ElecDataHour ElecDataHour : ElecDataHourList) {
+
+			Map<String, Object> map = new HashMap<>();
+
+			map.put("time", dFormat.format(ElecDataHour.getCreateDtm()));
+			map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKwh()));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
+			list.add(map);
+		}
+
+		double todayKwh = elecDataHourDao.sumKwhByAmmeterCodes(start, end, type, ammeterCodes);
+
+		if (type == 1) {
+			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
+			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
+			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
+		}
+		maps.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh));
+		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(ElecDataHourList.get(ElecDataHourList.size()-1).getKw()));
+
+		maps.put("list", list);
+
+		return maps;
+	}
 
 }
