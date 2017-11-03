@@ -230,7 +230,6 @@ public class ElecDataDayController {
 	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object listCount(ElecDataDayVo elecDataDayVo, Long stationId, Integer pageIndex) {
-		System.out.println(pageIndex);
 		ElecDataDay elecDataDay = new ElecDataDay();
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
 		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 15);

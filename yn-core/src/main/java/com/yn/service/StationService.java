@@ -427,13 +427,16 @@ public class StationService {
 		for (Station station : stations) {
 			List<Ammeter> ammeters = ammeterDao.findByStationId(station.getId());
 			for (Ammeter ammeter : ammeters) {
-				// 发电功率
-				nowKw = nowKw + ammeter.getNowKw();
-				// 发电总量
-				egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
+			// 发电功率
+			nowKw = nowKw + ammeter.getNowKw();
 			}
 			// 装机容量
 			capacity = capacity + station.getCapacity();
+		}
+		List<Ammeter> ammetersAll = ammeterDao.findAll();
+		for (Ammeter ammeter : ammetersAll) {
+			// 发电总量
+			egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
 		}
 		if (capacity > nowKw) {
 			// 发电效率（百分比）
@@ -448,6 +451,7 @@ public class StationService {
 		objectMap.put("nowKw", NumberUtil.accurateToTwoDecimal(nowKw));
 		objectMap.put("egt", NumberUtil.getTenThousand(egt));
 		objectMap.put("efficiency", (int) efficiency);
+		objectMap.put("capacity", NumberUtil.accurateToTwoDecimal(capacity));
 		return objectMap;
 
 	}
@@ -462,8 +466,8 @@ public class StationService {
 		double capacity = 0;
 		double efficiency = 0;
 		for (Station station : stations) {
-			// 装机容量
-			capacity = capacity + station.getCapacity();
+		  // 装机容量
+		  capacity = capacity + station.getCapacity();
 		}
 		List<Ammeter> ammeters = ammeterDao.findAll();
 		for (Ammeter ammeter : ammeters) {
@@ -485,6 +489,7 @@ public class StationService {
 		objectMap.put("nowKw", NumberUtil.accurateToTwoDecimal(nowKw));
 		objectMap.put("egt", NumberUtil.getTenThousand(egt));
 		objectMap.put("efficiency", (int) efficiency);
+		objectMap.put("capacity", NumberUtil.accurateToTwoDecimal(capacity));
 		return objectMap;
 
 	}

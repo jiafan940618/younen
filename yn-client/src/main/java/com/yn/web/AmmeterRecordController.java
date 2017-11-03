@@ -77,7 +77,7 @@ public class AmmeterRecordController {
     /**
 	 * 前端状态日报
 	 */
-	@RequestMapping(value = "/StateDaily", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/stateDaily", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object listCount(AmmeterRecordVo ammeterRecordVo,Integer pageIndex) {
 		AmmeterRecord ammeterRecord = new AmmeterRecord();

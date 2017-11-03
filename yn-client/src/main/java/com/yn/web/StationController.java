@@ -30,9 +30,11 @@ import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
 import com.yn.model.Station;
+import com.yn.model.User;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewUserVo;
 import com.yn.vo.StationVo;
@@ -134,11 +136,12 @@ public class StationController {
        @RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
        public Object runningStation(HttpSession session,Station station) {
        	
-       	NewUserVo userVo = (NewUserVo)session.getAttribute("user");
+    	   User user = SessionCache.instance().getUser();
+       //	System.out.println(userVo.getPhone());
        	Map<String, Object> stationByUser=new HashMap<>();
        	
-       	if(userVo!=null){
-       		station.setUserId(userVo.getId());
+       	if(user!=null){
+       		station.setUserId(user.getId());
        		
        		if (stationDao.findByUserId(station.getUserId())!=null) {    			
        			 List<Station> stations=stationDao.findByUserId(station.getUserId());
@@ -294,5 +297,4 @@ public class StationController {
 		map.put("income", stationService.userIncome(station));
 		return ResultVOUtil.success(map);
 	}
-	
 }
