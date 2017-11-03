@@ -106,7 +106,7 @@ public class UserLoginController {
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
-	        
+	        session.setAttribute("userVo",userVo );
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
