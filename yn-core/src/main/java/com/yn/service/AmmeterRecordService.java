@@ -149,37 +149,75 @@ public class AmmeterRecordService {
 		map.put("queryStartDtm", ammeterRecord.getQueryStartDtm());
 		map.put("queryEndDtm", ammeterRecord.getQueryEndDtm());
 		map.put("stationId", ammeterRecord.getStationId());
-		List<String> lStrings=new ArrayList<>();	
-		if (ammeterRecord.getStatusCode()!=null) {
-			if ("0x0".equals(ammeterRecord.getStatusCode())) {
+		List<String> lStrings=new ArrayList<>();
+		if ("-1".equals(ammeterRecord.getQuery())) {
+			ammeterRecord.setQuery(null);
+            if ("-1".equals(ammeterRecord.getStatusCode())) {
+            	ammeterRecord.setStatusCode(null);
+            	map.put("statusCode",null );
+			}else {
+				lStrings.add(ammeterRecord.getStatusCode());
+				map.put("statusCode",lStrings);
+			}
+		}else if ("1".equals(ammeterRecord.getQuery())) {
+			
 				lStrings.add("0x0");
 				lStrings.add("0x8");
 				lStrings.add("0x80");
 				lStrings.add("0x00");
 				map.put("statusCode",lStrings );
-			}else {
+	
+		}else if ("2".equals(ammeterRecord.getQuery())) {
+			
+			if ("-1".equals(ammeterRecord.getStatusCode())) {
+				lStrings.add("0x01");
+				lStrings.add("0x02");
+				lStrings.add("0x04");
+				lStrings.add("0x08");
+				lStrings.add("0x10");
+				lStrings.add("0x20");
+				lStrings.add("0x40");
+				lStrings.add("0x18");
+				map.put("statusCode",lStrings );
+			}else{
 				lStrings.add(ammeterRecord.getStatusCode());
 				map.put("statusCode",lStrings);
-			}
-		  }else {
-				if ("1".equals(ammeterRecord.getQuery())) {
-					lStrings.add("0x0");
-					lStrings.add("0x8");
-					lStrings.add("0x80");
-					lStrings.add("0x00");
-					map.put("statusCode",lStrings );
-				}else if("2".equals(ammeterRecord.getQuery())){
-					lStrings.add("0x01");
-					lStrings.add("0x02");
-					lStrings.add("0x04");
-					lStrings.add("0x08");
-					lStrings.add("0x10");
-					lStrings.add("0x20");
-					lStrings.add("0x40");
-					lStrings.add("0x18");
-					map.put("statusCode",lStrings );
-				}
-			}
+			}		
+	}
+		
+		
+		
+		
+//		if (ammeterRecord.getStatusCode()!=null) {
+//			if ("0x0".equals(ammeterRecord.getStatusCode())) {
+//				lStrings.add("0x0");
+//				lStrings.add("0x8");
+//				lStrings.add("0x80");
+//				lStrings.add("0x00");
+//				map.put("statusCode",lStrings );
+//			}else {
+//				lStrings.add(ammeterRecord.getStatusCode());
+//				map.put("statusCode",lStrings);
+//			}
+//		  }else {
+//				if ("1".equals(ammeterRecord.getQuery())) {
+//					lStrings.add("0x0");
+//					lStrings.add("0x8");
+//					lStrings.add("0x80");
+//					lStrings.add("0x00");
+//					map.put("statusCode",lStrings );
+//				}else if("2".equals(ammeterRecord.getQuery())){
+//					lStrings.add("0x01");
+//					lStrings.add("0x02");
+//					lStrings.add("0x04");
+//					lStrings.add("0x08");
+//					lStrings.add("0x10");
+//					lStrings.add("0x20");
+//					lStrings.add("0x40");
+//					lStrings.add("0x18");
+//					map.put("statusCode",lStrings );
+//				}
+//			}
 		List<AmmeterRecord> list = ammeterRecordMapper.selectByQuery(map);
 		List<AmmeterRecord> listAmmeterRecord = new ArrayList<>();
 		for (AmmeterRecord ammeterRecord2 : list) {
