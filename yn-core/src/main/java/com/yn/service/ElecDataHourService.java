@@ -607,7 +607,7 @@ public class ElecDataHourService {
 		Date start = todaySpace[0];
 		Date end = todaySpace[1];
 
-		SimpleDateFormat dFormat = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH:00");
 
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 

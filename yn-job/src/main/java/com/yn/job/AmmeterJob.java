@@ -173,10 +173,17 @@ public class AmmeterJob {
 		if (stationId != null) {
 			Station station = stationService.findOne(stationId);
 			System.err.println(ammeter.getNowKw());
-			stationMapper.insert(station);
-			System.out.println("AmmeterJob--> station新增成功！-->"
-					+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			//更新电站每小时 和 每天 的发电/用电
+			if(station==null){
+				stationMapper.insert(station);
+				System.out.println("AmmeterJob--> station新增成功！-->"
+						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+			}else{
+				stationMapper.updateByPrimaryKeySelective(station);
+				System.out.println("AmmeterJob--> station更新成功！-->"
+						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+			}
+			
+			// 更新电站每小时 和 每天 的发电/用电
 			saveTemStation(station, ammeter, apr, kwhTol);
 		}
 	}
@@ -191,8 +198,8 @@ public class AmmeterJob {
 	 */
 	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
-		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyyMMddHH");
-		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyyMMdd");
+		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
+		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");
 
 		String cAddr = ammeter.getcAddr();
 		Long dAddr = apr.getdAddr();
@@ -211,6 +218,7 @@ public class AmmeterJob {
 		ElecDataHour temStation = elecDataHourService.findOne(temStationR);
 		if (temStation == null) {
 			ElecDataHour newTemStation = new ElecDataHour();
+			newTemStation.setdAddr(dAddr);
 			newTemStation.setDevConfCode(cAddr);
 			newTemStation.setdType(dType);
 			newTemStation.setwAddr(wAddr);
@@ -249,6 +257,7 @@ public class AmmeterJob {
 		ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
 		if (temStationYear == null) {
 			ElecDataDay newTemStationYear = new ElecDataDay();
+			newTemStationYear.setdAddr(dAddr);
 			newTemStationYear.setDevConfCode(cAddr);
 			newTemStationYear.setdType(dType);
 			newTemStationYear.setwAddr(wAddr);
@@ -299,7 +308,8 @@ public class AmmeterJob {
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
-			kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
+			if (lastAmPhaseRecord.getKwhTotal() != null && apr.getKwhTotal() != null)
+				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
 		}
 		return kwhTol;
 	}

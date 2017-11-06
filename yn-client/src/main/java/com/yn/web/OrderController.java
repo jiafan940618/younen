@@ -890,18 +890,6 @@ public class OrderController {
 
 	private Map<String, Object> wcnmlgbd(Order order) {
 		Map<String, Object> jsonResult = new HashMap<>();
-		// Set<BillOrder> billOrder = order.getBillOrder();
-		// String msg = "";
-		// int numCount = 0;
-		// 我，秦始皇，打钱。
-		// if (billOrder != null) {
-		// for (BillOrder billOrder2 : billOrder) {
-		// msg += billOrder2.getCreateDtm() + " 第" + (numCount++) + "次支付" +
-		// billOrder2.getMoney() + "<br/>";
-		// }
-		// }
-		// jsonResult.put("payCount", msg == "" ? "暂未支付记录" : msg);
-		// 打钱
 		List<BillOrder> billOrder = billOrderService.findByOrderId(order.getId());
 		List<String> say = billOrderService.getSay(billOrder);
 		jsonResult.put("payCount", say);

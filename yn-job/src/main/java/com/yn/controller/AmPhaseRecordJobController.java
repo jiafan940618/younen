@@ -249,7 +249,7 @@ public class AmPhaseRecordJobController {
 						System.out.println(e.getMessage());
 					}
 				}
-			}
+			} 
 		}
 		if (am3Phases != null && am3Phases.size() > 0) {
 			jsonResult.put("am3Phases.size() ", am3Phases.size());

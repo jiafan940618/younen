@@ -1097,9 +1097,27 @@
 
 	<select id="selectOneByC" parameterType="com.yn.model.AmPhaseRecord"
 		resultType="com.yn.model.AmPhaseRecord">
-		<!-- RowId cAddr iAddr dAddr dType wAddr MeterTime -->
-		select * from
-		am_phase_record_${date}
+		<!-- RowId cAddr iAddr dAddr dType wAddr MeterTime  -->
+		select
+		 am_phase_record_id, a_current, a_kva, a_kvar, a_kw,
+		a_kwh_total, a_power_factor,
+		a_volt, ab_volt, b_current, b_kva, b_kvar,
+		b_kw, b_kwh_total, b_power_factor,
+		b_volt,
+		bc_volt, c_addr, c_current,
+		c_kva, c_kvar, c_kw, c_kwh_total, c_power_factor,
+		c_volt,
+		ca_volt,
+		current, current_change, current_zero, d_addr, d_type, dealt,
+		frequency,
+		i_addr, kva, kvar, kvarh1, kvarh2, kw, kwh, kwh_rev,
+		kwh_total as kwhTotal, meter_state,
+		meter_time,
+		power_factor, row_id, volt,
+		volt_change, w_addr
+		
+		from
+		 am_phase_record_${date}
 		where 1=1
 		<if test="rowId != null">
 			and row_id like CONCAT('%','${rowId}','%')
