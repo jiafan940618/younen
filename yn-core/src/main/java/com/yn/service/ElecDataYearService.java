@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class ElecDataYearService {
 		criteria.andRecordTimeEqualTo(elecDataYear.getRecordTime());
 		return elecDataYearMapper.selectByExample(example);
 	}
-	
+
 	/**
 	 * 
 	    * @Title: updateByExampleSelective
@@ -62,8 +63,28 @@ public class ElecDataYearService {
 	    * @throws
 	 */
 	public boolean saveByMapper(ElecDataYear elecDataYear) {
-		int insert = elecDataYearMapper.insert(elecDataYear);
-		return insert > 0;
+		List<ElecDataYear> dataYears = selectByExample(elecDataYear);
+		ElecDataYear dataYear = null;
+		if (dataYears.size()>0) {
+			dataYear = dataYears.get(0);
+			BigDecimal kwh2 = dataYear.getKwh()==null?BigDecimal.valueOf(0.0):dataYear.getKwh();
+			BigDecimal kwh = elecDataYear.getKwh()==null?BigDecimal.valueOf(0.0):elecDataYear.getKwh();
+			double totalKwh = kwh2.doubleValue()+kwh.doubleValue();
+			elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
+			return updateByExampleSelective(elecDataYear);
+		}else{
+			int insert = elecDataYearMapper.insert(elecDataYear);
+			return insert > 0;
+		}
+	}
+
+	public List<ElecDataYear> selectByExample(ElecDataYear edy) {
+		ElecDataYearExample ex = new ElecDataYearExample();
+		Criteria criteria = ex.createCriteria();
+		criteria.andAmmeterCodeEqualTo(edy.getAmmeterCode());
+		criteria.andTypeEqualTo(edy.getType());
+		criteria.andRecordTimeEqualTo(edy.getRecordTime());
+		return elecDataYearMapper.selectByExample(ex);
 	}
 
 }

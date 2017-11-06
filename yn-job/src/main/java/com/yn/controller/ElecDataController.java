@@ -64,6 +64,7 @@ public class ElecDataController {
 				for (ElecDataYear elecDataYear2 : condition) {
 					Integer dAddr = elecDataYear2.getdAddr();
 					CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+					elecDataYear2.setType(1);
 					if (subSequence.equals("1")) {
 						elecDataYear2.setType(1);// 用电
 					} else if (subSequence.equals("2")) {
@@ -82,15 +83,19 @@ public class ElecDataController {
 					LOGGER.info("ElecDataYear修改失败或异常！");
 			} else {
 				Long dAddr = elecDataHour.getdAddr();
-				CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+				CharSequence subSequence = "";
+				if(dAddr!=null){
+					subSequence = dAddr.toString().subSequence(0, 1);
+				}
 				ElecDataYear edy = new ElecDataYear();
 				edy.setAmmeterCode(ammeterCode);
 				edy.setRecordTime(date);
 				edy.setKw(BigDecimal.valueOf(elecDataHour.getKw()));
 				edy.setKwh(BigDecimal.valueOf(elecDataHour.getKwh()));
-				edy.setdAddr(elecDataHour.getdAddr().intValue());
+				edy.setdAddr(elecDataHour.getdAddr()==null?1:elecDataHour.getdAddr().intValue());
 				edy.setDevConfCode(elecDataHour.getDevConfCode());
 				edy.setdType(elecDataHour.getdType());
+				edy.setType(1);
 				if (subSequence.equals("1")) {
 					edy.setType(1);// 用电
 				} else if (subSequence.equals("2")) {
@@ -134,6 +139,7 @@ public class ElecDataController {
 				for (ElecDataMonth elecDataMonth2 : condition) {
 					Integer dAddr = elecDataMonth2.getdAddr();
 					CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+					elecDataMonth.setType(1);
 					if (subSequence.equals("1")) {
 						elecDataMonth.setType(1);// 用电
 					} else if (subSequence.equals("2")) {
@@ -151,27 +157,31 @@ public class ElecDataController {
 					LOGGER.info("elecDataMonth修改失败或异常！");
 			} else {
 				Long dAddr = elecDataHour.getdAddr();
-				CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+				CharSequence subSequence = "";
+				if(dAddr!=null){
+					subSequence = dAddr.toString().subSequence(0, 1);
+				}
 				ElecDataMonth edm = new ElecDataMonth();
 				edm.setAmmeterCode(ammeterCode);
 				edm.setRecordTime(date);
 				edm.setKw(BigDecimal.valueOf(elecDataHour.getKw()));
 				edm.setKwh(BigDecimal.valueOf(elecDataHour.getKwh()));
-				edm.setdAddr(elecDataHour.getdAddr().intValue());
+				edm.setdAddr(elecDataHour.getdAddr()==null?1:elecDataHour.getdAddr().intValue());
 				edm.setDevConfCode(elecDataHour.getDevConfCode());
 				edm.setdType(elecDataHour.getdType());
 				edm.setwAddr(elecDataHour.getwAddr());
+				edm.setType(1);
 				if (subSequence.equals("1")) {
 					edm.setType(1);// 用电
 				} else if (subSequence.equals("2")) {
 					edm.setType(2);// 发电
-				}
+				} 
 				edm.setwAddr(elecDataHour.getwAddr());
 				boolean b = elecDataMonthService.saveByMapper(edm);
 				if (b)
-					LOGGER.info("elecDataHour新增成功！");
+					LOGGER.info("elecDataMonth新增成功！");
 				else
-					LOGGER.info("elecDataHour新增失败或异常！");
+					LOGGER.info("elecDataMonth新增失败或异常！");
 			}
 		}
 		return ResultVOUtil.success();

@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.yn.dao.mapper.ElecDataMonthMapper;
 import com.yn.model.ElecDataMonth;
 import com.yn.model.ElecDataMonthExample;
+import com.yn.model.ElecDataYear;
+import com.yn.model.ElecDataYearExample;
 import com.yn.model.ElecDataMonthExample.Criteria;
 
 @Service
@@ -48,7 +51,28 @@ public class ElecDataMonthService {
 	}
 
 	public boolean saveByMapper(ElecDataMonth elecDataMonth) {
-		int insert = elecDataMonthMapper.insert(elecDataMonth);
-		return insert > 0;
+		List<ElecDataMonth> list = selectByExample(elecDataMonth);
+		ElecDataMonth edm = null;
+		if(list.size()>0){
+			edm = list.get(0);
+			BigDecimal kwh2 = edm.getKwh()==null?BigDecimal.valueOf(0.0):edm.getKwh();
+			BigDecimal kwh = elecDataMonth.getKwh()==null?BigDecimal.valueOf(0.0):elecDataMonth.getKwh();
+			double totalKwh = kwh2.doubleValue()+kwh.doubleValue();
+			edm.setKwh(BigDecimal.valueOf(totalKwh));
+			return updateByExampleSelective(edm);
+		}else{
+			int insert = elecDataMonthMapper.insert(elecDataMonth);
+			return insert > 0;
+		}
 	}
+	
+	public List<ElecDataMonth> selectByExample(ElecDataMonth edm) {
+		ElecDataMonthExample ex = new ElecDataMonthExample();
+		Criteria criteria = ex.createCriteria();
+		criteria.andAmmeterCodeEqualTo(edm.getAmmeterCode());
+		criteria.andTypeEqualTo(edm.getType());
+		criteria.andRecordTimeEqualTo(edm.getRecordTime());
+		return elecDataMonthMapper.selectByExample(ex);
+	}
+
 }

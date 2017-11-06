@@ -1,14 +1,22 @@
 package com.yn.test;
 
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.yn.job.RollBack4Exception;
-import com.yn.utils.DateUtil;
+import javax.imageio.ImageIO;
 
+import com.yn.utils.DateUtil;
 
 public class TestDemo {
 	static {
@@ -21,25 +29,31 @@ public class TestDemo {
 		y = x++ + ++x;
 	}
 
-	public static void main(String[] as) throws ParseException {
-		
-		System.out.println( new SimpleDateFormat("yyyy_MM_dd")
-						.format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
-		
-		//System.out.println( DateUtil.formatDate(DateUtil.formatString("171025235900", "yyMMddHHssmm"), "yyyy_MM_dd"));
-		System.out.println(new SimpleDateFormat("yyyy_MM_dd").format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
-		
-		
-		
-		
+	public static void main(String[] as) throws ParseException, IOException, AWTException {
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle screenRectangle = new Rectangle(screenSize);
+		Robot robot = new Robot();
+		BufferedImage image = robot.createScreenCapture(screenRectangle);
+		ImageIO.write(image, "png", new File("D:\\xx.png"));
+
+		System.out.println(
+				new SimpleDateFormat("yyyy_MM_dd").format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
+
+		// System.out.println(
+		// DateUtil.formatDate(DateUtil.formatString("171025235900",
+		// "yyMMddHHssmm"), "yyyy_MM_dd"));
+		System.out.println(
+				new SimpleDateFormat("yyyy_MM_dd").format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));
+
 		int inMonth = DateUtil.countDaysInMonth(8);
 		System.out.println(inMonth);
-		 
+
 		System.out.println();
 		int y, m, d, h, mi, s;
 		Calendar cal = Calendar.getInstance();
 		y = cal.get(Calendar.YEAR);
-		m = cal.get(Calendar.MONTH)+1;
+		m = cal.get(Calendar.MONTH) + 1;
 		d = cal.get(Calendar.DATE);
 		h = cal.get(Calendar.HOUR_OF_DAY);
 		mi = cal.get(Calendar.MINUTE);
