@@ -355,6 +355,42 @@ public class ElecDataHourService {
 		}
 		return yesterdayKwh;
 	}
+	/**
+	 * 上周发电/用电
+	 *
+	 * @param stationId
+	 * @param type
+	 * @return
+	 */
+	public double lastWeekKwh(Long stationId, Integer type) {
+		Date[] lastWeekSpace = DateUtil.getLsatWeek();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double lastWeekKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			lastWeekKwh += elecDataHourDao.sumKwhByAmmeterCode(lastWeekSpace[0], lastWeekSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return lastWeekKwh;
+	}
+
+	/**
+	 * 本周发电/用电
+	 *
+	 * @param stationId
+	 * @param type
+	 * @return
+	 */
+	public double thisWeekKwh(Long stationId, Integer type) {
+		Date[] thisWeekSpace = DateUtil.getLastYearSpace();
+		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
+		double thisWeekKwh = 0D;
+		for (Ammeter ammeter : ammeters) {
+			thisWeekKwh += elecDataHourDao.sumKwhByAmmeterCode(thisWeekSpace[0], thisWeekSpace[1], type,
+					ammeter.getcAddr());
+		}
+		return thisWeekKwh;
+	}
+
 
 	/**
 	 * 当月发电/用电
@@ -504,7 +540,7 @@ public class ElecDataHourService {
 	/**
 	 * 当前12小时内的发电、用电量
 	 */
-	public List<Map<String, Object>> oneHourKwh(Long stationId, Integer type) {
+	public List<Map<String, Object>> oneHourKwh(Long stationId) {
 
 		List<Map<String, Object>> list = new ArrayList<>();
 
@@ -512,28 +548,33 @@ public class ElecDataHourService {
 
 		Calendar calendar = Calendar.getInstance();
 
-		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 12);
+		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 8);
 
-		SimpleDateFormat dFormat = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH:00");
 
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		// String ammeterCode=NumberUtil.listToString(ammeterCodes);
 
-		List<ElecDataHour> ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
+		List<ElecDataHour> ElecDataHourwork = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 1,
+
+				calendar.getTime(), time);
+		List<ElecDataHour> ElecDataHouruse = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 2,
 
 				calendar.getTime(), time);
 
-		for (ElecDataHour ElecDataHour : ElecDataHourList) {
-
+		for (int i = 0; i < 8; i++) {
 			Map<String, Object> map = new HashMap<>();
+			if (i < ElecDataHourwork.size()) {
+				map.put("time", dFormat.format(ElecDataHourwork.get(i).getCreateDtm()));
+				map.put("workKw", NumberUtil.accurateToTwoDecimal(ElecDataHourwork.get(i).getKw()));
+				if (i < ElecDataHouruse.size()) {
+					map.put("useKw", NumberUtil.accurateToTwoDecimal(ElecDataHouruse.get(i).getKw()));
+				} else {
+					map.put("useKw", 0);
+				}
 
-			map.put("time", dFormat.format(ElecDataHour.getCreateDtm()));
-			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
-
+			}
 			list.add(map);
-
 		}
-
 		return list;
 	}
 

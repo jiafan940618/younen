@@ -134,7 +134,7 @@ public class StationController {
        @RequestMapping(value = "/runningStation",method = {RequestMethod.POST, RequestMethod.GET})
        public Object runningStation(HttpSession session,Station station) {
        	
-       	NewUserVo userVo = (NewUserVo)session.getAttribute("user");
+       	NewUserVo userVo = (NewUserVo)session.getAttribute("userVo");
        	Map<String, Object> stationByUser=new HashMap<>();
        	
        	if(userVo!=null){
@@ -294,5 +294,6 @@ public class StationController {
 		map.put("income", stationService.userIncome(station));
 		return ResultVOUtil.success(map);
 	}
+	
 	
 }

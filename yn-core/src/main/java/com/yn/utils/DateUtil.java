@@ -471,4 +471,43 @@ public class DateUtil {
 		}
 		return dayOfweek;
 	}
+	
+	/**
+	 * 获取上周时间区间
+	 * 
+	 * @return
+	 */
+	public static Date[] getLsatWeek() {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.WEEK_OF_YEAR, -1);
+		now.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		Date date[] = new Date[2];
+		date[0] = now.getTime();
+		System.out.println(date[0]);
+		now.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		date[1] = now.getTime();
+		System.out.println(date[1]);
+		return date;
+	}
+
+	/**
+	 * 获取本周时间区间
+	 * 
+	 * @return
+	 */
+
+	public static Date[] getTimesWeekmorning() {
+		Calendar now = Calendar.getInstance();
+		now.set(Calendar.HOUR_OF_DAY, 0);
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		Date date[] = new Date[2];
+		date[0] = now.getTime();
+		System.out.println(date[0]);
+		Date nowtime = new Date();
+		date[1] = nowtime;
+		System.out.println(date[1]);
+		return date;
+	}
 }

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.AmmeterRecordMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.AmmeterRecord">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="c_addr" property="cAddr" jdbcType="VARCHAR" />
+		<result column="d_addr" property="dAddr" jdbcType="INTEGER" />
+		<result column="d_type" property="dType" jdbcType="INTEGER" />
+		<result column="record_dtm" property="recordDtm" jdbcType="TIMESTAMP" />
+		<result column="station_code" property="stationCode" jdbcType="VARCHAR" />
+		<result column="station_id" property="stationId" jdbcType="INTEGER" />
+		<result column="status_code" property="statusCode" jdbcType="VARCHAR" />
+		<result column="w_addr" property="wAddr" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, create_dtm, del, del_dtm, c_addr, d_addr, d_type, record_dtm,
+		station_code, station_id,
+		status_code, w_addr, type, update_dtm
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from ammeter_record
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from ammeter_record
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.yn.model.AmmeterRecord">
+		insert into ammeter_record (id, create_dtm, del,
+		del_dtm, c_addr, d_addr,
+		d_type, record_dtm, station_code,
+		station_id, status_code, w_addr,
+		type, update_dtm)
+		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
+		#{del,jdbcType=INTEGER},
+		#{delDtm,jdbcType=TIMESTAMP}, #{cAddr,jdbcType=VARCHAR}, #{dAddr,jdbcType=INTEGER},
+		#{dType,jdbcType=INTEGER}, #{recordDtm,jdbcType=TIMESTAMP},
+		#{stationCode,jdbcType=VARCHAR},
+		#{stationId,jdbcType=INTEGER}, #{statusCode,jdbcType=VARCHAR}, #{wAddr,jdbcType=INTEGER},
+		#{type,jdbcType=INTEGER}, #{updateDtm,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.yn.model.AmmeterRecord">
+		insert into ammeter_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="createDtm != null">
+				create_dtm,
+			</if>
+			<if test="del != null">
+				del,
+			</if>
+			<if test="delDtm != null">
+				del_dtm,
+			</if>
+			<if test="cAddr != null">
+				c_addr,
+			</if>
+			<if test="dAddr != null">
+				d_addr,
+			</if>
+			<if test="dType != null">
+				d_type,
+			</if>
+			<if test="recordDtm != null">
+				record_dtm,
+			</if>
+			<if test="stationCode != null">
+				station_code,
+			</if>
+			<if test="stationId != null">
+				station_id,
+			</if>
+			<if test="statusCode != null">
+				status_code,
+			</if>
+			<if test="wAddr != null">
+				w_addr,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="updateDtm != null">
+				update_dtm,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="createDtm != null">
+				#{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				#{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				#{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cAddr != null">
+				#{cAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="dAddr != null">
+				#{dAddr,jdbcType=INTEGER},
+			</if>
+			<if test="dType != null">
+				#{dType,jdbcType=INTEGER},
+			</if>
+			<if test="recordDtm != null">
+				#{recordDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="stationCode != null">
+				#{stationCode,jdbcType=VARCHAR},
+			</if>
+			<if test="stationId != null">
+				#{stationId,jdbcType=INTEGER},
+			</if>
+			<if test="statusCode != null">
+				#{statusCode,jdbcType=VARCHAR},
+			</if>
+			<if test="wAddr != null">
+				#{wAddr,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="updateDtm != null">
+				#{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.yn.model.AmmeterRecord">
+		update ammeter_record
+		<set>
+			<if test="createDtm != null">
+				create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="delDtm != null">
+				del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cAddr != null">
+				c_addr = #{cAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="dAddr != null">
+				d_addr = #{dAddr,jdbcType=INTEGER},
+			</if>
+			<if test="dType != null">
+				d_type = #{dType,jdbcType=INTEGER},
+			</if>
+			<if test="recordDtm != null">
+				record_dtm = #{recordDtm,jdbcType=TIMESTAMP},
+			</if>
+			<if test="stationCode != null">
+				station_code = #{stationCode,jdbcType=VARCHAR},
+			</if>
+			<if test="stationId != null">
+				station_id = #{stationId,jdbcType=INTEGER},
+			</if>
+			<if test="statusCode != null">
+				status_code = #{statusCode,jdbcType=VARCHAR},
+			</if>
+			<if test="wAddr != null">
+				w_addr = #{wAddr,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="updateDtm != null">
+				update_dtm = #{updateDtm,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.yn.model.AmmeterRecord">
+		update ammeter_record
+		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
+		del = #{del,jdbcType=INTEGER},
+		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
+		c_addr = #{cAddr,jdbcType=VARCHAR},
+		d_addr = #{dAddr,jdbcType=INTEGER},
+		d_type = #{dType,jdbcType=INTEGER},
+		record_dtm = #{recordDtm,jdbcType=TIMESTAMP},
+		station_code = #{stationCode,jdbcType=VARCHAR},
+		station_id = #{stationId,jdbcType=INTEGER},
+		status_code = #{statusCode,jdbcType=VARCHAR},
+		w_addr = #{wAddr,jdbcType=INTEGER},
+		type = #{type,jdbcType=INTEGER},
+		update_dtm = #{updateDtm,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectByQuery" parameterType="map" resultMap="BaseResultMap">
+		select * from ammeter_record where 1=1
+		<if test="statusCode != null">
+			AND status_code in
+			<foreach item="item" index="index" collection="statusCode"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="queryStartDtm != null">
+			AND create_dtm <![CDATA[ >= ]]>#{queryStartDtm}
+		</if>
+		<if test="queryEndDtm != null">
+			AND create_dtm <![CDATA[ <= ]]>#{queryEndDtm}
+		</if>
+		<if test="del != null">
+			AND del = 0
+		</if>
+		<if test="stationId != null">
+			AND station_id = #{stationId}
+		</if>
+		ORDER BY create_dtm DESC
+	</select>
+	
+</mapper>

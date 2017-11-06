@@ -1,5 +1,6 @@
 package com.yn.web;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,13 +156,8 @@ public class ElecDataHourController {
 	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
 			) {
 		List<Map<String, Object>> workList = new ArrayList<>();
-		workList = elecDataHourService.oneHourKwh(stationId, 1);
-		List<Map<String, Object>> userList = new ArrayList<>();
-		userList = elecDataHourService.oneHourKwh(stationId, 2);
-		Map<String, Object> map=new HashMap<>();
-		map.put("workList", workList);
-		map.put("userList", userList);
-		return ResultVOUtil.success(map);
+		workList = elecDataHourService.oneHourKwh(stationId);
+		return ResultVOUtil.success(workList);
 	}
 
 	/**

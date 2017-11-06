@@ -1,5 +1,6 @@
 package com.yn.service;
 
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -296,6 +297,8 @@ public class ElecDataDayService {
 		map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, type)));
 		map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.todayKwh(stationId, type)));
 		map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, type)));
+		map.put("thisWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisWeekKwh(stationId, type)));
+		map.put("lastWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastWeekKwh(stationId, type)));
 		return map;
 	}
 
