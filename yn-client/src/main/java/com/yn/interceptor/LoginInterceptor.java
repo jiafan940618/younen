@@ -69,7 +69,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         
         logger.info("传过来的token为: ---- ---->"+token);
         
-        User user = SessionCache.instance().getUser();
+        User user = SessionCache.instance().getUser(); 
         if (user == null) {
             BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
             UserService userService = (UserService) factory.getBean("userService");

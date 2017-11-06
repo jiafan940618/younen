@@ -297,7 +297,10 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
 	  	}
-
+	  	
+	  	/* User newuserVo = new User();
+	  	newuserVo.setId(2L);*/
+    	
 	  	
 	  	Map<String, String> map = systemConfigService.getlist(); 
 	 	

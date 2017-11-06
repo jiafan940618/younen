@@ -102,6 +102,10 @@ public class PushController {
 		
 		int count = pushService.FindBycount(page);
 		
+		if(count == 0){
+			count =1;
+		}
+		
 		page.setTotal(count%page.getLimit() == 0 ? count/page.getLimit() : (count-count%page.getLimit())/page.getLimit()+1);
 		
 		return ResultVOUtil.newsuccess(page, list);

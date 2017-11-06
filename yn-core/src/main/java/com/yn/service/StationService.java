@@ -17,8 +17,6 @@ import com.yn.utils.DateUtil;
 import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.StationVo;
-
-import org.mockito.exceptions.verification.NeverWantedButInvoked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -526,6 +524,7 @@ public class StationService {
 			String userName = (String) obj[9];
 			BigDecimal nowKwh = (BigDecimal) obj[10];
 			
+			DecimalFormat df = new DecimalFormat("#0.00");
 			
 			Double	electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
 
@@ -536,10 +535,10 @@ public class StationService {
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
 			stationVo.setWorkTotaTm(workTotalTm);
-			stationVo.setElectricityGenerationTol(electricityGenerationTol);
+			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
-			DecimalFormat df = new DecimalFormat("#0.00");
+			
 			/** co2排放量*/
 			stationVo.setCO2_PM(df.format(electricityGenerationTol * CO2_prm));
 			stationVo.setTrees_prm(df.format(electricityGenerationTol * plant_trees_prm));
