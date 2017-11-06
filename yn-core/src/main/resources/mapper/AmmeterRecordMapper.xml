@@ -222,6 +222,9 @@
 		<if test="stationId != null">
 			AND station_id = #{stationId}
 		</if>
+		<if test="type != null">
+			AND d_addr LIKE CONCAT(#{type},'%')
+		</if>
 		ORDER BY create_dtm DESC
 	</select>
 	

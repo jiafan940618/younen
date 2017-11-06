@@ -145,7 +145,7 @@ public class AmmeterRecordService {
 	
 	public List<AmmeterRecord> findByMapper(AmmeterRecord ammeterRecord) {
 		Map<String, Object> map = new HashMap<>();
-		
+		map.put("type", ammeterRecord.getType());
 		map.put("queryStartDtm", ammeterRecord.getQueryStartDtm());
 		map.put("queryEndDtm", ammeterRecord.getQueryEndDtm());
 		map.put("stationId", ammeterRecord.getStationId());
