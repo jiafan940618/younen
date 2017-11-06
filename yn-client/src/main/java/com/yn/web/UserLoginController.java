@@ -402,11 +402,12 @@ public class UserLoginController {
 		
 		String privilegeCodeInit =	RandomUtil.generateOnlyNumber(); 
 		newUser.setPrivilegeCodeInit(privilegeCodeInit);
-		
+
 		/** 此时添加时，会添加俩张表，wallet，user表*/
 		userService.save(newUser);
-    	
-    	
+
+		newUser.setPassword(null);
+
 		return ResultVOUtil.success(newUser);
     }
     

@@ -44,6 +44,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
+import com.yn.utils.MD5Util;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
@@ -175,15 +176,7 @@ public class TestController {
 	       @RequestMapping("/test")  
 	       public Object helloJsp001(RechargeVo rechargeVo){
 	    	   
-	    	   Order neworder = new Order();
-	    	   neworder.setId(574L);
-	    	   neworder.setYnApolegamyPrice(5.00);
-	    	   
-	    	   List<Long> list = new LinkedList<Long>();
-	    	   list.add(0L);
-	    	   
-	    	   APOservice.getapole(neworder, list);
-	    	   
+	    	  System.out.println(("e10adc3949ba59abbe56e057f20f883e").equals(MD5Util.GetMD5Code("123456")));
 	    	   
 	              return ResultVOUtil.success(null);  
 	       } 
