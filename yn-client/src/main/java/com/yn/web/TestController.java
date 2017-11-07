@@ -44,6 +44,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
+import com.yn.utils.BeanCopy;
 import com.yn.utils.MD5Util;
 import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.NewPlanVo;
@@ -51,6 +52,7 @@ import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.StationVo;
+import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -92,84 +94,19 @@ public class TestController {
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
-	       public Object helloJsp01(){  
-	    	   Integer type = 1;
-
-	   		String orderCode = "woxs171101141014";
-
-	   		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);
-	   		Order orderSize = orderService.finByOrderCode(orderCode);
-
-	   		Map<String, Long> map = new HashMap<String, Long>();
-	   		
-	   			logger.info("---- ---- ---- ------ ----- 开始生成订单");
-	   			NewPlanVo plan = new  NewPlanVo();
-	   			plan.setOrderCode("woxs171101141014");
-	   			plan.setPhone("18820852129");
-	   			plan.setAllMoney(330.0);
-	   			plan.setNum(10.0);
-
-	   			List<Long> listid = new ArrayList<Long>();
-	   			listid.add(2l);
-	   			List<Apolegamy> list = apolegamyService.findAll(listid);
-
-	   			Double apoPrice = 0.0;
-
-	   			for (Apolegamy apolegamy : list) {
-	   				apoPrice += apolegamy.getPrice();
-	   			}
-
-	   			Long planid = 5L;
-
-	   			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
-
-	   			newserverPlan.setMinPurchase(plan.getNum().doubleValue());
-
-	   			User user02 = userservice.findByPhone(plan.getPhone());
-	   			/** 添加订单*/
-	   			Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-	   					plan.getOrderCode(), null,type);
-
-	   			/** 取出订单号并添加*/
-	   			order.setOrderCode(plan.getOrderCode());
-	   			orderService.newSave(order);
-
-	   			Order order02 = new Order();
-	   			order02.setOrderCode(order.getOrderCode());
-
-	   			Order neworder = orderService.findOne(order02);
-
-	   			/** 订单计划表*/
-	   			Long id = newserverPlan.getId();
-
-	   			NewServerPlan serverPlan = newserverPlanService.findOne(id);
-
-	   			OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
-
-	   			OrderPlan orderPlan2 = new OrderPlan();
-	   			orderPlan2.setOrderId(orderPlan.getOrderId());
-
-	   			OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
-
-	   			order.setOrderPlanId(newOrdPlan.getId());
-
-	   			orderPlanService.save(orderPlan);
-
-	   			neworder.setOrderPlan(newOrdPlan);
-
-	   			/** 添加电站 */
-	   			//stationService.insertStation(neworder);
-
-	   			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
-	   			APOservice.getapole(neworder, listid);
-	   			logger.info("---- ---- ------ ----- ----- 添加结束！");
-	   			neworder.getUser().setPassword(null);
-
-	   			map.put("orderId", neworder.getId());
-
-	   			logger.info("---- ---- ---- ------ ----- 生成订单成功！");
-	   			/** 传出电站的id */
-	   			return ResultVOUtil.success(map);
+	       public Object helloJsp01(UserVo userVo){  
+	    	 // userVo.setId(8L);
+	       	userVo.setFullAddressText("测试地址");
+	       	userVo.setEmail("974426563@163.com");
+	       	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
+	       	userVo.setPhone("18317829893");
+	    	   
+	    	   User user = new User();
+	           BeanCopy.copyProperties(userVo, user);
+	           user.setId(7110L);
+	           
+	           userservice.save(user);
+	   		return ResultVOUtil.success(null);
 	        
 	       } 
 	       

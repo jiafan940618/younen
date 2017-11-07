@@ -143,7 +143,13 @@ public class UserController {
     	userVo.setEmail("974426563@163.com");
     	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
     	userVo.setPhone("13530895662");*/
+    	logger.info("--- ---- ---- ------- --FullAddressText:"+userVo.getFullAddressText());
+    	logger.info("--- ---- ---- ------- --Email:"+userVo.getEmail());
+    	logger.info("--- ---- ---- ------- --HeadImgUrl:"+userVo.getHeadImgUrl());
+    	logger.info("--- ---- ---- ------- --Phone:"+userVo.getPhone());
+    	
     	 User newuserVo = SessionCache.instance().getUser();
+    	 
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(777, "抱歉,您未登录!");
@@ -191,8 +197,6 @@ public class UserController {
     	 User user = new User();
          BeanCopy.copyProperties(userVo, user);
          user.setId(newuserVo.getId());
-    	
-      //  userService.updateNewUser(user);
          userService.save(user);
         
         NewUserVo userVo01 = new NewUserVo(); 
@@ -240,12 +244,12 @@ public class UserController {
   		return ResultVOUtil.error(777, "抱歉,您未登录!");
   	}
   	
-  Map<String, String> newmap = new HashMap<String, String>();
+    Map<String, String> newmap = new HashMap<String, String>();
   	//userVo.setId(3L);
-  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
   	/** 通过userId找到总的发电量*/
   
-  		Double power = ammeterService.findByUserId(userVo);
+  	Double power = ammeterService.findByUserId(userVo);
  
     Map<String, String> map = systemConfigService.getlist(); 
 	/**植树参数*/

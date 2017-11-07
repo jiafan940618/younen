@@ -16,12 +16,15 @@ public interface ConstructionDao extends JpaRepository<Construction, Long>, JpaS
 	
 	    @Transactional
 	    @Modifying
-	    @Query("select c from  Construction c  where c.type = :type ")
+	    @Query("select c from  Construction c  where c.type = :type and c.del = 0  and c.identification = 0 ")
 	    List<Construction> findbyType(@Param("type") Integer type);
 	    
 
-	    @Query("SELECT c FROM Construction c WHERE c.del = 0    ORDER BY c.type  ")
+	    @Query("SELECT c FROM Construction c WHERE c.del = 0  and c.identification = 0  ORDER BY c.type  ")
 	    List<Construction> findbyStruction();
+	    
+	    @Query("SELECT c FROM Construction c WHERE c.del = 0  and c.identification = 1  ORDER BY c.type  ")
+	    List<Construction> findbyident();
 	    
 	
 	
