@@ -45,6 +45,7 @@ import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.utils.MD5Util;
+import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
@@ -176,7 +177,17 @@ public class TestController {
 	       @RequestMapping("/test")  
 	       public Object helloJsp001(RechargeVo rechargeVo){
 	    	   
-	    	  System.out.println(("e10adc3949ba59abbe56e057f20f883e").equals(MD5Util.GetMD5Code("123456")));
+	    	   Long userid = 7110L;
+
+
+	   		User user = userservice.findOne(userid);
+
+	   		user.setFullAddressText("东莞市");
+	   		
+	   		user.setPhone("18317829893");
+	   		user.setUserName("无");
+
+	   		userservice.save(user);
 	    	   
 	              return ResultVOUtil.success(null);  
 	       } 

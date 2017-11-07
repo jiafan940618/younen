@@ -459,13 +459,7 @@ public class OrderController {
 
 		NewPlanVo plan = (NewPlanVo) session.getAttribute("newPlanVo");
 
-/*		User newuser = SessionCache.instance().getUser();
 
-		/** 前端页面地址的参数 */
-		/*newuser.setFullAddressText(user01.getAddressText());
-		newuser.setIpoMemo(userVo.getIpoMemo());
-		newuser.setPhone(user01.getPhone());
-		newuser.setUserName(user01.getUserName());*/
 		Long userid = (Long) session.getAttribute("userid");
 
 
@@ -476,7 +470,7 @@ public class OrderController {
 		user.setPhone(user01.getPhone());
 		user.setUserName(user01.getUserName());
 
-		userservice.updateUser(user);
+		userservice.save(user);
 
 		plan.setAddress(user01.getAddressText());
 		plan.setPhone(user01.getPhone());
