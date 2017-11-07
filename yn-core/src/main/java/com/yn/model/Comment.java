@@ -76,5 +76,11 @@ public class Comment extends IDomain implements Serializable {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Comment [id=" + id + ", serverQuality=" + serverQuality + ", serverEfficiency=" + serverEfficiency
+				+ ", detailedEvaluation=" + detailedEvaluation + ", orderId=" + orderId + "]";
+	}
+
 	
 }

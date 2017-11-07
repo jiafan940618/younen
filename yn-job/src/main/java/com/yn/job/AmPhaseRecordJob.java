@@ -217,6 +217,7 @@ public class AmPhaseRecordJob {
 
 				// 插入电表状态记录
 				AmmeterRecord ammeterRecord = new AmmeterRecord();
+				ammeterRecord.setdAddr(apr.getdAddr());
 				ammeterRecord.setcAddr(ammeter.getcAddr());
 				ammeterRecord.setdType(ammeter.getdType());
 				ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));

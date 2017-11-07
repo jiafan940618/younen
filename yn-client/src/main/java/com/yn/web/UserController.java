@@ -587,6 +587,7 @@ public class UserController {
 		if(countType == 1){
 			//httpSession.removeAttribute("user");
 			httpSession.removeAttribute("SessionCache");
+			httpSession.removeAttribute("userVo");	
 		} else if(countType == 2) {
 			httpSession.removeAttribute("server");
 		} else if(countType == 3) {

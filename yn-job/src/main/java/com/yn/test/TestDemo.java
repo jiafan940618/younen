@@ -30,12 +30,31 @@ public class TestDemo {
 	}
 
 	public static void main(String[] as) throws ParseException, IOException, AWTException {
+		//
+		Date now = new Date();
+		Date now_10 = new Date(now.getTime() - 600000); //10分钟前的时间
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//可以方便地修改日期格式
+		String nowTime_10 = dateFormat.format(now_10);
+		System.out.println(nowTime_10);
+		
+		
+		Date meterTime = DateUtil.parseString("171027140000", DateUtil.yyMMddHHmmss);
+		String formatDate = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH:mm:ss");
+//		syso
+//		Date date = null;
+//		try {
+//			date = DateUtil.formatString(formatDate, "yyyy-MM-dd HH");
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//		String temStationRecordTime =  DateUtil.formatDate(date, "yyyy-MM-dd HH:mm:ss");
+//		System.out.println(temStationRecordTime);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Rectangle screenRectangle = new Rectangle(screenSize);
-		Robot robot = new Robot();
-		BufferedImage image = robot.createScreenCapture(screenRectangle);
-		ImageIO.write(image, "png", new File("D:\\xx.png"));
+//		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//		Rectangle screenRectangle = new Rectangle(screenSize);
+//		Robot robot = new Robot();
+//		BufferedImage image = robot.createScreenCapture(screenRectangle);
+//		ImageIO.write(image, "png", new File("D:\\xx.png"));
 
 		System.out.println(
 				new SimpleDateFormat("yyyy_MM_dd").format(new SimpleDateFormat("yyMMddHHssmm").parse("171025102400")));

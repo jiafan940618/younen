@@ -61,111 +61,106 @@ public class OrderService {
 	ApolegamyOrderService apoleService;
 
 	/** 个人中心订单状态查询*/
-	public List<Order> findBystatus(com.yn.model.Page<Order> page){
-		
+	public List<Order> findBystatus(com.yn.model.Page<Order> page) {
+
 		return mapper.findBystatus(page);
 	}
-	
-	public List<Order> findByiosstatus(User userVo){
-		
+
+	public List<Order> findByiosstatus(User userVo) {
+
 		return mapper.findByiosstatus(userVo);
 	}
-	
-	public	int findByNum(com.yn.model.Page<Order> page){
-	
-	
+
+	public int findByNum(com.yn.model.Page<Order> page) {
+
 		return mapper.findByNum(page);
 	}
-	
+
 	/** 修改退款状态*/
-	
-    public void updateOrderbyId(Order order){
-		
+
+	public void updateOrderbyId(Order order) {
+
 		orderDao.updateOrderbyId(order);
 	}
-    
-    public Order selectOrderSta(Order order){
-		
-    	Object object = orderDao.selectOrderSta(order);
+
+	public Order selectOrderSta(Order order) {
+
+		Object object = orderDao.selectOrderSta(order);
 
 		Object[] obj = (Object[]) object;
 		Integer id = (Integer) obj[0];
 		Integer status = (Integer) obj[1];
 		BigDecimal hadPayPrice = (BigDecimal) obj[2];
 		BigDecimal totalPrice = (BigDecimal) obj[3];
-		
-			
+
 		Order order01 = new Order();
 		order01.setId(id.longValue());
 		order01.setHadPayPrice(hadPayPrice.doubleValue());
 		order01.setStatus(status);
 		order01.setTotalPrice(totalPrice.doubleValue());
-    	
+
 		return order01;
 	}
-    
-     public List<OrderVo> findByUserId(User user){
-		
-    	 Order neworder = new Order();
-    	 
+
+	public List<OrderVo> findByUserId(User user) {
+
+		Order neworder = new Order();
+
 		List<OrderVo> orderlist = new LinkedList<OrderVo>();
-		
+
 		List<Object> list = orderDao.findsome(user.getId());
-		
+
 		for (Object object : list) {
 			Object[] obj = (Object[]) object;
-		Integer t_id = (Integer) obj[0];	
-		BigDecimal capacity = (BigDecimal) obj[1];		
-		String serverName = (String) obj[2];
-		String orderCode = (String) obj[3];
-		Integer gridConnectedStepa = (Integer) obj[4];
-		Integer s_id = (Integer) obj[5];	
-		String stationName = (String) obj[6];
-		BigDecimal totalPrice = (BigDecimal) obj[7];		
-		BigDecimal hadPayPrice = (BigDecimal) obj[8];
-		Integer status = (Integer) obj[9];
-		
-		
-		
-		DecimalFormat df = new DecimalFormat("#0.00");
-		String speed =	df.format(hadPayPrice.doubleValue()/totalPrice.doubleValue()*100);
+			Integer t_id = (Integer) obj[0];
+			BigDecimal capacity = (BigDecimal) obj[1];
+			String serverName = (String) obj[2];
+			String orderCode = (String) obj[3];
+			Integer gridConnectedStepa = (Integer) obj[4];
+			Integer s_id = (Integer) obj[5];
+			String stationName = (String) obj[6];
+			BigDecimal totalPrice = (BigDecimal) obj[7];
+			BigDecimal hadPayPrice = (BigDecimal) obj[8];
+			Integer status = (Integer) obj[9];
 
-		OrderVo order = new OrderVo();
-		order.setId(Long.valueOf(t_id));
-		order.setCapacity(capacity.doubleValue());
-		order.setServerName(serverName);
-		order.setOrderCode(orderCode);
-		order.setGridConnectedStepA(gridConnectedStepa);
-		order.setUserName(user.getUserName());
-		order.setStationId(s_id);
-		order.setStationName(stationName);
-		order.setSpeed(Double.valueOf(speed));
-		//[订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}
-		order.setStatus(status);
-		if(status == 0){
-			order.setIpoMemo("申请中");
-		}else if(status == 1){
-			order.setIpoMemo("施工中");
-		}else if(status == 2){
-			order.setIpoMemo("并网发电申请中");
-		}else if(status == 4){
-			order.setIpoMemo("退款中");
-		}else if(status == 5){
-			order.setIpoMemo("退款成功");
+			DecimalFormat df = new DecimalFormat("#0.00");
+			String speed = df.format(hadPayPrice.doubleValue() / totalPrice.doubleValue() * 100);
+
+			OrderVo order = new OrderVo();
+			order.setId(Long.valueOf(t_id));
+			order.setCapacity(capacity.doubleValue());
+			order.setServerName(serverName);
+			order.setOrderCode(orderCode);
+			order.setGridConnectedStepA(gridConnectedStepa);
+			order.setUserName(user.getUserName());
+			order.setStationId(s_id);
+			order.setStationName(stationName);
+			order.setSpeed(Double.valueOf(speed));
+			// [订单状态]{0:申请中,1:施工中,2:并网发电申请中,3:并网发电,4:退款中,5:退款成功,9:全部}
+			order.setStatus(status);
+			if (status == 0) {
+				order.setIpoMemo("申请中");
+			} else if (status == 1) {
+				order.setIpoMemo("施工中");
+			} else if (status == 2) {
+				order.setIpoMemo("并网发电申请中");
+			} else if (status == 4) {
+				order.setIpoMemo("退款中");
+			} else if (status == 5) {
+				order.setIpoMemo("退款成功");
+			}
+
+			orderlist.add(order);
 		}
-		
-		orderlist.add(order);
-		}
-		
-		
+
 		return orderlist;
 	}
-    
-   public Object getIosInfoOrder( Long orderId){
-	   
-	return orderDao.getIosInfoOrder(orderId);
-}
-	
+
+	public Object getIosInfoOrder(Long orderId) {
+
+		return orderDao.getIosInfoOrder(orderId);
+	}
+
 	public Order findOne(Long id) {
 		return orderDao.findOne(id);
 	}
@@ -368,19 +363,26 @@ public class OrderService {
 				oda.setGridConnectedPriceTol(oda.getGridConnectedPriceTol() + totalPrice);
 			}
 			// 优能服务费
-			oda.setFactoragePriceTol(oda.getFactoragePriceTol() + order.getFactoragePrice());
+			oda.setFactoragePriceTol((oda.getFactoragePriceTol() == null ? 0.0 : oda.getFactoragePriceTol())
+					+ (order.getFactoragePrice() == null ? 0.0 : order.getFactoragePrice()));
 			// 优能选配项目
-			oda.setYnApolegamyPriceTol(oda.getYnApolegamyPriceTol() + order.getYnApolegamyPrice());
+			oda.setYnApolegamyPriceTol((oda.getYnApolegamyPriceTol() == null ? 0.0 : oda.getYnApolegamyPriceTol())
+					+ (order.getYnApolegamyPrice() == null ? 0.0 : order.getYnApolegamyPrice()));
 			// 服务商选配项目
-			oda.setServerApolegamyPriceTol(oda.getServerApolegamyPriceTol() + order.getServerApolegamyPrice());
+			oda.setServerApolegamyPriceTol(
+					(oda.getServerApolegamyPriceTol() == null ? 0.0 : oda.getServerApolegamyPriceTol())
+							+ (order.getServerApolegamyPrice() == null ? 0.0 : order.getServerApolegamyPrice()));
 			// 已支付金额
-			oda.setHadPayPriceTol(oda.getHadPayPriceTol() + order.getHadPayPrice());
+			oda.setHadPayPriceTol((oda.getHadPayPriceTol() == null ? 0.0 : oda.getHadPayPriceTol())
+					+ (order.getHadPayPrice() == null ? 0.0 : order.getHadPayPrice()));
 			// 未支付金额
-			oda.setNotPayPriceTol(oda.getNotPayPriceTol() + (order.getTotalPrice() - order.getHadPayPrice()));
+			oda.setNotPayPriceTol((oda.getNotPayPriceTol() == null ? 0.0 : oda.getNotPayPriceTol())
+					+ ((order.getTotalPrice() == null ? 0.0 : order.getTotalPrice())
+							- (order.getHadPayPrice() == null ? 0.0 : order.getHadPayPrice())));
 		}
 
 		// 营业利润 = 优能服务费 + 优能选配项目金额
-		oda.setProfitTol(oda.getFactoragePriceTol() + oda.getYnApolegamyPriceTol());
+		oda.setProfitTol((oda.getFactoragePriceTol()==null?0.0:oda.getFactoragePriceTol()) +( oda.getYnApolegamyPriceTol()==null?0.0: oda.getYnApolegamyPriceTol()));
 
 		return oda;
 	}
@@ -416,7 +418,8 @@ public class OrderService {
 		orderVo.setStatus(status);
 		return orderVo;
 	}
-   /**pc端订单详情数据*/
+
+	/**pc端订单详情数据*/
 	public NewPlanVo getVoNewPlan(Object object) {
 
 		NewPlanVo newPlanVo = new NewPlanVo();
@@ -435,10 +438,10 @@ public class OrderService {
 		String jsonText = (String) obj[9];
 		BigDecimal capacity = (BigDecimal) obj[10];
 		BigDecimal planPrice = (BigDecimal) obj[11];
-		
+
 		String ids = (String) obj[12];
-		if(null ==ids){
-			ids ="0";
+		if (null == ids) {
+			ids = "0";
 		}
 
 		BigDecimal price = (BigDecimal) obj[13];
@@ -464,8 +467,8 @@ public class OrderService {
 
 		return newPlanVo;
 	}
-	
-	 /** ios端的数据处理*/
+
+	/** ios端的数据处理*/
 	public NewPlanVo getIOsNewPlan(Object object) {
 
 		NewPlanVo newPlanVo = new NewPlanVo();
@@ -490,19 +493,18 @@ public class OrderService {
 		BigDecimal totalprice = (BigDecimal) obj[14];
 		Integer warPeriod = (Integer) obj[15];
 		Integer status = (Integer) obj[16];
-		
-		String ipoMemo  =(String)obj[17];
-		
-		Integer loanStatus =(Integer)obj[18];
-		
-		Date createDtm =(Date)obj[19];
-		
+
+		String ipoMemo = (String) obj[17];
+
+		Integer loanStatus = (Integer) obj[18];
+
+		Date createDtm = (Date) obj[19];
+
 		BigDecimal hadPayPrice = (BigDecimal) obj[20];
-		
+
 		DecimalFormat df = new DecimalFormat("#0.00");
-	   String speed =	df.format(hadPayPrice.doubleValue()/totalprice.doubleValue()*100);
-		
-		
+		String speed = df.format(hadPayPrice.doubleValue() / totalprice.doubleValue() * 100);
+
 		newPlanVo.setUserName(userName);
 		newPlanVo.setPhone(phone);
 		newPlanVo.setAddress(addressText);
@@ -519,23 +521,21 @@ public class OrderService {
 		newPlanVo.setSerPrice(totalprice.doubleValue());
 		newPlanVo.setIds(ids);
 		newPlanVo.setStatus(status);
-		
-		if(null ==ipoMemo){
+
+		if (null == ipoMemo) {
 			newPlanVo.setIpoMemo("暂无");
-		}else{
+		} else {
 			newPlanVo.setIpoMemo(ipoMemo);
 		}
-		
+
 		newPlanVo.setLoanStatus(loanStatus);
 		newPlanVo.setCreateDtm(createDtm);
 		newPlanVo.setSpeed(speed);
-		
+
 		return newPlanVo;
 	}
-	
+
 	/** */
-	
-	
 
 	/** 根据订单记录号修改状态 */
 
@@ -690,7 +690,7 @@ public class OrderService {
 			System.out.println(obj2Json);
 			return stepB > 0 && status > 0 ? true : false;
 		}
-		
+
 		Map<String, Object> json2Obj = (Map<String, Object>) JsonUtil.json2Obj(order.getConstructionStatus());
 		List<Object> l = new LinkedList<Object>();
 		Map<String, Object> m1 = new HashMap<String, Object>();
@@ -772,7 +772,6 @@ public class OrderService {
 		return mapper.updateApplyStepBImgUrl(order) > 0 ? true : false;
 	}
 
-
 	public Map<String, Object> checkSurv(Order o, Integer isOk) {
 		Order o1 = findOne(o.getId());
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
@@ -837,17 +836,16 @@ public class OrderService {
 				jsonResult.put("isOk", false);
 				jsonResult.put("applyStepBImgUrl", false);
 				jsonResult.put("applyIsPay", false);
-			}else{
+			} else {
+				jsonResult.put("applyStepBImgUrl", true);
 				o1.setApplyStepB(1);
 				int condition = mapper.updateByCondition(o1);
 				if (condition > 0) {
 					jsonResult.put("loanStatus", true);
 					jsonResult.put("isOk", true);
 					jsonResult.put("applyIsPay", false);
-					jsonResult.put("applyStepBImgUrl", true);
 				} else {
 					jsonResult.put("loanStatus", true);
-					jsonResult.put("applyStepBImgUrl", true);
 					jsonResult.put("isOk", false);
 					jsonResult.put("applyIsPay", false);
 					jsonResult.put("reason", "系统错误，请联系管理员。");
@@ -861,6 +859,11 @@ public class OrderService {
 			jsonResult.put("applyIsPay", false);
 			jsonResult.put("reason", "当前订单未支付,请先支付。");
 			jsonResult.put("isOk", false);
+			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+				jsonResult.put("applyStepBImgUrl", false);
+			}else{
+				jsonResult.put("applyStepBImgUrl", true);
+			}
 			return jsonResult;
 		} else {
 			jsonResult.put("applyIsPay", true);// 支付成功。
@@ -871,6 +874,7 @@ public class OrderService {
 				jsonResult.put("applyStepBImgUrl", false);
 				jsonResult.put("isOk", false);
 			} else {
+				jsonResult.put("applyStepBImgUrl", true);
 				if (o1.getApplyStepB() == 1) {
 					jsonResult.put("reason", "已申请报建或者正在进行，不能重复申请");
 					jsonResult.put("isOk", false);
@@ -888,7 +892,6 @@ public class OrderService {
 					jsonResult.put("reason", "系统错误，请联系管理员。");
 					jsonResult.put("isOk", false);
 				}
-				jsonResult.put("applyStepBImgUrl", true);
 			}
 			return jsonResult;
 		}
@@ -897,7 +900,6 @@ public class OrderService {
 		return jsonResult;
 	}
 
-	
 	public Map<String, Object> checkApply(Order o, Integer isOk) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
@@ -946,9 +948,6 @@ public class OrderService {
 		jsonResult.put("isOk", false);
 		return null;
 	}
-
-
-	
 
 	public boolean updateOrderStauts43Step(Order order) {
 		int step = mapper.updateOrderStauts43Step(order);

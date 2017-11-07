@@ -27,8 +27,8 @@ public class AmmeterVo extends QueryVo{
 	private String cityText;
 	private String addressText;
 	private Long stationId;
-	private Integer workTotaTm;
-	private Double workTotaKwh;
+	private Integer workTotalTm;
+	private Double workTotalKwh;
 	private Double nowKw;
 	private Date workDtm;
 	private Date outfactoryDtm;
@@ -160,20 +160,20 @@ public class AmmeterVo extends QueryVo{
         this.stationId = stationId;
     }
 
-    public Integer getWorkTotaTm() {
-        return workTotaTm;
+    public Integer getWorkTotalTm() {
+        return workTotalTm;
     }
 
-    public void setWorkTotaTm(Integer workTotaTm) {
-        this.workTotaTm = workTotaTm;
+    public void setWorkTotalTm(Integer workTotalTm) {
+        this.workTotalTm = workTotalTm;
     }
 
-    public Double getWorkTotaKwh() {
-        return workTotaKwh;
+    public Double getWorkTotalKwh() {
+        return workTotalKwh;
     }
 
-    public void setWorkTotaKwh(Double workTotaKwh) {
-        this.workTotaKwh = workTotaKwh;
+    public void setWorkTotalKwh(Double workTotalKwh) {
+        this.workTotalKwh = workTotalKwh;
     }
 
     public Double getNowKw() {
