@@ -605,7 +605,7 @@ public class OrderController {
 
 			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
-			newserverPlan.setMinPurchase(plan.getNum());
+			newserverPlan.setMinPurchase(capacity.doubleValue());
 
 			User user02 = userservice.findByPhone(plan.getPhone());
 			/** 添加订单*/

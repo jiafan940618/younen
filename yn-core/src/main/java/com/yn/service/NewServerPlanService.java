@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +39,7 @@ import com.yn.vo.ServerPlanVo;
 
 @Service
 public class NewServerPlanService {
+	private static final Logger logger = LoggerFactory.getLogger(NewServerPlanService.class);
 
 	@Autowired
     QualificationsServerService qualificationsServerService;
@@ -199,7 +202,9 @@ public class NewServerPlanService {
 	        order.setServerName(server.getCompanyName());
 	        /**  转移数据*/
 	        order.setAddressText(user.getFullAddressText());
-	       // order.setAddressText(user.getFullAddressText());
+
+	        logger.info("----------------------addressText："+order.getAddressText());
+
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());
