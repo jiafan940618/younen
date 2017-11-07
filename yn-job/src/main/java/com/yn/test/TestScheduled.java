@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.CommentDao;
 import com.yn.model.Comment;
@@ -37,7 +38,7 @@ public class TestScheduled {
 	
 	private int index = 0;
 	
-	//@Scheduled(fixedDelay = 10 * 1000)
+	@Scheduled(fixedDelay = 10 * 1000)
 	public void myTest() {
 		Comment comment = new Comment();
 		comment.setCreateDtm(new Date());
@@ -45,8 +46,9 @@ public class TestScheduled {
 		comment.setOrderId((long)index);
 		comment.setServerEfficiency((double)index);
 		comment.setServerQuality((double)index);
+//		comment.setId(8L);
 		Comment save = commentDao.save(comment);
-		System.out.println(save.getId());
+		System.out.println(save);
 	}
 	
 	
@@ -65,7 +67,9 @@ public class TestScheduled {
 		comment.setOrderId((long)index);
 		comment.setServerEfficiency((double)index);
 		comment.setServerQuality((double)index);
+		comment.setId(666L);
 		Comment save = commentDao.save(comment);
+		System.out.println(save);
 		return save;
 	}
 }

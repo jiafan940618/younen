@@ -235,23 +235,23 @@ public class AmmeterJobController {
 					+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}
 
-		Long stationId = ammeter.getStationId();
-		if (stationId != null) {
-			Station station = stationService.findOne(stationId);
-			System.err.println(ammeter.getNowKw());
-			if (station == null) {
-				stationMapper.insert(station);
-				System.out.println("AmmeterJobController--> station新增成功！-->"
-						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			} else {
-				stationMapper.updateByPrimaryKeySelective(station);
-				System.out.println("AmmeterJobController--> station更新成功！-->"
-						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			}
-
-			// 更新电站每小时 和 每天 的发电/用电
-			saveTemStation(station, ammeter, apr, kwhTol);
-		}
+//		Long stationId = ammeter.getStationId();
+//		if (stationId != null) {
+//			Station station = stationService.findOne(stationId);
+//			System.err.println(ammeter.getNowKw());
+//			if (station == null) {
+//				stationMapper.insert(station);
+//				System.out.println("AmmeterJobController--> station新增成功！-->"
+//						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+//			} else {
+//				stationMapper.updateByPrimaryKeySelective(station);
+//				System.out.println("AmmeterJobController--> station更新成功！-->"
+//						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+//			}
+//
+//		}
+		// 更新电站每小时 和 每天 的发电/用电
+		saveTemStation(ammeter, apr, kwhTol);
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class AmmeterJobController {
 	 * @param apr
 	 * @param tolKwh
 	 */
-	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
+	private void saveTemStation( Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
 		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
 		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");

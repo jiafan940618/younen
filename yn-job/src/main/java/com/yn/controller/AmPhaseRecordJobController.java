@@ -228,17 +228,17 @@ public class AmPhaseRecordJobController {
 								"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 						Long checkMeterTime = am1Phase.getMeterTime();
 						// 判断数据是不是当天的。
-//						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
-//							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
-//									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
-//							PatchDataRecord patchDataRecord = new PatchDataRecord();
-//							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
-//							patchDataRecord.setDealt(0);
-//							patchDataRecord.setCreateDtm(new Date());
-//							// 存临时表。
-//							patchDataRecordMapper.insert(patchDataRecord);
-//							continue;
-//						}
+						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
+							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
+									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
+							PatchDataRecord patchDataRecord = new PatchDataRecord();
+							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
+							patchDataRecord.setDealt(0);
+							patchDataRecord.setCreateDtm(new Date());
+							// 存临时表。
+							patchDataRecordMapper.insert(patchDataRecord);
+							continue;
+						}
 						amPhaseRecord.setDealt(0);
 						amPhaseRecord.setDate(date);
 						amPhaseRecordService.saveByMapper(amPhaseRecord);
@@ -274,18 +274,18 @@ public class AmPhaseRecordJobController {
 								"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
 						Long checkMeterTime = am3Phase.getMeterTime();
 						// 判断数据是不是当天的。
-//						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
-//							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
-//									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
-//							PatchDataRecord patchDataRecord = new PatchDataRecord();
-//							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
-//							patchDataRecord.setCreateDtm(new Date());
-//							patchDataRecord.setDealt(0);
-//							// 存临时表。
-//							patchDataRecordMapper.insert(patchDataRecord);
-//							//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
-//							continue;
-//						}
+						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
+							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
+									new SimpleDateFormat("yyMMddHHssmm").parse(String.valueOf(checkMeterTime))));
+							PatchDataRecord patchDataRecord = new PatchDataRecord();
+							BeanUtils.copyProperties(amPhaseRecord, patchDataRecord);
+							patchDataRecord.setCreateDtm(new Date());
+							patchDataRecord.setDealt(0);
+							// 存临时表。
+							patchDataRecordMapper.insert(patchDataRecord);
+							//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
+							continue;
+						}
 						amPhaseRecord.setDate(date);
 						amPhaseRecord.setDealt(0);
 						amPhaseRecordService.saveByMapper(amPhaseRecord);

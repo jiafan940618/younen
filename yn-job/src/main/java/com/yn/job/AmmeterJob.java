@@ -1,5 +1,6 @@
 package com.yn.job;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +35,7 @@ import com.yn.utils.DateUtil;
 /**
  * 修改电表/电站信息 保存电表工作状态记录
  */
-@Component
+//@Component
 public class AmmeterJob {
 	@Autowired
 	AmmeterService ammeterService;
@@ -169,36 +170,43 @@ public class AmmeterJob {
 					+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}
 
-		Long stationId = ammeter.getStationId();
-		if (stationId != null) {
-			Station station = stationService.findOne(stationId);
-			System.err.println(ammeter.getNowKw());
-			if(station==null){
-				stationMapper.insert(station);
-				System.out.println("AmmeterJob--> station新增成功！-->"
-						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			}else{
-				stationMapper.updateByPrimaryKeySelective(station);
-				System.out.println("AmmeterJob--> station更新成功！-->"
-						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-			}
-			
-			// 更新电站每小时 和 每天 的发电/用电
-			saveTemStation(station, ammeter, apr, kwhTol);
-		}
+//		Long stationId = ammeter.getStationId();
+//		if (stationId != null) {
+//			Station station = stationService.findOne(stationId);
+//			System.err.println(ammeter.getNowKw());
+//			if(station==null){
+//				stationMapper.insert(station);
+//				System.out.println("AmmeterJob--> station新增成功！-->"
+//						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+//			}else{
+//				stationMapper.updateByPrimaryKeySelective(station);
+//				System.out.println("AmmeterJob--> station更新成功！-->"
+//						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+//			}
+//			
+//		}
+		// 更新电站每小时 和 每天 的发电/用电
+		saveTemStation(ammeter, apr, kwhTol);
 	}
 
 	/**
 	 * 更新电站每小时 和 每天 的发电/用电
 	 *
-	 * @param station
 	 * @param ammeter
 	 * @param apr
 	 * @param tolKwh
 	 */
-	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
+	private void saveTemStation( Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
+		String formatDate = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH:mm:ss");
 		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
+		Date date = null;
+		try {
+			date = DateUtil.formatString(formatDate, "yyyy-MM-dd HH");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		temStationRecordTime =  DateUtil.formatDate(date, "yyyy-MM-dd HH:mm:ss");
 		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");
 
 		String cAddr = ammeter.getcAddr();
