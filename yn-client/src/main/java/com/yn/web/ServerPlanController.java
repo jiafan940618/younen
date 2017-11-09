@@ -122,9 +122,8 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     @RequestMapping(value = "/findPlan")
     public  ResultData<Object> findServerPlan(NewServerPlanVo newserverPlanVo,@RequestParam("checkedId") List<Long> checkedId,@RequestParam("moneyTotal") String price,UserVo userVo,HttpSession session) {
     	
-    	 User newuserVo = SessionCache.instance().getUser();
-    	
-    	
+    	User newuserVo = SessionCache.instance().getUser();
+
     	for (Long long1 : checkedId) {
 			logger.info("id串为：-------- ----- ----- ---- "+long1);
 		}

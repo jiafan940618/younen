@@ -21,9 +21,19 @@ public class Construction extends IDomain implements Serializable {
 	private Integer type;
 	
 	private String videoUrl;
+	
+	private Integer identification;
 
 	public Integer getDel() {
 		return del;
+	}
+
+	public Integer getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(Integer identification) {
+		this.identification = identification;
 	}
 
 	public void setDel(Integer del) {

@@ -380,6 +380,8 @@ public class OrderController {
 		List<Long> listids = APOservice.Transformation(ids);
 
 		List<Apolegamy> list = apolegamyService.findAll(listids);
+		
+		session.setAttribute("orderCode", newPlanVo.getOrderCode());
 
 		return ResultVOUtil.newsuccess(newPlanVo, list);
 	}
@@ -409,7 +411,8 @@ public class OrderController {
 
 		List<Apolegamy> list = apolegamyService.findAll(listids);
 		
-
+		session.setAttribute("orderCode", newPlanVo.getOrderCode());
+		
 		return ResultVOUtil.Thirdsuccess(newPlanVo, list, newlist);
 	}
 	

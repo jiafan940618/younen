@@ -202,7 +202,7 @@ public class NewServerPlanService {
 	        order.setServerName(server.getCompanyName());
 	        /**  转移数据*/
 	        order.setAddressText(user.getFullAddressText());
-
+	       
 	        logger.info("----------------------addressText："+order.getAddressText());
 
 	        order.setCityId(user.getCityId());

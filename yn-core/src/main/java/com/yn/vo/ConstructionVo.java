@@ -2,6 +2,8 @@ package com.yn.vo;
 
 public class ConstructionVo {
 	
+	private Long id;
+	
 	private Integer del;
 	
 	private String imgUrl;
@@ -11,6 +13,26 @@ public class ConstructionVo {
 	private Integer type;
 	
 	private String videoUrl;
+	
+	private Integer identification;
+	
+	
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Integer getIdentification() {
+		return identification;
+	}
+
+	public void setIdentification(Integer identification) {
+		this.identification = identification;
+	}
 
 	public Integer getDel() {
 		return del;
