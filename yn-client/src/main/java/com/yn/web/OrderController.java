@@ -717,6 +717,7 @@ public class OrderController {
 		jsonResult.put("buildStepB", order.getBuildStepB());
 		jsonResult.put("gridConnectedIsPay", order.getGridConnectedIsPay());
 		jsonResult.put("gridConnectedStepA", order.getGridConnectedStepA());
+		jsonResult.put("orderCode", order.getOrderCode());
 		return ResultVOUtil.success(jsonResult);
 	}
 

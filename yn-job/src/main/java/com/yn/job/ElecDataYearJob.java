@@ -1,5 +1,7 @@
 package com.yn.job;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +26,7 @@ import com.yn.service.ElecDataYearService;
     * @date 2017年10月24日
     *
  */
-// @Component
+@Component
 public class ElecDataYearJob {
 
 	@Autowired
@@ -32,8 +34,18 @@ public class ElecDataYearJob {
 
 	@Autowired
 	private ElecDataHourService elecDataHourService;
+	
+	private static PrintStream mytxt;
+	private static PrintStream out;
+	public ElecDataYearJob(){
+		try {
+//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/elecDataYearJobLog.log");
+			mytxt = new PrintStream("./elecDataYearJobLog.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
-	private static Logger logger = Logger.getLogger(ElecDataYearJob.class);
 
 	/**
 	 * 
@@ -45,6 +57,10 @@ public class ElecDataYearJob {
 	 */
 	@Scheduled(cron = "0 0 0 1 * ? ")
 	private void job() {
+		// 设置日志文件输出路径。
+		out = System.out;
+		System.setOut(mytxt);
+		System.out.println("ElecDataYearJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		String recordTime = new SimpleDateFormat("yyyy").format(new Date());
 		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(-1, -1, -1);
 		for (ElecDataHour elecDataHour : data) {
@@ -73,9 +89,11 @@ public class ElecDataYearJob {
 				elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
 				boolean falg = elecDataYearService.updateByExampleSelective(elecDataYear);
 				if (falg)
-					logger.info("修改成功！");
+					System.out.println("ElecDataYearJob--> am1Phase::" + elecDataYear.getAmmeterCode()
+					+ "修改成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				else
-					logger.info("修改异常！");
+					System.out.println("ElecDataYearJob--> am1Phase::" + elecDataYear.getAmmeterCode()
+					+ "修改失败或异常！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			} else {
 				Long dAddr = elecDataHour.getdAddr();
 				CharSequence subSequence = dAddr.toString().subSequence(0, 1);
@@ -95,11 +113,15 @@ public class ElecDataYearJob {
 				edy.setwAddr(elecDataHour.getwAddr());
 				boolean b = elecDataYearService.saveByMapper(edy);
 				if (b)
-					logger.info("保存成功！");
+					System.out.println("ElecDataYearJob--> am1Phase::" + edy.getAmmeterCode()
+					+ "新增成功！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 				else
-					logger.info("报错异常！");
+					System.out.println("ElecDataYearJob--> am1Phase::" + edy.getAmmeterCode()
+					+ "新增失败或异常！-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 		}
+		System.setOut(out);
+		System.out.println("ElecDataYearJob日志保存完毕。");
 	}
 
 }

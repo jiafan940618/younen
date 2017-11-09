@@ -859,7 +859,11 @@ public class OrderService {
 			jsonResult.put("applyIsPay", false);
 			jsonResult.put("reason", "当前订单未支付,请先支付。");
 			jsonResult.put("isOk", false);
-			jsonResult.put("applyStepBImgUrl", false);
+			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+				jsonResult.put("applyStepBImgUrl", false);
+			}else{
+				jsonResult.put("applyStepBImgUrl", true);
+			}
 			return jsonResult;
 		} else {
 			jsonResult.put("applyIsPay", true);// 支付成功。

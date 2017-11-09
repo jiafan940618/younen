@@ -1202,4 +1202,19 @@
 		DROP TABLE IF EXISTS younen.am_phase_record_${date};
 	</update>
 
+	<select id="findByMapper4InitKwh" parameterType="com.yn.model.AmPhaseRecord"
+		resultType="com.yn.model.AmPhaseRecord">
+		<!-- RowId cAddr iAddr dAddr dType wAddr MeterTime  -->
+		select
+			kwh_total as kwhTotal
+		from
+		 am_phase_record_${date}
+		 where  d_addr like CONCAT('%','${dAddr}','%')
+		 and c_addr = ${cAddr} order by meter_time desc limit 1 ;
+	</select>
+
+
+
+
+
 </mapper>
