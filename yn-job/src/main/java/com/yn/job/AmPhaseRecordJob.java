@@ -1,5 +1,7 @@
 package com.yn.job;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,7 +42,7 @@ import com.yn.utils.DateUtil;
  * 
  * @author {lzyqssn} <2017年9月28日-下午4:56:15>
  */
-//@Component
+@Component
 public class AmPhaseRecordJob {
 	@Autowired
 	AmPhaseRecordService amPhaseRecordService;
@@ -65,14 +67,28 @@ public class AmPhaseRecordJob {
 	@Autowired
 	AmPhaseRecordMapper amPhaseRecordMapper;
 
-	private static final Logger LOGGER = Logger.getLogger(AmPhaseRecordJob.class);
+	private static PrintStream mytxt;
+	private static PrintStream out;
+
+	public AmPhaseRecordJob() {
+		try {
+			// mytxt = new PrintStream("/opt/springbootproject/ynJob/log/elecDataMonthJobLog.log");
+			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 采集amPhase数据
 	 */
 	@Scheduled(fixedDelay = 25 * 1000)
 	private void collectAmPhaseRecord() throws Exception {
-		//建议后期换成拦截器、过滤器处理。
+		// 设置日志文件输出路径。
+		out = System.out;
+		System.setOut(mytxt);
+		System.out.println("AmPhaseRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+		// 建议后期换成拦截器、过滤器处理。
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
@@ -81,12 +97,12 @@ public class AmPhaseRecordJob {
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
-//			am1Phases = am1PhaseService.findAllAm1PhaseByDate("20171004");
-//			am3Phases = am1PhaseService.findAllAm3PhaseByDate("20171004");
+			// am1Phases = am1PhaseService.findAllAm1PhaseByDate("20171004");
+			// am3Phases = am1PhaseService.findAllAm3PhaseByDate("20171004");
 			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 			String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
-//			date = "2017_10_04";
-//			checkDate = "171004";
+			// date = "2017_10_04";
+			// checkDate = "171004";
 			if (am1Phases.size() > 0) {
 				for (Am1Phase am1Phase : am1Phases) {
 					AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -116,7 +132,7 @@ public class AmPhaseRecordJob {
 								patchDataRecord.setCreateDtm(new Date());
 								// 存临时表。
 								patchDataRecordMapper.insert(patchDataRecord);
-								//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
+								// amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
 								continue;
 							}
 							amPhaseRecord.setDealt(0);
@@ -159,7 +175,7 @@ public class AmPhaseRecordJob {
 								patchDataRecord.setCreateDtm(new Date());
 								// 存临时表。
 								patchDataRecordMapper.insert(patchDataRecord);
-								//amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
+								// amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
 								continue;
 							}
 							amPhaseRecord.setDate(date);
@@ -181,6 +197,8 @@ public class AmPhaseRecordJob {
 		}
 		taskExecuteRecordMapper.updateByPrimaryKey(taskExecuteRecord);
 		System.out.println("日志记录：" + taskExecuteRecord.getStatus());
+		System.setOut(out);
+		System.out.println("AmPhaseRecordJob日志保存完毕。");
 	}
 
 	/**
@@ -206,7 +224,6 @@ public class AmPhaseRecordJob {
 				if (ammeter.getWorkDtm() == null) {
 					ammeter.setWorkDtm(new Date());
 				}
-
 				ammeter.setNowKw(apr.getKw());
 				ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 				if (ammeterDao.findOne(ammeter.getId()) != null) {
@@ -214,7 +231,6 @@ public class AmPhaseRecordJob {
 				} else {
 					ammeterMapper.insert(ammeter);
 				}
-
 				// 插入电表状态记录
 				AmmeterRecord ammeterRecord = new AmmeterRecord();
 				ammeterRecord.setdAddr(apr.getdAddr());

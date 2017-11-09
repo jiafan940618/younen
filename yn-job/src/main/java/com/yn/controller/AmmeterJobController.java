@@ -1,5 +1,6 @@
 package com.yn.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -111,7 +112,7 @@ public class AmmeterJobController {
 								int keySelective = amPhaseRecordService.updateByPrimaryKeySelective(apr);
 							}
 							// 保存电表记录。
-							saveAmmeterRecord(ammeter, apr.getMeterTime());
+							saveAmmeterRecord(ammeter, apr);
 							// 更新电表和电站。
 							updateAmmeterAndStation(ammeter, apr, date);
 							System.out.println("AmmeterJobController--> 更新电表和电站更新成功！-->"
@@ -155,7 +156,7 @@ public class AmmeterJobController {
 							int keySelective = amPhaseRecordService.updateByPrimaryKeySelective(apr);
 						}
 						// 保存电表记录。
-						saveAmmeterRecord(ammeter, apr.getMeterTime());
+						saveAmmeterRecord(ammeter, apr);
 						// 更新电表和电站。
 						updateAmmeterAndStation(ammeter, apr, date);
 						System.out.println("AmmeterJobController--> 更新电表和电站更新成功！-->"
@@ -190,15 +191,25 @@ public class AmmeterJobController {
 	 * @param ammeter
 	 * @param meterTime
 	 */
-	private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
+	private void saveAmmeterRecord(Ammeter ammeter, AmPhaseRecord apr) {
 		AmmeterRecord ammeterRecord = new AmmeterRecord();
 		ammeterRecord.setcAddr(ammeter.getcAddr());
 		ammeterRecord.setdType(ammeter.getdType());
-		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
+		ammeterRecord.setRecordDtm(DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss));
 		if (ammeter.getStation() != null) {
 			ammeterRecord.setStationId(ammeter.getStationId());
 			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
 		}
+		Long dAddr = apr.getdAddr();
+		CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+		if (subSequence.equals("1")) {
+			ammeterRecord.setType(1);
+		} else if (subSequence.equals("2")) {
+			ammeterRecord.setType(2);
+		}
+		ammeterRecord.setCreateDtm(new Date());
+		ammeterRecord.setdAddr(apr.getdAddr());
+		ammeterRecord.setwAddr(apr.getwAddr());
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
@@ -225,6 +236,18 @@ public class AmmeterJobController {
 		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
+//		AmPhaseRecord ap = apr;
+//		ap.setcAddr(Integer.parseInt(ammeter.getcAddr()));
+//		Double kwhTotal = 0.0;
+//		// 统计发电用电的
+//		for (long i = 1; i <= 2; i++) {
+//			ap.setdAddr(i);
+//			AmPhaseRecord a = amPhaseRecordService.findByMapper4InitKwh(ap);
+//			if (a != null) {
+//				kwhTotal += a.getKwhTotal();
+//			}
+//		}
+//		ammeter.setInitKwh(kwhTotal);
 		if (findOne != null) {
 			ammeterMapper.updateByPrimaryKeySelective(ammeter);
 			System.out.println("AmmeterJobController--> ammeter更新成功！-->"
@@ -264,8 +287,17 @@ public class AmmeterJobController {
 	 */
 	private void saveTemStation( Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
-		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
 		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");
+		
+		String formatDate = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH:mm:ss");
+		Date date1 =  null;
+		try {
+			date1 = DateUtil.formatString(formatDate, "yyyy-MM-dd HH");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Date date = new Date(date1.getTime() - 600000);//10分钟前的时间
+		String temStationRecordTime =  DateUtil.formatDate(date, "yyyy-MM-dd HH:mm");
 
 		String cAddr = ammeter.getcAddr();
 		Long dAddr = apr.getdAddr();

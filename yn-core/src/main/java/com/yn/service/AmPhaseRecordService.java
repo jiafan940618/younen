@@ -174,4 +174,8 @@ public class AmPhaseRecordService {
 		return startDtm;
 	}
 
+	public AmPhaseRecord findByMapper4InitKwh(AmPhaseRecord apr) {
+		return amPhaseRecordMapper.findByMapper4InitKwh(apr);
+	}
+
 }

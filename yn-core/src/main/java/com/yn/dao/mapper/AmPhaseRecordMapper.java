@@ -55,4 +55,6 @@ public interface AmPhaseRecordMapper {
 	        * @throws
 	     */
 	    void dropTmpTable(AmPhaseRecord amPhaseRecord);
+	    
+		public AmPhaseRecord findByMapper4InitKwh(AmPhaseRecord apr);
 }

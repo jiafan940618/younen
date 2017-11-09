@@ -1,5 +1,7 @@
 package com.yn.job;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,10 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.soofa.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
@@ -53,7 +55,7 @@ import com.yn.utils.DateUtil;
     * @date 2017年10月27日
     *
  */
-//@Component
+@Component
 public class PatchDataRecordJob {
 
 	@Autowired
@@ -95,8 +97,16 @@ public class PatchDataRecordJob {
 	@Autowired
 	ElecDataYearService elecDataYearService;
 
-	private static Logger logger = Logger.getLogger(PatchDataRecordJob.class);
-	private static final Logger LOGGER = Logger.getLogger(PatchDataRecordJob.class);
+	private static PrintStream mytxt;
+	private static PrintStream out;
+	public PatchDataRecordJob(){
+		try {
+//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/patchDataRecordJobLog.log");
+			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 
@@ -110,9 +120,13 @@ public class PatchDataRecordJob {
 	//@Scheduled(fixedDelay = 25 * 1000)
 	@Transactional
 	private void job() throws ParseException {
+		// 设置日志文件输出路径。
+		out = System.out;
+		System.setOut(mytxt);
+		System.out.println("PatchDataRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		List<PatchDataRecord> list = patchDataRecordMapper.selectByExample(null);
 		if (list.size() > 0) {
-			LOGGER.info("紊乱的数据的总条数：" + list.size());
+			System.out.println("紊乱的数据的总条数：" + list.size());
 			// 处理数据。
 			for (PatchDataRecord patchDataRecord : list) {
 				String meterTime = patchDataRecord.getMeterTime().toString();
@@ -168,12 +182,14 @@ public class PatchDataRecordJob {
 					}
 				}
 			}
-			LOGGER.info("开始整理临时表中的数据。");
+			System.out.println("开始整理临时表中的数据。");
 			doUpdateMonthYear();
-			LOGGER.info("整理完成。");
-			LOGGER.info("清空临时表中的数据。");
+			System.out.println("整理完成。");
+			System.out.println("清空临时表中的数据。");
 			patchDataRecordMapper.truncateTable();
 		}
+		System.setOut(out);
+		System.out.println("PatchDataRecordJob日志保存完毕。");
 	} 
 
 	/**
@@ -373,9 +389,9 @@ public class PatchDataRecordJob {
 						elecDataMonth.setKwh(BigDecimal.valueOf(tolKwh));
 						boolean falg = elecDataMonthService.updateByExampleSelective(elecDataMonth);
 						if (falg) {
-							logger.info("修改月成功！");
+							System.out.println("修改月成功！：："+elecDataMonth.getAmmeterCode());
 						} else {
-							logger.info("修改月异常或失败！");
+							System.out.println("修改月异常或失败！：："+elecDataMonth.getAmmeterCode());
 						}
 					} else {
 						Long dAddr1 = elecDataHour.getdAddr();
@@ -397,9 +413,9 @@ public class PatchDataRecordJob {
 						edm.setwAddr(elecDataHour.getwAddr());
 						boolean b = elecDataMonthService.saveByMapper(edm);
 						if (b) {
-							logger.info("保存月成功！");
+							System.out.println("保存月成功！：："+edm.getAmmeterCode());
 						} else {
-							logger.info("报存月失败或异常！");
+							System.out.println("报存月失败或异常！：："+edm.getAmmeterCode());
 						}
 					}
 					// 删除那一个月的数据、
@@ -437,9 +453,9 @@ public class PatchDataRecordJob {
 					elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
 					boolean falg = elecDataYearService.updateByExampleSelective(elecDataYear);
 					if (falg)
-						logger.info("修改成功！");
+						System.out.println("修改成功！：："+elecDataYear.getAmmeterCode());
 					else
-						logger.info("修改异常！");
+						System.out.println("修改异常或失败！：："+elecDataYear.getAmmeterCode());
 				} else {
 					Long dAddr1 = elecDataHour2.getdAddr();
 					CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
@@ -459,9 +475,9 @@ public class PatchDataRecordJob {
 					edy.setwAddr(elecDataHour2.getwAddr());
 					boolean b = elecDataYearService.saveByMapper(edy);
 					if (b)
-						logger.info("保存年成功！");
+						System.out.println("保存年成功！：："+edy.getAmmeterCode());
 					else
-						logger.info("报错年异常！");
+						System.out.println("保存年异常或失败！：："+edy.getAmmeterCode());
 				}
 			}
 		}

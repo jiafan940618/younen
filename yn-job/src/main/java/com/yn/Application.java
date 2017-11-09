@@ -4,11 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.yn.test.TestDemo;
+
 // @EnableAutoConfiguration
 @SpringBootApplication
 //@ComponentScan
 // @MapperScan("com.cj.dao.mapper")
-//@EnableScheduling
+@EnableScheduling
 public class Application {
 
 	public static void main(String[] args) {
@@ -17,6 +19,5 @@ public class Application {
 		springApplication.run(args);
 		// SpringApplication.run(Application.class, args);
 		System.out.println("yn-job Start Success");
-
 	}
 }

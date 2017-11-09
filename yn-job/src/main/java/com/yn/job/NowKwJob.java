@@ -1,5 +1,7 @@
 package com.yn.job;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +20,7 @@ import com.yn.service.StationService;
 /**
  * 更新电站的实时功率
  */
-//@Component
+@Component
 public class NowKwJob {
 	@Autowired
 	AmmeterService ammeterService;
@@ -28,9 +30,23 @@ public class NowKwJob {
 	StationDao stationDao;
 	@Autowired
 	StationMapper stationMapper;
+	private static PrintStream mytxt;
+	private static PrintStream out;
+	public NowKwJob(){
+		try {
+//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/nowKwJobLog.log");
+			mytxt = new PrintStream("./nowKwJobLog.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Scheduled(fixedDelay = 10 * 1000)
 	private void job() {
+		// 设置日志文件输出路径。
+		out = System.out;
+		System.setOut(mytxt);
+		System.out.println("NowKwJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		System.out.println("NowKwJob-->job::run");
 		List<Station> stations = stationService.findAll(new Station());
 		for (Station station : stations) {
@@ -57,6 +73,8 @@ public class NowKwJob {
 						+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 			}
 		}
+		System.setOut(out);
+		System.out.println("NowKwJob日志保存完毕。");
 	}
 
 }

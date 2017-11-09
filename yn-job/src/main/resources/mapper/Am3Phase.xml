@@ -59,7 +59,7 @@
 	<select id="findAllAm3Phase" resultMap="Am3PhaseMapper"
 		parameterType="java.lang.String">
 		<!-- 注意：如果使用的数据库不在同一个ip上，请将下面的 youneng 删除，再去DataSource1.java和DataSource2.java中修改basePackages -->
-		select * from youneng.am_3phase_${sqlNowData}
+		select * from youneng02bF.am_3phase_${sqlNowData}
 		where
 		meter_time <![CDATA[ >= ]]>
 		${startDtm}
