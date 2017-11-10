@@ -109,7 +109,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if (url.indexOf("/client/userLogin") > -1 || url.indexOf("/client/station/runningStation ")>-1
+        if (url.indexOf("/client/userLogin") > -1 || url.indexOf("/client/station/runningStation")>-1
         		|| url.indexOf("/client/station/runStations")>-1 || url.indexOf("/client/subsidy/monishouyi")>-1
         		|| url.indexOf("/client/server")>-1 || url.indexOf("/client/news")>-1 || url.indexOf("/client/news")>-1 
         		|| url.indexOf("/client/station/numCapacity")>-1 || url.indexOf("/client/station/stationFenbu")>-1
