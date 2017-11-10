@@ -585,6 +585,9 @@ public class UserController {
 	public Object logout(@RequestParam("countType") Integer countType, HttpSession httpSession) {
 
 		if(countType == 1){
+			User user = SessionCache.instance().getUser();
+			 user.setToken(null);
+		     userService.updateToken(user);
 			//httpSession.removeAttribute("user");
 			httpSession.removeAttribute("SessionCache");
 			httpSession.removeAttribute("userVo");	
