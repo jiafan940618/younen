@@ -428,14 +428,11 @@ public class StationService {
 			for (Ammeter ammeter : ammeters) {
 			// 发电功率
 			nowKw = nowKw + ammeter.getNowKw();
+			// 发电总量
+			egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
 			}
 			// 装机容量
 			capacity = capacity + station.getCapacity();
-		}
-		List<Ammeter> ammetersAll = ammeterDao.findAll();
-		for (Ammeter ammeter : ammetersAll) {
-			// 发电总量
-			egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
 		}
 		if (capacity > nowKw) {
 			// 发电效率（百分比）

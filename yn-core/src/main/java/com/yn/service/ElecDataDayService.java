@@ -2,6 +2,7 @@ package com.yn.service;
 
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +32,7 @@ import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.ElecDataMonthDao;
 import com.yn.dao.ElecDataYearDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
+import com.yn.model.Ammeter;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
 import com.yn.model.ElecDataHour;
@@ -388,10 +390,25 @@ public class ElecDataDayService {
 		maps.put("monthTotalElec", NumberUtil.accurateToTwoDecimal(monthTotalElec));
 		// 获取当前年的发电详情
 		List<ElecDataYear> elecDataYear = elecDataYearDao.findByYear(ammeterCodes, type);
+		
+		if (type==1) {
+			SimpleDateFormat dFormat = new SimpleDateFormat("yyyy");
+			List<Ammeter>  ammeters=ammeterDao.findByStationId(stationId);
+			for (Ammeter ammeter : ammeters) {
+				for (ElecDataYear ElecDataYear : elecDataYear) {
+					if (dFormat.format(ElecDataYear.getCreateDtm()).toString().equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
+						Double yearKwh=ElecDataYear.getKwh().doubleValue();
+						Double initKwh=ammeter.getInitKwh();
+						ElecDataYear.setKwh(BigDecimal.valueOf(yearKwh+initKwh));
+					}
+				}
+			}
+		}
 		double yearTotalElec = elecDataYearDao.sumKwhByYear(type, ammeterCodes);
 		maps.put("yearList", elecDataYear);
 		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));
 		return maps;
 	}
+	
 
 }
