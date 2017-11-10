@@ -84,7 +84,7 @@ public class SolarPanelSerice {
 				
 				String typeName = type == 1 ? "单晶硅":"多晶硅";
 				
-				Integer conversionEfficiency =(Integer)object[3];
+				double conversionEfficiency =(double)object[3];
 
 					BigDecimal quality =(BigDecimal)object[4];
 

@@ -10,7 +10,7 @@ public class SolarPanelVo {
 	
 	private Integer type;
 	
-	private Integer conversionEfficiency;
+	private Double conversionEfficiency;
 	
 	private Double qualityAssurance;
 	
@@ -85,11 +85,11 @@ public class SolarPanelVo {
 	}
 
 	
-	public Integer getConversionEfficiency() {
+	public Double getConversionEfficiency() {
 		return conversionEfficiency;
 	}
 
-	public void setConversionEfficiency(Integer conversionEfficiency) {
+	public void setConversionEfficiency(Double conversionEfficiency) {
 		this.conversionEfficiency = conversionEfficiency;
 	}
 
