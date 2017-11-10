@@ -65,7 +65,7 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
     @Query(value="select w.money,w.integral,u.privilege_code_init,u.nick_name from user u LEFT JOIN wallet w on u.id =w.user_id where u.del = 0 and u.id = :userId",nativeQuery=true)
     Object findUserPrice(@Param("userId") Long userId);
     
-    @Query(value="SELECT u.id FROM user u WHERE u.token=?1 u.del=0",nativeQuery=true)
+    @Query(value="SELECT u.id FROM user u WHERE u.token=?1 and u.del=0",nativeQuery=true)
     long findByToken(@Param("token")String token);
     
     
