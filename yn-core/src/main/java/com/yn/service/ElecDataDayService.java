@@ -96,14 +96,27 @@ public class ElecDataDayService {
 	}
 
 	public void saveByMapper(ElecDataDay elecDataDay) {
+		if(elecDataDay.getwAddr()>0){
+			return;
+		}
 		if (elecDataDay.getId() != null) {
 			ElecDataDay one = elecDataDayDao.findOne(elecDataDay.getId());
+			ElecDataDayExample ex = new ElecDataDayExample();
+			Criteria criteria = ex.createCriteria();
+			criteria.andAmmeterCodeEqualTo(one.getAmmeterCode());
+			criteria.andRecordTimeEqualTo(one.getRecordTime());
+			List<ElecDataDay> selectByExample = elecDataDayMapper.selectByExample(ex);
+			Double a = 0.0;
+			for (ElecDataDay elecDataDay2 : selectByExample) {
+				a += elecDataDay2.getKwh();
+			}
 			try {
 				BeanCopy.beanCopy(elecDataDay, one);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			elecDataDayMapper.updateByPrimaryKeySelective(one);
+//			elecDataDay.setKwh(a);
+			elecDataDayMapper.updateByPrimaryKeySelective(elecDataDay);
 		} else {
 			elecDataDayMapper.insert(elecDataDay);
 		}
@@ -364,6 +377,7 @@ public class ElecDataDayService {
 		List<ElecDataDay> list = elecDataDayMapper.selectByQuery(map);
 		return list;
 	}
+
 
 	/**
 	 * 移动端获取每天每月每年发电详情

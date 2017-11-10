@@ -27,4 +27,6 @@ public interface AmmeterMapper {
     int updateByPrimaryKey(Ammeter record);
 
 	List<Ammeter> selectByStationId(Integer stationId);
+
+	List<Ammeter> selectAllByMapper();
 }

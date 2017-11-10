@@ -207,6 +207,7 @@ public class AmPhaseRecordJobController {
 		am1Phases = amPhaseService.findAllAm1PhaseByDate(selectDate);
 		am3Phases = amPhaseService.findAllAm3PhaseByDate(selectDate);
 		String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
+//		checkDate = "171108";
 		if (am1Phases != null && am1Phases.size() > 0) {
 			jsonResult.put("am1Phases.size() ", am1Phases.size());
 			for (Am1Phase am1Phase : am1Phases) {
