@@ -307,4 +307,11 @@
 		where station_id = #{stationId,jdbcType=INTEGER}
 	</select>
 	
+	<select id="selectAllByMapper" resultType="com.yn.model.Ammeter">
+		select 
+			*
+		from ammeter
+		where del = 0
+	</select>
+	
 </mapper>

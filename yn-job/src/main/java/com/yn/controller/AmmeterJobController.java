@@ -396,7 +396,7 @@ public class AmmeterJobController {
 		long lastMeterTime = getLastMeterTime(meterTime);
 		AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
 		amPhaseRecordR.setcAddr(apr.getcAddr());
-		amPhaseRecordR.setdAddr(apr.getdAddr());
+		amPhaseRecordR.setdAddr(2L);//用电
 		amPhaseRecordR.setdType(apr.getdType());
 		amPhaseRecordR.setwAddr(apr.getwAddr());
 		amPhaseRecordR.setMeterTime(lastMeterTime);
@@ -404,8 +404,13 @@ public class AmmeterJobController {
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
-			if (lastAmPhaseRecord.getKwhTotal() != null && apr.getKwhTotal() != null)
+			if (lastAmPhaseRecord.getKwhTotal() >= 0.0) {
+				//现在和前10分钟数据一致说明没发电。
+				if(lastAmPhaseRecord.getKwhTotal()==apr.getKwhTotal()){
+					return 0.00;
+				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
+			} 
 		}
 		return kwhTol;
 	}

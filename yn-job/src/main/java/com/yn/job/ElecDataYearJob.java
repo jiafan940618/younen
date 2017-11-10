@@ -26,7 +26,7 @@ import com.yn.service.ElecDataYearService;
     * @date 2017年10月24日
     *
  */
-@Component
+//@Component
 public class ElecDataYearJob {
 
 	@Autowired

@@ -99,9 +99,11 @@ public class PatchDataRecordJob {
 
 	private static PrintStream mytxt;
 	private static PrintStream out;
-	public PatchDataRecordJob(){
+
+	public PatchDataRecordJob() {
 		try {
-//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/patchDataRecordJobLog.log");
+			// mytxt = new
+			// PrintStream("/opt/springbootproject/ynJob/log/patchDataRecordJobLog.log");
 			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -117,13 +119,14 @@ public class PatchDataRecordJob {
 	    * @throws
 	 */
 	@Scheduled(cron = "0 0 0 * * ? ")
-	//@Scheduled(fixedDelay = 25 * 1000)
+	// @Scheduled(fixedDelay = 25 * 1000)
 	@Transactional
 	private void job() throws ParseException {
 		// 设置日志文件输出路径。
 		out = System.out;
 		System.setOut(mytxt);
-		System.out.println("PatchDataRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
+		System.out.println(
+				"PatchDataRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		List<PatchDataRecord> list = patchDataRecordMapper.selectByExample(null);
 		if (list.size() > 0) {
 			System.out.println("紊乱的数据的总条数：" + list.size());
@@ -190,7 +193,7 @@ public class PatchDataRecordJob {
 		}
 		System.setOut(out);
 		System.out.println("PatchDataRecordJob日志保存完毕。");
-	} 
+	}
 
 	/**
 	 * 保存电表状态记录
@@ -389,9 +392,9 @@ public class PatchDataRecordJob {
 						elecDataMonth.setKwh(BigDecimal.valueOf(tolKwh));
 						boolean falg = elecDataMonthService.updateByExampleSelective(elecDataMonth);
 						if (falg) {
-							System.out.println("修改月成功！：："+elecDataMonth.getAmmeterCode());
+							System.out.println("修改月成功！：：" + elecDataMonth.getAmmeterCode());
 						} else {
-							System.out.println("修改月异常或失败！：："+elecDataMonth.getAmmeterCode());
+							System.out.println("修改月异常或失败！：：" + elecDataMonth.getAmmeterCode());
 						}
 					} else {
 						Long dAddr1 = elecDataHour.getdAddr();
@@ -413,9 +416,9 @@ public class PatchDataRecordJob {
 						edm.setwAddr(elecDataHour.getwAddr());
 						boolean b = elecDataMonthService.saveByMapper(edm);
 						if (b) {
-							System.out.println("保存月成功！：："+edm.getAmmeterCode());
+							System.out.println("保存月成功！：：" + edm.getAmmeterCode());
 						} else {
-							System.out.println("报存月失败或异常！：："+edm.getAmmeterCode());
+							System.out.println("报存月失败或异常！：：" + edm.getAmmeterCode());
 						}
 					}
 					// 删除那一个月的数据、
@@ -453,9 +456,9 @@ public class PatchDataRecordJob {
 					elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
 					boolean falg = elecDataYearService.updateByExampleSelective(elecDataYear);
 					if (falg)
-						System.out.println("修改成功！：："+elecDataYear.getAmmeterCode());
+						System.out.println("修改成功！：：" + elecDataYear.getAmmeterCode());
 					else
-						System.out.println("修改异常或失败！：："+elecDataYear.getAmmeterCode());
+						System.out.println("修改异常或失败！：：" + elecDataYear.getAmmeterCode());
 				} else {
 					Long dAddr1 = elecDataHour2.getdAddr();
 					CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
@@ -475,9 +478,9 @@ public class PatchDataRecordJob {
 					edy.setwAddr(elecDataHour2.getwAddr());
 					boolean b = elecDataYearService.saveByMapper(edy);
 					if (b)
-						System.out.println("保存年成功！：："+edy.getAmmeterCode());
+						System.out.println("保存年成功！：：" + edy.getAmmeterCode());
 					else
-						System.out.println("保存年异常或失败！：："+edy.getAmmeterCode());
+						System.out.println("保存年异常或失败！：：" + edy.getAmmeterCode());
 				}
 			}
 		}
@@ -505,8 +508,14 @@ public class PatchDataRecordJob {
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
-			if (apr.getKwhTotal() != null && lastAmPhaseRecord.getKwhTotal() != null) {
+			if (lastAmPhaseRecord.getKwhTotal() > 0) {
+				//现在和前10分钟数据一致说明没发电。
+				if(lastAmPhaseRecord.getKwhTotal()==apr.getKwhTotal()){
+					return 0.00;
+				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
+			} else {
+				kwhTol = apr.getKwhTotal() - ammeterDao.findByCAddr(apr.getcAddr().toString()).getWorkTotalKwh();
 			}
 		}
 		return kwhTol;

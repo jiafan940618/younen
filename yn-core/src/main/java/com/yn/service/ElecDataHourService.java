@@ -135,13 +135,26 @@ public class ElecDataHourService {
 	}
 
 	public void saveByMapper(ElecDataHour elecDataHour) {
+		if(elecDataHour.getwAddr()>0){
+			return;
+		}
 		if (elecDataHour.getId() != null) {
 			ElecDataHour one = elecDataHourDao.findOne(elecDataHour.getId());
+			ElecDataHourExample ex = new ElecDataHourExample();
+			Criteria criteria = ex.createCriteria();
+			criteria.andAmmeterCodeEqualTo(one.getAmmeterCode());
+			criteria.andRecordTimeEqualTo(one.getRecordTime());
+			List<ElecDataHour> selectByExample = elecDataHourMapper.selectByExample(ex);
+			Double a = 0.0;
+			for (ElecDataHour elecDataHour2 : selectByExample) {
+				a += elecDataHour2.getKwh();
+			}
 			try {
 				BeanCopy.beanCopy(elecDataHour, one);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+//			elecDataDay.setKwh(a);
 			elecDataHourMapper.updateByPrimaryKeySelective(elecDataHour);
 		} else {
 			elecDataHourMapper.insert(elecDataHour);

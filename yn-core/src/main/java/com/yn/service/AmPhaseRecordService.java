@@ -89,8 +89,8 @@ public class AmPhaseRecordService {
 	public AmPhaseRecord findOneByMapper(AmPhaseRecord amPhaseRecord) {
 		//RowId cAddr iAddr dAddr dType wAddr MeterTime
 		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
-		AmPhaseRecord findOne = amPhaseRecordMapper.selectOneByC(amPhaseRecord);
-		return findOne;
+		List<AmPhaseRecord> findOne = amPhaseRecordMapper.selectOneByC(amPhaseRecord);
+		return findOne.size()==0?null:findOne.get(findOne.size()-1);
 	}
 
 	public List<AmPhaseRecord> findAll(List<Long> list) {

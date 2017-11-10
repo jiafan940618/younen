@@ -34,7 +34,7 @@ public interface AmPhaseRecordMapper {
 
 	    int updateByPrimaryKey(AmPhaseRecord record);
 	    
-		public AmPhaseRecord selectOneByC(AmPhaseRecord amPhaseRecord);
+		public List<AmPhaseRecord> selectOneByC(AmPhaseRecord amPhaseRecord);
 		
 		/**
 		 * 

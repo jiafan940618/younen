@@ -83,11 +83,9 @@ public class SolarPanelSerice {
 				Integer type =(Integer)object[2];
 				
 				String typeName = type == 1 ? "单晶硅":"多晶硅";
-				
-				Double conversionEfficiency =(Double)object[3];
-
+	
+				    Double conversionEfficiency =(Double)object[3];
 					BigDecimal quality =(BigDecimal)object[4];
-
 					if(null != quality){
 					Double qualityAssurance = quality.doubleValue();
 					//boardYear
