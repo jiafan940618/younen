@@ -26,6 +26,8 @@ public class Province extends IDomain implements Serializable{
 	@Column(columnDefinition = "varchar(50) comment '[省名称]'")
 	private String provinceText;
 	
+	private String code;
+	
 	@OneToMany
 	@JoinColumn(name = "provinceId", insertable = false, updatable = false)
 	private Set<City> city;
@@ -36,6 +38,15 @@ public class Province extends IDomain implements Serializable{
 	public Province(Long id,String provinceText){
 		this.id = id;
 		this.provinceText = provinceText;
+	}
+
+	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getProvinceText() {

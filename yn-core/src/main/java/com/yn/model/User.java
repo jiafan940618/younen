@@ -63,6 +63,32 @@ public class User extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[备注]'")
     protected String ipoMemo;
     
+   /* private Double capacity;
+    
+    private Double totalMoney;
+    
+    
+    
+
+	public Double getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
+
+	public Double getTotalMoney() {
+		return totalMoney;
+	}
+
+
+
+	public void setTotalMoney(Double totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+*/
+
 
 	public String getIpoMemo() {
 		return ipoMemo;

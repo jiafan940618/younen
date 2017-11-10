@@ -106,7 +106,7 @@ public class UserLoginController {
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
-	        session.setAttribute("userVo",userVo );
+	       // session.setAttribute("userVo",userVo );
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
@@ -275,9 +275,6 @@ public class UserLoginController {
 		return ResultVOUtil.error(777, Constant.PHONE_EXIST);
 	}
 
-	
-	 /** 测试的短信验证.*/
-	//String code = Propertie.getProperty("code");
 	 /** 拿到短信验证码*/  
 	String code = RongLianSMS.sendCode(phone);
 	 
@@ -342,6 +339,33 @@ public class UserLoginController {
 
     	return  ResultVOUtil.success(code); 
        }
+    
+    
+    @ResponseBody
+    @RequestMapping(value="/checked")
+    public  ResultData<Object> getormation(HttpSession httpSession,String code4findpsw,UserVo user){
+    	
+    	Long code4registerTime = (Long)httpSession.getAttribute("codeUserTime");
+		
+    	Long spaceTime = System.currentTimeMillis() - code4registerTime;
+		if(spaceTime > 300000){
+			logger.info(" -- -- --- 短信验证码已失效！");
+			return ResultVOUtil.error(777, Constant.CODE_AGAIN);
+		}
+		
+		Object attribute2 = httpSession.getAttribute("codeUser");
+		if (attribute2 == null) {
+			logger.info("---- ---- ---- ---- 短信验证码不能为空！ ");
+			return ResultVOUtil.error(777, Constant.CODE_NULL);
+		}
+		if (!code4findpsw.equals(attribute2) || !user.getPhone().equals(httpSession.getAttribute("user_phone"))) {
+			logger.info("---- ---- ---- ---- 短信验证码错误！ ");
+			return ResultVOUtil.error(777, Constant.CODE_ERROR);
+		}
+
+		return ResultVOUtil.success();
+    }
+    
    
     /** 手机端的注册*/
     @ResponseBody

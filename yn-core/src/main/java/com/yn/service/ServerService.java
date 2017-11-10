@@ -1,5 +1,7 @@
 package com.yn.service;
 
+import com.yn.dao.OrderDao;
+import com.yn.dao.ProvinceDao;
 import com.yn.dao.ServerDao;
 import com.yn.dao.UserDao;
 import com.yn.dao.mapper.ServerMapper;
@@ -7,6 +9,7 @@ import com.yn.enums.NoticeEnum;
 import com.yn.enums.RoleEnum;
 import com.yn.enums.ServerTypeEnum;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Province;
 import com.yn.model.Server;
 import com.yn.model.User;
 import com.yn.utils.BeanCopy;
@@ -56,6 +59,10 @@ public class ServerService {
     @Autowired
     UserDao userDao;
     @Autowired
+    OrderDao orderDao;
+    @Autowired 
+    ProvinceDao provinceDao;
+    @Autowired
     private NoticeService noticeService;
     
     private static DecimalFormat df = new DecimalFormat("0.00");
@@ -100,6 +107,22 @@ public class ServerService {
 	public List<NewServer> gitNewServerPlan(com.yn.model.Page<NewServer> page){
 		return serverMapper.gitNewServerPlan(page);
 	}
+	
+	 public String getnewOrderCode(Long serverId,Long provinceId){
+		 
+		 Province province= provinceDao.findOne(provinceId);
+		 
+		 String newserver = String.format("%03d", serverId);
+
+		 Integer num = (int) orderDao.newNum() ;
+		
+		 String newuser = String.format("%05d", num+1);
+		 
+		 StringBuffer code = new StringBuffer("P"+province.getCode()+"M"+newserver+"N"+newuser);
+	    	
+	    	return code.toString();
+	    }
+	    
     
 	 /** 生成订单号*/
     public String getOrderCode(Long serverId){

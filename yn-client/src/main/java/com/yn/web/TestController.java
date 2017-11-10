@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yn.exception.MyException;
 import com.yn.model.Apolegamy;
 import com.yn.model.BankCard;
 import com.yn.model.BillOrder;
@@ -44,9 +45,12 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.PhoneFormatCheckUtils;
+import com.yn.utils.StringUtil;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
@@ -95,17 +99,21 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(UserVo userVo){  
-	    	 // userVo.setId(8L);
-	       	userVo.setFullAddressText("测试地址");
-	       	userVo.setEmail("974426563@163.com");
-	       	userVo.setHeadImgUrl("http://oss.u-en.cn/img/d0b9fdc2-e45c-4fe2-970e-13fbdde03d15.png");
-	       	userVo.setPhone("18317829893");
+	    	   String token ="2b3e210053a8285cd51088510496856d";
 	    	   
-	    	   User user = new User();
-	           BeanCopy.copyProperties(userVo, user);
-	           user.setId(7110L);
-	           
-	           userservice.save(user);
+	    	   if (!StringUtil.isEmpty(token)) {
+	            	
+	                User userE = new User();
+	                userE.setToken(token);
+	              User  user = userservice.findOne(userE);
+	                if (user != null) {
+	                    SessionCache.instance().setUser(user);
+	                    return true;
+	                } else {
+	                    throw new MyException(444, Constant.NO_LOGIN);
+	                }
+	            }
+	    	   
 	   		return ResultVOUtil.success(null);
 	        
 	       } 
@@ -136,10 +144,66 @@ public class TestController {
 	 @RequestMapping(value = "/dotest02")
 	 @ResponseBody
 	    public Object someTest(HttpSession session) {
-		 
-		System.out.println("进入测试!");
 
-			return ResultVOUtil.success(null);
-	    }
+				 Integer type = 0;
+
+				 Long userId = Long.valueOf(69);
+	
+					logger.info("---- ---- ---- ------ ----- 开始生成订单");
+
+					List<Long> listid = new ArrayList<Long>();
+
+					Double apoPrice = 0.0;
+
+					Long planid = 11L;
+
+					NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+
+					User user02 = userservice.findOne(userId);
+					
+				    String orderCode =	serverService.getnewOrderCode(newserverPlan.getServerId(), user02.getProvinceId());
+					
+					/** 添加订单*/
+					Order order = newserverPlanService.getnewOrder(newserverPlan, user02,0.0, apoPrice,
+							orderCode, null,type);
+
+					/** 取出订单号并添加*/
+					order.setOrderCode(orderCode);
+					orderService.newSave(order);
+
+					Order order02 = new Order();
+					order02.setOrderCode(order.getOrderCode());
+
+					Order neworder = orderService.findOne(order02);
+
+					/** 订单计划表*/
+					Long id = newserverPlan.getId();
+
+					NewServerPlan serverPlan = newserverPlanService.findOne(id);
+
+					OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
+
+					OrderPlan orderPlan2 = new OrderPlan();
+					orderPlan2.setOrderId(orderPlan.getOrderId());
+
+					OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
+
+					order.setOrderPlanId(newOrdPlan.getId());
+
+					orderPlanService.save(orderPlan);
+
+					neworder.setOrderPlan(newOrdPlan);
+
+					/** 添加电站 */
+					stationService.insertStation(neworder);
+
+					logger.info("---- ---- ------ ----- ----- 开始添加记录表");
+					APOservice.getapole(neworder, listid);
+					logger.info("---- ---- ------ ----- ----- 添加结束！");
+					neworder.getUser().setPassword(null);
+
+				
+					return ResultVOUtil.success();
+				}
 	
 }

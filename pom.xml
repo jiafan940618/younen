@@ -196,7 +196,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		  <dependency>
 			<groupId>com.yuntongxun</groupId>
 			<artifactId>CCP_REST_SDK_JAVA_v2.7r</artifactId>
 			<version>2.7</version>
@@ -206,7 +206,7 @@
 			<groupId>com.lycheepay.gateway</groupId>
 			<artifactId>gateway-client-3.8.8</artifactId>
 			<version>3.8.8</version>
-		</dependency>
+		</dependency> 
 		
 		<!-- 集成redis -->
 		<dependency>

@@ -24,4 +24,7 @@ public interface ProvinceDao extends JpaRepository<Province, Long>, JpaSpecifica
     @Modifying
     @Query("select new Province(id,provinceText) from Province")
     List<Province> selectProvince();
+    
+    
+
 }

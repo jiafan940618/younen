@@ -76,6 +76,8 @@ public class SessionCache {
         if (attribute == null) {
             attribute = new SessionCache();
             session.setAttribute("SessionCache", attribute);
+            /** 设置失效时间*/
+            session.setMaxInactiveInterval(30*60);
         }
         return (SessionCache) attribute;
     }

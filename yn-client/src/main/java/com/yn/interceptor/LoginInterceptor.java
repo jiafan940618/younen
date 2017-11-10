@@ -82,6 +82,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 user = userService.findOne(userE);
                 if (user != null) {
                     SessionCache.instance().setUser(user);
+                   
                     return true;
                 } else {
                     throw new MyException(444, Constant.NO_LOGIN);

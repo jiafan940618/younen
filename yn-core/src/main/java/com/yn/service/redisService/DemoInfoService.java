@@ -69,11 +69,8 @@ public class DemoInfoService {
 	 
 	return weather;
    }
-    
-    
 
     //keyGenerator="myKeyGenerator"
-
     @Cacheable(value="weather") //缓存,这里没有指定key.
     public Weather findById(long id) {
 

@@ -21,6 +21,8 @@ public class ProvinceService {
     public Province findOne(Long id) {
         return provinceDao.findOne(id);
     }
+    
+  
 
     public void save(Province province) {
         if(province.getId()!=null){

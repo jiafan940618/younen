@@ -27,6 +27,9 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     @Query("SELECT COUNT(*) FROM Order u WHERE u.createDtm>=?1 AND u.createDtm<?2 AND u.del=0")
     long countNum(Date startDtm, Date endDtm);
     
+    @Query("SELECT COUNT(1) FROM Order ")
+    long newNum();
+    
     @Query("SELECT COUNT(*) FROM Order u WHERE u.createDtm>=?1 AND u.createDtm<?2 AND u.serverId=?3 AND u.del=0")
     long countNum(Date startDtm, Date endDtm, Long serverId);
     

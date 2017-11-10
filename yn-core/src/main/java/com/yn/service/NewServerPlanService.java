@@ -231,7 +231,7 @@ public class NewServerPlanService {
 	         /** 服务费*/
 	        order.setFactoragePrice(price * factorage );
 	         /** 装机容量*/
-	        order.setCapacity(Double.valueOf(newserverPlan.getMinPurchase().toString()));
+	        order.setCapacity(newserverPlan.getMinPurchase());
 	        /** 状态*/
 	        order.setStatus(0);
 	        order.setGridConnectedIsPay(0);
@@ -424,6 +424,77 @@ public class NewServerPlanService {
 
 		return order;
 	}
+	
+	   public Order getnewOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,String IpoMemo,Integer type){
+	    	
+	    	Order order = new Order();
+	    	 /** 保存订单*/
+	        user.getAddressText();
+	        
+	         /** 找到服务费率*/
+	        Long serverid = newserverPlan.getServerId();
+	        Server server = serverDao.findServer(serverid);
+	        Double factorage =   server.getFactorage();
+	         
+	        /** 订单id*/
+	        Long order_planid = newserverPlan.getId();
+	         /** 保修期*/
+	        order.setWarPeriod(newserverPlan.getWarPeriod().intValue());
+	       // order.setCapacity(newserverPlan.getCapacity());
+	        order.setProvinceId(user.getProvinceId());
+	        order.setProvinceText(user.getProvinceText());
+	        order.setServerName(server.getCompanyName());
+	        /**  转移数据*/
+	        order.setAddressText(user.getFullAddressText());
+	       
+	        logger.info("----------------------addressText："+order.getAddressText());
+
+	        order.setCityId(user.getCityId());
+	        order.setCityText(user.getCityText());
+	        order.setLinkMan(user.getUserName());
+	        if(null != IpoMemo && !IpoMemo.equals("")){
+	        	 order.setIpoMemo(IpoMemo);
+	        }
+	        
+	        order.setLinkPhone(user.getPhone());
+	        order.setPlanPrice(price);
+	        order.setServerName(server.getCompanyName());
+	        order.setOrderCode(orderCode);
+	        order.setUserId(user.getId());
+	        order.setServerId(newserverPlan.getServerId());
+	        /** 优惠码*/
+	        order.setPrivilegeCode(null);
+	        /** 优能的选配项目价格*/
+	        order.setYnApolegamyPrice(apoPrice);
+	        /** 服务商选配项目价格*/
+	        order.setServerApolegamyPrice(apoPrice);
+	        /** 总价格*/
+	        order.setTotalPrice(price+apoPrice);
+	         /** 已付金额*/
+	        order.setHadPayPrice(price+apoPrice);
+	         /** 服务费*/
+	        order.setFactoragePrice(0.0);
+	         /** 装机容量*/
+	      //  order.setCapacity(user.getCapacity());
+	        /** 状态*/
+	        order.setStatus(3);
+	        order.setGridConnectedIsPay(1);
+	        order.setGridConnectedStepA(2);
+	        order.setApplyIsPay(1);
+	        order.setApplyStepA(2);
+	        order.setApplyStepB(2);
+	        order.setLoanStatus(0);
+	        order.setBuildIsPay(1);
+	        order.setBuildStepA(1);
+	        order.setBuildStepB(10);
+	        /** 安装类型 默认为 0：居民*/
+	        order.setType(type);
+	       
+	        
+	        order.setUser(user);
+	        
+			return order;
+	    }
 
 	
 }
