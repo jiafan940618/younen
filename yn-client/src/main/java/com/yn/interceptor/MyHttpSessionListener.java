@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.yn.model.User;
 import com.yn.session.SessionCache;
 
 @WebListener
@@ -28,18 +27,19 @@ public class MyHttpSessionListener implements HttpSessionListener {
 		
 		ServletContext application = session.getServletContext();
 		
-		User user = SessionCache.instance().getUser(); 
+		SessionCache sessioncache =(SessionCache) session.getAttribute("SessionCache");
 		
-		List<User> list = (List<User>)application.getAttribute("UserList");
+		List<SessionCache> list = (List<SessionCache>)application.getAttribute("UserList");
+		
 		
 		if(list == null ){
 			
-			List<User> newlist = new ArrayList<User>();
+			List<SessionCache> newlist = new ArrayList<SessionCache>();
 			
 			application.setAttribute("UserList", newlist);
 		}
 		
-		list.add(user);
+		list.add(sessioncache);
 	}
 
 	@Override
@@ -51,11 +51,11 @@ public class MyHttpSessionListener implements HttpSessionListener {
 		
 		ServletContext application =session.getServletContext();
 		
-		User user = SessionCache.instance().getUser(); 
+		SessionCache sessioncache =(SessionCache) session.getAttribute("SessionCache");
 		
-		List<User> list = (List<User>)application.getAttribute("UserList");
+		List<SessionCache> list = (List<SessionCache>)application.getAttribute("UserList");
 		
-		list.remove(user);
+		list.remove(sessioncache);
 	
 	}
 	

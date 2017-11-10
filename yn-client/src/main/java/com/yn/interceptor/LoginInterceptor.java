@@ -42,25 +42,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String url = request.getQueryString() == null ? requestURL + "" : (requestURL + "?" + request.getQueryString());
         logger.info(url);
         logger.info(ip);
-        // 拦截后台管理端请求，后台管理必须登录
-        // if(requestURL.toString().contains("admin.ingdu.cn")){
-        // Integer admin = (Integer) request.getSession().getAttribute("admin");
-        // if((admin==null||admin!=1)&&(!(requestURL.contains("/server/user/login")||requestURL.contains("/server/user/logout")||requestURL.contains("/server/file/upload")))){
-        // //使用OutputStream流向客户端输出“未登录”错误信息
-        // OutputStream os = response.getOutputStream();
-        // response.setHeader("content-type",
-        // "text/html;charset=UTF-8");//通过设置响应头控制浏览器以UTF-8的编码显示数据，如果不加这句话，那么浏览器显示的将是乱码
-        // ResultData<Object> resultData = new ResultData<Object>();
-        // Constant.noLogin(resultData);
-        // String data = JSON.toJSONString(resultData);
-        // byte[] dataByteArr =
-        // data.getBytes("UTF-8");//将字符转换成字节数组，指定以UTF-8编码进行转换
-        // os.write(dataByteArr);//使用OutputStream流向客户端输出字节数组
-        // os.close();//关闭输出流
-        // return false;
-        // }
-        // return true;
-        // }
+       
         if (fromUserLogin(url)) {
             return true;
         }
@@ -91,8 +73,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
             // 上线前要去掉
             else {
-                User findOne = userService.findOne(1L);
-                SessionCache.instance().setUser(findOne);
+            	throw new MyException(444, Constant.NO_LOGIN);
+                /*User findOne = userService.findOne(1L);
+                SessionCache.instance().setUser(findOne);*/
             }
 
         }
@@ -126,7 +109,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if (url.indexOf("/client/userLogin") > -1) {
+        if (url.indexOf("/client/userLogin") > -1 || url.indexOf("/client/station/runningStation ")>-1
+        		|| url.indexOf("/client/station/runStations")>-1 || url.indexOf("/client/subsidy/monishouyi")>-1
+        		|| url.indexOf("/client/server")>-1 || url.indexOf("/client/news")>-1 || url.indexOf("/client/news")>-1 
+        		|| url.indexOf("/client/station/numCapacity")>-1 || url.indexOf("/client/station/stationFenbu")>-1
+        		|| url.indexOf("/client/temStationYear/monthKwh")>-1) {
             return true;
         }
         return false;
