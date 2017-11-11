@@ -67,17 +67,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                    
                     return true;
                 } else {
-                    throw new MyException(444, Constant.NO_LOGIN);
+                    throw new MyException(5003, Constant.NO_LOGIN);
                 }
+            }else{
+            	  // 上线前要去掉
+            	throw new MyException(5003, Constant.NO_LOGIN);
             }
 
-            // 上线前要去掉
-            else {
-            	throw new MyException(444, Constant.NO_LOGIN);
-                /*User findOne = userService.findOne(1L);
-                SessionCache.instance().setUser(findOne);*/
-            }
-
+          
         }
 
         return true;
@@ -111,9 +108,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean fromUserLogin(String url) {
         if (url.indexOf("/client/userLogin") > -1 || url.indexOf("/client/station/runningStation")>-1
         		|| url.indexOf("/client/station/runStations")>-1 || url.indexOf("/client/subsidy/monishouyi")>-1
-        		|| url.indexOf("/client/server")>-1 || url.indexOf("/client/news")>-1 || url.indexOf("/client/news")>-1 
+        		|| url.indexOf("/client/server")>-1 || url.indexOf("/client/news")>-1 || url.indexOf("/client/construction")>-1 
         		|| url.indexOf("/client/station/numCapacity")>-1 || url.indexOf("/client/station/stationFenbu")>-1
-        		|| url.indexOf("/client/temStationYear/monthKwh")>-1) {
+        		|| url.indexOf("/client/temStationYear/monthKwh")>-1 || url.indexOf("/client/banner")>-1 ||
+        		url.indexOf("/client/station/saveType")>-1 || url.indexOf("/client/weather/getWeather")>-1
+        		|| url.indexOf("/client/sign/doresult")>-1 || url.indexOf("/client/sign/doSucRep")>-1) {
             return true;
         }
         return false;

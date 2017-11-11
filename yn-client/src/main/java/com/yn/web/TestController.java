@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,6 +51,7 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.MD5Util;
 import com.yn.utils.PhoneFormatCheckUtils;
+import com.yn.utils.PropertyUtils;
 import com.yn.utils.StringUtil;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
@@ -63,7 +65,6 @@ import com.yn.vo.re.ResultVOUtil;
 @RequestMapping("/client/test")
 public class TestController {
 
-	
 	private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 	@Autowired
 	OrderPlanService orderPlanService;
@@ -99,20 +100,9 @@ public class TestController {
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
 	       public Object helloJsp01(UserVo userVo){  
-	    	   String token ="2b3e210053a8285cd51088510496856d";
-	    	   
-	    	   if (!StringUtil.isEmpty(token)) {
-	            	
-	                User userE = new User();
-	                userE.setToken(token);
-	              User  user = userservice.findOne(userE);
-	                if (user != null) {
-	                    SessionCache.instance().setUser(user);
-	                    return true;
-	                } else {
-	                    throw new MyException(444, Constant.NO_LOGIN);
-	                }
-	            }
+	    	  
+	    	
+	    
 	    	   
 	   		return ResultVOUtil.success(null);
 	        

@@ -62,4 +62,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
     Ammeter findByCAddr(String caddr);
     
+    @Query(value="select a.c_addr from ammeter as a ",nativeQuery=true)
+    List<Long> selectAllAmmeter();
+    
 }

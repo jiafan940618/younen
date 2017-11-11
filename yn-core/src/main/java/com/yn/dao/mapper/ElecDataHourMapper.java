@@ -3,8 +3,10 @@ package com.yn.dao.mapper;
 import com.yn.model.ElecDataHour;
 import com.yn.model.ElecDataHourExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+@Mapper
 public interface ElecDataHourMapper {
 	int countByExample(ElecDataHourExample example);
 

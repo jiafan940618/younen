@@ -37,7 +37,8 @@ public class SignService {
 	private static Map<String, String> param = null;
 	private static String signatureInfo = "";
 	private String merchantId =PropertyUtils.getProperty("merchantId");
-	private String notifyUrl ="http://test.u-en.cn/client/sign/doSucRep";
+	private String notifyAddr =PropertyUtils.getProperty("notifyAddr");
+	private String notifyUrl =PropertyUtils.getProperty("notifyUrl");
 	private String merchantIps =PropertyUtils.getProperty("callerIp");
 	private String callerIp =PropertyUtils.getProperty("callerIp");
 	private String version =PropertyUtils.getProperty("version");
@@ -74,7 +75,7 @@ public class SignService {
 			parameters.put("callerIp", callerIp);
 			 /** 后台通知地址*/
 
-			parameters.put("notifyAddr", "http://test.u-en.cn/client/sign/doSucRep");
+			parameters.put("notifyAddr",notifyAddr);
 
 			
 			parameters.put("customerType", "1");
@@ -102,12 +103,8 @@ public class SignService {
 			parameters.put("cashierStyle", "1");
 		
 			String signatureInfo =	CashierSignUtil.sign(pfxPath+"/privateKey/pfx.pfx", "123456",parameters);
-			
-	
-			
+
 			parameters.put("signatureInfo", signatureInfo);
-			
-			
 			
 		} catch (Exception e) {
 		

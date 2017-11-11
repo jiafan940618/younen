@@ -401,6 +401,9 @@ public class StationService {
 		station.setStatus(0);//默认未绑定。
 		Ammeter ammeter = new Ammeter();
 		ammeter.setcAddr(station.getDevConfCode());
+		if(findOne(station).getId()!=null){
+			return;
+		}
 		if (ammeter != null) {
 			Ammeter findOne = ammeterService.findByCAddr(ammeter.getcAddr());
 			if(findOne!=null){

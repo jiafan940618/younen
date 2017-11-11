@@ -3,12 +3,13 @@ package com.yn.dao.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
 import com.yn.model.ElecDataHour;
-
+@Mapper
 public interface ElecDataDayMapper {
 	int countByExample(ElecDataDayExample example);
 

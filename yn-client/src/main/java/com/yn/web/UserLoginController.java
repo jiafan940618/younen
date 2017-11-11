@@ -93,7 +93,6 @@ public class UserLoginController {
 
 	        SessionCache.instance().setUser(user);
 	        
-	        user.setPassword(null);
 	        Object object = ResultVOUtil.success(user);
 	        
 	        NewUserVo userVo = new NewUserVo();
@@ -106,7 +105,7 @@ public class UserLoginController {
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
-	       // session.setAttribute("userVo",userVo );
+	     
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
