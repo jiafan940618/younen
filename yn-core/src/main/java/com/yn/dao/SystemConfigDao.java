@@ -26,5 +26,8 @@ public interface SystemConfigDao extends JpaRepository<SystemConfig, Long>, JpaS
     @Query("SELECT s FROM SystemConfig s WHERE s.id IN (2,3,4,15,16,17,29,30,31)")
     List<SystemConfig> getlist();
     
+    @Query("SELECT s FROM SystemConfig s WHERE s.id IN (18,19,20,21)")
+    List<SystemConfig> getnewlist();
+    
     
 }

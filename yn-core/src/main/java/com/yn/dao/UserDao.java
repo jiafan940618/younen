@@ -68,6 +68,12 @@ public interface UserDao extends JpaRepository<User, Long>, JpaSpecificationExec
     @Query(value="SELECT u.id FROM user u WHERE u.token=?1 and u.del=0",nativeQuery=true)
     long findByToken(@Param("token")String token);
     
+    @Transactional
+    @Modifying
+    @Query("update User set token= :#{#user.token} where id = :#{#user.id}")
+    void updateTokenBeforeLogout(@Param("user") User user);
+    
+    
     
     
 }

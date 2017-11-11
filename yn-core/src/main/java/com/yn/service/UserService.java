@@ -365,6 +365,18 @@ public class UserService {
          
     }
     
+    /**
+     * 用户退出更新token
+     *
+     * @param user
+     * @return
+     */
+    public void updateTokenBeforeLogout(User user) {
+        String token = getToken(user);
+        user.setToken(token);
+        userDao.updateTokenBeforeLogout(user);
+    }
+    
    
 
 }

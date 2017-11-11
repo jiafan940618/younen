@@ -66,9 +66,9 @@ public class RechargeService {
 		static String operatorId = "operatorId";
 		static	String storeId = "storeId";
 		static	String terminalId = "49000002";
-		
+		private String notifyAddr =PropertyUtils.getProperty("notifyAddr");
 		private String merchantId =PropertyUtils.getProperty("merchantId");
-		private String notifyUrl ="http://test.u-en.cn/client/recharge/doresult";
+		private String notifyUrl =PropertyUtils.getProperty("notifyUrl");
 		private String merchantIps =PropertyUtils.getProperty("callerIp");
 		private String callerIp =PropertyUtils.getProperty("callerIp");
 		private String version =PropertyUtils.getProperty("version");
@@ -249,7 +249,7 @@ public class RechargeService {
 				parameters.put("callerIp", callerIp);
 				 /** 后台通知地址*/
 
-				parameters.put("notifyAddr", "http://test.u-en.cn/client/recharge/doSucRep");
+				parameters.put("notifyAddr", notifyAddr);
 
 				
 				parameters.put("customerType", "1");

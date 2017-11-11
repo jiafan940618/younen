@@ -3,6 +3,10 @@ package com.yn.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.yn.model.SystemConfig;
 import com.yn.service.SystemConfigService;
 import com.yn.utils.BeanCopy;
@@ -97,4 +100,19 @@ public class SystemConfigController {
         
         return ResultVOUtil.success(map);
     }
+    /** 安卓版本*/
+    @ResponseBody
+	@RequestMapping(value = "/updateAndroid")
+	public Object deleteBatch(HttpServletRequest request, HttpServletResponse response,
+			HttpSession httpSession) {
+		
+		/*Map<String, String> map = new HashMap<String, String>();
+		map.put("android_version_code", systemConfigBiz.findValueByKey("android_version_code"));
+		map.put("android_version_name", systemConfigBiz.findValueByKey("android_version_name"));
+		map.put("android_update_url", systemConfigBiz.findValueByKey("android_update_url"));
+		map.put("android_update_info", systemConfigBiz.findValueByKey("android_update_info"));*/
+		
+		return ResultVOUtil.success(null);
+	}
+    
 }

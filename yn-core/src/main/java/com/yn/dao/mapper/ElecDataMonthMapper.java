@@ -3,8 +3,10 @@ package com.yn.dao.mapper;
 import com.yn.model.ElecDataMonth;
 import com.yn.model.ElecDataMonthExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+@Mapper
 public interface ElecDataMonthMapper {
     int countByExample(ElecDataMonthExample example);
 

@@ -167,8 +167,8 @@ public class ElecDataDayService {
 		Map<Object, Object> linkHashMap = new LinkedHashMap<>();
 		List<Map<Object, Object>> lists = new ArrayList<>();
 		List<Map<Object, Object>> listsMap = new ArrayList<>();
-		for (Station station : stations) {
-			List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(station.getId());
+		
+			List<Long> ammeterCodes = ammeterDao.selectAllAmmeter();
 			if (ammeterCodes.size() > 0) {
 				List<Object[]> kwh = elecDataDayDao.sumMonthKwh(ammeterCodes);
 				for (Object[] objects : kwh) {
@@ -177,7 +177,7 @@ public class ElecDataDayService {
 					map.put("kwh", objects[1]);
 					lists.add(map);
 				}
-			}
+			
 
 		}
 		for (Map<Object, Object> map : lists) {

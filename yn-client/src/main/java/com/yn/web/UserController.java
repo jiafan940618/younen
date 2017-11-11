@@ -125,7 +125,7 @@ public class UserController {
     	 User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
-    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
     	
     	  WalletVo walletVo =  userService.findUserPrice(newuserVo.getId());
@@ -152,7 +152,7 @@ public class UserController {
     	 
     	
     	if(null == newuserVo){
-    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
     	
     	if(!PhoneFormatCheckUtils.isPhoneLegal(userVo.getPhone())){
@@ -220,7 +220,7 @@ public class UserController {
     	User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
-    		return ResultVOUtil.error(777, "抱歉,您未登录!");
+    		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
     	
     logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
@@ -241,7 +241,7 @@ public class UserController {
 	  User newuserVo = SessionCache.instance().getUser();
   	
   	if(null == newuserVo){
-  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
   	}
   	
     Map<String, String> newmap = new HashMap<String, String>();
@@ -284,7 +284,7 @@ public class UserController {
 	   User newuserVo = SessionCache.instance().getUser();
 	  	
 	  	if(null == newuserVo){
-	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 
     	 List<StationVo> list = stationService.getnewstation(newuserVo.getId());
@@ -299,7 +299,7 @@ public class UserController {
 	   User newuserVo = SessionCache.instance().getUser();
 	  	
 	  	if(null == newuserVo){
-	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 	  	
 	  	/* User newuserVo = new User();
@@ -322,7 +322,7 @@ public class UserController {
     	User newuserVo = SessionCache.instance().getUser();
 	  	
 	  	if(null == newuserVo){
-	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 	  /*	User newuserVo = new User();
 	  	newuserVo.setId(2L);*/
@@ -356,7 +356,7 @@ public class UserController {
 	  User newuserVo = SessionCache.instance().getUser();
 	  	
 	  	if(null == newuserVo){
-	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 	 
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
@@ -401,7 +401,7 @@ public class UserController {
     	User newuserVo = SessionCache.instance().getUser();
  	  	
  	  	if(null == newuserVo){
- 	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+ 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
  	  	}
     	
     	if(null == page.getStatus()){
@@ -491,7 +491,7 @@ public class UserController {
     	User newuserVo = SessionCache.instance().getUser();
   	  	
   	  	if(null == newuserVo){
-  	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
   	  	}
     	
   	    page.setUserId(2l);
@@ -545,7 +545,7 @@ public class UserController {
     	User newuserVo = SessionCache.instance().getUser();
   	  	
   	  	if(null == newuserVo){
-  	  		return ResultVOUtil.error(777, "抱歉,您未登录!");
+  	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
   	  	}
     	
   	  transactionRecordVo.setUserId(newuserVo.getId());
@@ -588,7 +588,7 @@ public class UserController {
 
 			 User user = SessionCache.instance().getUser();
 			 user.setToken(null);
-		     userService.updateToken(user);
+		     userService.updateTokenBeforeLogout(user);
 
 		     httpSession.removeAttribute("SessionCache");
 

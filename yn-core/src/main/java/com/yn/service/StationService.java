@@ -1,5 +1,6 @@
 package com.yn.service;
 
+
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
@@ -59,6 +60,7 @@ public class StationService {
 	private NoticeService noticeService;
 	@Autowired
 	OrderService orderService;
+	
 
 	private static DecimalFormat df = new DecimalFormat("0.00");
 	private static DecimalFormat df1 = new DecimalFormat("0000");
@@ -396,18 +398,18 @@ public class StationService {
 		station.setUserId(order.getUserId());
 		station.setType(order.getType());
 		station.setServerId(order.getServerId());
-		station.setStatus(0);// 默认未绑定。
+		station.setStatus(0);//默认未绑定。
 		Ammeter ammeter = new Ammeter();
 		ammeter.setcAddr(station.getDevConfCode());
-		if (findOne(station).getId() != null) {
+		if(findOne(station).getId()!=null){
 			return;
 		}
 		if (ammeter != null) {
 			Ammeter findOne = ammeterService.findByCAddr(ammeter.getcAddr());
-			if (findOne != null) {
-				if (findOne.getStatus() == 0) {
+			if(findOne!=null){
+				if(findOne.getStatus()==0){
 					station.setStatus(1);
-				} else if (findOne.getStatus() == 1) {
+				}else if(findOne.getStatus()==1){
 					station.setStatus(2);
 				}
 			}
@@ -427,10 +429,10 @@ public class StationService {
 		for (Station station : stations) {
 			List<Ammeter> ammeters = ammeterDao.findByStationId(station.getId());
 			for (Ammeter ammeter : ammeters) {
-				// 发电功率
-				nowKw = nowKw + ammeter.getNowKw();
-				// 发电总量
-				egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
+			// 发电功率
+			nowKw = nowKw + ammeter.getNowKw();
+			// 发电总量
+			egt = egt + ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
 			}
 			// 装机容量
 			capacity = capacity + station.getCapacity();
@@ -463,8 +465,8 @@ public class StationService {
 		double capacity = 0;
 		double efficiency = 0;
 		for (Station station : stations) {
-			// 装机容量
-			capacity = capacity + station.getCapacity();
+		  // 装机容量
+		  capacity = capacity + station.getCapacity();
 		}
 		List<Ammeter> ammeters = ammeterDao.findAll();
 		for (Ammeter ammeter : ammeters) {
@@ -511,27 +513,28 @@ public class StationService {
 			Integer status = (Integer) obj[4];
 			String stationCode = (String) obj[5];
 			BigDecimal initkwh = (BigDecimal) obj[6];
-
-			if (null == initkwh) {
-				initkwh = new BigDecimal(0.0);
+			
+			if(null == initkwh){
+				initkwh =new BigDecimal(0.0);
 			}
-
+			
 			BigDecimal workTotalKwh = (BigDecimal) obj[7];
-			if (null == workTotalKwh) {
-				workTotalKwh = new BigDecimal(0.0);
+			if(null == workTotalKwh){
+				workTotalKwh =new BigDecimal(0.0);
 			}
-
+			
 			Integer workTotalTm = (Integer) obj[8];
-			if (null == workTotalTm) {
-				workTotalTm = 0;
+			if(null == workTotalTm){
+				workTotalTm =0;
 			}
-
+			
 			String userName = (String) obj[9];
 			BigDecimal nowKwh = (BigDecimal) obj[10];
 
 			DecimalFormat df = new DecimalFormat("#0.00");
+			
+			Double	electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
 
-			Double electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
 
 			StationVo stationVo = new StationVo();
 			stationVo.setId(s_id.longValue());
@@ -543,6 +546,7 @@ public class StationService {
 			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
+			
 			/** co2排放量*/
 			stationVo.setCO2_PM(df.format(electricityGenerationTol * CO2_prm));
 			stationVo.setTrees_prm(df.format(electricityGenerationTol * plant_trees_prm));
@@ -712,11 +716,11 @@ public class StationService {
 		map.put("orderCode", orderDao.findByStationId(station.getOrderId()));
 		map.put("status", station.getStatus());
 		map.put("addressText", station.getAddressText());
-
+		
 		System.out.println(station.getId());
 		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
 		System.out.println(ammeters.size());
-		if (ammeters.size() > 0) {
+		if (ammeters.size()>0) {
 			for (Ammeter ammeter : ammeters) {
 				System.out.println(ammeter.getId());
 				Map<String, Object> map2 = new LinkedHashMap<>();
@@ -725,14 +729,14 @@ public class StationService {
 				map2.put("ammeterScale", ammeter.getInitKwh());
 				map.put("ammeterRecode", map2);
 			}
-		} else {
+		}else {
 			Map<String, Object> map2 = new LinkedHashMap<>();
 			map2.put("workTotaTm", "0");
 			map2.put("ammeterCode", "0");
-			map2.put("ammeterScale", "0");
+			map2.put("ammeterScale","0");
 			map.put("ammeterRecode", map2);
 		}
-
+		
 		Date date = station.getCreateDtm();
 		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1, date));
 		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2, date));

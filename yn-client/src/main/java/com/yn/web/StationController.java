@@ -167,23 +167,38 @@ public class StationController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/runStations", method = { RequestMethod.POST, RequestMethod.GET })
-	public Object runStations(HttpSession session, Station station, HttpServletRequest request) {
-		User newuser = SessionCache.instance().getUser();
+	public Object runStations(HttpSession session, Station station, HttpServletRequest request,long userId) {
+		 //User newuser = SessionCache.instance().getUser();
 		// NewUserVo userVo = (NewUserVo)session.getAttribute("userVo");
-		Long userId=userDao.findByToken(newuser.getToken());
-		String token = request.getHeader("token");
+		//Long userId=userDao.findByToken(newuser.getToken());
+		//String token = request.getHeader("token");
 		Map<String, Object> stationByUser = new HashMap<>();
-
-		if (token != null) {
-				logger.info("------------------------用户Id: " + userId);
-				logger.info("------------------------token: " + token);
-				List<Station> stations = stationDao.findByUserId(userId);
-				stationByUser = stationService.stationByUser(stations);		
-		} else {
-			logger.info("------------------------token: " + token);
-			List<Station> stations = stationDao.findAllStation();
-			stationByUser = stationService.stationByAll(stations);
+		if (userId!=0) {
+			List<Station> stations = stationDao.findByUserId(userId);
+			
+			if (stations!=null) {
+				stationByUser = stationService.stationByUser(stations);
+			} else {
+				List<Station> stationAll = stationDao.findAllStation();
+				stationByUser = stationService.stationByAll(stationAll);
+			}
+		}else {
+			List<Station> stationAll = stationDao.findAllStation();
+			stationByUser = stationService.stationByAll(stationAll);
 		}
+		
+		
+//
+//		if (token != null) {
+//				logger.info("------------------------用户Id: " + userId);
+//				logger.info("------------------------token: " + token);
+//				List<Station> stations = stationDao.findByUserId(userId);
+//				stationByUser = stationService.stationByUser(stations);		
+//		} else {
+//			logger.info("------------------------token: " + token);
+//			List<Station> stations = stationDao.findAllStation();
+//			stationByUser = stationService.stationByAll(stations);
+//		}
 
 		return ResultVOUtil.success(stationByUser);
 	}

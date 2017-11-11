@@ -551,7 +551,6 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-		//	stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
@@ -643,8 +642,6 @@ public class OrderController {
 
 			neworder.setOrderPlan(newOrdPlan);
 
-			/** 添加电站 */
-			//stationService.insertStation(neworder);
 
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
@@ -672,6 +669,7 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/priceorder")
 	public Object giveorder(@RequestParam("orderId") Long orderId) {
+		//Long orderId = 862L;
 
 		Object order = orderService.findOrder(orderId);
 
