@@ -793,14 +793,14 @@ public class OrderService {
 		} else {
 			jsonResult.put("loanStatus", false);
 		}
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("applyIsPay", false);
-			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
-			return jsonResult;
-		} else {
-			jsonResult.put("applyIsPay", true);// 支付成功。
-		}
+//		if (o1.getApplyIsPay() != 1) {
+//			jsonResult.put("isOk", false);
+//			jsonResult.put("applyIsPay", false);
+//			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
+//			return jsonResult;
+//		} else {
+//			jsonResult.put("applyIsPay", true);// 支付成功。
+//		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
 				jsonResult.put("isOk", false);

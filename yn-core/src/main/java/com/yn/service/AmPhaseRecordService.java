@@ -55,10 +55,15 @@ public class AmPhaseRecordService {
 	}
 
 	public void saveByMapper(AmPhaseRecord apr) {
-		amPhaseRecordMapper.createTmpTable(apr);
+		createTmpTable(apr);
 		amPhaseRecordMapper.addAmPhaseRecord(apr);
 	}
 
+	public void createTmpTable(AmPhaseRecord apr){
+		amPhaseRecordMapper.createTmpTable(apr);
+	}
+	
+	
 	@Transactional
 	public int updateByPrimaryKeySelective(AmPhaseRecord record) {
 		amPhaseRecordMapper.createTmpTable(record);
@@ -139,6 +144,7 @@ public class AmPhaseRecordService {
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
+	
 
 
 	/**
@@ -176,6 +182,14 @@ public class AmPhaseRecordService {
 
 	public AmPhaseRecord findByMapper4InitKwh(AmPhaseRecord apr) {
 		return amPhaseRecordMapper.findByMapper4InitKwh(apr);
+	}
+
+	public List<AmPhaseRecord> findAll(String date,Integer cAddr,Integer type) {
+		AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
+		amPhaseRecord.setDate(date);
+		amPhaseRecord.setcAddr(cAddr);
+		amPhaseRecord.setdAddr(Long.valueOf(type));
+		return amPhaseRecordMapper.findAll4DateCaddr(amPhaseRecord);
 	}
 
 }

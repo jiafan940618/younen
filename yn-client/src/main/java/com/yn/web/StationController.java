@@ -138,12 +138,15 @@ public class StationController {
 	@ResponseBody
 	@RequestMapping(value = "/runningStation", method = { RequestMethod.POST, RequestMethod.GET })
 	public Object runningStation(HttpSession session, Station station) {
-		User newuser = SessionCache.instance().getUser();
+
+		 User newuser = SessionCache.instance().getUser();
 		//NewUserVo userVo = (NewUserVo) session.getAttribute("userVo");
 		Map<String, Object> stationByUser = new HashMap<>();
-         
+
 		if (newuser != null) {
 			station.setUserId(newuser.getId());
+			logger.info("--- ---- ---- ------- --userId:"+newuser.getId());
+
 			if (stationDao.findByUserId(station.getUserId()) != null) {
 				List<Station> stations = stationDao.findByUserId(station.getUserId());
 				stationByUser = stationService.stationByUser(stations);

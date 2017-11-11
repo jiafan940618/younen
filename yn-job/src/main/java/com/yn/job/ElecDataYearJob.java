@@ -26,7 +26,7 @@ import com.yn.service.ElecDataYearService;
     * @date 2017年10月24日
     *
  */
-//@Component
+@Component
 public class ElecDataYearJob {
 
 	@Autowired
@@ -81,8 +81,8 @@ public class ElecDataYearJob {
 					} else if (subSequence.equals("2")) {
 						elecDataYear2.setType(2);// 发电
 					}
-					totalKw += elecDataHour.getKw().doubleValue() + elecDataYear2.getKw().doubleValue();
-					totalKwh += elecDataHour.getKwh().doubleValue() + elecDataYear2.getKwh().doubleValue();
+					totalKw += elecDataHour.getKw().doubleValue();// + elecDataYear2.getKw().doubleValue();
+					totalKwh += elecDataHour.getKw().doubleValue() + elecDataYear2.getKwh().doubleValue();
 
 				}
 				elecDataYear.setKw(BigDecimal.valueOf(totalKw));
