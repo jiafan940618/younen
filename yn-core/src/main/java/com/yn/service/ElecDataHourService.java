@@ -553,50 +553,88 @@ public class ElecDataHourService {
 
 	/**
 	 * 当前12小时内的发电、用电量
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
-//	public List<Map<String, Object>> oneHourKwh(Long stationId) {
-//	   Date[] todaySpace = DateUtil.getTodaySpace();
-//	Date now=new Date();
-//	Date startTime = todaySpace[0];
-//	Date endTime = todaySpace[1];
-//	String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
-//	String end=new SimpleDateFormat("yyyy-MM-dd HH").format(endTime);
-//		List<Map<String, Object>> list = new ArrayList<>();
-//		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
-//
-//		Date time = new Date();
-//
-//		Calendar calendar = Calendar.getInstance();
-//
-//		calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 8);
-//
-//		SimpleDateFormat dFormat = new SimpleDateFormat("HH:00");
-//
-//		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-//
-//		List<ElecDataHour> ElecDataHourwork = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 1,
-//
-//				calendar.getTime(), time);
-//		List<ElecDataHour> ElecDataHouruse = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 2,
-//
-//				calendar.getTime(), time);
-//
-//		for (int i = 0; i < 8; i++) {
-//			Map<String, Object> map = new HashMap<>();
-//			if (i < ElecDataHourwork.size()) {
-//				map.put("time", dFormat.format(ElecDataHourwork.get(i).getCreateDtm()));
-//				map.put("workKw", NumberUtil.accurateToTwoDecimal(ElecDataHourwork.get(i).getKw()));
-//				if (i < ElecDataHouruse.size()) {
-//					map.put("useKw", NumberUtil.accurateToTwoDecimal(ElecDataHouruse.get(i).getKw()));
-//				} else {
-//					map.put("useKw", 0);
-//				}
-//
-//			}
-//			list.add(map);
-//		}
-//		return list;
-//	}
+	public Map<String, Object> oneHourKwh(Long stationId) throws NumberFormatException, ParseException {
+		Map<String, Object> maps=new HashMap<>();
+		List<Map<String, Object>> listWork = new ArrayList<>();
+		List<Map<String, Object>> listUse = new ArrayList<>();
+		List<Map<String, Object>> listArrayWork= new ArrayList<>();
+		List<Map<String, Object>> listArrayUse = new ArrayList<>();
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		Date now=new Date();
+		Date startTime = todaySpace[0];
+		Date endTime = todaySpace[1];
+		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
+		String end=new SimpleDateFormat("yyyy-MM-dd HH").format(endTime);
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
+		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+		List<ElecDataHour> ElecDataHourWork = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 1,
+				start, end);
+		List<ElecDataHour> ElecDataHourUse = elecDataHourDao.findByAmmeterCodes(ammeterCodes, 2,
+				start, end);
+		String nowTime=dFormat.format(now);
+		Integer num= Integer.parseInt(nowTime);
+		List<Integer> recordTimeWork=new ArrayList<>();
+		List<Integer> recordTimeUse=new ArrayList<>();
+		for (ElecDataHour ElecDataHour : ElecDataHourWork) {
+			recordTimeWork.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
+		}
+		for (ElecDataHour ElecDataHour : ElecDataHourUse) {
+			recordTimeUse.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
+		}
+		for (int i = 0; i <= num; i++) {
+			if (!recordTimeWork.contains(i)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("time", i);
+				map.put("kw", 0.00);
+				listWork.add(map);
+			}
+		}
+		for (int i = 0; i <= num; i++) {
+			if (!recordTimeUse.contains(i)) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("time", i);
+				map.put("kw", 0.00);
+				listUse.add(map);
+			}
+		}
+		
+		for (ElecDataHour ElecDataHour : ElecDataHourWork) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
+				map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
+				listWork.add(map);		
+			}
+		for (ElecDataHour ElecDataHour : ElecDataHourUse) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
+			listUse.add(map);		
+		}
+		for (int i = 0; i < listWork.size(); i++) {
+			for	(Map<String, Object> mapObject:listWork ){
+				if (i==(int)mapObject.get("time")) {
+					listArrayWork.add(mapObject);
+				}
+			}
+		}
+			for (int i = 0; i < listUse.size(); i++) {
+				for	(Map<String, Object> mapObject:listUse ){
+					if (i==(int)mapObject.get("time")) {
+						listArrayUse.add(mapObject);
+					}
+				}
+		}
+		maps.put("workKw", listArrayWork);
+		maps.put("useKw", listArrayUse);
+		return maps;
+			
+	}
+
+
+	
 
 	public List<ElecDataHour> findByMapper(ElecDataHour elecDataHour) {
 		List<ElecDataHour> list = elecDataHourMapper.selectByQuery(elecDataHour);

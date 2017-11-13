@@ -21,6 +21,8 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +52,7 @@ import com.yn.utils.RepositoryUtil;
 
 @Service
 public class ElecDataDayService {
+	private static final Logger logger = LoggerFactory.getLogger(ElecDataDayService.class);
 	@Autowired
 	ElecDataDayDao elecDataDayDao;
 	@Autowired
@@ -475,11 +478,11 @@ public class ElecDataDayService {
 		Date endStart = new Date();
 		// 获取每天的发电详情
 		List<Map<String, Object>>  dayInfo=dayInfo(ammeterCodes, type);
-		Date[] todaySpace = DateUtil.getThisMonthSpace();
-		Date dayStartTime = todaySpace[0];
-		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
-		String endDay=new SimpleDateFormat("yyyy-MM-dd").format(endStart);
-		double historyTotalElec = elecDataDayDao.sumKwhByDays(dayStart, endDay, type, ammeterCodes);
+		double workTotalkwh=ammeterDao.workTotalkwh(stationId);
+		logger.info("-------------------workTotalkwh:"+workTotalkwh);
+		double initTotalkwh=ammeterDao.initTotalkwh(stationId);
+		logger.info("-------------------initTotalkwh:"+initTotalkwh);
+		double historyTotalElec = workTotalkwh+initTotalkwh;
 		maps.put("dayList", dayInfo);
 		maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
 		// 获取当每月的发电详情
@@ -492,10 +495,10 @@ public class ElecDataDayService {
 		maps.put("monthList", monthInfo);
 		maps.put("monthTotalElec", NumberUtil.accurateToTwoDecimal(monthTotalElec));
 		// 获取当每年的发电详情
-		List<Map<String, Object>> yearInfo=yearInfo(ammeterCodes, type,stationId);
-		double yearTotalElec = elecDataYearDao.sumKwhByYear(type, ammeterCodes);
-		maps.put("yearList", yearInfo);
-		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));		
+		Map<String, Object> yearInfo=yearInfo(ammeterCodes, type,stationId);
+		BigDecimal yearTotalElec =(BigDecimal) yearInfo.get("yearTotalElec");
+		maps.put("yearList", yearInfo.get("listYear"));
+		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec.doubleValue()));		
 		
 		return maps;
 	}
@@ -604,7 +607,9 @@ for (int i = 1; i <= listMonths.size(); i++) {
  * @throws NumberFormatException 
  */
 
-public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,Long stationId) throws NumberFormatException, ParseException{
+public Map<String, Object> yearInfo(List<Long> ammeterCodes, Integer type,Long stationId) throws NumberFormatException, ParseException{
+	Map<String, Object> maps=new HashMap<>();
+	
 	Station  station=stationDao.findOne(stationId);
 	Date startTime=station.getCreateDtm();
 	List<Map<String, Object>>  listYear= new ArrayList<>();
@@ -615,6 +620,7 @@ public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,
 	List<Integer> recordTimeList=new ArrayList<>();
 	
 	List<ElecDataYear> elecDataYears = elecDataYearDao.findByYear(ammeterCodes, type, yearStart, end);
+	logger.info("----------------------------------number:"+elecDataYears.size());
 	String nowTime=dFormat.format(endStart);
 	String initTime=dFormat.format(startTime);
 	Integer numEnd= Integer.parseInt(nowTime);
@@ -633,6 +639,7 @@ public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,
 		}
 		
 }	
+	List<ElecDataYear> eDataYears=new ArrayList<>();
 	if (type==1) {
 		List<Ammeter>  ammeters=ammeterDao.findByStationId(stationId);
 		for (Ammeter ammeter : ammeters) {
@@ -640,12 +647,19 @@ public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,
 				if (ElecDataYear.getRecordTime().equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
 					Double yearKwh=ElecDataYear.getKwh().doubleValue();
 					Double initKwh=ammeter.getInitKwh();
+					logger.info("----------------------time:"+ElecDataYear.getRecordTime());
+					logger.info("----------------------ammeterCode:"+ammeter.getcAddr());
+					logger.info("-----------------------initkwh:"+ammeter.getInitKwh());
 					ElecDataYear.setKwh(BigDecimal.valueOf(yearKwh+initKwh));
+					maps.put("yearTotalElec", ElecDataYear.getKwh());
+					eDataYears.add(ElecDataYear);
+				}else {
+					eDataYears.add(ElecDataYear);
 				}
 			}
 		}
 	}
-	for (ElecDataYear ElecDataYear : elecDataYears) {
+	for (ElecDataYear ElecDataYear : eDataYears) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(ElecDataYear.getRecordTime()))));
 		map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataYear.getKwh().doubleValue()));
@@ -654,7 +668,7 @@ public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,
 	}
 	
 	
-	System.out.println(listYears.size());
+
 for (int i = numstart; i <=numEnd; i++) {
 	for	(Map<String, Object> mapObject:listYears ){
 		if (i==(int)mapObject.get("time")) {
@@ -662,6 +676,7 @@ for (int i = numstart; i <=numEnd; i++) {
 		}
 	}
 }
-	return listYear;
+   maps.put("listYear", listYear);
+	return maps;
 }
 }

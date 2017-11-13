@@ -112,7 +112,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         		|| url.indexOf("/client/station/numCapacity")>-1 || url.indexOf("/client/station/stationFenbu")>-1
         		|| url.indexOf("/client/temStationYear/monthKwh")>-1 || url.indexOf("/client/banner")>-1 ||
         		url.indexOf("/client/station/saveType")>-1 || url.indexOf("/client/weather/getWeather")>-1
-        		|| url.indexOf("/client/sign/doresult")>-1 || url.indexOf("/client/sign/doSucRep")>-1) {
+        		|| url.indexOf("/client/sign/doresult")>-1 || url.indexOf("/client/sign/doSucRep")>-1||
+        		url.indexOf("/client/appConfig/isSystemMaintain") > -1) {
             return true;
         }
         return false;

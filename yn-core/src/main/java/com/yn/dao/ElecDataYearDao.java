@@ -9,7 +9,7 @@ import com.yn.model.ElecDataYear;
 
 public interface ElecDataYearDao extends JpaRepository<ElecDataYear, Long>, JpaSpecificationExecutor<ElecDataYear> {
  
-    @Query(value="select * from elec_data_year as t WHERE t.record_time>=?3 AND t.record_time<?4 and"
+    @Query(value="select * from elec_data_year as t WHERE t.record_time>=?3 AND t.record_time<=?4 and"
     		+ " t.type =?2 AND t.ammeter_code in (?1) AND t.del=0",nativeQuery=true)
     List<ElecDataYear> findByYear(List<Long> ammeterCodes, Integer type, String start, String end);
     
