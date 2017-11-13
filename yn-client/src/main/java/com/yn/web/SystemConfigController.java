@@ -106,13 +106,14 @@ public class SystemConfigController {
 	public Object deleteBatch(HttpServletRequest request, HttpServletResponse response,
 			HttpSession httpSession) {
 		
-		/*Map<String, String> map = new HashMap<String, String>();
-		map.put("android_version_code", systemConfigBiz.findValueByKey("android_version_code"));
-		map.put("android_version_name", systemConfigBiz.findValueByKey("android_version_name"));
-		map.put("android_update_url", systemConfigBiz.findValueByKey("android_update_url"));
-		map.put("android_update_info", systemConfigBiz.findValueByKey("android_update_info"));*/
+		Map<String, String> map = systemConfigService.getnewlist();
 		
-		return ResultVOUtil.success(null);
+		map.put("android_version_code", map.get("android_version_code"));
+		map.put("android_version_name", map.get("android_version_name"));
+		map.put("android_update_url", map.get("android_update_url"));
+		map.put("android_update_info", map.get("android_update_info"));
+		
+		return ResultVOUtil.success(map);
 	}
     
 }

@@ -51,7 +51,7 @@ public class Station extends IDomain implements Serializable {
 	private Integer status;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[通道模式]{0:合计模式,1:多通道模式}'")
 	private Integer passageModel;
-	@Column(columnDefinition = "int(1) NOT NULL comment '[类型]{0:居民,1:工业,2:商业,3:农业}'")
+	@Column(columnDefinition = "int(1) NOT NULL comment '[类型]{1:居民,2:工业,3:商业,4:农业}'")
 	private Integer type;
 
 

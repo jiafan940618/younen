@@ -243,7 +243,7 @@ public class NewServerPlanService {
 	        order.setBuildIsPay(0);
 	        order.setBuildStepA(0);
 	        order.setBuildStepB(0);
-	        /** 安装类型 默认为 0：居民*/
+	        /** 安装类型 默认为 1：居民*/
 	        order.setType(type);
 	       
 	        

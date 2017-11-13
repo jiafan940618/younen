@@ -71,11 +71,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 }
             }else{
             	  // 上线前要去掉
+            	// return true;
             	throw new MyException(5003, Constant.NO_LOGIN);
             }
 
-          
-        }
+            }
 
         return true;
     }

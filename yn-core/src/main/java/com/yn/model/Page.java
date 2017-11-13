@@ -22,7 +22,7 @@ public class Page<T> {
 	private String time_from;
 	private String time_to;
 	
-	private Integer type = 0;
+	private Integer type = 1;
 
 	private Integer payWay;
 	private Integer isRead;

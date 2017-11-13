@@ -397,6 +397,8 @@ public class StationService {
 		station.setLinkPhone(order.getLinkPhone());
 		station.setUserId(order.getUserId());
 		station.setType(order.getType());
+		station.setCityId(order.getCityId());
+		station.setCityText(order.getCityText());
 		station.setServerId(order.getServerId());
 		station.setStatus(0);//默认未绑定。
 		Ammeter ammeter = new Ammeter();

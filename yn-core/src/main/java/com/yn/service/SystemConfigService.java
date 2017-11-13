@@ -119,5 +119,18 @@ public class SystemConfigService {
     	
     	return map;
     }
+   public  Map<String,String> getnewlist(){
+	   List<SystemConfig> list = systemConfigDao.getnewlist();
+	   Map<String,String> map = new HashMap<String,String>(); 
+		map.put("android_version_code", list.get(0).getPropertyValue());
+		map.put("android_version_name", list.get(1).getPropertyValue());
+		map.put("android_update_url", list.get(2).getPropertyValue());
+		map.put("android_update_info", list.get(3).getPropertyValue());
+		
+    	
+    	return map;
+    }
+   
+   
 
 }

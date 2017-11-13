@@ -793,14 +793,14 @@ public class OrderService {
 		} else {
 			jsonResult.put("loanStatus", false);
 		}
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("isOk", false);
-			jsonResult.put("applyIsPay", false);
-			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
-			return jsonResult;
-		} else {
-			jsonResult.put("applyIsPay", true);// 支付成功。
-		}
+//		if (o1.getApplyIsPay() != 1) {
+//			jsonResult.put("isOk", false);
+//			jsonResult.put("applyIsPay", false);
+//			jsonResult.put("reason", "当前订单状态未支付，不能进行申请预约");
+//			return jsonResult;
+//		} else {
+//			jsonResult.put("applyIsPay", true);// 支付成功。
+//		}
 		if (isOk == 1) {
 			if (o1.getApplyStepA() == 1) {
 				jsonResult.put("isOk", false);
@@ -855,19 +855,19 @@ public class OrderService {
 		} else {
 			jsonResult.put("loanStatus", false);
 		}
-		if (o1.getApplyIsPay() != 1) {
-			jsonResult.put("applyIsPay", false);
-			jsonResult.put("reason", "当前订单未支付,请先支付。");
-			jsonResult.put("isOk", false);
-			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
-				jsonResult.put("applyStepBImgUrl", false);
-			}else{
-				jsonResult.put("applyStepBImgUrl", true);
-			}
-			return jsonResult;
-		} else {
-			jsonResult.put("applyIsPay", true);// 支付成功。
-		}
+//		if (o1.getApplyIsPay() != 1) {
+//			jsonResult.put("applyIsPay", false);
+//			jsonResult.put("reason", "当前订单未支付,请先支付。");
+//			jsonResult.put("isOk", false);
+//			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+//				jsonResult.put("applyStepBImgUrl", false);
+//			}else{
+//				jsonResult.put("applyStepBImgUrl", true);
+//			}
+//			return jsonResult;
+//		} else {
+//			jsonResult.put("applyIsPay", true);// 支付成功。
+//		}
 		if (isOk == 1) {
 			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
 				jsonResult.put("reason", "请先上传报建时所需要的材料。");

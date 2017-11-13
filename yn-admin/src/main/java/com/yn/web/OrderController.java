@@ -33,6 +33,7 @@ import com.yn.model.NewServerPlan;
 import com.yn.model.Order;
 import com.yn.model.OrderPlan;
 import com.yn.model.Server;
+import com.yn.model.Station;
 import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.ApolegamyOrderService;
@@ -128,7 +129,13 @@ public class OrderController {
 		Integer buildStepB = order.getBuildStepB();
 		if(order.getStatus()==1){
 			/** 添加电站 */
-			stationService.insertStation(order);
+			Station station = new Station();
+			station.setOrder(order);
+			station.setOrderId(order.getId());
+			Station findOne = stationService.findOne(station);
+			if(findOne==null){
+				stationService.insertStation(order);
+			}
 			//绑定电表
 			//修改施工状态。
 			if(buildStepB==0){
@@ -182,6 +189,7 @@ public class OrderController {
 		orderService.save(order);
 		return ResultVOUtil.success(order);
 	}
+
 
 
 	@ResponseBody
