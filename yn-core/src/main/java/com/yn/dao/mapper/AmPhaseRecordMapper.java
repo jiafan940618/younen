@@ -57,4 +57,6 @@ public interface AmPhaseRecordMapper {
 	    void dropTmpTable(AmPhaseRecord amPhaseRecord);
 	    
 		public AmPhaseRecord findByMapper4InitKwh(AmPhaseRecord apr);
+		
+		public List<AmPhaseRecord> findAll4DateCaddr(AmPhaseRecord amPhaseRecord);
 }

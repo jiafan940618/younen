@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.PzwMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.Pzw">
+		<result column="ammeter_code" property="ammeterCode" jdbcType="VARCHAR" />
+		<result column="kwh_total" property="kwhTotal" jdbcType="DECIMAL" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="is_ok" property="isOk" jdbcType="INTEGER" />
+		<result column="record_time" property="recordTime" jdbcType="VARCHAR" />
+		<result column="month_max_kwh" property="monthMaxKwh" jdbcType="DECIMAL" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		ammeter_code, kwh_total, type, is_ok, record_time, month_max_kwh
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.yn.model.PzwExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from pzw
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<delete id="deleteByExample" parameterType="com.yn.model.PzwExample">
+		delete from pzw
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.yn.model.Pzw">
+		insert into pzw (ammeter_code, kwh_total, type,
+		is_ok, record_time, month_max_kwh
+		)
+		values (#{ammeterCode,jdbcType=VARCHAR}, #{kwhTotal,jdbcType=DECIMAL},
+		#{type,jdbcType=INTEGER},
+		#{isOk,jdbcType=INTEGER}, #{recordTime,jdbcType=VARCHAR}, #{monthMaxKwh,jdbcType=DECIMAL}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.yn.model.Pzw">
+		insert into pzw
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="ammeterCode != null">
+				ammeter_code,
+			</if>
+			<if test="kwhTotal != null">
+				kwh_total,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="isOk != null">
+				is_ok,
+			</if>
+			<if test="recordTime != null">
+				record_time,
+			</if>
+			<if test="monthMaxKwh != null">
+				month_max_kwh,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="ammeterCode != null">
+				#{ammeterCode,jdbcType=VARCHAR},
+			</if>
+			<if test="kwhTotal != null">
+				#{kwhTotal,jdbcType=DECIMAL},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="isOk != null">
+				#{isOk,jdbcType=INTEGER},
+			</if>
+			<if test="recordTime != null">
+				#{recordTime,jdbcType=VARCHAR},
+			</if>
+			<if test="monthMaxKwh != null">
+				#{monthMaxKwh,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.yn.model.PzwExample"
+		resultType="java.lang.Integer">
+		select count(*) from pzw
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update pzw
+		<set>
+			<if test="record.ammeterCode != null">
+				ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.kwhTotal != null">
+				kwh_total = #{record.kwhTotal,jdbcType=DECIMAL},
+			</if>
+			<if test="record.type != null">
+				type = #{record.type,jdbcType=INTEGER},
+			</if>
+			<if test="record.isOk != null">
+				is_ok = #{record.isOk,jdbcType=INTEGER},
+			</if>
+			<if test="record.recordTime != null">
+				record_time = #{record.recordTime,jdbcType=VARCHAR},
+			</if>
+			<if test="record.monthMaxKwh != null">
+				month_max_kwh = #{record.monthMaxKwh,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update pzw
+		set ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
+		kwh_total = #{record.kwhTotal,jdbcType=DECIMAL},
+		type = #{record.type,jdbcType=INTEGER},
+		is_ok = #{record.isOk,jdbcType=INTEGER},
+		record_time = #{record.recordTime,jdbcType=VARCHAR},
+		month_max_kwh = #{record.monthMaxKwh,jdbcType=DECIMAL}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+
+	<update id="update" parameterType="map">
+		update pzw
+		set
+		month_max_kwh = ${pzw.monthMaxKwh}
+		where record_time like CONCAT('${selectDate}','%')
+	</update>
+	
+	<select id="findSumKwh" parameterType="map"
+		resultType="double">
+		select
+		sum(kwh_total) as kwhTotal
+		from pzw where  ammeter_code = ${record.ammeterCode} and  record_time like CONCAT('${selectDate}','%')
+		AND kwh_total>0
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</mapper>

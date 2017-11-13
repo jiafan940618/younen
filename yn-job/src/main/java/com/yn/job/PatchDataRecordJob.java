@@ -119,7 +119,7 @@ public class PatchDataRecordJob {
 	    * @throws
 	 */
 	@Scheduled(cron = "0 0 0 * * ? ")
-	// @Scheduled(fixedDelay = 25 * 1000)
+//	@Scheduled(fixedDelay = 25 * 1000)
 	@Transactional
 	private void job() throws ParseException {
 		// 设置日志文件输出路径。
@@ -142,6 +142,7 @@ public class PatchDataRecordJob {
 				AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
 				BeanUtils.copyProperties(patchDataRecord, amPhaseRecord1);
 				amPhaseRecord1.setDate(date4Temp);
+				amPhaseRecordMapper.createTmpTable(amPhaseRecord1);
 				String meterTimeCode = amPhaseRecord1.getMeterTime().toString();
 				String date = new SimpleDateFormat("yyyy_MM_dd")
 						.format(new SimpleDateFormat("yyMMddHHssmm").parse(meterTimeCode));
@@ -189,7 +190,7 @@ public class PatchDataRecordJob {
 			doUpdateMonthYear();
 			System.out.println("整理完成。");
 			System.out.println("清空临时表中的数据。");
-			patchDataRecordMapper.truncateTable();
+//			patchDataRecordMapper.truncateTable();
 		}
 		System.setOut(out);
 		System.out.println("PatchDataRecordJob日志保存完毕。");
@@ -325,8 +326,8 @@ public class PatchDataRecordJob {
 			List<ElecDataHour> byExample = elecDataHourService.selectByExample(edh);
 			if (byExample.size() > 0) {
 				for (ElecDataHour elecDataHour : byExample) {
-					tolKw += patchDataRecord.getKw().doubleValue() + elecDataHour.getKw().doubleValue();
-					tolKwh += patchDataRecord.getKwh().doubleValue() + elecDataHour.getKwh().doubleValue();
+					tolKw += patchDataRecord.getKw().doubleValue();// + elecDataHour.getKw().doubleValue();
+					tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
 				}
 			} else {
 				tolKwh = patchDataRecord.getKwh();
@@ -385,8 +386,8 @@ public class PatchDataRecordJob {
 							} else if (subSequence1.equals("2")) {
 								elecDataMonth.setType(2);// 发电
 							}
-							tolKw += patchDataRecord.getKw().doubleValue() + elecDataHour.getKw().doubleValue();
-							tolKwh += patchDataRecord.getKwh().doubleValue() + elecDataHour.getKwh().doubleValue();
+							tolKw += patchDataRecord.getKw().doubleValue();// + elecDataHour.getKw().doubleValue();
+							tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
 						}
 						elecDataMonth.setKw(BigDecimal.valueOf(tolKw));
 						elecDataMonth.setKwh(BigDecimal.valueOf(tolKwh));
@@ -448,8 +449,8 @@ public class PatchDataRecordJob {
 						} else if (subSequence1.equals("2")) {
 							elecDataYear2.setType(2);// 发电
 						}
-						totalKw += elecDataHour2.getKw().doubleValue() + elecDataYear2.getKw().doubleValue();
-						totalKwh += elecDataHour2.getKwh().doubleValue() + elecDataYear2.getKwh().doubleValue();
+						totalKw += elecDataHour2.getKw().doubleValue() ;//+ elecDataYear2.getKw().doubleValue();
+						totalKwh += elecDataHour2.getKw().doubleValue() + elecDataYear2.getKwh().doubleValue();
 
 					}
 					elecDataYear.setKw(BigDecimal.valueOf(totalKw));
