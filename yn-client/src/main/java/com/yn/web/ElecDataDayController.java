@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,15 +87,7 @@ public class ElecDataDayController {
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
 		Page<ElecDataDay> findAll = elecDataDayService.findAll(elecDataDay, pageable);
 		return ResultVOUtil.success(findAll);
-		// ElecDataDay temStationYear = new ElecDataDay();
-		// BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		// temStationYear.setdAddr(temStationYearVo.getD_addr());
-		// System.out.println(temStationYear.getQueryStartDtm());
-		// PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-		// List<ElecDataDay> list =
-		// elecDataDayService.findByMapper(temStationYear);
-		// PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
-		// return ResultVOUtil.success(pageInfo);
+
 	}
 
 	/**
@@ -241,11 +234,13 @@ public class ElecDataDayController {
 	}
 
 	/**
-	 * 移动端获取实时功率
+	 * 移动端获取年月日
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
 	@RequestMapping(value = "/getElecDetailByStationCode", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object getElecDetailByStationCode(Long stationId, Integer type) {
+	public Object getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
 
 		Map<String, Object> map = new HashMap<>();
 

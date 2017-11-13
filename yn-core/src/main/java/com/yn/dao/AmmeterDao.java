@@ -65,4 +65,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     @Query(value="select a.c_addr from ammeter as a ",nativeQuery=true)
     List<Long> selectAllAmmeter();
     
+    @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
+    double nowKw(Long stationId);
+    
 }

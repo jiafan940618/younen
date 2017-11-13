@@ -42,10 +42,10 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     		+ "DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC",nativeQuery=true)
     List<Object[]> workUseCount(List<Long> ammeterCodes,Integer type);
     
-    @Query(value="select * from elec_data_day as t WHERE t.create_dtm>=?3 AND t.create_dtm<?4 "
+    @Query(value="select * from elec_data_day as t WHERE t.record_time>=?3 AND t.record_time<?4 "
     		+ "AND t.type =?2 AND t.ammeter_code in (?1) AND t.del=0",nativeQuery=true)
-    List<ElecDataDay> findByDays(List<Long> ammeterCodes, Integer type, Date start, Date end);
+    List<ElecDataDay> findByDays(List<Long> ammeterCodes, Integer type, String start, String end);
     
-    @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.create_dtm>=?1 AND t.create_dtm<?2 AND t.type=?3 AND t.ammeter_code in (?4) AND t.del=0",nativeQuery=true)
-    double sumKwhByDays(Date startDtm, Date endDtm, Integer type, List<Long> ammeterCodes);
+    @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<?2 AND t.type=?3 AND t.ammeter_code in (?4) AND t.del=0",nativeQuery=true)
+    double sumKwhByDays(String start, String end, Integer type, List<Long> ammeterCodes);
 }

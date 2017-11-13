@@ -1,6 +1,7 @@
 package com.yn.web;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,21 +152,22 @@ public class ElecDataHourController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
-			) {
-		List<Map<String, Object>> workList = new ArrayList<>();
-		workList = elecDataHourService.oneHourKwh(stationId);
-		return ResultVOUtil.success(workList);
-	}
+//	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
+//	@ResponseBody
+//	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
+//			) {
+//		List<Map<String, Object>> workList = new ArrayList<>();
+//		workList = elecDataHourService.oneHourKwh(stationId);
+//		return ResultVOUtil.success(workList);
+//	}
 
 	/**
 	 * 移动端获取实时功率
+	 * @throws ParseException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getCurrentElecDetailByStationCode", method = { RequestMethod.POST, RequestMethod.GET })
-	public Object getMomentPower(Long stationId, Integer type) {
+	public Object getMomentPower(Long stationId, Integer type) throws ParseException {
 
 		Map<String, Object> map = new HashMap<>();
 

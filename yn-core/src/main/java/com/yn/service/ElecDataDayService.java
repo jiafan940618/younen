@@ -2,6 +2,7 @@ package com.yn.service;
 
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +32,7 @@ import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.ElecDataMonthDao;
 import com.yn.dao.ElecDataYearDao;
+import com.yn.dao.StationDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.model.Ammeter;
 import com.yn.model.ElecDataDay;
@@ -60,6 +62,8 @@ public class ElecDataDayService {
 	ElecDataMonthDao elecDataMonthDao;
 	@Autowired
 	ElecDataYearDao elecDataYearDao;
+	@Autowired
+	StationDao stationDao;
 
 	public List<ElecDataDay> selectByExample(ElecDataDayExample example) {
 		return elecDataDayMapper.selectByExample(example);
@@ -379,50 +383,285 @@ public class ElecDataDayService {
 	}
 
 
+//	/**
+//	 * 移动端获取每天每月每年发电详情
+//	 * @throws ParseException 
+//	 * @throws NumberFormatException 
+//	 */
+//	public Map<String, Object> getElecDetailByStationCode01(Long stationId, Integer type) throws NumberFormatException, ParseException {
+//		Map<String, Object> maps = new HashMap<>();
+//
+//		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+//		Date endStart = new Date();
+//		// 获取当前天的发电详情
+//		Date[] todaySpace = DateUtil.getThisMonthSpace();
+//		Date dayStartTime = todaySpace[0];
+//		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
+//		String end=new SimpleDateFormat("yyyy-MM-dd").format(endStart);
+//		SimpleDateFormat dFormat = new SimpleDateFormat("dd");
+//		List<Integer> recordTimeList=new ArrayList<>();
+//		List<ElecDataDay> elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
+//		double historyTotalElec = elecDataDayDao.sumKwhByDays(dayStart, end, type, ammeterCodes);
+//		String nowTime=dFormat.format(endStart);
+//		Integer num= Integer.parseInt(nowTime);
+//		List<Map<String, Object>> listDays = new ArrayList<>();
+//		List<Map<String, Object>>  listDay= new ArrayList<>();
+//		for (ElecDataDay ElecDataDay : elecDataDays) {
+//			recordTimeList.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
+//		}
+//		for (int i = 0; i <= num; i++) {
+//			if (!recordTimeList.contains(i)) {
+//				Map<String, Object> map = new HashMap<>();
+//				map.put("time", i);
+//				map.put("kwh", 0.00);
+//				map.put("kw", 0.00);
+//				listDays.add(map);
+//			}
+//		}
+//		for (ElecDataDay ElecDataDay : elecDataDays) {
+//			Map<String, Object> map = new HashMap<>();
+//			map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
+//			map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKwh()));
+//			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKw()));
+//			listDays.add(map);		
+//		}
+//	for (int i = 1; i < listDays.size(); i++) {
+//		for	(Map<String, Object> mapObject:listDays ){
+//			if (i==(int)mapObject.get("time")) {
+//				listDay.add(mapObject);
+//			}
+//		}
+//	}
+//		
+//		maps.put("dayList", listDay);
+//		maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
+//
+//		// 获取当前月的发电详情
+//		Date[] monthSpace = DateUtil.getThisYearSpace();
+//		Date monthStart = monthSpace[0];
+//		List<ElecDataMonth> elecDataMonths = elecDataMonthDao.findByMonths(ammeterCodes, type, monthStart, endStart);
+//		double monthTotalElec = elecDataMonthDao.sumKwhByMonths(monthStart, endStart, type, ammeterCodes);
+//		maps.put("monthList", elecDataMonths);
+//		maps.put("monthTotalElec", NumberUtil.accurateToTwoDecimal(monthTotalElec));
+//		// 获取当前年的发电详情
+//		List<ElecDataYear> elecDataYear = elecDataYearDao.findByYear(ammeterCodes, type);
+//		
+//		if (type==1) {
+//			SimpleDateFormat dFormatYear = new SimpleDateFormat("yyyy");
+//			List<Ammeter>  ammeters=ammeterDao.findByStationId(stationId);
+//			for (Ammeter ammeter : ammeters) {
+//				for (ElecDataYear ElecDataYear : elecDataYear) {
+//					if (dFormatYear.format(ElecDataYear.getCreateDtm()).toString().equals(dFormatYear.format(ammeter.getCreateDtm()).toString())) {
+//						Double yearKwh=ElecDataYear.getKwh().doubleValue();
+//						Double initKwh=ammeter.getInitKwh();
+//						ElecDataYear.setKwh(BigDecimal.valueOf(yearKwh+initKwh));
+//					}
+//				}
+//			}
+//		}
+//		double yearTotalElec = elecDataYearDao.sumKwhByYear(type, ammeterCodes);
+//		maps.put("yearList", elecDataYear);
+//		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));
+//		return maps;
+//	}
 	/**
 	 * 移动端获取每天每月每年发电详情
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
-	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) {
+	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
 		Map<String, Object> maps = new HashMap<>();
-
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		Date end = new Date();
-		// 获取当前天的发电详情
+		Date endStart = new Date();
+		// 获取每天的发电详情
+		List<Map<String, Object>>  dayInfo=dayInfo(ammeterCodes, type);
 		Date[] todaySpace = DateUtil.getThisMonthSpace();
-		Date dayStart = todaySpace[0];
-		List<ElecDataDay> elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
-		double historyTotalElec = elecDataDayDao.sumKwhByDays(dayStart, end, type, ammeterCodes);
-		maps.put("dayList", elecDataDays);
+		Date dayStartTime = todaySpace[0];
+		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
+		String endDay=new SimpleDateFormat("yyyy-MM-dd").format(endStart);
+		double historyTotalElec = elecDataDayDao.sumKwhByDays(dayStart, endDay, type, ammeterCodes);
+		maps.put("dayList", dayInfo);
 		maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
-
-		// 获取当前月的发电详情
+		// 获取当每月的发电详情
+		List<Map<String, Object>> monthInfo=monthInfo(ammeterCodes, type);
 		Date[] monthSpace = DateUtil.getThisYearSpace();
-		Date monthStart = monthSpace[0];
-		List<ElecDataMonth> elecDataMonths = elecDataMonthDao.findByMonths(ammeterCodes, type, monthStart, end);
-		double monthTotalElec = elecDataMonthDao.sumKwhByMonths(dayStart, end, type, ammeterCodes);
-		maps.put("monthList", elecDataMonths);
+		Date monthStartTime = monthSpace[0];
+		String monthStart=new SimpleDateFormat("yyyy-MM").format(monthStartTime);
+		String endMonth=new SimpleDateFormat("yyyy-MM").format(endStart);
+		double monthTotalElec = elecDataMonthDao.sumKwhByMonths(monthStart, endMonth, type, ammeterCodes);
+		maps.put("monthList", monthInfo);
 		maps.put("monthTotalElec", NumberUtil.accurateToTwoDecimal(monthTotalElec));
-		// 获取当前年的发电详情
-		List<ElecDataYear> elecDataYear = elecDataYearDao.findByYear(ammeterCodes, type);
-		
-		if (type==1) {
-			SimpleDateFormat dFormat = new SimpleDateFormat("yyyy");
-			List<Ammeter>  ammeters=ammeterDao.findByStationId(stationId);
-			for (Ammeter ammeter : ammeters) {
-				for (ElecDataYear ElecDataYear : elecDataYear) {
-					if (dFormat.format(ElecDataYear.getCreateDtm()).toString().equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
-						Double yearKwh=ElecDataYear.getKwh().doubleValue();
-						Double initKwh=ammeter.getInitKwh();
-						ElecDataYear.setKwh(BigDecimal.valueOf(yearKwh+initKwh));
-					}
-				}
-			}
-		}
+		// 获取当每年的发电详情
+		List<Map<String, Object>> yearInfo=yearInfo(ammeterCodes, type,stationId);
 		double yearTotalElec = elecDataYearDao.sumKwhByYear(type, ammeterCodes);
-		maps.put("yearList", elecDataYear);
-		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));
+		maps.put("yearList", yearInfo);
+		maps.put("yearTotalElec", NumberUtil.accurateToTwoDecimal(yearTotalElec));		
+		
 		return maps;
 	}
 	
+	/**
+	 * 移动端获取每天发电详情
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
+	 */
+	
+public List<Map<String, Object>> dayInfo(List<Long> ammeterCodes, Integer type) throws NumberFormatException, ParseException{
+	List<Map<String, Object>>  listDay= new ArrayList<>();
+	Date endStart = new Date();
+	Date[] todaySpace = DateUtil.getThisMonthSpace();
+	Date dayStartTime = todaySpace[0];
+	String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
+	String end=new SimpleDateFormat("yyyy-MM-dd").format(endStart);
+	SimpleDateFormat dFormat = new SimpleDateFormat("dd");
+	List<Integer> recordTimeList=new ArrayList<>();
+	List<ElecDataDay> elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
+	String nowTime=dFormat.format(endStart);
+	Integer num= Integer.parseInt(nowTime);
+	List<Map<String, Object>> listDays = new ArrayList<>();
+	for (ElecDataDay ElecDataDay : elecDataDays) {
+		recordTimeList.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
+	}
+	for (int i = 1; i <= num; i++) {
+		if (!recordTimeList.contains(i)) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("time", i);
+			map.put("kwh", 0.00);
+			map.put("kw", 0.00);
+			listDays.add(map);
+		}
+	}
+	for (ElecDataDay ElecDataDay : elecDataDays) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKwh()));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKw()));
+		listDays.add(map);		
+	}
+for (int i = 1; i <= listDays.size(); i++) {
+	for	(Map<String, Object> mapObject:listDays ){
+		if (i==(int)mapObject.get("time")) {
+			listDay.add(mapObject);
+		}
+	}
+}
+	return listDay;
+	
+}
 
+/**
+ * 移动端获取每月发电详情
+ * @throws ParseException 
+ * @throws NumberFormatException 
+ */
+public List<Map<String, Object>> monthInfo(List<Long> ammeterCodes, Integer type) throws NumberFormatException, ParseException{
+	List<Map<String, Object>>  listMonth= new ArrayList<>();
+	Date endStart = new Date();
+	Date[] monthSpace = DateUtil.getThisYearSpace();
+	Date monthStartTime = monthSpace[0];
+	String monthStart=new SimpleDateFormat("yyyy-MM").format(monthStartTime);
+	String end=new SimpleDateFormat("yyyy-MM").format(endStart);
+	SimpleDateFormat dFormat = new SimpleDateFormat("MM");
+	List<Integer> recordTimeList=new ArrayList<>();
+	
+	
+	List<ElecDataMonth> elecDataMonths = elecDataMonthDao.findByMonths(ammeterCodes, type, monthStart, end);
+	String nowTime=dFormat.format(endStart);
+	Integer num= Integer.parseInt(nowTime);
+	List<Map<String, Object>> listMonths = new ArrayList<>();
+	for (ElecDataMonth ElecDataMonth: elecDataMonths) {
+		recordTimeList.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(ElecDataMonth.getRecordTime()))));
+	}
+	for (int i=1; i <= num; i++) {
+		if (!recordTimeList.contains(i)) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("time", i);
+			map.put("kwh", 0.00);
+			map.put("kw", 0.00);
+			listMonths.add(map);
+		}
+		
+}
+	for (ElecDataMonth ElecDataMonth : elecDataMonths) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(ElecDataMonth.getRecordTime()))));
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataMonth.getKwh().doubleValue()));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataMonth.getKw().doubleValue()));
+		listMonths.add(map);		
+	}
+for (int i = 1; i <= listMonths.size(); i++) {
+	for	(Map<String, Object> mapObject:listMonths ){
+		if (i==(int)mapObject.get("time")) {
+			listMonth.add(mapObject);
+		}
+	}
+}
+	return listMonth;
+}
+/**
+ * 移动端获取每年发电详情
+ * @throws ParseException 
+ * @throws NumberFormatException 
+ */
+
+public List<Map<String, Object>> yearInfo(List<Long> ammeterCodes, Integer type,Long stationId) throws NumberFormatException, ParseException{
+	Station  station=stationDao.findOne(stationId);
+	Date startTime=station.getCreateDtm();
+	List<Map<String, Object>>  listYear= new ArrayList<>();
+	Date endStart = new Date();
+	String yearStart=new SimpleDateFormat("yyyy").format(startTime);
+	String end=new SimpleDateFormat("yyyy").format(endStart);
+	SimpleDateFormat dFormat = new SimpleDateFormat("yyyy");
+	List<Integer> recordTimeList=new ArrayList<>();
+	
+	List<ElecDataYear> elecDataYears = elecDataYearDao.findByYear(ammeterCodes, type, yearStart, end);
+	String nowTime=dFormat.format(endStart);
+	String initTime=dFormat.format(startTime);
+	Integer numEnd= Integer.parseInt(nowTime);
+	Integer numstart= Integer.parseInt(initTime);
+	List<Map<String, Object>> listYears = new ArrayList<>();
+	for (ElecDataYear ElecDataYear: elecDataYears) {
+		recordTimeList.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(ElecDataYear.getRecordTime()))));
+	}
+	for (int i=numstart; i <= numEnd; i++) {
+		if (!recordTimeList.contains(i)) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("time", i);
+			map.put("kwh", 0.00);
+			map.put("kw", 0.00);
+			listYears.add(map);
+		}
+		
+}	
+	if (type==1) {
+		List<Ammeter>  ammeters=ammeterDao.findByStationId(stationId);
+		for (Ammeter ammeter : ammeters) {
+			for (ElecDataYear ElecDataYear : elecDataYears) {
+				if (ElecDataYear.getRecordTime().equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
+					Double yearKwh=ElecDataYear.getKwh().doubleValue();
+					Double initKwh=ammeter.getInitKwh();
+					ElecDataYear.setKwh(BigDecimal.valueOf(yearKwh+initKwh));
+				}
+			}
+		}
+	}
+	for (ElecDataYear ElecDataYear : elecDataYears) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(ElecDataYear.getRecordTime()))));
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataYear.getKwh().doubleValue()));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataYear.getKw().doubleValue()));
+		listYears.add(map);		
+	}
+	
+	
+	System.out.println(listYears.size());
+for (int i = numstart; i <=numEnd; i++) {
+	for	(Map<String, Object> mapObject:listYears ){
+		if (i==(int)mapObject.get("time")) {
+			listYear.add(mapObject);
+		}
+	}
+}
+	return listYear;
+}
 }
