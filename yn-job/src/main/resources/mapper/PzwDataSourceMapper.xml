@@ -935,7 +935,8 @@
 			from
 			pzw_data_source
 			where
-				meter_time like CONCAT('${selectDate}','%')
+				meter_time like CONCAT('${selectDate}','%') 
+				and w_addr = 0 and d_addr = 1
 			order by meter_time ${orderCause} limit 1;
 	</select>
 

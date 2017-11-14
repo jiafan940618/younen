@@ -2,8 +2,8 @@ package com.yn.test;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class TestDemo {
@@ -19,7 +19,12 @@ public class TestDemo {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
+		Date da = new Date();
+		String format = new SimpleDateFormat("yyyy-MM-dd HH").format(da);
+		System.out.println(format);
+		System.err.println(new SimpleDateFormat("HH").format(new SimpleDateFormat("yyyy-MM-dd HH").parse(format)));
+		
 		// new TestDemo().test1();
 
 	}

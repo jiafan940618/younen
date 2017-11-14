@@ -212,9 +212,9 @@
   <update id="updateByExampleSelective" parameterType="map" >
     update elec_data_year
     <set >
-      <if test="record.id != null" >
+      <!-- <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
-      </if>
+      </if> -->
       <if test="record.del != null" >
         del = #{record.del,jdbcType=INTEGER},
       </if>
@@ -242,9 +242,9 @@
       <if test="record.ammeterCode != null" >
         ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null" >
+     <!--  <if test="record.type != null" >
         type = #{record.type,jdbcType=INTEGER},
-      </if>
+      </if> -->
       <if test="record.wAddr != null" >
         w_addr = #{record.wAddr,jdbcType=INTEGER},
       </if>

@@ -5,13 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.yn.model.Am1Phase;
-import com.yn.model.Am3Phase;
-import com.yn.model.AmPhaseRecord;
 
 public class RunClass /* implements Runnable */ extends Thread {
 	private static final String TESTURL = "jdbc:mysql://127.0.0.1/cmy";
@@ -21,12 +14,12 @@ public class RunClass /* implements Runnable */ extends Thread {
 	private static final String NEWURL = "jdbc:mysql://120.76.98.74:3306/younen";
 	private static final String NEWUSER = "root";
 	private static final String NEWPASSWORD = "Engross0812";
-	private static final String OLDURL = "jdbc:mysql://120.76.98.74:3306/youneng";
-	private static final String OLDUSER = "root";
-	private static final String OLDPASSWORD = "Engross0812";
+//	private static final String OLDURL = "jdbc:mysql://120.76.98.74:3306/youneng";
+//	private static final String OLDUSER = "root";
+//	private static final String OLDPASSWORD = "Engross0812";
 	private static Connection TESTCONN = null;
 	private static Connection NEWCONN = null;
-	private static Connection OLDCONN = null;
+//	private static Connection OLDCONN = null;
 	// 执行接口
 	public static PreparedStatement ps;
 	// 结果集
@@ -34,23 +27,23 @@ public class RunClass /* implements Runnable */ extends Thread {
 
 	int index = 0;
 
-	static List<String> sd = sd();
-	int size = sd.size();
+//	static List<String> sd = sd();
+//	int size = sd.size();
 
 	@Override
 	public void run() {
 
 		// 开始时间
-		Long begin = new Date().getTime();
-		doInsert();
+//		Long begin = new Date().getTime();
+//		doInsert();
 		// 结束时间
-		Long end = new Date().getTime();
+//		Long end = new Date().getTime();
 		// 耗时
-		System.out.println(size + "条数据插入花费时间 : " + (end - begin) / 1000 + " s" + "  插入完成");
-		System.out.println(size + "条数据插入花费时间 : " + (end - begin) + " ms" + "  插入完成");
+//		System.out.println(size + "条数据插入花费时间 : " + (end - begin) / 1000 + " s" + "  插入完成");
+//		System.out.println(size + "条数据插入花费时间 : " + (end - begin) + " ms" + "  插入完成");
 	}
 
-	private void doInsert() {
+	/*private void doInsert() {
 		try {
 			getConnection();
 		} catch (SQLException e1) {
@@ -91,7 +84,7 @@ public class RunClass /* implements Runnable */ extends Thread {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * 执行查询
@@ -118,7 +111,7 @@ public class RunClass /* implements Runnable */ extends Thread {
 		return rs;
 	}
 
-	public List<AmPhaseRecord> getOldData() throws SQLException {
+/*	public List<AmPhaseRecord> getOldData() throws SQLException {
 		List<Am1Phase> am1PhaseList = new ArrayList<Am1Phase>();
 		List<Am3Phase> am3PhaseList = new ArrayList<Am3Phase>();
 		String sql1 = "select * from youneng.am_1phase_2017_07_01 where meter_time >= 1707010000000 and meter_time <= 170701999999 ";
@@ -134,14 +127,14 @@ public class RunClass /* implements Runnable */ extends Thread {
 			long meterTime = resultSet.getLong("meter_time");
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * 
 	 * @Title: sd @Description: TODO(测试用的。) @param @return 参数 @return
 	 *         List<String> 返回类型 @throws
 	 */
-	public static final synchronized List<String> sd() {
+	/*public static final synchronized List<String> sd() {
 		List<String> lists = new ArrayList<String>();
 		String sql = " select * from am_phase_record_2017_05_02 ";
 		ResultSet s;
@@ -155,7 +148,7 @@ public class RunClass /* implements Runnable */ extends Thread {
 			e.printStackTrace();
 		}
 		return lists;
-	}
+	}*/
 
 	/**
 	 * 
@@ -174,7 +167,7 @@ public class RunClass /* implements Runnable */ extends Thread {
 		}
 	}
 
-	public static void getConnection1() throws SQLException {
+	/*public static void getConnection1() throws SQLException {
 		try {
 			Class.forName(DRIVERNAME);
 			OLDCONN = DriverManager.getConnection(OLDURL, OLDUSER, OLDPASSWORD);// 获取连接
@@ -183,7 +176,7 @@ public class RunClass /* implements Runnable */ extends Thread {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	public static void getConnection3() throws SQLException {
 		try {

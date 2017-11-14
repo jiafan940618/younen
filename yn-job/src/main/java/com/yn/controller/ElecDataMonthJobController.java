@@ -1,23 +1,15 @@
 package com.yn.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.job.ElecDataMonthJob;
-import com.yn.model.ElecDataHour;
-import com.yn.model.ElecDataMonth;
-import com.yn.service.ElecDataHourService;
 import com.yn.service.ElecDataMonthJobService;
-import com.yn.service.ElecDataMonthService;
 import com.yn.vo.re.ResultVOUtil;
 
 /**
@@ -47,7 +39,7 @@ public class ElecDataMonthJobController {
 	    * http://localhost:40403/client/edmjc/importData4Month/2016?month=12
 	    * @throws
 	 */
-	@RequestMapping("/importData4Month/{year}")
+//	@RequestMapping("/importData4Month/{year}")
 	public Object importData4Month(@PathVariable("year") int year,
 			@RequestParam(value = "month", required = false, defaultValue = "-1") int month) {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();

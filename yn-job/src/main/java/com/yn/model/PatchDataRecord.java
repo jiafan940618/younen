@@ -12,6 +12,13 @@ import java.util.Date;
 @Entity
 public class PatchDataRecord implements Serializable{
 	
+	
+	    /**
+	    * @Fields serialVersionUID : TODO(用一句话描述这个变量表示什么)
+	    */
+	    
+	private static final long serialVersionUID = -6825525638733936877L;
+
 	@Id
 	@Column(columnDefinition = "varchar(32) comment '[id]'")
 	private String amPhaseRecordId;

@@ -1,19 +1,5 @@
 package com.yn.test;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.yn.dao.CommentDao;
-import com.yn.model.Comment;
-import com.yn.model.ElecDataHour;
-import com.yn.service.ElecDataHourService;
-
 /**
  * 
  * @ClassName: TestScheduled
@@ -26,50 +12,50 @@ import com.yn.service.ElecDataHourService;
  * @date 2017年10月16日
  *
  */
-//@Component
-//@RestController
+// @Component
+// @RestController
 public class TestScheduled {
 
-	@Autowired
-	private CommentDao commentDao;
+//	@Autowired
+//	private CommentDao commentDao;
+//
+//	@Autowired
+//	private ElecDataHourService elecDataHourService;
 
-	@Autowired
-	private ElecDataHourService elecDataHourService;
-	
-	private int index = 0;
-	
-	@Scheduled(fixedDelay = 10 * 1000)
-	public void myTest() {
-		Comment comment = new Comment();
-		comment.setCreateDtm(new Date());
-		comment.setDetailedEvaluation("Test"+index++);
-		comment.setOrderId((long)index);
-		comment.setServerEfficiency((double)index);
-		comment.setServerQuality((double)index);
-//		comment.setId(8L);
-		Comment save = commentDao.save(comment);
-		System.out.println(save);
-	}
-	
-	
-	//@Scheduled(fixedDelay = 10 * 1000)
-	private void job(){
-		List<ElecDataHour> dataByMonth = elecDataHourService.findAllDataByMonthOrYear(1,-1,-1);
+//	private int index = 0;
+
+	// @Scheduled(fixedDelay = 10 * 1000)
+//	@Scheduled(cron = "0 * * * * ? ")
+	/*public void myTest() {
+		System.out.println("6666666");
+		 Comment comment = new Comment();
+		 comment.setCreateDtm(new Date());
+		 comment.setDetailedEvaluation("Test"+index++);
+		 comment.setOrderId((long)index);
+		 comment.setServerEfficiency((double)index);
+		 comment.setServerQuality((double)index);
+		// comment.setId(8L);
+		 Comment save = commentDao.save(comment);
+		 System.out.println(save);
+	}*/
+
+	// @Scheduled(fixedDelay = 10 * 1000)
+	/*private void job() {
+		List<ElecDataHour> dataByMonth = elecDataHourService.findAllDataByMonthOrYear(1, -1, -1);
 		System.out.println(dataByMonth.size());
-	}
-	
-	
-	@RequestMapping("/doSave")
-	public Object myTestC() {
+	}*/
+
+//	@RequestMapping("/doSave")
+	/*public Object myTestC() {
 		Comment comment = new Comment();
 		comment.setCreateDtm(new Date());
-		comment.setDetailedEvaluation("Test"+index++);
-		comment.setOrderId((long)index);
-		comment.setServerEfficiency((double)index);
-		comment.setServerQuality((double)index);
+		comment.setDetailedEvaluation("Test" + index++);
+		comment.setOrderId((long) index);
+		comment.setServerEfficiency((double) index);
+		comment.setServerQuality((double) index);
 		comment.setId(666L);
 		Comment save = commentDao.save(comment);
 		System.out.println(save);
 		return save;
-	}
+	}*/
 }

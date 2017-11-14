@@ -48,6 +48,7 @@ public class ReadDataSource extends Thread {
 	// 年月日
 	int year = 2017, month = 0, day = 0;
 
+	@SuppressWarnings("static-access")
 	private static int countNowDaysInMonth(int month) {
 		return LocalDate.now().withMonth(month).now().getDayOfMonth();
 	}

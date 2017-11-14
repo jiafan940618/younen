@@ -1,8 +1,9 @@
 package com.yn.job;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +26,6 @@ import com.yn.model.AmmeterRecord;
 import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataHour;
-import com.yn.model.Station;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmmeterRecordService;
 import com.yn.service.AmmeterService;
@@ -70,23 +70,22 @@ public class AmmeterJob {
 	private static PrintStream mytxt;
 	private static PrintStream out;
 
-	// public AmmeterJob() {
-	// try {
-	//// mytxt = new
-	// PrintStream("/opt/springbootproject/ynJob/log/ammeterJobLog.log");
-	// mytxt = new PrintStream("./ammeterJobLog.txt");
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// }
-	// }
+	public AmmeterJob() {
+		try {
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
+//			 mytxt = new PrintStream("./ammeterJobLog.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	// private String date = "2016_01_01";//yyyy_MM_dd -->用于导入数据使用,指定导入的时间。
 
 	@Scheduled(fixedDelay = 10 * 1000)
 	private void job() {
 		// 设置日志文件输出路径。
-		// out = System.out;
-		// System.setOut(mytxt);
+		out = System.out;
+		System.setOut(mytxt);
 		System.out.println("AmmeterJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		try {
 			System.out.println("AmmeterJob-->job::run");
@@ -109,7 +108,7 @@ public class AmmeterJob {
 					if (amPhaseRecord == null) {
 						amPhaseRecordService.saveByMapper(apr);
 					} else {
-						int keySelective = amPhaseRecordService.updateByPrimaryKeySelective(apr);
+						amPhaseRecordService.updateByPrimaryKeySelective(apr);
 					}
 					// 保存电表记录。
 					saveAmmeterRecord(ammeter, apr);
@@ -122,11 +121,11 @@ public class AmmeterJob {
 					ammeter.setNowKw(0D);
 					Ammeter findOne = ammeterDao.findOne(ammeter.getId());
 					if (findOne != null) {
-						int selective = ammeterMapper.updateByPrimaryKeySelective(ammeter);
+						ammeterMapper.updateByPrimaryKeySelective(ammeter);
 						System.out.println("AmmeterJob--> ammeter更新成功！-->"
 								+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					} else {
-						int insert = ammeterMapper.insert(ammeter);
+						ammeterMapper.insert(ammeter);
 						System.out.println("AmmeterJob--> ammeter新增成功！-->"
 								+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					}
@@ -137,7 +136,7 @@ public class AmmeterJob {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
-		// System.setOut(out);
+		System.setOut(out);
 		System.out.println("AmmeterJob日志保存完毕。");
 	}
 
@@ -166,7 +165,7 @@ public class AmmeterJob {
 		ammeterRecord.setDel(0);
 		ammeterRecord.setCreateDtm(new Date());
 		ammeterRecord.setdAddr(apr.getdAddr());
-		ammeterRecord.setwAddr(apr.getwAddr());
+		ammeterRecord.setwAddr(0);
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecord.setUpdateDtm(new Date());
 		ammeterRecordService.saveByMapper(ammeterRecord);
@@ -199,16 +198,12 @@ public class AmmeterJob {
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
 		AmPhaseRecord ap = apr;
 		ap.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-		Double kwhTotal = 0.0;
-		// 统计发电用电的
-		for (long i = 1; i <= 2; i++) {
-			ap.setdAddr(i);
-			AmPhaseRecord a = amPhaseRecordService.findByMapper4InitKwh(ap);
-			if (a != null) {
-				kwhTotal += a.getKwhTotal();
-			}
-		}
-		ammeter.setInitKwh(kwhTotal);
+		/*
+		 * Double kwhTotal = 0.0; // 统计发电用电的 for (long i = 1; i <= 2; i++) {
+		 * ap.setdAddr(i); AmPhaseRecord a =
+		 * amPhaseRecordService.findByMapper4InitKwh(ap); if (a != null) {
+		 * kwhTotal += a.getKwhTotal(); } } ammeter.setInitKwh(kwhTotal);
+		 */
 		if (findOne != null) {
 			ammeterMapper.updateByPrimaryKeySelective(ammeter);
 			System.out.println("AmmeterJob--> ammeter更新成功！-->"
@@ -246,14 +241,17 @@ public class AmmeterJob {
 		String cAddr = ammeter.getcAddr();
 		Long dAddr = apr.getdAddr();
 		Integer dType = ammeter.getdType();
-		Integer wAddr = apr.getwAddr();
+		Integer wAddr = 0;
 		String ammeterCode = ammeter.getcAddr();
+		if(dAddr==null){
+			return;
+		}
 		CharSequence subSequence = dAddr.toString().subSequence(0, 1);
-
 		// 每小时的
 		ElecDataHour temStationR = new ElecDataHour();
 		temStationR.setDevConfCode(cAddr);
 		temStationR.setdType(dType);
+		temStationR.setdAddr(dAddr);
 		temStationR.setwAddr(wAddr);
 		temStationR.setAmmeterCode(ammeterCode);
 		temStationR.setRecordTime(temStationRecordTime);
@@ -294,6 +292,7 @@ public class AmmeterJob {
 		temStationYearR.setDevConfCode(cAddr);
 		temStationYearR.setdType(dType);
 		temStationYearR.setwAddr(wAddr);
+		temStationYearR.setdAddr(dAddr);
 		temStationYearR.setAmmeterCode(ammeterCode);
 		temStationYearR.setRecordTime(temStationYearRecordTime);
 		ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
@@ -344,33 +343,28 @@ public class AmmeterJob {
 		amPhaseRecordR.setcAddr(apr.getcAddr());
 		amPhaseRecordR.setdAddr(apr.getdAddr());
 		amPhaseRecordR.setdType(apr.getdType());
-		amPhaseRecordR.setwAddr(apr.getwAddr());
+		amPhaseRecordR.setwAddr(0);
 		amPhaseRecordR.setMeterTime(lastMeterTime);
 		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
 			if (lastAmPhaseRecord.getKwhTotal() >= 0.0) {
-				//现在和前10分钟数据一致说明没发电。
-				if(lastAmPhaseRecord.getKwhTotal()==apr.getKwhTotal()){
+				// 现在和前10分钟数据一致说明没发电。
+				if (lastAmPhaseRecord.getKwhTotal() == apr.getKwhTotal()) {
 					return 0.00;
 				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
-			} 
+			}
 		}
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		System.out.println("kwhTol:::::"+kwhTol);
-		if(kwhTol<0){
-			System.err.println(apr.getcAddr()+"\t"+apr.getMeterTime());
-			System.exit(0);
+		System.out.println("kwhTol:::::" + kwhTol);
+		if (kwhTol < 0) {
+			System.err.println(apr.getcAddr() + "\t" + apr.getMeterTime());
+			System.out.println("kwhTol小于0");
+			// System.exit(0);
+		}
+		if (kwhTol < 0) {
+			kwhTol = 0.0d;
 		}
 		return kwhTol;
 	}

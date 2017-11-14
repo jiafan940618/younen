@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -94,7 +95,12 @@ public class AmPhaseRecordService {
 	public AmPhaseRecord findOneByMapper(AmPhaseRecord amPhaseRecord) {
 		//RowId cAddr iAddr dAddr dType wAddr MeterTime
 		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
+//		AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
 		List<AmPhaseRecord> findOne = amPhaseRecordMapper.selectOneByC(amPhaseRecord);
+//		for (AmPhaseRecord amPhaseRecord2 : findOne) {
+//			BeanUtils.copyProperties(amPhaseRecord2, amPhaseRecord1);
+//			
+//		}
 		return findOne.size()==0?null:findOne.get(findOne.size()-1);
 	}
 
@@ -189,6 +195,7 @@ public class AmPhaseRecordService {
 		amPhaseRecord.setDate(date);
 		amPhaseRecord.setcAddr(cAddr);
 		amPhaseRecord.setdAddr(Long.valueOf(type));
+//		amPhaseRecord.setwAddr(0);xml已固定为0。
 		return amPhaseRecordMapper.findAll4DateCaddr(amPhaseRecord);
 	}
 

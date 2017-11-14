@@ -1,6 +1,8 @@
 package com.yn.job;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,8 +36,8 @@ public class NowKwJob {
 	private static PrintStream out;
 	public NowKwJob(){
 		try {
-//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/nowKwJobLog.log");
-			mytxt = new PrintStream("./nowKwJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/NowKwJob.log"),true));
+//			mytxt = new PrintStream("./nowKwJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
