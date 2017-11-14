@@ -58,7 +58,7 @@ public class User extends IDomain implements Serializable {
     protected String openIdb;
     @Column(columnDefinition = "varchar(255) comment '[openIdc]'")
     protected String openIdc;
-    @Column(columnDefinition = "int(11) NOT NULL comment '[角色id]'")
+    @Column(columnDefinition = "int(11) NOT NULL comment '[角色id,6、普通用户 7、业务员]'")
     protected Long roleId;
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[备注]'")
     protected String ipoMemo;

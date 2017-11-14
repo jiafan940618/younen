@@ -5,6 +5,9 @@ import com.yn.vo.re.ResultVOUtil;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +99,7 @@ public class SubsidyController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/monishouyi")
-	public Object findByType(Subsidy subsidy, String sqm, com.yn.model.Page<Subsidy> page) {
+	public Object findByType(Subsidy subsidy, String sqm, com.yn.model.Page<Subsidy> page,HttpSession session) {
 		ResultData<Object> resultData = new ResultData<Object>();
 		/*subsidy.setCityId(213L);
 		subsidy.setType(1);
@@ -236,6 +239,8 @@ public class SubsidyController {
 			resultData.setData(rm);
 		}
 
+		session.setAttribute("type", subsidy.getType());
+		
 		return resultData;
 	}
     

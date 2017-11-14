@@ -243,6 +243,7 @@ public class UserController {
   	if(null == newuserVo){
   		return ResultVOUtil.error(5003, "抱歉,您未登录!");
   	}
+	  
   	
     Map<String, String> newmap = new HashMap<String, String>();
   	//userVo.setId(3L);

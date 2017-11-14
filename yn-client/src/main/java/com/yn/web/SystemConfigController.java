@@ -101,7 +101,7 @@ public class SystemConfigController {
         return ResultVOUtil.success(map);
     }
     /** 安卓版本*/
-    @ResponseBody
+   /* @ResponseBody
 	@RequestMapping(value = "/updateAndroid")
 	public Object deleteBatch(HttpServletRequest request, HttpServletResponse response,
 			HttpSession httpSession) {
@@ -114,6 +114,6 @@ public class SystemConfigController {
 		map.put("android_update_info", map.get("android_update_info"));
 		
 		return ResultVOUtil.success(map);
-	}
+	}*/
     
 }

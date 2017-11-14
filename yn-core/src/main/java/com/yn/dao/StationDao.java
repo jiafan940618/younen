@@ -94,5 +94,12 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	
 	@Query("select s.capacity from Station s WHERE s.id=?1 AND s.del=0")
 	double findCapacity(Long stationId);
+	
+	@Query("select s from Station s WHERE  s.del=0")
+	List<Station> getselStation();
+	
+	@Query("select v from Station v where v.id in (stationIds)")
+	List<Station> findByStation(String stationIds);
+	
 
 }

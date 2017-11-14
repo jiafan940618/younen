@@ -87,6 +87,20 @@ public class StationService {
 
 		return stationMapper.selectByPrimaryKey(id);
 	}
+	
+	/** 业务员查询所有电站*/
+	public List<Station> getselStation(){
+		List<Station> list =	stationDao.getselStation();
+		
+		for (Station station : list) {
+			station.setOrder(null);
+			station.setAmmeter(null);
+			station.setServer(null);
+			station.setUser(null);
+		}
+		
+		return list;
+	}
 
 	public void save(Station station) {
 		if (station.getId() != null) {

@@ -105,7 +105,7 @@ public class UserLoginController {
 	        userVo.setPhone(user.getPhone());
 	        userVo.setToken(userService.getToken(user)); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
-	     
+
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
@@ -422,6 +422,7 @@ public class UserLoginController {
 
 
 		newUser.setPassword(MD5Util.GetMD5Code(newUser.getPassword()));
+		newUser.setRoleId(Long.valueOf(6));
 		
 		String privilegeCodeInit =	RandomUtil.generateOnlyNumber(); 
 		newUser.setPrivilegeCodeInit(privilegeCodeInit);

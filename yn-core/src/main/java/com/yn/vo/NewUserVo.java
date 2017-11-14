@@ -22,8 +22,7 @@ public class NewUserVo {
 	private String ipoMemo;
 	
 	
-	
-	
+
 	public String getIpoMemo() {
 		return ipoMemo;
 	}

@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -242,10 +243,12 @@ public class ElecDataDayController {
 
 	/**
 	 * 移动端获取实时功率
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
 	@RequestMapping(value = "/getElecDetailByStationCode", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object getElecDetailByStationCode(Long stationId, Integer type) {
+	public Object getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
 
 		Map<String, Object> map = new HashMap<>();
 
