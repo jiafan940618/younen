@@ -384,7 +384,6 @@ public class ElecDataDayService {
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		Date endStart = new Date();
 		// 获取每天的发电详情
-
 		List<Map<String, Object>> dayInfo = dayInfo(ammeterCodes, type);
 		if (type == 1) {
 			double workTotalkwh = ammeterDao.workTotalkwh(stationId);
@@ -397,9 +396,7 @@ public class ElecDataDayService {
 			double historyTotalElec=elecDataDayDao.sumKwhByHistory(type, ammeterCodes);
 		    maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
 		}
-
-		maps.put("dayList", dayInfo);
-		
+		  maps.put("dayList", dayInfo);
 		// 获取当每月的发电详情
 		List<Map<String, Object>> monthInfo = monthInfo(ammeterCodes, type);
 		Date[] monthSpace = DateUtil.getThisYearSpace();
