@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +33,6 @@ import com.yn.vo.re.ResultVOUtil;
 @Controller
 @RequestMapping("/client/aprJob")
 public class AmPhaseRecordJobController {
-	private Logger logger = Logger.getLogger(AmPhaseRecordJobController.class);
 
 	@Autowired
 	private AmPhaseService amPhaseService;
@@ -93,6 +91,7 @@ public class AmPhaseRecordJobController {
 	 *         eg：2017/10/10-->10 @param @param month 月份 @param @return 参数
 	 *         当前月份的当前天数 @return int 返回类型 @throws
 	 */
+	@SuppressWarnings("static-access")
 	private static int countNowDaysInMonth(int month) {
 		return LocalDate.now().withMonth(month).now().getDayOfMonth();
 	}
@@ -217,7 +216,7 @@ public class AmPhaseRecordJobController {
 				amPhaseRecordR.setiAddr(am1Phase.getiAddr());
 				amPhaseRecordR.setdAddr(am1Phase.getdAddr());
 				amPhaseRecordR.setdType(am1Phase.getdType());
-				amPhaseRecordR.setwAddr(am1Phase.getwAddr());
+				amPhaseRecordR.setwAddr(0);
 				amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
 				amPhaseRecordR.setDate(date);
 				AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
@@ -261,7 +260,7 @@ public class AmPhaseRecordJobController {
 				amPhaseRecordR.setiAddr(am3Phase.getiAddr());
 				amPhaseRecordR.setdAddr(am3Phase.getdAddr());
 				amPhaseRecordR.setdType(am3Phase.getdType());
-				amPhaseRecordR.setwAddr(am3Phase.getwAddr());
+				amPhaseRecordR.setwAddr(0);
 				amPhaseRecordR.setMeterTime(am3Phase.getMeterTime());
 				// AmPhaseRecord findOne =
 				// amPhaseRecordService.findOne(amPhaseRecordR);

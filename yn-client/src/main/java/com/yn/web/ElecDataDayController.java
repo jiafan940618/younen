@@ -87,15 +87,7 @@ public class ElecDataDayController {
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
 		Page<ElecDataDay> findAll = elecDataDayService.findAll(elecDataDay, pageable);
 		return ResultVOUtil.success(findAll);
-		// ElecDataDay temStationYear = new ElecDataDay();
-		// BeanCopy.copyProperties(temStationYearVo, temStationYear);
-		// temStationYear.setdAddr(temStationYearVo.getD_addr());
-		// System.out.println(temStationYear.getQueryStartDtm());
-		// PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-		// List<ElecDataDay> list =
-		// elecDataDayService.findByMapper(temStationYear);
-		// PageInfo<ElecDataDay> pageInfo=new PageInfo<>(list);
-		// return ResultVOUtil.success(pageInfo);
+
 	}
 
 	/**
@@ -242,7 +234,11 @@ public class ElecDataDayController {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * 移动端获取实时功率
+=======
+	 * 移动端获取年月日
+>>>>>>> 4ec10e9d1b6b7e04e78578cf9da5ad83be1b3ecb
 	 * @throws ParseException 
 	 * @throws NumberFormatException 
 	 */

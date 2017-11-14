@@ -1,6 +1,8 @@
 package com.yn.job;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -102,9 +104,8 @@ public class PatchDataRecordJob {
 
 	public PatchDataRecordJob() {
 		try {
-			// mytxt = new
-			// PrintStream("/opt/springbootproject/ynJob/log/patchDataRecordJobLog.log");
-			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/patchDataRecordJobLog.log"),true));
+//			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -119,7 +120,7 @@ public class PatchDataRecordJob {
 	    * @throws
 	 */
 	@Scheduled(cron = "0 0 0 * * ? ")
-//	@Scheduled(fixedDelay = 25 * 1000)
+	// @Scheduled(fixedDelay = 25 * 1000)
 	@Transactional
 	private void job() throws ParseException {
 		// 设置日志文件输出路径。
@@ -190,7 +191,7 @@ public class PatchDataRecordJob {
 			doUpdateMonthYear();
 			System.out.println("整理完成。");
 			System.out.println("清空临时表中的数据。");
-//			patchDataRecordMapper.truncateTable();
+			patchDataRecordMapper.truncateTable();
 		}
 		System.setOut(out);
 		System.out.println("PatchDataRecordJob日志保存完毕。");
@@ -326,7 +327,8 @@ public class PatchDataRecordJob {
 			List<ElecDataHour> byExample = elecDataHourService.selectByExample(edh);
 			if (byExample.size() > 0) {
 				for (ElecDataHour elecDataHour : byExample) {
-					tolKw += patchDataRecord.getKw().doubleValue();// + elecDataHour.getKw().doubleValue();
+					tolKw += patchDataRecord.getKw().doubleValue();// +
+																	// elecDataHour.getKw().doubleValue();
 					tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
 				}
 			} else {
@@ -382,11 +384,12 @@ public class PatchDataRecordJob {
 							Integer dAddr1 = elecDataMonth2.getdAddr();
 							CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
 							if (subSequence1.equals("1")) {
-								elecDataMonth.setType(1);// 用电
+								elecDataMonth.setType(1);// 发电
 							} else if (subSequence1.equals("2")) {
-								elecDataMonth.setType(2);// 发电
+								elecDataMonth.setType(2);// 用电
 							}
-							tolKw += patchDataRecord.getKw().doubleValue();// + elecDataHour.getKw().doubleValue();
+							tolKw += patchDataRecord.getKw().doubleValue();// +
+																			// elecDataHour.getKw().doubleValue();
 							tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
 						}
 						elecDataMonth.setKw(BigDecimal.valueOf(tolKw));
@@ -410,9 +413,9 @@ public class PatchDataRecordJob {
 						edm.setdType(elecDataHour.getdType());
 						edm.setwAddr(elecDataHour.getwAddr());
 						if (subSequence1.equals("1")) {
-							edm.setType(1);// 用电
+							edm.setType(1);// 发电
 						} else if (subSequence1.equals("2")) {
-							edm.setType(2);// 发电
+							edm.setType(2);// 用电
 						}
 						edm.setwAddr(elecDataHour.getwAddr());
 						boolean b = elecDataMonthService.saveByMapper(edm);
@@ -423,7 +426,7 @@ public class PatchDataRecordJob {
 						}
 					}
 					// 删除那一个月的数据、
-					// elecDataMonthService.deleteByRecordTime(elecDataMonth);
+//					elecDataMonthService.deleteByRecordTime(elecDataMonth);
 				}
 			}
 			tolKwh = 0D;
@@ -449,9 +452,9 @@ public class PatchDataRecordJob {
 						} else if (subSequence1.equals("2")) {
 							elecDataYear2.setType(2);// 发电
 						}
-						totalKw += elecDataHour2.getKw().doubleValue() ;//+ elecDataYear2.getKw().doubleValue();
+						totalKw += elecDataHour2.getKw().doubleValue();// +
+																		// elecDataYear2.getKw().doubleValue();
 						totalKwh += elecDataHour2.getKw().doubleValue() + elecDataYear2.getKwh().doubleValue();
-
 					}
 					elecDataYear.setKw(BigDecimal.valueOf(totalKw));
 					elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
@@ -510,8 +513,8 @@ public class PatchDataRecordJob {
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
 			if (lastAmPhaseRecord.getKwhTotal() > 0) {
-				//现在和前10分钟数据一致说明没发电。
-				if(lastAmPhaseRecord.getKwhTotal()==apr.getKwhTotal()){
+				// 现在和前10分钟数据一致说明没发电。
+				if (lastAmPhaseRecord.getKwhTotal() == apr.getKwhTotal()) {
 					return 0.00;
 				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电

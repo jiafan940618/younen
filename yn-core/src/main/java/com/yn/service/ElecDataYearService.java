@@ -29,7 +29,7 @@ public class ElecDataYearService {
 	public List<ElecDataYear> findByCondition(ElecDataYear elecDataYear) {
 		ElecDataYearExample example = new ElecDataYearExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andDAddrEqualTo(elecDataYear.getdAddr());
+		criteria.andDAddrLike(2);
 		criteria.andAmmeterCodeEqualTo(elecDataYear.getAmmeterCode());
 		criteria.andRecordTimeEqualTo(elecDataYear.getRecordTime());
 		return elecDataYearMapper.selectByExample(example);

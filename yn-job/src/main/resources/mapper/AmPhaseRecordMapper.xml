@@ -1168,7 +1168,7 @@
 			and i_addr like CONCAT('%','${iAddr}','%')
 		</if>
 		<if test="dAddr != null">
-			and d_addr like CONCAT('%','${dAddr}','%')
+			and d_addr = ${dAddr}
 		</if>
 		<if test="dType != null">
 			and d_type like CONCAT('%','${dType}','%')
@@ -1324,6 +1324,7 @@
 		 from 
 		am_phase_record_${date} where c_addr =
 		${cAddr} and d_addr like CONCAT('%','${dAddr}','%')
+		and w_addr = 0;
 	</select>
 
 

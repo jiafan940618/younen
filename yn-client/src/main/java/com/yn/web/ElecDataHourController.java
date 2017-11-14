@@ -1,6 +1,7 @@
 package com.yn.web;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,56 +117,27 @@ public class ElecDataHourController {
 	}
 
 	/**
-	 * 根据用户查找每月的发电量
-	 * 
-	 * @return
-	 */
-	// @RequestMapping(value = "/monthKwh", method = {RequestMethod.POST,
-	// RequestMethod.GET})
-	// @ResponseBody
-	// public Object monthKwh(HttpSession session,Station station) {
-	// NewUserVo userVo=(NewUserVo)session.getAttribute("user");
-	// List<Map<Object, Object>> monthKwh=new ArrayList<>();
-	//
-	//
-	// if (userVo!=null) {
-	// station.setUserId(userVo.getId());
-	// if (stationDao.findByUserId(station.getUserId())!=null) {
-	// List<Station> stations=stationDao.findByUserId(station.getUserId());
-	// monthKwh=elecDataHourService.monthKwh(stations);
-	// }
-	//
-	// List<Station> stations=stationDao.findAll();
-	// monthKwh=elecDataHourService.monthKwh(stations);
-	//
-	// } else {
-	// List<Station> stations=stationDao.findAll();
-	// monthKwh=elecDataHourService.monthKwh(stations);
-	// }
-	//
-	// return ResultVOUtil.success(monthKwh);
-	// }
-	//
-	/**
 	 * 功率检测
-	 * 
 	 * @return
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
 	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
-			) {
-		List<Map<String, Object>> workList = new ArrayList<>();
+			) throws NumberFormatException, ParseException {
+		Map<String, Object> workList = new HashMap<>();
 		workList = elecDataHourService.oneHourKwh(stationId);
 		return ResultVOUtil.success(workList);
 	}
 
 	/**
 	 * 移动端获取实时功率
+	 * @throws ParseException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getCurrentElecDetailByStationCode", method = { RequestMethod.POST, RequestMethod.GET })
-	public Object getMomentPower(Long stationId, Integer type) {
+	public Object getMomentPower(Long stationId, Integer type) throws ParseException {
 
 		Map<String, Object> map = new HashMap<>();
 

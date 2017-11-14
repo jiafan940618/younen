@@ -1,13 +1,14 @@
 package com.yn.job;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.soofa.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -72,8 +73,8 @@ public class AmPhaseRecordJob {
 
 	public AmPhaseRecordJob() {
 		try {
-			// mytxt = new PrintStream("/opt/springbootproject/ynJob/log/elecDataMonthJobLog.log");
-			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmPhaseRecordJob.log"),true));
+//			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -88,7 +89,7 @@ public class AmPhaseRecordJob {
 		out = System.out;
 		System.setOut(mytxt);
 		System.out.println("AmPhaseRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-		// 建议后期换成拦截器、过滤器处理。
+		// 建议后期换成拦截器、过滤器处理。eg:@ControllerAdvice+@ExceptionHandler
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
@@ -111,7 +112,7 @@ public class AmPhaseRecordJob {
 					amPhaseRecordR.setiAddr(am1Phase.getiAddr());
 					amPhaseRecordR.setdAddr(am1Phase.getdAddr());
 					amPhaseRecordR.setdType(am1Phase.getdType());
-					amPhaseRecordR.setwAddr(am1Phase.getwAddr());
+					amPhaseRecordR.setwAddr(0);
 					amPhaseRecordR.setMeterTime(am1Phase.getMeterTime());
 					amPhaseRecordR.setDate(date);
 					AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
@@ -155,7 +156,7 @@ public class AmPhaseRecordJob {
 					amPhaseRecordR.setiAddr(am3Phase.getiAddr());
 					amPhaseRecordR.setdAddr(am3Phase.getdAddr());
 					amPhaseRecordR.setdType(am3Phase.getdType());
-					amPhaseRecordR.setwAddr(am3Phase.getwAddr());
+					amPhaseRecordR.setwAddr(0);
 					amPhaseRecordR.setMeterTime(am3Phase.getMeterTime());
 					amPhaseRecordR.setDate(date);
 					AmPhaseRecord findOne = amPhaseRecordService.findOneByMapper(amPhaseRecordR);

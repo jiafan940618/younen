@@ -50,7 +50,7 @@ public class PZWDemo {
 	@Autowired
 	AmmeterRecordService ammeterRecordService;
 
-	private final static Integer CADDR = 16020105;
+	private final static Integer CADDR = 16020801;
 
 	/**
 	 * 
@@ -67,6 +67,7 @@ public class PZWDemo {
 	 *         eg：2017/10/10-->10 @param @param month 月份 @param @return 参数
 	 *         当前月份的当前天数 @return int 返回类型 @throws
 	 */
+	@SuppressWarnings("static-access")
 	private static int countNowDaysInMonth(int month) {
 		return LocalDate.now().withMonth(month).now().getDayOfMonth();
 	}
@@ -261,7 +262,7 @@ public class PZWDemo {
 				record.setRowId(amPhaseRecord.getRowId());
 				record.setVolt(amPhaseRecord.getVolt() == null ? null : BigDecimal.valueOf(amPhaseRecord.getVolt()));
 				record.setVoltChange(amPhaseRecord.getVoltChange());
-				record.setwAddr(amPhaseRecord.getwAddr());
+				record.setwAddr(0);
 
 				record.setAmPhaseRecordId(amPhaseRecord.getAmPhaseRecordId());
 				int insert = pzwDataSourceMapper.insert(record);
@@ -361,7 +362,7 @@ public class PZWDemo {
 				record.setRowId(amPhaseRecord.getRowId());
 				record.setVolt(amPhaseRecord.getVolt() == null ? null : BigDecimal.valueOf(amPhaseRecord.getVolt()));
 				record.setVoltChange(amPhaseRecord.getVoltChange());
-				record.setwAddr(amPhaseRecord.getwAddr());
+				record.setwAddr(0);
 
 				int insert = pzwDataSourceMapper.insert(record);
 				if (insert > 0) {
@@ -377,6 +378,7 @@ public class PZWDemo {
 		return jsonResult;
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping("/handleData/{year}/{month}")
 	public @ResponseBody Object handleData(@PathVariable("year") int year, @PathVariable("month") int month,
 			@RequestParam(value = "day", required = false, defaultValue = "-1") int day) {

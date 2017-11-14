@@ -374,19 +374,17 @@ public class ElecDataDayService {
 		return list;
 	}
 
-	
 	/**
 	 * 移动端获取每天每月每年发电详情
-	 * 
-	 * @throws ParseException
-	 * @throws NumberFormatException
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
-	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type)
-			throws NumberFormatException, ParseException {
-		Map<String, Object> maps = new HashMap<>();
+	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
+     	Map<String, Object> maps = new HashMap<>();
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		Date endStart = new Date();
 		// 获取每天的发电详情
+
 		List<Map<String, Object>> dayInfo = dayInfo(ammeterCodes, type);
 		if (type == 1) {
 			double workTotalkwh = ammeterDao.workTotalkwh(stationId);
@@ -643,4 +641,6 @@ public class ElecDataDayService {
 		maps.put("listYear", listYear);
 		return maps;
 	}
+
+
 }

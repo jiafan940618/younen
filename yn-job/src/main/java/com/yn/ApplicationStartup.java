@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import com.yn.job.RollBack4Exception;
-import com.yn.threadJob.ReadDataSource;
 
 public class ApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
 	@Override

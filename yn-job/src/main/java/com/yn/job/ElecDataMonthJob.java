@@ -1,16 +1,15 @@
 package com.yn.job;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import com.yn.model.ElecDataHour;
 import com.yn.model.ElecDataMonth;
@@ -25,7 +24,15 @@ import com.yn.service.ElecDataMonthService;
     * @date 2017年10月24日
     *
  */
-@Component
+/**
+ * 全部统一为查询hour、day表。因为数据量大的情况下，发电量大的情况下，每月每年没日每小时的数据都会不准确，会存在偏差。
+    * @ClassName: ElecDataMonthJob
+    * @Description: TODO(已抛弃)
+    * @author lzyqssn
+    * @date 2017年11月14日
+    *
+ */
+//@Component
 public class ElecDataMonthJob {
 
 	@Autowired
@@ -34,15 +41,14 @@ public class ElecDataMonthJob {
 	@Autowired
 	private ElecDataHourService elecDataHourService;
 
-	private static Logger logger = Logger.getLogger(ElecDataMonthJob.class);
 
 	private static PrintStream mytxt;
 	private static PrintStream out;
 
 	public ElecDataMonthJob() {
 		try {
-//			mytxt = new PrintStream("/opt/springbootproject/ynJob/log/elecDataMonthJobLog.log");
-			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/ElecDataMonthJob.log"),true));
+//			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +62,8 @@ public class ElecDataMonthJob {
 	    * @return void    返回类型
 	    * @throws
 	 */
-	@Scheduled(cron = "0 0 1 * * ? ")
+//	@Scheduled(cron = "0 0 1 * * ? ")
+	@SuppressWarnings("unused")
 	private void job() {
 		// 设置日志文件输出路径。
 		out = System.out;
@@ -65,11 +72,11 @@ public class ElecDataMonthJob {
 		String recordTime = new SimpleDateFormat("yyyy-MM").format(new Date());
 		List<ElecDataHour> data = elecDataHourService.findAllDataByMonthOrYear(1, -1, -1);
 		for (ElecDataHour elecDataHour : data) {
-			String ammeterCode = elecDataHour.getAmmeterCode() == null ? "" : elecDataHour.getAmmeterCode();
+			String ammeterCode = elecDataHour.getAmmeterCode();
 			ElecDataMonth elecDataMonth = new ElecDataMonth();
 			elecDataMonth.setRecordTime(recordTime);
 			elecDataMonth.setAmmeterCode(ammeterCode);
-			elecDataMonth.setdAddr(elecDataHour.getdAddr() == null ? 0 : elecDataHour.getdAddr().intValue());
+			elecDataMonth.setdAddr(elecDataHour.getdAddr().intValue());
 			Double totalKw = 0d;
 			Double totalKwh = 0d;
 			List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
@@ -78,12 +85,12 @@ public class ElecDataMonthJob {
 					Integer dAddr = elecDataMonth2.getdAddr();
 					CharSequence subSequence = dAddr.toString().subSequence(0, 1);
 					if (subSequence.equals("1")) {
-						elecDataMonth.setType(1);// 用电
+						elecDataMonth.setType(1);// 发电
 					} else if (subSequence.equals("2")) {
-						elecDataMonth.setType(2);// 发电
+						elecDataMonth.setType(2);// 用电
 					}
 					totalKw += elecDataHour.getKw().doubleValue();// + elecDataMonth2.getKw().doubleValue();
-					totalKwh += elecDataHour.getKw().doubleValue() + elecDataMonth2.getKwh().doubleValue();
+					totalKwh = elecDataHour.getKw().doubleValue() + elecDataMonth2.getKwh().doubleValue();
 				}
 				elecDataMonth.setKw(BigDecimal.valueOf(totalKw));
 				elecDataMonth.setKwh(BigDecimal.valueOf(totalKwh));
@@ -105,13 +112,13 @@ public class ElecDataMonthJob {
 				edm.setdAddr(elecDataHour.getdAddr().intValue());
 				edm.setDevConfCode(elecDataHour.getDevConfCode());
 				edm.setdType(elecDataHour.getdType());
-				edm.setwAddr(elecDataHour.getwAddr());
+				edm.setwAddr(0);
 				if (subSequence.equals("1")) {
-					edm.setType(1);// 用电
+					edm.setType(1);// 发电
 				} else if (subSequence.equals("2")) {
-					edm.setType(2);// 发电
+					edm.setType(2);// 用电
 				}
-				edm.setwAddr(elecDataHour.getwAddr());
+				edm.setwAddr(0);
 				boolean b = elecDataMonthService.saveByMapper(edm);
 				if (b)
 					System.out.println("ElecDataMonthJob--> am1Phase::" + edm.getAmmeterCode() + "新增成功！-->"

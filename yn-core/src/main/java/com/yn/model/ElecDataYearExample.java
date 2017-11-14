@@ -416,8 +416,8 @@ public class ElecDataYearExample {
             return (Criteria) this;
         }
 
-        public Criteria andDAddrEqualTo(Integer value) {
-            addCriterion("d_addr =", value, "dAddr");
+        public Criteria andDAddrLike(Integer value) {
+            addCriterion("d_addr like ", value, "dAddr");
             return (Criteria) this;
         }
 

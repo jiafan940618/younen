@@ -33,7 +33,7 @@ public class RollBack4Exception {
 	@Autowired
 	private AmPhaseRecordJobController amPhaseRecordJobController;
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unused" })
 	public void checkException() throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd");
 		Map<String, Object> result = new HashMap<String, Object>();
