@@ -384,7 +384,6 @@ public class ElecDataDayService {
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		Date endStart = new Date();
 		// 获取每天的发电详情
-
 		List<Map<String, Object>> dayInfo = dayInfo(ammeterCodes, type);
 		if (type == 1) {
 			double workTotalkwh = ammeterDao.workTotalkwh(stationId);
@@ -397,9 +396,7 @@ public class ElecDataDayService {
 			double historyTotalElec=elecDataDayDao.sumKwhByHistory(type, ammeterCodes);
 		    maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
 		}
-
-		maps.put("dayList", dayInfo);
-		
+		  maps.put("dayList", dayInfo);
 		// 获取当每月的发电详情
 		List<Map<String, Object>> monthInfo = monthInfo(ammeterCodes, type);
 		Date[] monthSpace = DateUtil.getThisYearSpace();
@@ -437,13 +434,14 @@ public class ElecDataDayService {
 		String end = new SimpleDateFormat("yyyy-MM-dd").format(endStart);
 		SimpleDateFormat dFormat = new SimpleDateFormat("dd");
 		List<Integer> recordTimeList = new ArrayList<>();
-		List<ElecDataDay> elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
+		Object[] elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
 		String nowTime = dFormat.format(endStart);
 		Integer num = Integer.parseInt(nowTime);
 		List<Map<String, Object>> listDays = new ArrayList<>();
-		for (ElecDataDay ElecDataDay : elecDataDays) {
+		for (Object ElecDataDay : elecDataDays) {
+			Object[] objects = (Object[]) ElecDataDay;
 			recordTimeList.add(Integer
-					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
+					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString()))));
 		}
 		for (int i = 1; i <= num; i++) {
 			if (!recordTimeList.contains(i)) {
@@ -454,12 +452,13 @@ public class ElecDataDayService {
 				listDays.add(map);
 			}
 		}
-		for (ElecDataDay ElecDataDay : elecDataDays) {
+		for (Object ElecDataDay : elecDataDays) {
+			Object[] objects = (Object[]) ElecDataDay;
 			Map<String, Object> map = new HashMap<>();
 			map.put("time", Integer
-					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(ElecDataDay.getRecordTime()))));
-			map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKwh()));
-			map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataDay.getKw()));
+					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString()))));
+			map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
 			listDays.add(map);
 		}
 		for (int i = 1; i <= listDays.size(); i++) {
