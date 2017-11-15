@@ -52,7 +52,7 @@ public class UserLoginController {
 
 
         // 根据 phone 和 account 查找用户
-        User user = userService.findByPhoneOrAccount(phone);
+        User user = userService.findByPhoneOrAccountOrEamil(phone);
 
 
         // 校验用户权限

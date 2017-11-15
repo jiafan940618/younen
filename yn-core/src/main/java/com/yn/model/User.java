@@ -63,6 +63,8 @@ public class User extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(255) NOT NULL comment '[备注]'")
     protected String ipoMemo;
     
+    private Long visitorId;
+    
    /* private Double capacity;
     
     private Double totalMoney;
@@ -88,10 +90,22 @@ public class User extends IDomain implements Serializable {
 		this.totalMoney = totalMoney;
 	}
 */
-
+    
 
 	public String getIpoMemo() {
 		return ipoMemo;
+	}
+
+
+
+	public Long getVisitorId() {
+		return visitorId;
+	}
+
+
+
+	public void setVisitorId(Long visitorId) {
+		this.visitorId = visitorId;
 	}
 
 

@@ -16,8 +16,8 @@ public interface VisitorStationDao  extends JpaRepository<VisitorStation, Long>,
 	/*@Query("select v from VisitorStation v where v.stationIds in ()")
 	List<Station> findCapacity(Long stationId);*/
 	
-	@Query("select v from VisitorStation v where v.userId =?1 ")
-	VisitorStation findVisitorStation(Long userId);
+	/*@Query("select v from VisitorStation v where v.userId =?1 ")
+	VisitorStation findVisitorStation(Long userId);*/
 	
 	
 }

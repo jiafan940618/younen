@@ -101,10 +101,10 @@ public class TestController {
 	       @ResponseBody
 	       public Object helloJsp01(UserVo userVo){  
 	    	  
-	    	
-	    
 	    	   
-	   		return ResultVOUtil.success(null);
+	    	 User user =  userservice.findByPhoneOrAccountOrEamil("271029459@qq.com");
+	     
+	   		return ResultVOUtil.success(user);
 	        
 	       } 
 	       

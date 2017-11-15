@@ -12,19 +12,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.service.SystemConfigService;
-import com.yn.vo.re.ResultVOUtil;
+import com.yn.vo.ResultData;
 
 @RestController
-@RequestMapping("/systemConfig")
+@RequestMapping("/guangfu/systemConfig")
 public class SystemConfig02Controller {
 	    @Autowired
 	    SystemConfigService systemConfigService;
 	
 	    @ResponseBody
 		@RequestMapping(value = "/updateAndroid")
-		public Object deleteBatch(HttpServletRequest request, HttpServletResponse response,
+		public ResultData<Map<String, String>> deleteBatch(HttpServletRequest request, HttpServletResponse response,
 				HttpSession httpSession) {
-			
+	    	ResultData<Map<String, String>> resultData = new ResultData<Map<String, String>>();
+	    	
 			Map<String, String> map = systemConfigService.getnewlist();
 			
 			map.put("android_version_code", map.get("android_version_code"));
@@ -32,7 +33,9 @@ public class SystemConfig02Controller {
 			map.put("android_update_url", map.get("android_update_url"));
 			map.put("android_update_info", map.get("android_update_info"));
 			
-			return ResultVOUtil.success(map);
+			resultData.setData(map);
+			
+			return resultData;
 		}
 	
 

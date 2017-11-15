@@ -232,15 +232,21 @@ public class UserService {
 
 
     /**
-     * 根据 手机号 或 账号 查找用户
+     * 根据 手机号 或 账号 或者eamil 查找用户
      *
      * @param param
      * @return
      */
-    public User findByPhoneOrAccount(String param) {
+    public User findByPhoneOrAccountOrEamil(String param) {
         User user = findByPhone(param);
+        
         if (user == null) {
-            user = findByAccount(param);
+        	 user = findByEamil(param);
+            if(null == user){
+            	if(null != param){
+            		user = findByAccount(param);	
+            	}	 
+            }
         }
 
         return user;
@@ -269,17 +275,7 @@ public class UserService {
      * @return
      */
     
-    public User findByUserName(String UserName) {
-        User user = new User();
-        user.setUserName(UserName);
-        return findOne(user);
-    }
-    
-    /**
-     * 根据昵称查找用户
-     * @param phone
-     * @return
-     */
+
     
     public User findByNickName(String NickName) {
         User user = new User();

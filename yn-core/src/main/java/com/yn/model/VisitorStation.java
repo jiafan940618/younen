@@ -24,7 +24,7 @@ public class VisitorStation implements Serializable {
     @Column(columnDefinition = "int(11) comment '[id]'")
 	private Long id;
 	
-	private Long userId;
+	
 	
 	private String stationIds;
 
@@ -34,14 +34,6 @@ public class VisitorStation implements Serializable {
 	
 		public void setId(Long id) {
 			this.id = id;
-		}
-	
-		public Long getUserId() {
-			return userId;
-		}
-	
-		public void setUserId(Long userId) {
-			this.userId = userId;
 		}
 	
 		public String getStationIds() {

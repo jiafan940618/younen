@@ -144,14 +144,8 @@ public class ServerController {
 	@RequestMapping(value = "/login")
 	public ResultData<Object> login(UserVo userVo, HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) {
 		 
-		 User user =null; 
-	        user = userService.findByPhone(userVo.getPhone());
-	        if(user == null){
-	        	 user = userService.findByEamil(userVo.getPhone()); 
-	        	 if(user == null){
-	        		 user = userService.findByUserName(userVo.getPhone()); 
-	        	 }
-	        }
+		User user = userService.findByPhone(userVo.getPhone());
+		
 	        if (user == null) {
 	        	logger.info("----- --- ----- 该用户不存在！");
 	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);

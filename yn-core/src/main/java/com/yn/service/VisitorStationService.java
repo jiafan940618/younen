@@ -20,11 +20,11 @@ public class VisitorStationService {
 	        return visitorStationDao.findOne(id);
 	    }
 	 
-	 public VisitorStation findVisitorStation(Long userId){
+	/* public VisitorStation findVisitorStation(Long userId){
 		 
 		 
 		return visitorStationDao.findVisitorStation(userId); 
-	 }
+	 }*/
 
 	    public void save(VisitorStation news) {
 	        if(news.getId()!=null){

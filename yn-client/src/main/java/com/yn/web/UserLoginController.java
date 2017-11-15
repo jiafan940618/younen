@@ -71,14 +71,8 @@ public class UserLoginController {
 	    		@RequestParam(value = "password", required = true) String password,
 	    		HttpServletResponse response,HttpSession session) {
 
-	    	   	 User user =null; 
-	        user = userService.findByPhone(phone);
-	        if(user == null){
-	        	 user = userService.findByEamil(phone); 
-	        	 if(user == null){
-	        		 user = userService.findByUserName(phone); 
-	        	 }
-	        }
+	        User user = userService.findByPhoneOrAccountOrEamil(phone);
+	    	   
 	        if (user == null) {
 	        	logger.info("----- --- ----- 该用户不存在！");
 	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);
@@ -125,14 +119,8 @@ public class UserLoginController {
 	  logger.info("---- ---- --- --- - --- - --- -----传递的password:"+userVo.getPassword());
 		 
 		 
-	    	   	 User newuser =null; 
-	    	   	newuser = userService.findByPhone(userVo.getPhone());
-	        if(newuser == null){
-	        	newuser = userService.findByEamil(userVo.getPhone()); 
-	        	 if(newuser == null){
-	        		 newuser = userService.findByUserName(userVo.getPhone()); 
-	        	 }
-	        }
+	  		User newuser =	userService.findByPhoneOrAccountOrEamil(userVo.getPhone());
+	   
 	        if (newuser == null) {
 	        	logger.info("----- --- ----- 该用户不存在！");
 	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);

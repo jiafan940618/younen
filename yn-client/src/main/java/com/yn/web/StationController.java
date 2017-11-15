@@ -35,6 +35,7 @@ import com.yn.model.User;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
+import com.yn.service.UserService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewUserVo;
@@ -49,6 +50,9 @@ public class StationController {
 
 	@Autowired
 	StationService stationService;
+	@Autowired
+	UserService userService;
+	
 	@Autowired
 	StationDao stationDao;
 	@Autowired
@@ -173,32 +177,23 @@ public class StationController {
 		//Long userId=userDao.findByToken(newuser.getToken());
 		//String token = request.getHeader("token");
 		Map<String, Object> stationByUser = new HashMap<>();
-		if (userId!=0) {
-			List<Station> stations = stationDao.findByUserId(userId);
-			
-			if (stations!=null) {
-				stationByUser = stationService.stationByUser(stations);
-			} else {
+		
+		
+			if (userId!=0) {
+				List<Station> stations = stationDao.findByUserId(userId);
+				
+				if (stations!=null) {
+					stationByUser = stationService.stationByUser(stations);
+				} else {
+					List<Station> stationAll = stationDao.findAllStation();
+					stationByUser = stationService.stationByAll(stationAll);
+				}
+			}else {
 				List<Station> stationAll = stationDao.findAllStation();
 				stationByUser = stationService.stationByAll(stationAll);
 			}
-		}else {
-			List<Station> stationAll = stationDao.findAllStation();
-			stationByUser = stationService.stationByAll(stationAll);
-		}
 		
-		
-//
-//		if (token != null) {
-//				logger.info("------------------------用户Id: " + userId);
-//				logger.info("------------------------token: " + token);
-//				List<Station> stations = stationDao.findByUserId(userId);
-//				stationByUser = stationService.stationByUser(stations);		
-//		} else {
-//			logger.info("------------------------token: " + token);
-//			List<Station> stations = stationDao.findAllStation();
-//			stationByUser = stationService.stationByAll(stations);
-//		}
+
 
 		return ResultVOUtil.success(stationByUser);
 	}

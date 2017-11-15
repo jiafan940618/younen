@@ -30,12 +30,14 @@ import com.yn.model.Order;
 import com.yn.model.Station;
 import com.yn.model.TransactionRecord;
 import com.yn.model.User;
+import com.yn.model.VisitorStation;
 import com.yn.service.AmmeterService;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
 import com.yn.service.TransactionRecordService;
 import com.yn.service.UserService;
+import com.yn.service.VisitorStationService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
@@ -66,6 +68,8 @@ public class UserController {
 	OrderService orderService;
     @Autowired
 	TransactionRecordService transactionRecordService;
+    @Autowired
+    VisitorStationService visitorStationService;
     
     
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
@@ -128,7 +132,7 @@ public class UserController {
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
     	
-    	  WalletVo walletVo =  userService.findUserPrice(newuserVo.getId());
+    	WalletVo walletVo =  userService.findUserPrice(newuserVo.getId());
 
     	
         return ResultVOUtil.success(walletVo);
@@ -150,6 +154,9 @@ public class UserController {
     	
     	 User newuserVo = SessionCache.instance().getUser();
     	 
+    	User user02 = userService.findByEamil(userVo.getEmail()); 
+    	
+    
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
@@ -159,6 +166,13 @@ public class UserController {
 			
 			return ResultVOUtil.error(777, "抱歉,您的手机号有误!");
 		}
+    	
+    	
+    	
+    	if(null != user02){
+    		
+    		return ResultVOUtil.error(777, "抱歉,该Email已注册!");
+    	}
     	
     	if(!newuserVo.getPhone().equals(userVo.getPhone())){
     		 User newuser =	userService.findByPhone(userVo.getPhone());
@@ -297,24 +311,36 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "/findiosStationUs")
     public Object findioaStation(HttpSession httpSession) {
-	   User newuserVo = SessionCache.instance().getUser();
-	  	
+	  User newuserVo = SessionCache.instance().getUser();
+	  
+	  Map<String, String> map = systemConfigService.getlist(); 
+	  
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
+
+	  	List<StationVo> volist = new LinkedList<StationVo>();
+  	  	
+  		if(newuserVo.getRoleId() == 7L){
+
+  	    VisitorStation visitorStation	 = visitorStationService.findOne(newuserVo.getVisitorId());
+  	  
+	  	String[] ids = visitorStation.getStationIds().split(",");
 	  	
-	  	/* User newuserVo = new User();
-	  	newuserVo.setId(2L);*/
-    	
+	  	List<Long> newlist = new LinkedList<Long>();
 	  	
-	  	Map<String, String> map = systemConfigService.getlist(); 
-	 	
-	 	
-    	 List<StationVo> list = stationService.findByUserIdS(newuserVo.getId(), map);
-    	 
-    	 
+	  	for (int i = 0; i < ids.length; i++) {
+	  		newlist.add(Long.valueOf(ids[i]));
+		}
+  	  
+	  	volist = stationService.findByList(newlist, map);
+
+  		 } else if(newuserVo.getRoleId() == 6L){
+	
+		  	volist = stationService.findByUserIdS(newuserVo.getId(), map); 
+  		 } 
     	
-    	return ResultVOUtil.success(list);
+    	return ResultVOUtil.success(volist);
     }
     /** 移动端,建设中的电站*/
     @ResponseBody
@@ -325,9 +351,7 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
-	  /*	User newuserVo = new User();
-	  	newuserVo.setId(2L);*/
-	  	
+	 
     	List<OrderVo> list = orderService.findByUserId(newuserVo);
     	
 		return ResultVOUtil.success(list);	
@@ -359,7 +383,7 @@ public class UserController {
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
-	 
+
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());

@@ -577,48 +577,77 @@ public class StationService {
 		}
 		return staList;
 	}
+	
+	public List<StationVo> findByList(List<Long> newlist, Map<String, String> map) {
 
-	// /**
-	// * 用户的装机容量
-	// *
-	// */
-	// public List<Map<Object,Object>> checkCapacity(List<Station> stations){
-	// Map<Object, Object> objectMap=new HashMap<>();
-	// Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-	// List<Map<Object, Object>> lists=new ArrayList<>();
-	// List<Map<Object, Object>> listsMap=new ArrayList<>();
-	// for (Station station : stations) {
-	// List<Map<Object, Object>>
-	// list=stationDao.findUserCapacity(station.getId());
-	// if (!list.isEmpty()) {
-	// lists.addAll(list);
-	// }
-	//
-	// }
-	// for(Map<Object, Object> map : lists) {
-	// if (!objectMap.containsKey(map.get("create_dtm"))) {
-	//
-	// objectMap.put(map.get("create_dtm"), map.get("capacity"));
-	// }else{
-	// double
-	// kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("capacity");
-	// objectMap.put(map.get("create_dtm"), (Object)kwh);
-	// }
-	//
-	// }
-	// Object[] key = objectMap.keySet().toArray();
-	// Arrays.sort(key);
-	// for (int i = 0; i < key.length; i++) {
-	// Map<Object, Object> listMap=new LinkedHashMap<>();
-	// linkHashMap.put(key[i], objectMap.get(key[i]));
-	// listMap.put("createDtm", key[i]);
-	// listMap.put("capacity",
-	// NumberUtil.getTenThousand((Double)objectMap.get(key[i])));
-	// listsMap.add(listMap);
-	// }
-	// return listsMap;
-	// }
-	//
+		List<StationVo> staList = new LinkedList<StationVo>();
+
+		List<Object> list = stationDao.findByList(newlist);
+
+		Double plant_trees_prm = Double.valueOf(map.get("plant_trees_prm"));
+		/**co2减排参数*/
+		Double CO2_prm = Double.valueOf(map.get("CO2_prm"));
+
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+
+			Integer s_id = (Integer) obj[0];
+			String stationName = (String) obj[1];
+			Integer user_id = (Integer) obj[2];
+			BigDecimal capacity = (BigDecimal) obj[3];
+			Integer status = (Integer) obj[4];
+			String stationCode = (String) obj[5];
+			BigDecimal initkwh = (BigDecimal) obj[6];
+			
+			if(null == initkwh){
+				initkwh =new BigDecimal(0.0);
+			}
+			
+			BigDecimal workTotalKwh = (BigDecimal) obj[7];
+			if(null == workTotalKwh){
+				workTotalKwh =new BigDecimal(0.0);
+			}
+			
+			Integer workTotalTm = (Integer) obj[8];
+			if(null == workTotalTm){
+				workTotalTm =0;
+			}
+			
+			String userName = (String) obj[9];
+			BigDecimal nowKwh = (BigDecimal) obj[10];
+
+			DecimalFormat df = new DecimalFormat("#0.00");
+			
+			Double	electricityGenerationTol = initkwh.doubleValue() + workTotalKwh.doubleValue();
+
+
+			StationVo stationVo = new StationVo();
+			stationVo.setId(s_id.longValue());
+			stationVo.setStationName(stationName);
+			stationVo.setCapacity(capacity.doubleValue());
+			stationVo.setStatus(status);
+			stationVo.setStationCode(stationCode);
+			stationVo.setWorkTotaTm(workTotalTm);
+			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
+			stationVo.setUserName(userName);
+
+			
+			/** co2排放量*/
+			stationVo.setCO2_PM(df.format(electricityGenerationTol * CO2_prm));
+			stationVo.setTrees_prm(df.format(electricityGenerationTol * plant_trees_prm));
+
+			if (null == nowKwh) {
+				stationVo.setNowKw(0.0);
+			} else {
+				stationVo.setNowKw(nowKwh.doubleValue());
+			}
+
+			staList.add(stationVo);
+		}
+		return staList;
+	}
+	
+
 	/**
 	 * 用户的装机容量
 	 * 

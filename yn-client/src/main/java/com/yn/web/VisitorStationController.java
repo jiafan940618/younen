@@ -70,7 +70,7 @@ public class VisitorStationController {
   	  
 	  String ids = visitorStationService.getList(stationId);
 	  
-	  visitorStation.setUserId(newuserVo.getId());
+	//  visitorStation.setUserId(newuserVo.getId());
 	  
 	  visitorStation.setStationIds(ids);
 	  
@@ -80,7 +80,7 @@ public class VisitorStationController {
     }
 	
 	
-	@ResponseBody
+	/*@ResponseBody
     @RequestMapping(value = "/selStation")
     public Object selStation() {
 		User newuserVo = SessionCache.instance().getUser();
@@ -116,7 +116,7 @@ public class VisitorStationController {
 		return ResultVOUtil.success(stalist);
 	}
 	
-	/** 移除用户选择的电站id*/
+	*//** 移除用户选择的电站id*//*
 	@ResponseBody
     @RequestMapping(value = "/deleteStation")
     public Object deleteStation(@RequestParam("stationId") List<Long> stationId) {
@@ -149,5 +149,5 @@ public class VisitorStationController {
 			
 		
 		return ResultVOUtil.success(ids);
-	}
+	}*/
 }
