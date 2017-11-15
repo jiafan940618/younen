@@ -679,71 +679,7 @@ public class ElecDataHourService {
 		}
 		return elecDataHourMapper.selectByExample(example);
 	}
-		
-//	/**
-//	 * 移动端获取当前时间段的用电发电数据
-//	 * @throws ParseException 
-//	 */
-//	public Map<String, Object> getMomentPower(Long stationId, Integer type) throws ParseException {
-//
-//		List<Map<String, Object>> list = new ArrayList<>();
-//		List<Map<String, Object>> listArray = new ArrayList<>();
-//		Map<String, Object> maps = new HashMap<>();
-//		Date[] todaySpace = DateUtil.getTodaySpace();
-//		Date now=new Date();
-//		Date startTime = todaySpace[0];
-//		Date endTime = todaySpace[1];
-//		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
-//		String end=new SimpleDateFormat("yyyy-MM-dd HH").format(endTime);
-//		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
-//		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-//		List<ElecDataHour> ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
-//				start, end);
-//		String nowTime=dFormat.format(now);
-//		Integer num= Integer.parseInt(nowTime);
-//		List<Integer> recordTimeList=new ArrayList<>();
-//		
-//		for (ElecDataHour ElecDataHour : ElecDataHourList) {
-//			recordTimeList.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
-//		}
-//		
-//		for (int i = 0; i <= num; i++) {
-//			if (!recordTimeList.contains(i)) {
-//				Map<String, Object> map = new HashMap<>();
-//				map.put("time", i);
-//				map.put("kwh", 0.00);
-//				map.put("kw", 0.00);
-//				list.add(map);
-//			}
-//		}
-//		for (ElecDataHour ElecDataHour : ElecDataHourList) {
-//				Map<String, Object> map = new HashMap<>();
-//				map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
-//				map.put("kwh", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKwh()));
-//				map.put("kw", NumberUtil.accurateToTwoDecimal(ElecDataHour.getKw()));
-//				list.add(map);		
-//			}
-//		for (int i = 0; i < list.size(); i++) {
-//			for	(Map<String, Object> mapObject:list ){
-//				if (i==(int)mapObject.get("time")) {
-//					listArray.add(mapObject);
-//				}
-//			}
-//		}
-//		double todayKwh = elecDataHourDao.sumKwhByAmmeterCodes(start, end, type, ammeterCodes);
-//
-//		if (type == 1) {
-//			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
-//			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
-//			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
-//		}
-//		maps.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh));
-//		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(ammeterDao.nowKw(stationId)));
-//
-//		maps.put("list", listArray);
-//		return maps;
-//	}
-	
+
 	/**
 	 * 移动端获取当前时间段的用电发电数据
 	 * @throws ParseException 
