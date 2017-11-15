@@ -42,9 +42,9 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     		+ "DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC",nativeQuery=true)
     List<Object[]> workUseCount(List<Long> ammeterCodes,Integer type);
     
-    @Query(value="select * from elec_data_day as t WHERE t.record_time>=?3 AND t.record_time<=?4 "
-    		+ "AND t.type =?2 AND t.ammeter_code in (?1) AND t.del=0",nativeQuery=true)
-    List<ElecDataDay> findByDays(List<Long> ammeterCodes, Integer type, String start, String end);
+    @Query(value="select t.record_time,SUM(t.kwh),SUM(t.kw) from elec_data_day as t WHERE t.record_time>=?3 AND t.record_time<=?4 "
+    		+ "AND t.type =?2 AND t.ammeter_code in (?1) AND t.del=0 group by t.record_time",nativeQuery=true)
+    Object[] findByDays(List<Long> ammeterCodes, Integer type, String start, String end);
     
     @Query(value="select t.record_time,SUM(t.kwh),SUM(t.kw) from elec_data_day as t WHERE t.record_time>=?3 AND t.record_time<=?4 "
     		+ "AND t.type =?2 AND t.ammeter_code in (?1) AND t.del=0 group by DATE_FORMAT(create_dtm,'%Y-%m')",nativeQuery=true)
