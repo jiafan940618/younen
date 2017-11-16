@@ -89,7 +89,7 @@ public class AmPhaseRecordJob {
 		out = System.out;
 		System.setOut(mytxt);
 		System.out.println("AmPhaseRecordJob文档执行的日期是：" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
-		// 建议后期换成拦截器、过滤器处理。eg:@ControllerAdvice+@ExceptionHandler
+		// TODO 建议后期换成拦截器、过滤器处理。eg:@ExceptionHandler
 		TaskExecuteRecord taskExecuteRecord = new TaskExecuteRecord();
 		taskExecuteRecord.setStatus("失败");
 		taskExecuteRecord.setEndDate(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
@@ -98,8 +98,6 @@ public class AmPhaseRecordJob {
 		try {
 			List<Am1Phase> am1Phases = am1PhaseService.findAllAm1Phase();
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
-			// am1Phases = am1PhaseService.findAllAm1PhaseByDate("20171004");
-			// am3Phases = am1PhaseService.findAllAm3PhaseByDate("20171004");
 			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 			String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
 			// date = "2017_10_04";

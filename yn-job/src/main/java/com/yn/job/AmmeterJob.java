@@ -189,7 +189,9 @@ public class AmmeterJob {
 		}
 		Double kwhTol = getKwhTol(apr);
 		ammeter.setStatusCode(statusCode);
-		ammeter.setNowKw(apr.getKw());
+		if(!(apr.getKw()<=0.0d||apr.getKw()==null)){
+			ammeter.setNowKw(apr.getKw());
+		}
 		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 		// ammeter.setWorkTotalKwh(Double.parseDouble(new
 		// DecimalFormat("######0.00").format(ammeter.getWorkTotalKwh() +

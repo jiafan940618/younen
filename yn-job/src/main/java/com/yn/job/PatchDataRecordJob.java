@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,8 +32,6 @@ import com.yn.model.AmmeterRecord;
 import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataHour;
-import com.yn.model.ElecDataMonth;
-import com.yn.model.ElecDataYear;
 import com.yn.model.PatchDataRecord;
 import com.yn.model.Station;
 import com.yn.service.AmPhaseRecordService;
@@ -264,7 +261,7 @@ public class PatchDataRecordJob {
 	 */
 	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
-		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyyMMddHH");
+		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
 		String cAddr = ammeter.getcAddr();
 		Long dAddr = apr.getdAddr();
 		Integer dType = ammeter.getdType();
@@ -368,7 +365,7 @@ public class PatchDataRecordJob {
 			tolKwh = 0D;
 			tolKw = 0D;
 			// 每个月的。
-			String monthRecord = DateUtil.formatDate(
+			/*String monthRecord = DateUtil.formatDate(
 					DateUtil.formatString(patchDataRecord.getMeterTime().toString(), "yyMMddHHssmm"), "yyyyMM");
 			List<ElecDataHour> byExample2 = elecDataHourService.selectByExample(edh);
 			if (byExample2.size() > 0) {
@@ -378,7 +375,6 @@ public class PatchDataRecordJob {
 					elecDataMonth.setRecordTime(monthRecord);
 					elecDataMonth.setdAddr(elecDataHour.getdAddr() == null ? 0 : elecDataHour.getdAddr().intValue());
 					List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
-					// */*/*/*/**//
 					if (condition.size() > 0) {
 						for (ElecDataMonth elecDataMonth2 : condition) {
 							Integer dAddr1 = elecDataMonth2.getdAddr();
@@ -486,7 +482,7 @@ public class PatchDataRecordJob {
 					else
 						System.out.println("保存年异常或失败！：：" + edy.getAmmeterCode());
 				}
-			}
+			}*/
 		}
 	}
 
@@ -512,15 +508,22 @@ public class PatchDataRecordJob {
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
-			if (lastAmPhaseRecord.getKwhTotal() > 0) {
+			if (lastAmPhaseRecord.getKwhTotal() >= 0.0) {
 				// 现在和前10分钟数据一致说明没发电。
 				if (lastAmPhaseRecord.getKwhTotal() == apr.getKwhTotal()) {
 					return 0.00;
 				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
-			} else {
-				kwhTol = apr.getKwhTotal() - ammeterDao.findByCAddr(apr.getcAddr().toString()).getWorkTotalKwh();
 			}
+		}
+		System.out.println("kwhTol:::::" + kwhTol);
+		if (kwhTol < 0) {
+			System.err.println(apr.getcAddr() + "\t" + apr.getMeterTime());
+			System.out.println("kwhTol小于0");
+			// System.exit(0);
+		}
+		if (kwhTol < 0) {
+			kwhTol = 0.0d;
 		}
 		return kwhTol;
 	}

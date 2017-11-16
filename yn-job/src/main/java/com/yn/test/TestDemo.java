@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.yn.utils.DateUtil;
+
 public class TestDemo {
 
 	private static PrintStream mytxt;
@@ -20,13 +22,7 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ParseException {
-		Date da = new Date();
-		String format = new SimpleDateFormat("yyyy-MM-dd HH").format(da);
-		System.out.println(format);
-		System.err.println(new SimpleDateFormat("HH").format(new SimpleDateFormat("yyyy-MM-dd HH").parse(format)));
-		
-		// new TestDemo().test1();
-
+		System.out.println(DateUtil.getDaysByYearMonth(2017, 11));
 	}
 
 	public void test1() {
