@@ -312,12 +312,12 @@ public class UserController {
     @RequestMapping(value = "/findiosStationUs")
     public Object findioaStation(HttpSession httpSession) {
 	  User newuserVo = SessionCache.instance().getUser();
-	  
-	  Map<String, String> map = systemConfigService.getlist(); 
-	  
+
 	  	if(null == newuserVo){
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
+
+	  	Map<String, String> map = systemConfigService.getlist(); 
 
 	  	List<StationVo> volist = new LinkedList<StationVo>();
   	  	
@@ -338,7 +338,15 @@ public class UserController {
   		 } else if(newuserVo.getRoleId() == 6L){
 	
 		  	volist = stationService.findByUserIdS(newuserVo.getId(), map); 
-  		 } 
+  		 } else if (newuserVo.getRoleId() == 1L){
+  			
+  			 if(newuserVo.getVisitorId() == 1){
+  				List<Long> ids = stationService.FindByStationId();
+  				
+  				volist = stationService.findByList(ids, map);
+  			 }
+  			 
+  		 }
     	
     	return ResultVOUtil.success(volist);
     }

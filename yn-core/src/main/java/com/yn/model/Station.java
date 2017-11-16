@@ -97,8 +97,10 @@ public class Station extends IDomain implements Serializable {
 
     public Station() {}
 
+    public Station(Long id){
+    	this.id = id;
+    }
     
-    //id,capacity,workTotaTm,status,userId,stationName
     
     public Station(Long id, String stationName, Long userId, Double capacity, Integer status,String stationCode) {
   		super();

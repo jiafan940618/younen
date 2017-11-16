@@ -88,6 +88,19 @@ public class StationService {
 		return stationMapper.selectByPrimaryKey(id);
 	}
 	
+	public List<Long> FindByStationId(){
+		
+		List<Long> ids = new  LinkedList<Long>();
+		
+		List<Integer> list =stationDao.FindByStationId();
+		
+		for (Integer integer : list) {
+			ids.add(Long.valueOf(integer));
+		}
+		
+		return ids;
+	}
+	
 	/** 业务员查询所有电站*/
 	public List<Station> getselStation(){
 		List<Station> list =	stationDao.getselStation();
@@ -404,7 +417,10 @@ public class StationService {
 		Station station = new Station();
 		station.setStationCode(stradNo);
 		station.setAddressText(order.getAddressText());
-		station.setStationName(order.getServerName());
+		
+		String StationName = order.getLinkMan()+"的电站";
+
+		station.setStationName(StationName);
 		station.setCapacity(order.getCapacity());
 		station.setOrderId(order.getId());
 		station.setLinkMan(order.getLinkMan());
@@ -523,7 +539,7 @@ public class StationService {
 			Object[] obj = (Object[]) object;
 
 			Integer s_id = (Integer) obj[0];
-			String linkMan = (String) obj[1];
+			String stationName = (String) obj[1];
 			Integer user_id = (Integer) obj[2];
 			BigDecimal capacity = (BigDecimal) obj[3];
 			Integer status = (Integer) obj[4];
@@ -554,7 +570,7 @@ public class StationService {
 
 			StationVo stationVo = new StationVo();
 			stationVo.setId(s_id.longValue());
-			stationVo.setStationName(linkMan);
+			stationVo.setStationName(stationName);
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
