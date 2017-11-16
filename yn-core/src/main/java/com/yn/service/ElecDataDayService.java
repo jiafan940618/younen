@@ -495,8 +495,8 @@ public class ElecDataDayService {
 		Object[] elecDataMonths = elecDataDayDao.findByMonths(ammeterCodes, type, monthStart, end);
 		String nowTime = dFormat.format(endStart);
 		Integer num = Integer.parseInt(nowTime);
-		logger.info("----------------------------------多少个月:" + num);
-		logger.info("----------------------------------月记录条数:" + elecDataMonths.length);
+//		logger.info("----------------------------------多少个月:" + num);
+//		logger.info("----------------------------------月记录条数:" + elecDataMonths.length);
 		List<Map<String, Object>> listMonths = new ArrayList<>();
 		for (Object ElecDataMonth : elecDataMonths) {
 			Object[] objects = (Object[]) ElecDataMonth;
@@ -504,8 +504,8 @@ public class ElecDataDayService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))))) {
 				recordTimeList.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
-				logger.info("----------------------------------月份:" + Integer
-						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
+//				logger.info("----------------------------------月份:" + Integer
+//						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
 			}
 		}
 		for (int i = 1; i <= num; i++) {
@@ -558,7 +558,7 @@ public class ElecDataDayService {
 		List<Integer> recordTimeList = new ArrayList<>();
 
 		Object[] elecDataYears = elecDataDayDao.findByYears(ammeterCodes, type, yearStart, end);
-		logger.info("----------------------------------number:" + elecDataYears.length);
+//		logger.info("----------------------------------number:" + elecDataYears.length);
 		String nowTime = dFormat.format(endStart);
 		String initTime = dFormat.format(startTime);
 		Integer numEnd = Integer.parseInt(nowTime);
@@ -570,8 +570,8 @@ public class ElecDataDayService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))))) {
 				recordTimeList.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))));
-				logger.info("----------------------------------年份:"
-						+ Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))));
+//				logger.info("----------------------------------年份:"
+//						+ Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))));
 			}
 
 		}
@@ -592,16 +592,16 @@ public class ElecDataDayService {
 				for (Object ElecDataYear : elecDataYears) {
 					Object[] objects = (Object[]) ElecDataYear;
 					String time = dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()));
-					logger.info("----------------------time:" + time);
-					logger.info("----------------------ammeter.getCreateDtm:"
-							+ dFormat.format(ammeter.getCreateDtm()).toString());
+//					logger.info("----------------------time:" + time);
+//					logger.info("----------------------ammeter.getCreateDtm:"
+//							+ dFormat.format(ammeter.getCreateDtm()).toString());
 					if (time.equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
 
 						Double yearKwh = Double.valueOf(objects[1].toString());
 						Double initKwh = ammeter.getInitKwh();
 
-						logger.info("----------------------ammeterCode:" + ammeter.getcAddr());
-						logger.info("-----------------------initkwh:" + ammeter.getInitKwh());
+//						logger.info("----------------------ammeterCode:" + ammeter.getcAddr());
+//						logger.info("-----------------------initkwh:" + ammeter.getInitKwh());
 						objects[1] = yearKwh + initKwh;
 						maps.put("yearTotalElec", yearKwh + initKwh);
 						eDataYears.add(objects);

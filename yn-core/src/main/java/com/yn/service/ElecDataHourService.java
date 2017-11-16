@@ -481,46 +481,6 @@ public class ElecDataHourService {
 		return lastYearKwh;
 	}
 
-	/**
-	 * 用户每月发电量
-	 *
-	 * @param stations
-	 * @return
-	 */
-	// public List<Map<Object,Object>> monthKwh(List<Station> stations){
-	// Map<Object, Object> objectMap = new TreeMap<Object, Object>();
-	// Map<Object, Object> linkHashMap=new LinkedHashMap<>();
-	// List<Map<Object, Object>> lists=new ArrayList<>();
-	// List<Map<Object, Object>> listsMap=new ArrayList<>();
-	// for (Station station : stations) {
-	// List<Map<Object, Object>>
-	// list=elecDataHourDao.sumMonthKwh(station.getId());
-	// if (!list.isEmpty()) {
-	// lists.addAll(list);
-	// }
-	//
-	// }
-	// for(Map<Object, Object> map : lists) {
-	// if (!objectMap.containsKey(map.get("create_dtm"))) {
-	//
-	// objectMap.put(map.get("create_dtm"), map.get("kwh"));
-	// }else{
-	// double
-	// kwh=(double)objectMap.get(map.get("create_dtm"))+(double)map.get("kwh");
-	// objectMap.put(map.get("create_dtm"), (Object)kwh);
-	// }
-	//
-	// }
-	// Object[] key = objectMap.keySet().toArray();
-	// for (int i = 0; i < key.length; i++) {
-	// Map<Object, Object> listMap=new LinkedHashMap<>();
-	// linkHashMap.put(key[i], objectMap.get(key[i]));
-	// listMap.put("createDtm", key[i]);
-	// listMap.put("capacity", objectMap.get(key[i]));
-	// listsMap.add(listMap);
-	// }
-	// return listsMap;
-	// }
 
 	/**
 	 * 获取当前时间的发电/用电总量
@@ -587,8 +547,7 @@ public class ElecDataHourService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))))) {
 				recordTimeWork.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
-				logger.info("----------------------------------时间:" + Integer
-						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+				
 			}
 			
 		}
@@ -598,17 +557,11 @@ public class ElecDataHourService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))))) {
 				recordTimeUse.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
-				logger.info("----------------------------------时间:" + Integer
-						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+				
 			}
 			
 		}
-//		for (ElecDataHour ElecDataHour : ElecDataHourWork) {
-//			recordTimeWork.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
-//		}
-//		for (ElecDataHour ElecDataHour : ElecDataHourUse) {
-//			recordTimeUse.add(Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(ElecDataHour.getRecordTime()))));
-//		}
+
 		for (int i = 0; i <= num; i++) {
 			if (!recordTimeWork.contains(i)) {
 				Map<String, Object> map = new HashMap<>();
@@ -709,8 +662,7 @@ public class ElecDataHourService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))))) {
 				recordTimeList.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
-				logger.info("----------------------------------时间:" + Integer
-						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+				
 			}
 			
 		}
