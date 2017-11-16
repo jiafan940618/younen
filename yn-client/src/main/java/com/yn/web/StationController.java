@@ -172,17 +172,13 @@ public class StationController {
 	@ResponseBody
 	@RequestMapping(value = "/runStations", method = { RequestMethod.POST, RequestMethod.GET })
 	public Object runStations(HttpSession session, Station station, HttpServletRequest request,long userId) {
-		 //User newuser = SessionCache.instance().getUser();
-		// NewUserVo userVo = (NewUserVo)session.getAttribute("userVo");
-		//Long userId=userDao.findByToken(newuser.getToken());
-		//String token = request.getHeader("token");
 		Map<String, Object> stationByUser = new HashMap<>();
 		
 		
 			if (userId!=0) {
 				List<Station> stations = stationDao.findByUserId(userId);
 				
-				if (stations!=null) {
+				if (stations!=null&&stations.size()>0) {
 					stationByUser = stationService.stationByUser(stations);
 				} else {
 					List<Station> stationAll = stationDao.findAllStation();
@@ -198,32 +194,6 @@ public class StationController {
 		return ResultVOUtil.success(stationByUser);
 	}
 
-	// /**
-	// * web 查询用户的装机容量
-	// */
-	// @ResponseBody
-	// @RequestMapping(value = "/checkCapacity",method = {RequestMethod.POST,
-	// RequestMethod.GET})
-	// public Object checkCapacity(HttpSession session,Station station) {
-	//
-	// NewUserVo userVo=(NewUserVo)session.getAttribute("user");
-	// List<Map<Object, Object>> capacityAll=new ArrayList<>();
-	//
-	// if (userVo!=null ) {
-	// station.setUserId(userVo.getId());
-	// if (stationDao.findByUserId(station.getUserId())!=null) {
-	// List<Station> stations=stationDao.findByUserId(station.getUserId());
-	// capacityAll = stationService.checkCapacity(stations);
-	// }else{
-	// List<Station> stations=stationDao.findAllStation();
-	// capacityAll = stationService.checkCapacity(stations);
-	// }
-	// }else{
-	// List<Station> stations=stationDao.findAllStation();
-	// capacityAll = stationService.checkCapacity(stations);
-	// }
-	// return ResultVOUtil.success(capacityAll);
-	// }
 
 	/**
 	 * web 查询用户的装机容量

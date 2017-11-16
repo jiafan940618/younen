@@ -78,18 +78,7 @@ public class ElecDataHourController {
 		return ResultVOUtil.success(findOne);
 	}
 
-	// @RequestMapping(value = "/findAll", method = {RequestMethod.POST,
-	// RequestMethod.GET})
-	// @ResponseBody
-	// public Object findAll(TemStationVo temStationVo, Integer pageIndex) {
-	// ElecDataHour temStation = new ElecDataHour();
-	// BeanCopy.copyProperties(temStationVo, temStation);
-	// temStation.setdAddr(temStationVo.getD_addr());
-	// PageHelper.startPage( pageIndex==null?1:pageIndex , 15 );
-	// List<ElecDataHour> list = elecDataHourService.findByMapper(temStation);
-	// PageInfo<ElecDataHour> pageInfo=new PageInfo<>(list);
-	// return ResultVOUtil.success(pageInfo);
-	// }
+	
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object findAll(ElecDataHourVo elecDataHourVo,
