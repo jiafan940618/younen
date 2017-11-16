@@ -523,7 +523,7 @@ public class StationService {
 			Object[] obj = (Object[]) object;
 
 			Integer s_id = (Integer) obj[0];
-			String stationName = (String) obj[1];
+			String linkMan = (String) obj[1];
 			Integer user_id = (Integer) obj[2];
 			BigDecimal capacity = (BigDecimal) obj[3];
 			Integer status = (Integer) obj[4];
@@ -554,7 +554,7 @@ public class StationService {
 
 			StationVo stationVo = new StationVo();
 			stationVo.setId(s_id.longValue());
-			stationVo.setStationName(stationName);
+			stationVo.setStationName(linkMan);
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);

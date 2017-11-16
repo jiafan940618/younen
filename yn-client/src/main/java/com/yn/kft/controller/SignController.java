@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.BillOrder;
+import com.yn.model.User;
 import com.yn.service.BillOrderService;
 import com.yn.service.BillWithdrawalsService;
 import com.yn.service.OrderService;
@@ -27,6 +28,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.kftService.KFTpayService;
 import com.yn.service.kftService.PyOrderService;
 import com.yn.service.kftService.SignService;
+import com.yn.session.SessionCache;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
 import com.yn.vo.BillOrderVo;
@@ -64,6 +66,14 @@ public class SignController {
 		/** 传过来的参数为 payWay,channel,userId,balancePrice,money*/
 		public Object doOnline(HttpServletRequest request,HttpSession session,BillOrderVo billOrderVo){
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
+			
+			 User newuserVo = SessionCache.instance().getUser();
+			  	
+			  	if(null == newuserVo){
+			  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+			  	}
+			  	
+			  	billOrderVo.setUserId(newuserVo.getId());
 
 			/*billOrderVo.setMoney(new BigDecimal("0.01"));
 			billOrderVo.setPayWay(4);

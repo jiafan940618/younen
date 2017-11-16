@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.BillOrder;
 import com.yn.model.Recharge;
+import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BillOrderService;
@@ -29,6 +30,7 @@ import com.yn.service.TransactionRecordService;
 import com.yn.service.WalletService;
 import com.yn.service.kftService.RechargeService;
 import com.yn.service.kftService.SignService;
+import com.yn.session.SessionCache;
 import com.yn.utils.CashierSignUtil;
 import com.yn.utils.Constant;
 import com.yn.vo.RechargeVo;
@@ -66,7 +68,13 @@ public class RechargeController {
 		@RequestMapping(value="/rechargeOnline")
 		/** 传过来的参数为 payWay,userId,money*/
 		public Object doOnline(HttpServletRequest request,HttpSession session,RechargeVo rechargeVo){
-
+			 User newuserVo = SessionCache.instance().getUser();
+			  	
+			  	if(null == newuserVo){
+			  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+			  	}
+			  	
+			  	rechargeVo.setUserId(newuserVo.getId());
 			/*** [支付方式]{0:手动录入,1:余额支付,2:微信,3:支付宝,4:银联,5:快付通}'*/
 			/*rechargeVo.setUserId(1L);
 			rechargeVo.setPayWay(2);

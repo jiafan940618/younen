@@ -16,6 +16,7 @@ import com.lycheepay.gateway.client.dto.gbp.TreatyApplyResultDTO;
 import com.lycheepay.gateway.client.dto.gbp.TreatyConfirmResultDTO;
 import com.yn.model.BankCard;
 import com.yn.model.BankCode;
+import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.service.BankCardService;
 import com.yn.service.BankCodeService;
@@ -25,6 +26,7 @@ import com.yn.service.WalletService;
 import com.yn.service.kftService.CheckBankCard;
 import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
@@ -66,6 +68,13 @@ public class PayOrderAction {
 	@ResponseBody
 	@RequestMapping(value="/bind")
 	public  Object getBindIng(BillOrderVo billOrderVo){
+		User newuserVo = SessionCache.instance().getUser();
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+	  	}
+	  	
+	  	billOrderVo.setUserId(newuserVo.getId());
 		
 		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
 		
@@ -95,6 +104,14 @@ public class PayOrderAction {
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		billOrderVo.setMoney(xmoney);
 		bankCardVo.setTreatyId("21000000000773");*/
+		User newuserVo = SessionCache.instance().getUser();
+	  	
+	  	if(null == newuserVo){
+	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+	  	}
+	  	
+	  	billOrderVo.setUserId(newuserVo.getId());
+		
 		BigDecimal xmoney = BigDecimal.valueOf(100);
 		DecimalFormat   df   =new DecimalFormat("#");
 		
@@ -146,16 +163,13 @@ public class PayOrderAction {
 	@RequestMapping(value="/bindingCard")
 	public  Object getBindcard(BankCardVo bankCardVo){
 		
-		/*bankCardVo.setBankCardNum("6212262201023557228");
-		bankCardVo.setBankId(5);
-		bankCardVo.setBankNo("1051000");
-		bankCardVo.setIdCardNum("410526199307147372");
-		bankCardVo.setPhone("18317829893");
-		bankCardVo.setRealName("bankCardVo");
-		bankCardVo.setTreatyType("11"); 
-		
-		bankCardVo.setUserId(1L);*/
-		
+		 User newuserVo = SessionCache.instance().getUser();
+		  	
+		  	if(null == newuserVo){
+		  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		  	}
+		  	
+		  	bankCardVo.setUserId(newuserVo.getId());
 		
 		
 		/** 测试数据*/
@@ -289,6 +303,14 @@ public class PayOrderAction {
 	@RequestMapping(value="/selectbank")
 	public Object getbank(BillOrderVo billOrderVo){
 	//	billOrderVo.setUserId(3l);
+		 User newuserVo = SessionCache.instance().getUser();
+		  	
+		  	if(null == newuserVo){
+		  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		  	}
+		  	
+		  	billOrderVo.setUserId(newuserVo.getId());
+		
 		
 		logger.info("---------- ------------ --------查找的userId:"+billOrderVo.getUserId());
 		
@@ -323,6 +345,15 @@ public class PayOrderAction {
 		rechargeVo.setUserId(3l);
 		bankCardVo.setTreatyId("21000000000773");
 		rechargeVo.setPayWay(5);*/
+		
+		 User newuserVo = SessionCache.instance().getUser();
+		  	
+		  	if(null == newuserVo){
+		  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		  	}
+		  	
+		  	rechargeVo.setUserId(newuserVo.getId());
+		
 		Wallet wallet = walletService.findWalletByUser(rechargeVo.getUserId());
 		rechargeVo.setWalletId(wallet.getId());
 		rechargeVo.setRechargeCode(serverService.getOrderCode(rechargeVo.getWalletId()));
@@ -358,10 +389,4 @@ public class PayOrderAction {
 		
 		return ResultVOUtil.error(777, "没有协议号!");
 	}
-	
-	
-	
-	
-	
-
 }
