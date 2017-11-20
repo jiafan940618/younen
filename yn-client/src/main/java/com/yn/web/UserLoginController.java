@@ -1,7 +1,12 @@
 package com.yn.web;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +27,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,17 +36,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
 import com.yn.dao.DevideDao;
 import com.yn.dao.UserDao;
+import com.yn.dao.Excel.WebDto;
 import com.yn.model.User;
 import com.yn.service.DevideService;
 import com.yn.service.OssService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.UserService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.Constant;
+import com.yn.utils.ExcelUtil;
 import com.yn.utils.MD5Util;
 import com.yn.utils.RandomUtil;
 import com.yn.utils.ResultData;
@@ -51,6 +59,15 @@ import com.yn.utils.RongLianSMS;
 public class UserLoginController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
+	
+	@Value("${userheadImg}")
+	private String userheadImg;
+	
+	@Value("${userUpload}")
+	private String userUpload;
+	
+	@Value("${serverUpload}")
+	private String serverUpload;
 	
 	@Autowired
 	private OssService oss;
@@ -64,6 +81,8 @@ public class UserLoginController {
     private UserService userService;
 	@Autowired
     UserDao userDao;
+	@Autowired
+	SystemConfigService systemConfigService;
 
 	    @RequestMapping(value = "/login")
 	    @ResponseBody
@@ -554,7 +573,7 @@ public class UserLoginController {
 		  
 		  String realpath = "/opt/Test";
 		  /** 测试路径*/
-		//  String realpath ="D://Software//huo";
+		  String upload = systemConfigService.get("server_upload");
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  
@@ -572,7 +591,7 @@ public class UserLoginController {
 	                ResultData<Object>  data =  userService.getresult(file);
 	                
 	                if(data.getCode() == 200){
-	                	 finaltime  =  oss.upload(file, realpath);
+	                	 finaltime  =  oss.upload(file, realpath,upload);
 
 	 	                /** 取得文件以后得把文件保存在本地路径*/
 	 	              
@@ -620,7 +639,7 @@ public class UserLoginController {
 		  
 		  String realpath = "/opt/Test";
 		  /** 测试路径*/
-	 // String realpath ="D://Software//huo";
+		  String upload = systemConfigService.get("server_upload");
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  
@@ -639,7 +658,7 @@ public class UserLoginController {
 	              logger.info("----- - ----- --- 返回的号码为："+data.getCode());
 	                
 	                if(data.getCode() == 200){
-	                	 finaltime  =  oss.upload(file, realpath);
+	                	 finaltime  =  oss.upload(file, realpath,upload);
 
 	 	                /** 取得文件以后得把文件保存在本地路径*/
 	 	              
@@ -684,8 +703,8 @@ public class UserLoginController {
 		 ResultData<Object>	  data =null;
 		
 		 String realpath = "/opt/Test";
-		 /** 测试路径*/
-		 // String realpath ="D://Software//huo";
+		 /** 上传路径*/
+		 String upload = systemConfigService.get("user_head_img");
 		 
 		 logger.info(" ---- ----- ----- ----- 路径为："+realpath);
 		 
@@ -704,7 +723,7 @@ public class UserLoginController {
 			  /** 如果上传的图片符合大小与尺寸则执行*/
 			  if(data.getCode() == 200){
 			  
-			 finaltime  =  oss.upload(file, realpath);
+			 finaltime  =  oss.upload(file, realpath,upload);
 				 if(finaltime.equals("102") ){
 					 System.out.println(finaltime);
 						 
@@ -736,6 +755,31 @@ public class UserLoginController {
 
 		return  result;
 	   }
+	 
+	  /** 导出Excel*/
+	    @ResponseBody
+		@RequestMapping(value="/excelupl")
+		public  Object getBindIng() throws FileNotFoundException{
+			
+			List<WebDto> list = new ArrayList<WebDto>();
+	        list.add(new WebDto("知识林", "http://www.zslin.com", "admin", "111111", 555));
+	        list.add(new WebDto("权限系统", "http://basic.zslin.com", "admin", "111111", 111));
+	        list.add(new WebDto("校园网", "http://school.zslin.com", "admin", "222222", 333));
+
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+	        
+	        String date = sdf.format(new Date());
+	        
+	        Map<String, String> map = new HashMap<String, String>();
+	        map.put("title", "网站信息表");
+	        map.put("total", list.size()+" 条");
+	        map.put("date", date);
+
+	        ExcelUtil.getInstance().exportObj2ExcelByTemplate(map, "web-info-template.xls", new FileOutputStream("D:/temp/out.xls"),
+	                list, WebDto.class, true);
+
+			return null;
+		}
 
 
 }

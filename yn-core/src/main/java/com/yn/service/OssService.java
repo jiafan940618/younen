@@ -32,7 +32,7 @@ public class OssService {
 		if (files != null && files.size() > 0) {
 			saveToOsss = new String[files.size()];
 			for (int i = 0; i < files.size(); i++) {
-				String saveToOss = upload(files.get(i), realpath);
+				String saveToOss = upload(files.get(i), realpath,"img/");
 				saveToOsss[i] = saveToOss;
 			}
 		}
@@ -45,7 +45,7 @@ public class OssService {
 	/**
 	 * 图片保存oos
 	 */
-	public String upload(MultipartFile file, String realpath) {
+	public String upload(MultipartFile file, String realpath,String upload) {
 		String path = null;
 		String operatePath = null;
 		String type = null;
@@ -86,26 +86,13 @@ public class OssService {
 				e.printStackTrace();
 			}
 
-			/*try {
-				BufferedImage bufferedImage = ImageIO.read(localFile);
-				int width = bufferedImage.getWidth();
-				int height = bufferedImage.getHeight();
-				int a = width > height ? height : width;
-				if(a > 500) {
-					Thumbnails.of(localFile).sourceRegion(Positions.CENTER, a, a).size(500, 500).keepAspectRatio(false).toFile(operatePath);
-				} else {
-					Thumbnails.of(localFile).sourceRegion(Positions.CENTER, a, a).size(a, a).keepAspectRatio(false).toFile(operatePath);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
-//			res = uploadOss("img/" + operateName, operatePath);
-			res = uploadOss("img/" + operateName, path);
+			
+			res = uploadOss(upload + operateName, path);
 		} else {
 			return "101";
 		}
 		if (res == 1)
-			return "http://oss.u-en.cn" + "/img/" + operateName;//res == 0 ? "上传失败" : "上传成功";
+			return "http://oss.u-en.cn/" + upload + operateName;//res == 0 ? "上传失败" : "上传成功";
 		return  "102";
 	}
 	
@@ -125,6 +112,7 @@ public class OssService {
 			
 			client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 			logger.info("--- ---- ---- ---- --- ---- 第1步");
+			/** 参数为bucketName,key,上传url*/
 			client.putObject("uen", key, new File(localFilePath));
 			logger.info("--- ---- ---- ---- --- ---- 第2步");
 			res = 1;
@@ -142,7 +130,7 @@ public class OssService {
 			        throw e2;
 			}
 		}
-		System.out.println("done");
+	
 		return res;
 	}
 

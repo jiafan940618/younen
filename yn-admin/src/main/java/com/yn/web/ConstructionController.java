@@ -19,6 +19,7 @@ import com.yn.model.Construction;
 import com.yn.service.ConstructionService;
 import com.yn.service.DevideService;
 import com.yn.service.OssService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.UserService;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
@@ -39,6 +40,8 @@ public class ConstructionController {
     private UserService userService;
 	@Autowired
 	ConstructionService constructionService;
+	@Autowired
+	SystemConfigService systemConfigService;
 	
 	
 	/** 后台添加首页施工类别*/
@@ -63,6 +66,15 @@ public class ConstructionController {
 		 return ResultVOUtil.success();
 	}
 	
+	@ResponseBody
+    @RequestMapping(value = "/getSession")
+    public Object sessiontion(String propertyValue,HttpSession httpSession) throws Exception {
+		
+		httpSession.setAttribute("propertyValue", propertyValue);
+		
+		return ResultVOUtil.success();
+	}
+	
 	
 	
 	/** 上传图片以后的处理,只能一种一种类型的多文件，不然会出现问题*/ 
@@ -72,9 +84,12 @@ public class ConstructionController {
 		  request.setCharacterEncoding("UTF-8");
 		
 	  String finaltime =null;
+	  
+	 String propertyValue =(String) session.getAttribute("propertyValue");
 		  
 		  String realpath = "/opt/Test";
 		  /** 测试路径*/
+		  String upload = systemConfigService.get("propertyValue");
 		//创建一个通用的多部分解析器  
 	        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 	        //判断 request 是否有文件上传,即多部分请求  
@@ -92,7 +107,7 @@ public class ConstructionController {
 	                ResultData<Object>  data =  userService.getresult(file);
 	                
 	                if(data.getCode() == 200){
-	                	 finaltime  =  oss.upload(file, realpath);
+	                	 finaltime  =  oss.upload(file, realpath,upload);
 
 	 	                /** 取得文件以后得把文件保存在本地路径*/
 	 	              

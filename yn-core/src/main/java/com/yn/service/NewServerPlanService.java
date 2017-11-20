@@ -475,7 +475,7 @@ public class NewServerPlanService {
 	         /** 服务费*/
 	        order.setFactoragePrice(0.0);
 	         /** 装机容量*/
-	      //  order.setCapacity(user.getCapacity());
+	     //  order.setCapacity(user.getCapacity());
 	        /** 状态*/
 	        order.setStatus(3);
 	        order.setGridConnectedIsPay(1);

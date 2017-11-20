@@ -51,6 +51,7 @@ import com.yn.service.OssService;
 import com.yn.service.ServerPlanService;
 import com.yn.service.ServerService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.UploadPhotoService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
@@ -110,6 +111,8 @@ public class OrderController {
 	ApolegamyService apolegamyService;
 	@Autowired
 	private OrderMapper orderMapper;
+	@Autowired
+	SystemConfigService systemConfigService;
 
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
@@ -738,6 +741,9 @@ public class OrderController {
 		String realpath = "/opt/UpaloadImg";
 		/** 测试路径 */
 		// String realpath ="D://Software//huo";
+		
+		String upload = systemConfigService.get("user_upload");
+		
 		// 创建一个通用的多部分解析器
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
 				request.getSession().getServletContext());
@@ -756,7 +762,7 @@ public class OrderController {
 				ResultData<Object> data = userService.getresult(file);
 
 				if (data.getCode() == 200) {
-					finaltime = oss.upload(file, realpath);
+					finaltime = oss.upload(file, realpath,upload);
 
 					/** 取得文件以后得把文件保存在本地路径 */
 

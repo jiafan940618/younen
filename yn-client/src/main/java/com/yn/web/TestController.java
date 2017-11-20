@@ -102,9 +102,9 @@ public class TestController {
 	       public Object helloJsp01(UserVo userVo){  
 	    	  
 	    	   
-	    	 User user =  userservice.findByPhoneOrAccountOrEamil("271029459@qq.com");
+	    	String upload =  systemConfigService.get("user_upload");
 	     
-	   		return ResultVOUtil.success(user);
+	   		return ResultVOUtil.success(upload);
 	        
 	       } 
 	       
