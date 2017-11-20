@@ -526,7 +526,7 @@ public class ElecDataHourService {
 		List<Map<String, Object>> listArrayWork= new ArrayList<>();
 		List<Map<String, Object>> listArrayUse = new ArrayList<>();
 		Date[] todaySpace = DateUtil.getTodaySpace();
-		Date now=new Date();
+		Date now=DateUtil.lastHour();
 		Date startTime = todaySpace[0];
 		Date endTime = todaySpace[1];
 		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
@@ -643,7 +643,7 @@ public class ElecDataHourService {
 		List<Map<String, Object>> listArray = new ArrayList<>();
 		Map<String, Object> maps = new HashMap<>();
 		Date[] todaySpace = DateUtil.getTodaySpace();
-		Date now=new Date();
+		Date now=DateUtil.lastHour();
 		Date startTime = todaySpace[0];
 		Date endTime = todaySpace[1];
 		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
@@ -681,7 +681,7 @@ public class ElecDataHourService {
 				Map<String, Object> map = new HashMap<>();
 				map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
 				map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
-				map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
+				map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
 				list.add(map);		
 			}
 		for (int i = 0; i < list.size(); i++) {
