@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 // @MapperScan("com.cj.dao.mapper")
 @EnableScheduling
 public class Application {
-
-	public static void main(String[] args) throws IOException {
+ 
+	public static void main(String[] args) throws IOException { 
 		SpringApplication springApplication = new SpringApplication(Application.class);
 		springApplication.addListeners(new ApplicationStartup());
 		springApplication.run(args);

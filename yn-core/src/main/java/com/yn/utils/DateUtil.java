@@ -402,7 +402,7 @@ public class DateUtil {
 	 * 
 	    * @Title: parseDate
 	    * @Description: TODO(返回一个具体的日期)
-	    *  eg：20170631
+	    *  eg：2017_06_31
 	    * @param @param y 年
 	    * @param @param m 月
 	    * @param @param d 日
