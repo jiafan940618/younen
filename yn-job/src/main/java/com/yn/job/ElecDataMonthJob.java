@@ -47,8 +47,8 @@ public class ElecDataMonthJob {
 
 	public ElecDataMonthJob() {
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/ElecDataMonthJob.log"),true));
-//			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/ElecDataMonthJob.log"),true));
+			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

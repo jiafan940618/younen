@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 @Entity
@@ -111,8 +112,29 @@ public class AmPhaseRecord implements Serializable{
 	private Double cKwhTotal;
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[是否已经处理]{0:未处理,1:已经处理}'")
 	private Integer dealt;
+	@Column(columnDefinition = "datetime default null comment '[记录时间]'")
+    private Date recordTime;
+	@Column(columnDefinition = "int(1)  default null comment '[用发电类型]'")
+    private Integer type;
 	
 	
+	
+	public Date getRecordTime() {
+		return recordTime;
+	}
+
+	public void setRecordTime(Date recordTime) {
+		this.recordTime = recordTime;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
 	/**
 	 * 时间：2010_10_10
 	 */

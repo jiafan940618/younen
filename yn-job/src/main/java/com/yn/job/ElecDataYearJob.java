@@ -45,8 +45,8 @@ public class ElecDataYearJob {
 	private static PrintStream out;
 	public ElecDataYearJob(){
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/ElecDataYearJob.log"),true));
-//			mytxt = new PrintStream("./elecDataYearJobLog.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/ElecDataYearJob.log"),true));
+			mytxt = new PrintStream("./elecDataYearJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

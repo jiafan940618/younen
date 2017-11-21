@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.yn.dao.StationDao;
@@ -36,14 +35,15 @@ public class NowKwJob {
 	private static PrintStream out;
 	public NowKwJob(){
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/NowKwJob.log"),true));
-//			mytxt = new PrintStream("./nowKwJobLog.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/NowKwJob.log"),true));
+			mytxt = new PrintStream("./nowKwJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Scheduled(fixedDelay = 10 * 1000)
+//	@Scheduled(fixedDelay = 10 * 1000)
+	@SuppressWarnings("unused")
 	private void job() {
 		// 设置日志文件输出路径。
 		out = System.out;
