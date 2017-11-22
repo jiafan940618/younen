@@ -382,7 +382,8 @@ public class ElecDataDayService {
 	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
      	Map<String, Object> maps = new HashMap<>();
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		Date endStart = new Date();
+		Date [] dateYesterday = DateUtil.getYesterdaySpace();
+		Date endStart=dateYesterday[1];
 		// 获取每天的发电详情
 		List<Map<String, Object>> dayInfo = dayInfo(ammeterCodes, type);
 		if (type == 1) {
@@ -427,7 +428,8 @@ public class ElecDataDayService {
 	public List<Map<String, Object>> dayInfo(List<Long> ammeterCodes, Integer type)
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listDay = new ArrayList<>();
-		Date endStart = new Date();
+		Date [] dateYesterday = DateUtil.getYesterdaySpace();
+		Date endStart=dateYesterday[1];
 		Date[] todaySpace = DateUtil.getThisMonthSpace();
 		Date dayStartTime = todaySpace[0];
 		String dayStart = new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
@@ -481,7 +483,8 @@ public class ElecDataDayService {
 	public List<Map<String, Object>> monthInfo(List<Long> ammeterCodes, Integer type)
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listMonth = new ArrayList<>();
-		Date endStart = new Date();
+		Date [] dateYesterday = DateUtil.getYesterdaySpace();
+		Date endStart=dateYesterday[1];
 		Date[] monthSpace = DateUtil.getThisYearSpace();
 		Date monthStartTime = monthSpace[0];
 		String monthStart = new SimpleDateFormat("yyyy-MM").format(monthStartTime);
