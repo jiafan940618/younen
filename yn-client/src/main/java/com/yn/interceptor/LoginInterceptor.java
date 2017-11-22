@@ -71,7 +71,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 }
             }else{
             	  
-            	// return true;
+
             	throw new MyException(5003, Constant.NO_LOGIN);
             }
 

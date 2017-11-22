@@ -510,4 +510,15 @@ public class DateUtil {
 		System.out.println(date[1]);
 		return date;
 	}
+	/**
+	 * 获取当上一小时的时间点
+	 */
+	public static Date lastHour() {
+		
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.HOUR, -1);
+		now.set(Calendar.MINUTE, 59);
+		now.set(Calendar.SECOND, 59);
+		return now.getTime();
+	}
 }

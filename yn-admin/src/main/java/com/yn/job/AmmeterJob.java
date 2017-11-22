@@ -83,7 +83,6 @@ public class AmmeterJob {
     private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         ammeterRecord.setcAddr(ammeter.getcAddr());
-        //ammeterRecord.setdAddr(ammeter.getdAddr());
         ammeterRecord.setdType(ammeter.getdType());
         ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
         if (ammeter.getStation() != null) {

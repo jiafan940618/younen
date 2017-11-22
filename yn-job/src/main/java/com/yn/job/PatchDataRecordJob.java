@@ -101,8 +101,8 @@ public class PatchDataRecordJob {
 
 	public PatchDataRecordJob() {
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/patchDataRecordJobLog.log"),true));
-//			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/patchDataRecordJobLog.log"),true));
+			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -235,6 +235,7 @@ public class PatchDataRecordJob {
 		ammeter.setNowKw(apr.getKw());
 		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
+		ammeter.setUpdateDtm(new Date());
 		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
 		if (findOne != null) {
 			ammeterMapper.updateByPrimaryKeySelective(ammeter);

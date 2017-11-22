@@ -109,7 +109,7 @@
 		</if>
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.TaskExecuteRecord">
-		insert into
+		insert into 
 		task_execute_record (id, end_date, status,
 		job_name)
 		values

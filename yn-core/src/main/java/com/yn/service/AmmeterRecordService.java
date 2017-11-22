@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,7 @@ import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 
+
 @Service
 public class AmmeterRecordService {
 	@Autowired
@@ -56,16 +58,21 @@ public class AmmeterRecordService {
 	}
 
 	public void saveByMapper(AmmeterRecord ammeterRecord) {
-		if (ammeterRecord.getId() != null) {
-			AmmeterRecord one = ammeterRecordDao.findOne(ammeterRecord.getId());
+		ammeterRecord.setQueryStartDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		ammeterRecord.setQueryEndDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		AmmeterRecord one = findOne(ammeterRecord);
+		if (one != null) {
 			try {
 				BeanCopy.beanCopy(ammeterRecord, one);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			one.setUpdateDtm(new Date());
 			ammeterRecordMapper.updateByPrimaryKeySelective(one);
 			System.out.println("AmmeterJob--> AmmeterRecord更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		} else {
+			ammeterRecord.setUpdateDtm(new Date());
+			ammeterRecord.setCreateDtm(new Date());
 			ammeterRecordMapper.insert(ammeterRecord);
 			System.out.println("AmmeterJob--> AmmeterRecord新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}
@@ -132,11 +139,11 @@ public class AmmeterRecordService {
 			String queryEndDtm = ammeterRecord.getQueryEndDtm();
 			if (!StringUtils.isEmpty(queryStartDtm)) {
 				expressions.add(cb.greaterThanOrEqualTo(root.get("createDtm"),
-						DateUtil.parseString(queryStartDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+						DateUtil.parseString(queryStartDtm,"yyyy-MM-dd")));
 			}
 			if (!StringUtils.isEmpty(queryEndDtm)) {
 				expressions.add(cb.lessThan(root.get("createDtm"),
-						DateUtil.parseString(queryEndDtm, DateUtil.yyyy_MM_dd_HHmmss)));
+						DateUtil.parseString(queryEndDtm, "yyyy-MM-dd")));
 			}
 
 			return conjunction;
