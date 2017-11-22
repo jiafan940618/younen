@@ -117,8 +117,18 @@ public class AmPhaseRecord implements Serializable{
 	@Column(columnDefinition = "int(1)  default null comment '[用发电类型]'")
     private Integer type;
 	
+	@Transient
+    private String table;
 	
 	
+	public String getTable() {
+		return table;
+	}
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+
 	public Date getRecordTime() {
 		return recordTime;
 	}

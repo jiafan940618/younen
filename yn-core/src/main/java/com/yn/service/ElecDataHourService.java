@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,6 +19,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.jpa.criteria.predicate.NegatedPredicateWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +29,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yn.dao.AmPhaseRecordDao;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataHourDao;
 import com.yn.dao.StationDao;
+import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.dao.mapper.ElecDataHourMapper;
+import com.yn.model.AmPhaseRecord;
 import com.yn.model.Ammeter;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
@@ -59,6 +64,9 @@ public class ElecDataHourService {
 	ElecDataDayMapper elecDataDayMapper;
 	@Autowired
 	SystemConfigService systemConfigService;
+	@Autowired
+	AmPhaseRecordMapper amPhaseRecordMapper;
+	
 
 	/**
 	
@@ -637,72 +645,371 @@ public class ElecDataHourService {
 	 * 移动端获取当前时间段的用电发电数据
 	 * @throws ParseException 
 	 */
-	public Map<String, Object> getMomentPower(Long stationId, Integer type) throws ParseException {
-
+//	public Map<String, Object> getMomentPower(Long stationId, Integer type) throws ParseException {
+//
+//		List<Map<String, Object>> list = new ArrayList<>();
+//		List<Map<String, Object>> listArray = new ArrayList<>();
+//		Map<String, Object> maps = new HashMap<>();
+//		Date[] todaySpace = DateUtil.getTodaySpace();
+//		Date now=DateUtil.lastHour();
+//		Date startTime = todaySpace[0];
+//		Date endTime = todaySpace[1];
+//		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
+//		String end=new SimpleDateFormat("yyyy-MM-dd HH").format(endTime);
+//		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
+//		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+//		Object[] ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
+//				start, end);
+//		String nowTime=dFormat.format(now);
+//		Integer num= Integer.parseInt(nowTime);
+//		List<Integer> recordTimeList=new ArrayList<>();
+//		
+//		for (Object ElecDataHour : ElecDataHourList) {
+//			Object[] objects = (Object[]) ElecDataHour;
+//			if (!recordTimeList.contains(
+//					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))))) {
+//				recordTimeList.add(
+//						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+//				
+//			}
+//			
+//		}
+//		
+//		for (int i = 0; i <= num; i++) {
+//			if (!recordTimeList.contains(i)) {
+//				Map<String, Object> map = new HashMap<>();
+//				map.put("time", i);
+//				map.put("kwh", 0.00);
+//				map.put("kw", 0.00);
+//				list.add(map);
+//			}
+//		}
+//		for (Object ElecDataHour : ElecDataHourList) {
+//			Object[] objects = (Object[]) ElecDataHour;
+//				Map<String, Object> map = new HashMap<>();
+//				map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+//				map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
+//				map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
+//				list.add(map);		
+//			}
+//		for (int i = 0; i < list.size(); i++) {
+//			for	(Map<String, Object> mapObject:list ){
+//				if (i==(int)mapObject.get("time")) {
+//					listArray.add(mapObject);
+//				}
+//			}
+//		}
+//		double todayKwh = elecDataHourDao.sumKwhByAmmeterCodes(start, end, type, ammeterCodes);
+//
+//		if (type == 1) {
+//			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
+//			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
+//			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
+//		}
+//		maps.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh));
+//		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(ammeterDao.nowKw(stationId)));
+//
+//		maps.put("list", listArray);
+//		return maps;
+//	}
+	
+	/**
+	 * 移动端获取当前时间段的用电发电数据
+	 * @throws ParseException 
+	 */
+	public Map<String, Object> getMomentPower(Long stationId, Integer type) {
+		Map<String, Object> maps=new HashMap<>();
+		Map<String, Object> objectAmPhaseRecord=new HashMap<>();
 		List<Map<String, Object>> list = new ArrayList<>();
 		List<Map<String, Object>> listArray = new ArrayList<>();
-		Map<String, Object> maps = new HashMap<>();
-		Date[] todaySpace = DateUtil.getTodaySpace();
-		Date now=DateUtil.lastHour();
-		Date startTime = todaySpace[0];
-		Date endTime = todaySpace[1];
-		String start=new SimpleDateFormat("yyyy-MM-dd HH").format(startTime);
-		String end=new SimpleDateFormat("yyyy-MM-dd HH").format(endTime);
-		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		Object[] ElecDataHourList = elecDataHourDao.findByAmmeterCodes(ammeterCodes, type,
-				start, end);
-		String nowTime=dFormat.format(now);
-		Integer num= Integer.parseInt(nowTime);
+		//String table="am_phase_record_2017_11_18" ; //+new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+		String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		Date startTime = todaySpace[0];
+		String start=new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(startTime);
+		String end=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+//		String start="2017-11-18 00:00:00";
+//		String end="2017-11-18 23:59:59";
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
+		Integer num= Integer.parseInt(dFormat.format(new Date()));
 		List<Integer> recordTimeList=new ArrayList<>();
 		
-		for (Object ElecDataHour : ElecDataHourList) {
-			Object[] objects = (Object[]) ElecDataHour;
-			if (!recordTimeList.contains(
-					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))))) {
-				recordTimeList.add(
-						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
+		List<AmPhaseRecord> AmPhaseRecordList=new ArrayList<>();
+		if (type==1) {
+			Map<String, Object> map1=new HashMap<>();
+			map1.put("start", start);
+			map1.put("type", 1);
+			map1.put("end", end);
+			map1.put("table", table);
+			map1.put("ammeterCodes", ammeterCodes);
+			List<AmPhaseRecord> AmPhaseRecordList01=amPhaseRecordMapper.findByAmmeterCodes(map1);
+			List<AmPhaseRecord> AmPhaseRecordList1=new ArrayList<>();
+			Map<String, Object> map2=new HashMap<>();
+			map2.put("start", start);
+			map2.put("type", 11);
+			map2.put("end", end);
+			map2.put("table", table);
+			map2.put("ammeterCodes", ammeterCodes);
+			List<AmPhaseRecord> AmPhaseRecordList02=amPhaseRecordMapper.findByAmmeterCodes(map2);
+			List<AmPhaseRecord> AmPhaseRecordList2=new ArrayList<>();
+			for (int i = 0; i < AmPhaseRecordList01.size(); i++) {
+				if (i==0) {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList01.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList01.get(i).getKwh()-AmPhaseRecordList01.get(i).getaKwhTotal());
+					AmPhaseRecord.setKw(AmPhaseRecordList01.get(i).getKw());
+					AmPhaseRecordList1.add(AmPhaseRecord);
+				}else {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList01.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList01.get(i).getKwh()-AmPhaseRecordList01.get(i-1).getKwh());
+					AmPhaseRecord.setKw(AmPhaseRecordList01.get(i).getKw());
+					AmPhaseRecordList1.add(AmPhaseRecord);
+				}
+				
+			}
+			for (int i = 0; i < AmPhaseRecordList02.size(); i++) {
+				if (i==0) {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList02.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList02.get(i).getKwh()-AmPhaseRecordList02.get(i).getaKwhTotal());
+					AmPhaseRecord.setKw(AmPhaseRecordList02.get(i).getKw());
+					AmPhaseRecordList1.add(AmPhaseRecord);
+				}else {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList02.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList02.get(i).getKwh()-AmPhaseRecordList02.get(i-1).getKwh());
+					AmPhaseRecord.setKw(AmPhaseRecordList02.get(i).getKw());
+					AmPhaseRecordList2.add(AmPhaseRecord);
+				}
 				
 			}
 			
+			if (AmPhaseRecordList1.size()>0) {
+				for (AmPhaseRecord AmPhaseRecord1 : AmPhaseRecordList1) {
+				     if (!recordTimeList.contains(Integer.parseInt(AmPhaseRecord1.getMeterState()))) {
+					     recordTimeList.add(Integer.parseInt(AmPhaseRecord1.getMeterState()));
+					     objectAmPhaseRecord.put(AmPhaseRecord1.getMeterState(), AmPhaseRecord1);  
+				     }else if (recordTimeList.contains(Integer.parseInt(AmPhaseRecord1.getMeterState()))) {
+				    	 AmPhaseRecord AmPhaseRecord=(AmPhaseRecord)objectAmPhaseRecord.get(AmPhaseRecord1.getMeterState());
+				    	 AmPhaseRecord AmPhaseRecordOne=new AmPhaseRecord();
+				    	 AmPhaseRecordOne.setMeterState(AmPhaseRecord.getMeterState());
+				    	 AmPhaseRecordOne.setKw(AmPhaseRecord.getKw()+AmPhaseRecord1.getKw());
+				    	 AmPhaseRecordOne.setKwh(AmPhaseRecord.getKwh()+AmPhaseRecord1.getKwh());
+				    	 objectAmPhaseRecord.remove(AmPhaseRecord1.getMeterState());
+				    	 objectAmPhaseRecord.put(AmPhaseRecordOne.getMeterState(), AmPhaseRecordOne);
+				     } 
+			    }
+			}
+			if (AmPhaseRecordList2.size()>0) {
+				for (AmPhaseRecord AmPhaseRecord2 : AmPhaseRecordList2) {
+				     if (!recordTimeList.contains(Integer.parseInt(AmPhaseRecord2.getMeterState()))) {
+					     recordTimeList.add(Integer.parseInt(AmPhaseRecord2.getMeterState()));
+					     objectAmPhaseRecord.put(AmPhaseRecord2.getMeterState(), AmPhaseRecord2); 
+				     }else if (recordTimeList.contains(Integer.parseInt(AmPhaseRecord2.getMeterState()))) {
+				    	 AmPhaseRecord AmPhaseRecord=(AmPhaseRecord)objectAmPhaseRecord.get(AmPhaseRecord2.getMeterState());
+				    	 AmPhaseRecord AmPhaseRecordOne=new AmPhaseRecord();
+				    	 AmPhaseRecordOne.setMeterState(AmPhaseRecord.getMeterState());
+				    	 AmPhaseRecordOne.setKw(AmPhaseRecord.getKw()+AmPhaseRecord2.getKw());
+				    	 AmPhaseRecordOne.setKwh(AmPhaseRecord.getKwh()+AmPhaseRecord2.getKwh());
+				    	 objectAmPhaseRecord.remove(AmPhaseRecord2.getMeterState());
+				    	 objectAmPhaseRecord.put(AmPhaseRecordOne.getMeterState(), AmPhaseRecordOne);
+				     } 
+			    }
+			}
+		}else if (type==2) {
+			Map<String, Object> map3=new HashMap<>();
+			map3.put("start", start);
+			map3.put("type", 2);
+			map3.put("end", end);
+			map3.put("table", table);
+			map3.put("ammeterCodes", ammeterCodes);
+			List<AmPhaseRecord> AmPhaseRecordList03=amPhaseRecordMapper.findByAmmeterCodes(map3);
+			List<AmPhaseRecord> AmPhaseRecordList3=new ArrayList<>();
+			for (int i = 0; i < AmPhaseRecordList03.size(); i++) {
+				if (i==0) {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList03.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList03.get(i).getKwh()-AmPhaseRecordList03.get(i).getaKwhTotal());
+					AmPhaseRecord.setKw(AmPhaseRecordList03.get(i).getKw());
+					AmPhaseRecordList3.add(AmPhaseRecord);
+				}else {
+					AmPhaseRecord AmPhaseRecord=new AmPhaseRecord();
+					AmPhaseRecord.setMeterState(AmPhaseRecordList03.get(i).getMeterState());
+					AmPhaseRecord.setKwh(AmPhaseRecordList03.get(i).getKwh()-AmPhaseRecordList03.get(i-1).getKwh());
+					AmPhaseRecord.setKw(AmPhaseRecordList03.get(i).getKw());
+					AmPhaseRecordList3.add(AmPhaseRecord);
+				}
+				
+			}
+			if (AmPhaseRecordList3.size()>0) {
+				for (AmPhaseRecord AmPhaseRecord3 : AmPhaseRecordList3) {
+				     if (!recordTimeList.contains(Integer.parseInt(AmPhaseRecord3.getMeterState()))) {
+					     recordTimeList.add(Integer.parseInt(AmPhaseRecord3.getMeterState()));
+					     objectAmPhaseRecord.put(AmPhaseRecord3.getMeterState(), AmPhaseRecord3); 
+				     }else if (recordTimeList.contains(Integer.parseInt(AmPhaseRecord3.getMeterState()))) {
+				    	 AmPhaseRecord AmPhaseRecord=(AmPhaseRecord)objectAmPhaseRecord.get(AmPhaseRecord3.getMeterState());
+				    	 AmPhaseRecord AmPhaseRecordOne=new AmPhaseRecord();
+				    	 AmPhaseRecordOne.setMeterState(AmPhaseRecord.getMeterState());
+				    	 AmPhaseRecordOne.setKw(AmPhaseRecord.getKw()+AmPhaseRecord3.getKw());
+				    	 AmPhaseRecordOne.setKwh(AmPhaseRecord.getKwh()+AmPhaseRecord3.getKwh());
+				    	 objectAmPhaseRecord.remove(AmPhaseRecord3.getMeterState());
+				    	 objectAmPhaseRecord.put(AmPhaseRecordOne.getMeterState(), AmPhaseRecordOne);
+				     } 
+			    }
+			}
 		}
+		
+		  Set<Map.Entry<String,Object>> entrySet = objectAmPhaseRecord.entrySet();
+	        Iterator<Map.Entry<String,Object>> it = entrySet.iterator();
+
+	        while(it.hasNext())
+	        { 
+	            Map.Entry<String,Object> me = it.next();
+	            AmPhaseRecordList.add((AmPhaseRecord)me.getValue());
+	        }
 		
 		for (int i = 0; i <= num; i++) {
 			if (!recordTimeList.contains(i)) {
-				Map<String, Object> map = new HashMap<>();
-				map.put("time", i);
-				map.put("kwh", 0.00);
-				map.put("kw", 0.00);
-				list.add(map);
+				Map<String, Object> mapNum = new HashMap<>();
+				mapNum.put("time", i);
+				mapNum.put("kwh", 0.00);
+				mapNum.put("kw", 0.00);
+				list.add(mapNum);
 			}
 		}
-		for (Object ElecDataHour : ElecDataHourList) {
-			Object[] objects = (Object[]) ElecDataHour;
-				Map<String, Object> map = new HashMap<>();
-				map.put("time", Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd HH").parse(objects[0].toString()))));
-				map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
-				map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
-				list.add(map);		
-			}
+		for (AmPhaseRecord AmPhaseRecord : AmPhaseRecordList) {
+			Map<String, Object> mapAmPhaseRecord = new HashMap<>();
+			mapAmPhaseRecord.put("time", Integer.parseInt(AmPhaseRecord.getMeterState()));
+			mapAmPhaseRecord.put("kwh", NumberUtil.accurateToTwoDecimal(AmPhaseRecord.getKwh()));
+			mapAmPhaseRecord.put("kw", NumberUtil.accurateToTwoDecimal(AmPhaseRecord.getKw()));
+			list.add(mapAmPhaseRecord);
+		}
 		for (int i = 0; i < list.size(); i++) {
-			for	(Map<String, Object> mapObject:list ){
-				if (i==(int)mapObject.get("time")) {
-					listArray.add(mapObject);
-				}
+		for	(Map<String, Object> mapObject:list ){
+			if (i==(int)mapObject.get("time")) {
+				listArray.add(mapObject);
 			}
 		}
-		double todayKwh = elecDataHourDao.sumKwhByAmmeterCodes(start, end, type, ammeterCodes);
+	}
+		double todayKwh = todayKwhDetail(ammeterCodes, type);
 
 		if (type == 1) {
 			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
 			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
 			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
 		}
+		
 		maps.put("todayKwh", NumberUtil.accurateToTwoDecimal(todayKwh));
-		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(ammeterDao.nowKw(stationId)));
+		maps.put("nowKw", NumberUtil.accurateToTwoDecimal(todayKw(ammeterCodes, type)));
 
 		maps.put("list", listArray);
+		
 		return maps;
 	}
 	
+	/**
+	 * 今日发电/用电
+	 *
+	 * @param stationId
+	 * @param type
+	 * @return
+	 */
+	public double todayKwhDetail(List<Long> ammeterCodes , Integer type) {
+		
+		Date[] todaySpace = DateUtil.getTodaySpace();
+		
+	  String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+//	        String table="am_phase_record_2017_11_18" ;
+//			String start="2017-11-18 00:00:00";
+//			String end="2017-11-18 23:59:59";
+	    
+//		map.put("start", start);
+//		map.put("end", end);
+	  double kwh=0D;
+		if (type==1) {
+			
+			Map<String, Object> map1 =new HashMap<>();
+			map1.put("ammeterCodes", ammeterCodes);
+			map1.put("start", todaySpace[0]);
+			map1.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			map1.put("type", 1);
+			map1.put("table", table);
+			AmPhaseRecord amPhaseRecord1 =amPhaseRecordMapper.todayKwh(map1);
+			if (amPhaseRecord1!=null) {
+				kwh+=amPhaseRecord1.getKwh();
+			}
+			
+			Map<String, Object> map2 =new HashMap<>();
+			map2.put("ammeterCodes", ammeterCodes);
+			map2.put("start", todaySpace[0]);
+			map2.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			map2.put("type", 11);
+			map2.put("table", table);
+			AmPhaseRecord amPhaseRecord2 =amPhaseRecordMapper.todayKwh(map2);
+			if (amPhaseRecord2!=null) {
+				kwh+=amPhaseRecord2.getKwh();
+			}
+		}else if (type==2) {
+			Map<String, Object> map3 =new HashMap<>();
+			map3.put("ammeterCodes", ammeterCodes);
+			map3.put("start", todaySpace[0]);
+			map3.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			map3.put("type", 2);
+			map3.put("table", table);
+			AmPhaseRecord amPhaseRecord3 =amPhaseRecordMapper.todayKwh(map3);
+			if (amPhaseRecord3!=null) {
+				kwh+=amPhaseRecord3.getKwh();
+			}
+		}
+		return kwh;
+	}
+	/**
+	 * 今日发电/用电
+	 *
+	 * @param stationId
+	 * @param type
+	 * @return
+	 */
+ public double todayKw(List<Long> ammeterCodes , Integer type) {
+		
+	  String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+//	        String table="am_phase_record_2017_11_18" ;
+//			String start="2017-11-18 00:00:00";
+//			String end="2017-11-18 23:59:59";
+	    
+//		map.put("start", start);
+//		map.put("end", end);
+	  double kw=0D;
+		if (type==1) {
+			Map<String, Object> map1 =new HashMap<>();
+			map1.put("ammeterCodes", ammeterCodes);
+			map1.put("type", 1);
+			map1.put("table", table);
+			List<AmPhaseRecord> amPhaseRecord1 =amPhaseRecordMapper.nowKw(map1);
+			if (amPhaseRecord1.size()>0) {
+				kw+=amPhaseRecord1.get(amPhaseRecord1.size()-1).getKw();
+			}
+			
+			Map<String, Object> map2 =new HashMap<>();
+			map2.put("ammeterCodes", ammeterCodes);
+			map2.put("type", 11);
+			map2.put("table", table);
+			List<AmPhaseRecord>  amPhaseRecord2 =amPhaseRecordMapper.nowKw(map2);
+			if (amPhaseRecord2.size()>0) {
+				kw+=amPhaseRecord2.get(amPhaseRecord2.size()-1).getKw();
+			}
+		}else if (type==2) {
+			Map<String, Object> map3 =new HashMap<>();
+			map3.put("ammeterCodes", ammeterCodes);
+			map3.put("type", 2);
+			map3.put("table", table);
+			List<AmPhaseRecord> amPhaseRecord3 =amPhaseRecordMapper.nowKw(map3);;
+			if (amPhaseRecord3.size()>0) {
+				kw+=amPhaseRecord3.get(amPhaseRecord3.size()-1).getKw();
+			}
+		}
+		return kw;
+	}
 }
