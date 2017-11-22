@@ -78,7 +78,7 @@ public class Order extends IDomain implements Serializable {
 	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[申请中-报建状态]{0:未申请,1:已申请,2:申请完成}'")
 	private Integer applyStepB;
 	@Column(columnDefinition = "varchar(255) comment '[申请中-申请报建的图片地址]'")
-	private String applyStepBImgUrl;
+	private String applyStepbimgUrl;
 
 	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[施工中-支付状态]{0:未支付,1:已支付}'")
 	private Integer buildIsPay;
@@ -385,12 +385,13 @@ public class Order extends IDomain implements Serializable {
 		this.applyStepB = applyStepB;
 	}
 
-	public String getApplyStepBImgUrl() {
-		return applyStepBImgUrl;
+	
+	public String getApplyStepbimgUrl() {
+		return applyStepbimgUrl;
 	}
 
-	public void setApplyStepBImgUrl(String applyStepBImgUrl) {
-		this.applyStepBImgUrl = applyStepBImgUrl;
+	public void setApplyStepbimgUrl(String applyStepbimgUrl) {
+		this.applyStepbimgUrl = applyStepbimgUrl;
 	}
 
 	public Integer getBuildIsPay() {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.ApolegamyMapper">
+	
+	<resultMap id="apolegamy" type="com.yn.model.Apolegamy">
+		<id column="id" property="id"></id>
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		
+		<result column="apolegamy_name" property="apolegamyName" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+		<result column="icon_url" property="iconUrl" jdbcType="VARCHAR" />
+		<result column="unit" property="unit" jdbcType="VARCHAR" />
+		<result column="qualifications_id" property="qualificationsId" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+
+	</resultMap>
+		
+	<select id="getPage" parameterType="com.yn.model.Page" resultMap="apolegamy">
+		SELECT m.`id`,m.`apolegamy_name`,m.`img_url`,m.`price`,m.`unit`,m.`TYPE`,m.`icon_url` 
+    		
+    		FROM apolegamy_server a LEFT JOIN apolegamy m ON m.id =a.`apolegamy_id`
+    		
+    		  WHERE a.del=0 AND a.server_id = #{id} limit #{start},#{limit}
+	
+	</select>
+	
+	<select id="getCount" parameterType="com.yn.model.Page" resultType="Integer">
+		select 
+		count(1) 
+		FROM apolegamy_server a LEFT JOIN apolegamy m ON m.id =a.`apolegamy_id`
+    	WHERE a.del=0 AND a.server_id = #{id} limit #{start},#{limit}
+	
+	</select>
+	
+	
+	
+</mapper>

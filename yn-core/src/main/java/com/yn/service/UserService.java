@@ -178,8 +178,10 @@ public class UserService {
      * @return
      */
     public User updateToken(User user) {
-        String token = getToken(user);
-        user.setToken(token);
+    	  String token = getToken(user);
+    	  
+    	  logger.info("生成的userId为："+user.getId()+"生成的token为："+token);
+          user.setToken(token);
         User result = userDao.save(user);
         return result;
     }

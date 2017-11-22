@@ -248,7 +248,7 @@ public class OrderController {
 			flag4Money = orderDetailService.calculatedNeedToPayMoney(findOne, 0.3d);
 			result.put("flag4ApplyStepA", findOne.getApplyStepA() == 2 ? 1 : 0);
 			result.put("applyStepBImgUrl",
-					findOne.getApplyStepBImgUrl() == null || findOne.getApplyStepBImgUrl().length() < 1 ? 0 : 1);
+					findOne.getApplyStepbimgUrl() == null || findOne.getApplyStepbimgUrl().length() < 1 ? 0 : 1);
 			result.put("flag4ApplyStepB", findOne.getApplyStepB() == 2 ? 1 : 0);
 			result.put("applyIsPay", findOne.getApplyIsPay() == 1 ? 1 : 0);
 			if(flag4Money==0){
@@ -424,7 +424,7 @@ public class OrderController {
 	@RequestMapping(value = "/updateInfo")
 	@ResponseBody
 	public Object udatestation(UserVo userVo, HttpSession session) {
-		
+
 		User user01 = new User();
 
 		BeanCopy.copyProperties(userVo, user01);
@@ -714,7 +714,7 @@ public class OrderController {
 		jsonResult.put("applyStepB", order.getApplyStepB());
 		jsonResult.put("applyStepBImgUrl",
 
-		findOne.getApplyStepBImgUrl() != null && findOne.getApplyStepBImgUrl().length() > 0 ? 1 : 0);
+		findOne.getApplyStepbimgUrl() != null && findOne.getApplyStepbimgUrl().length() > 0 ? 1 : 0);
 
 		jsonResult.put("buildIsPay", order.getBuildIsPay());
 		jsonResult.put("buildStepA", order.getBuildIsPay());
@@ -789,7 +789,7 @@ public class OrderController {
 		uploadPhoto.setUserId(newuser.getId());
 		String orderCode = (String) session.getAttribute("orderCode");
 		Order order = orderMapper.findOrderCode(orderCode);
-		order.setApplyStepBImgUrl(finaltime);
+		order.setApplyStepbimgUrl(finaltime);
 		orderService.updateApplyStepBImgUrl(order);
 
 		logger.info("添加用户的id为：-- --- --- ----- --- --- ----" + newuser.getId());
@@ -815,7 +815,7 @@ public class OrderController {
 		jsonResult.put("applyStepA", order.getApplyStepA());
 		// 申请报建状态
 		jsonResult.put("applyStepB", order.getApplyStepB());
-		jsonResult.put("applyStepBImgUrl", order.getApplyStepBImgUrl() != null ? 1 : 0);
+		jsonResult.put("applyStepBImgUrl", order.getApplyStepbimgUrl() != null ? 1 : 0);
 		return ResultVOUtil.success(jsonResult);
 	}
 

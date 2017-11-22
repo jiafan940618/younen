@@ -14,6 +14,15 @@ import com.yn.model.Construction;
 
 public interface ConstructionDao extends JpaRepository<Construction, Long>, JpaSpecificationExecutor<Construction>{
 	
+	@Modifying
+	@Query("update Construction set del=1,delDtm=(now()) where id = :id")
+	void delete(@Param("id") Long id);
+
+	@Transactional
+	@Modifying
+	@Query("update Construction set del=1,delDtm=(now()) where id in (:ids)")
+	void deleteBatch(@Param("ids") List<Long> ids);
+	
 	    @Transactional
 	    @Modifying
 	    @Query("select c from  Construction c  where c.type = :type and c.del = 0  and c.identification = 0 ")

@@ -65,6 +65,27 @@ public class NewServerPlanService {
 	private static final char b = 'o';
 	/** 进制长度 */
 	private static final int binLen = r.length;
+	
+	public void delete(Long id){
+		
+		planDao.delete(id);
+	}
+	
+	public void deleteBatch(List<Long> ids){
+		
+		planDao.deleteBatch(ids);
+	}
+	
+	public NewServerPlan FindBybrandId(Long Id){
+		
+		return planDao.FindBybrandId(Id);	
+	}
+	
+	public NewServerPlan FindtwobrandId(Long Id){
+		
+		return planDao.FindtwobrandId(Id);	
+	}
+	
 
 	public static String toSerialCode(long id, int s) {
 		char[] buf = new char[32];
@@ -341,6 +362,7 @@ public class NewServerPlanService {
 		        	 BigDecimal apoprice  = (BigDecimal)object01[3];
 		        	 String unit = (String) object01[4];
 		        	 Integer type = (Integer) object01[5];
+		        	 String iconUrl=(String) object01[6];
 		        	 
 		        	 vol.setId(Long.valueOf(id));
 		        	 vol.setApolegamyName(apolegamyName);
@@ -348,7 +370,7 @@ public class NewServerPlanService {
 		        	 vol.setUnit(unit);
 		        	 vol.setType(type);
 		        	 vol.setPrice(apoprice.doubleValue());
-		        	 
+		        	 vol.setIconUrl(iconUrl);
 		        	 newList.add(vol);
 				}
 				return newList;

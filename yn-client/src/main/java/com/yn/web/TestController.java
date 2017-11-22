@@ -53,6 +53,7 @@ import com.yn.utils.MD5Util;
 import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.utils.PropertyUtils;
 import com.yn.utils.StringUtil;
+import com.yn.vo.ApolegamyVo;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
@@ -99,12 +100,23 @@ public class TestController {
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
-	       public Object helloJsp01(UserVo userVo){  
-	    	  
+	       public Object helloJsp01(ApolegamyVo apolegamyVo){  
 	    	   
-	    	String upload =  systemConfigService.get("user_upload");
+	    	   apolegamyVo.setIconUrl("测试路径!");
+	    	   apolegamyVo.setPrice(100.0);
+	    	   apolegamyVo.setType(1);
+	    	   apolegamyVo.setApolegamyName("测试上传");
+	    	   apolegamyVo.setImgUrl("sdasdadasas");
+	    	   apolegamyVo.setUnit("每年");
+	    	   Apolegamy apolegamy = new Apolegamy();
+	           BeanCopy.copyProperties(apolegamyVo, apolegamy);
+	           apolegamyService.save(apolegamy);
+	           
+	           System.out.println(apolegamy.getId());
+	           
+	           
 	     
-	   		return ResultVOUtil.success(upload);
+	   		return ResultVOUtil.success(null);
 	        
 	       } 
 	       

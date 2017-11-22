@@ -99,9 +99,7 @@ public class UserLoginController {
 	        	logger.info("----- --- ----- 密码错误！");
 	            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
 	        }
-
-
-	        user.setToken(userService.getToken(user));
+ 
 	        userService.updateToken(user);
 
 	        SessionCache.instance().setUser(user);
@@ -116,62 +114,13 @@ public class UserLoginController {
 	        userVo.setNickName(user.getNickName());
 	        userVo.setUserName(user.getUserName());
 	        userVo.setPhone(user.getPhone());
-	        userVo.setToken(userService.getToken(user)); 
+	        userVo.setToken(user.getToken()); 
 	        userVo.setHeadImgUrl(user.getHeadImgUrl());
 
 	        
-	        logger.info("---- ---- --- --- - --- - --- ----结束");
+	        logger.info("---- ---- --- --- - --- - --- ----结束"+user.getToken());
 	        
 	        return ResultVOUtil.success(userVo);
-	    }
-
-	 
-	   @ResponseBody
-	   @RequestMapping(value = "/apologin")
-	    public ResultData apoLogin(UserVo userVo, HttpServletRequest request, HttpServletResponse response,
-				HttpSession httpSession) {
-		   
-		   userVo.setPhone("13450699433");
-		   userVo.setPassword("123456");
-		   
-	  logger.info("---- ---- --- --- - --- - --- -----传递的phone:"+userVo.getPhone());
-	  logger.info("---- ---- --- --- - --- - --- -----传递的password:"+userVo.getPassword());
-		 
-		 
-	  		User newuser =	userService.findByPhoneOrAccountOrEamil(userVo.getPhone());
-	   
-	        if (newuser == null) {
-	        	logger.info("----- --- ----- 该用户不存在！");
-	            return ResultVOUtil.error(777, Constant.NO_THIS_USER);
-	        } else if (!newuser.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))) {
-	        	logger.info("----- --- ----- 密码错误！");
-	            return ResultVOUtil.error(777, Constant.PASSWORD_ERROR);
-	        }
-
-
-	        newuser.setToken(userService.getToken(newuser));
-	        userService.updateToken(newuser);
-
-	        SessionCache.instance().setUser(newuser);
-	        newuser.setPassword(null);
-	        Object object = ResultVOUtil.success(newuser);
-	        
-	        NewUserVo userVo01 = new NewUserVo();
-	        
-	        userVo01.setEmail(newuser.getEmail());
-	        userVo01.setFullAddressText(newuser.getFullAddressText());
-	        userVo01.setId(newuser.getId());
-	        userVo01.setNickName(newuser.getNickName());
-	        userVo01.setUserName(newuser.getUserName());
-	        userVo01.setPhone(newuser.getPhone());
-	        userVo01.setToken(userService.getToken(newuser)); 
-	        userVo01.setHeadImgUrl(newuser.getHeadImgUrl());
-	        
-	      //  httpSession.setAttribute("user", userVo01);
-	        
-	        logger.info("---- ---- --- --- - --- - --- ----结束");
-	        
-	        return ResultVOUtil.success(userVo01);
 	    }
 
     /**

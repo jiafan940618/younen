@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.InverterMapper">
+	<resultMap id="inverterMap" type="com.yn.model.Inverter">
+		<id column="id" property="id"></id>
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		
+		<result column="brand_id" property="brandId" jdbcType="INTEGER" />
+		<result column="brand_name" property="brandName" jdbcType="DOUBLE" />
+		<result column="model" property="model" jdbcType="VARCHAR" />
+		<result column="phases" property="phases" jdbcType="INTEGER" />
+		<result column="voltage" property="voltage" jdbcType="INTEGER" />
+		<result column="quality_assurance" property="qualityAssurance" jdbcType="DOUBLE" />
+		<result column="board_year" property="boardYear" jdbcType="DOUBLE" />
+
+	</resultMap>
+	
+	<select id="getInverter" parameterType="com.yn.model.Page" resultMap="inverterMap">
+	
+		SELECT DISTINCT(i.id) ,i.brand_name,i.brand_id 
+		FROM new_server_plan n LEFT JOIN inverter i ON n.inverter_id = i.id WHERE n.del = 0 AND n.server_id = #{id}  limit #{start},#{limit}
+	
+	</select>
+	
+	<select id="getCount" parameterType="com.yn.model.Page" resultMap="inverterMap">
+	
+		SELECT DISTINCT(i.id) FROM new_server_plan n LEFT JOIN inverter i ON n.inverter_id = i.id WHERE n.del = 0 AND n.server_id = #{id}
+	
+	</select>
+	
+	
+
+</mapper>

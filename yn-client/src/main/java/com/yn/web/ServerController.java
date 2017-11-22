@@ -168,7 +168,9 @@ public class ServerController {
 	        userService.updateToken(user);
 	       
 	        user.setPassword(null);
-
+	        server.setApolegamyServer(null);
+	        server.setUser(null);
+	        server.setNewServerPlan(null);
 	        httpSession.setAttribute("server", server);
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");

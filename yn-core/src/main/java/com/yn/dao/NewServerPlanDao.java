@@ -15,7 +15,14 @@ import com.yn.model.User;
 import com.yn.vo.NewServerPlanVo;
 
 public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, JpaSpecificationExecutor<NewServerPlan>{
-	
+    @Modifying
+    @Query("update NewServerPlan set del=1,delDtm=(now()) where id = :id")
+    void delete(@Param("id") Long id);
+    
+    @Transactional
+    @Modifying
+    @Query("update NewServerPlan set del=1,delDtm=(now()) where id in (:ids)")
+	void deleteBatch(@Param("ids") List<Long> ids);
 	
 	 @Transactional
 	    @Modifying
@@ -29,6 +36,13 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 	     " FROM new_server_plan n LEFT JOIN inverter t ON t.id = n.inverter_id "+
 	    "LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.faction_id =?1 ",nativeQuery=true)
 		   List<Object> selectServerPlan(Long Id);
+	 
+	 @Query(value="SELECT n FROM newServerPlan n  LEFT JOIN solarPanel s ON n.batteryboardId = s.id WHERE s.brandId = ?1",nativeQuery=true)
+	 NewServerPlan FindBybrandId(Long Id);
+	 
+	 @Query(value="SELECT * FROM newServerPlan n  LEFT JOIN inverter i ON n.inverterId = i.id WHERE i.brandId = ?1",nativeQuery=true)
+	 NewServerPlan FindtwobrandId(Long Id);
+	 
 	
 
 }

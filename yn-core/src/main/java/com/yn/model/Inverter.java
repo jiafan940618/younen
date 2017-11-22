@@ -45,6 +45,15 @@ public class Inverter extends IDomain implements Serializable {
 		this.model = model;
 		this.qualityAssurance = qualityAssurance;
 	}
+	
+	
+
+	public Inverter(Long id, String brandName, String model) {
+		super();
+		this.id = id;
+		this.brandName = brandName;
+		this.model = model;
+	}
 
 	public Long getId() {
 		return id;

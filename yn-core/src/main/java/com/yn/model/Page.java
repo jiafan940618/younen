@@ -29,8 +29,18 @@ public class Page<T> {
 	
 	private String cityName;
 	
+	private Long id;
 	
 	
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getCityName() {
 		return cityName;
 	}

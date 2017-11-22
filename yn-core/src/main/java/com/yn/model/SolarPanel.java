@@ -47,6 +47,15 @@ public class SolarPanel extends IDomain implements Serializable {
 		this.powerGeneration = powerGeneration;
 		this.qualityAssurance = qualityAssurance;
 	}
+	
+	
+	
+
+	public SolarPanel(Long id, String model, String brandName) {
+		this.id = id;
+		this.brandName = brandName;
+		this.model = model;
+	}
 
 	public String getPowerGeneration() {
 		return powerGeneration;

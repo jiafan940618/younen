@@ -1,6 +1,11 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +17,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.model.Apolegamy;
+import com.yn.model.Brand;
 import com.yn.model.Devide;
+import com.yn.model.Inverter;
+import com.yn.model.SolarPanel;
+import com.yn.service.BrandService;
 import com.yn.service.DevideService;
+import com.yn.service.InverterService;
+import com.yn.service.SolarPanelService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.DevideVo;
 
@@ -22,6 +34,14 @@ import com.yn.vo.DevideVo;
 public class DevideController {
     @Autowired
     DevideService devideService;
+    @Autowired
+    BrandService brandService;
+    @Autowired
+    SolarPanelService solarPanelService;
+    
+    @Autowired
+    InverterService inverterService;
+    
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -63,5 +83,55 @@ public class DevideController {
         Page<Devide> findAll = devideService.findAll(devide, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    /** 加载品牌与型号*/
+    @ResponseBody
+    @RequestMapping(value = "/findBrand")
+    public Object findBrand(com.yn.model.Page page) {
+    	
+    	page.setType(1);
+    	page.setId(1L);
+    	Integer count = 0;
+    	List<Brand> list = new LinkedList<Brand>();
+    	
+    	/** 1、电池板 3、逆变器*/
+    	if(page.getType() == 1){
+    		
+    		 list = brandService.getSolarPanel(page);
+    		 
+    		 for (Brand brand : list) {
+    			List<SolarPanel> sollist = brandService.getnewSolarPanel(brand.getId().intValue());
+    			
+    			brand.setSolar(new HashSet(sollist));
+			}
+    		
+    	}else if(page.getType() == 3){
+    		
+    		 list = brandService.getInverter(page);
+    		
+    		for (Brand brand : list) {
+    			List<Inverter> invList = brandService.getnewInverter(brand.getId().intValue());
+    			
+    			brand.setInverter(new HashSet(invList));
+			}
+    		
+    		 count = brandService.getCount(page);
+	
+    	}
+
+    	if(count <=  0){
+ 			page.setTotal(1);
+ 		}else{
+ 			page.setTotal( count%page.getLimit() == 0 ? count/page.getLimit() : (count-count%page.getLimit())/page.getLimit()+1);	
+ 		}
+ 
+        return ResultVOUtil.newsuccess(page,list);
+    }
+    
+    /** 新增逆变器品牌型号*/
+    
+    
+     /** 新增电池板品牌型号*/
+    
     
 }

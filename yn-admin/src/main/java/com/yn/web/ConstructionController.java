@@ -1,6 +1,8 @@
 package com.yn.web;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -54,12 +56,12 @@ public class ConstructionController {
 			 construction.setId(constructionVo.getId());
 			 construction.setImgUrl(constructionVo.getImgUrl());
 			 construction.setType(constructionVo.getType());
-			 construction.setIdentification(constructionVo.getIdentification());
+			 construction.setIdentification(0);
 		}else{
 		
 		 construction.setImgUrl(constructionVo.getImgUrl());
 		 construction.setType(constructionVo.getType());
-		 construction.setIdentification(constructionVo.getIdentification());
+		 construction.setIdentification(0);
 		} 
 		 constructionService.save(construction);
 		
@@ -74,6 +76,26 @@ public class ConstructionController {
 		
 		return ResultVOUtil.success();
 	}
+	
+	@ResponseBody
+    @RequestMapping(value = "/findbyType")
+    public Object getconstruc(ConstructionVo constructionVo) {
+
+
+	 List<Construction> list = constructionService.findbyStruction();
+
+        return ResultVOUtil.success(list);
+    }
+	
+	@ResponseBody
+    @RequestMapping(value = "/delete")
+    public Object delete(ConstructionVo constructionVo) {
+
+
+	 constructionService.delete(constructionVo.getId());
+
+        return ResultVOUtil.success(null);
+    }
 	
 	
 	
@@ -131,6 +153,9 @@ public class ConstructionController {
 		return ResultVOUtil.success(finaltime);
 	
 	}
+	
+	
+	
 	
 	
 

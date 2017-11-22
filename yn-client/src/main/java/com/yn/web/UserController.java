@@ -154,6 +154,11 @@ public class UserController {
     	
     	 User newuserVo = SessionCache.instance().getUser();
     	 
+    	 if(null == userVo.getEmail() || userVo.getEmail().equals("")){
+    		 
+    		 return ResultVOUtil.error(777, "抱歉,您的Email不能为空!");
+    	 }
+    	 
     	User user02 = userService.findByEamil(userVo.getEmail()); 
     	
     
