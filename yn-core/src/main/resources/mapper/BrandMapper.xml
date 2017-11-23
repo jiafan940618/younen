@@ -16,7 +16,7 @@
 	
 	<select id="getBrand" parameterType="com.yn.model.Page" resultMap="brandMap">
 	
-		SELECT DISTINCT(i.id) ,i.brand_name FROM new_server_plan n LEFT JOIN inverter i ON n.inverter_id = i.id WHERE n.del = 0 AND n.server_id = #{id}  limit #{start},#{limit}
+		SELECT * FROM brand b WHERE b.del = 0 and type = #{type}  limit #{start},#{limit}
 	
 	</select>
 	

@@ -580,7 +580,7 @@ public class OrderController {
 
 	@ResponseBody
 	@RequestMapping(value = "/iosorderPrice")
-	public ResultData<Object> findIocordprice(HttpSession session, @RequestParam("capacity") Integer capacity) {
+	public ResultData<Object> findIocordprice(HttpSession session, @RequestParam("capacity") Double capacity) {
 		//NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 		User newuser = SessionCache.instance().getUser();
 		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
@@ -610,7 +610,7 @@ public class OrderController {
 
 			NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
 
-			newserverPlan.setMinPurchase(capacity.doubleValue());
+			newserverPlan.setCapacity(capacity);
 
 			User user02 = userservice.findByPhone(plan.getPhone());
 			/** 添加订单*/

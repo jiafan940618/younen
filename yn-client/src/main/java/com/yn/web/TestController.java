@@ -102,18 +102,17 @@ public class TestController {
 	       @ResponseBody
 	       public Object helloJsp01(ApolegamyVo apolegamyVo){  
 	    	   
-	    	   apolegamyVo.setIconUrl("测试路径!");
-	    	   apolegamyVo.setPrice(100.0);
-	    	   apolegamyVo.setType(1);
-	    	   apolegamyVo.setApolegamyName("测试上传");
-	    	   apolegamyVo.setImgUrl("sdasdadasas");
-	    	   apolegamyVo.setUnit("每年");
-	    	   Apolegamy apolegamy = new Apolegamy();
-	           BeanCopy.copyProperties(apolegamyVo, apolegamy);
-	           apolegamyService.save(apolegamy);
+	    	   NewServerPlan findOne = newserverPlanService.findOne(1l);
 	           
-	           System.out.println(apolegamy.getId());
+	           Double minpur =	findOne.getMinPurchase().doubleValue();
 	           
+	           logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+8);
+	           
+	   	        if(null == minpur || minpur > 8 ){
+	   	        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
+	   	        	
+	   	        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
+	   	  	  	}
 	           
 	     
 	   		return ResultVOUtil.success(null);

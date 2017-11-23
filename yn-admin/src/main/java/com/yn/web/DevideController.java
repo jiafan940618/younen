@@ -78,6 +78,7 @@ public class DevideController {
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object findAll(DevideVo devideVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+
         Devide devide = new Devide();
         BeanCopy.copyProperties(devideVo, devide);
         Page<Devide> findAll = devideService.findAll(devide, pageable);
@@ -88,42 +89,35 @@ public class DevideController {
     @ResponseBody
     @RequestMapping(value = "/findBrand")
     public Object findBrand(com.yn.model.Page page) {
-    	
-    	page.setType(1);
-    	page.setId(1L);
+/*    	page.setType(1);
+    	page.setId(1L);*/
     	Integer count = 0;
     	List<Brand> list = new LinkedList<Brand>();
     	
     	/** 1、电池板 3、逆变器*/
+    	list =	brandService.getBrand(page);
+    	
     	if(page.getType() == 1){
-    		
-    		 list = brandService.getSolarPanel(page);
-    		 
-    		 for (Brand brand : list) {
-    			List<SolarPanel> sollist = brandService.getnewSolarPanel(brand.getId().intValue());
+    		for (Brand brand : list) {
     			
-    			brand.setSolar(new HashSet(sollist));
-			}
+        		List<SolarPanel> Solarlist =	brandService.getSolarPanel(brand.getId().intValue());
+        		
+        		brand.setSolar(new HashSet(Solarlist));
+    			}
+    		
     		
     	}else if(page.getType() == 3){
-    		
-    		 list = brandService.getInverter(page);
-    		
     		for (Brand brand : list) {
-    			List<Inverter> invList = brandService.getnewInverter(brand.getId().intValue());
     			
-    			brand.setInverter(new HashSet(invList));
-			}
-    		
-    		 count = brandService.getCount(page);
-	
+        		List<Inverter> invlist =	brandService.getInverter(brand.getId().intValue());
+        		
+        		brand.setSolar(new HashSet(invlist));
+    			}
     	}
+    	
+    	count =	brandService.getCount(page);
 
-    	if(count <=  0){
- 			page.setTotal(1);
- 		}else{
- 			page.setTotal( count%page.getLimit() == 0 ? count/page.getLimit() : (count-count%page.getLimit())/page.getLimit()+1);	
- 		}
+ 		page.setTotal(count);
  
         return ResultVOUtil.newsuccess(page,list);
     }

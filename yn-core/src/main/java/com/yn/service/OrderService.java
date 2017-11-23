@@ -409,7 +409,12 @@ public class OrderService {
 		OrderVo orderVo = new OrderVo();
 		orderVo.setId(orderId.longValue());
 		orderVo.setOrderCode(orderCode);
-		orderVo.setTradeNo(tradeNo);
+		if(null != tradeNo){
+			orderVo.setTradeNo(tradeNo);
+		}else{
+			orderVo.setTradeNo("未建电站");
+		}
+
 		orderVo.setCapacity(capacity.doubleValue());
 		orderVo.setTotalPrice(totalPrice.doubleValue());
 		orderVo.setHadPayPrice(payPrice.doubleValue());
