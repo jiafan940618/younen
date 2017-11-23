@@ -1411,4 +1411,19 @@
 		AND d_addr =#{map.type}
 		AND w_addr =0  
 	</select>
+	<select id="nowAmPhaseRecord" parameterType="map"
+		resultType="com.yn.model.AmPhaseRecord">
+		SELECT kwh_total AS kwhTotal,kw AS kw 
+		FROM ${map.table}  WHERE 1=1
+		<if test="map.ammeterCodes != null">
+			AND c_addr in
+			<foreach item="item" index="index" collection="map.ammeterCodes"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if> 
+		AND d_addr =#{map.type}
+		AND w_addr =0 DESC LIMIT 1  
+	</select>
+	
 </mapper>

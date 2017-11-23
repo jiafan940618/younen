@@ -66,6 +66,8 @@ public interface AmPhaseRecordMapper {
 		public AmPhaseRecord todayKwh(@Param("map")Map<String, Object> map) ;
 		
 		public List<AmPhaseRecord> nowKw(@Param("map")Map<String, Object> map) ;
+		
+		public AmPhaseRecord nowAmPhaseRecord(@Param("map")Map<String, Object> map) ;
 			
 		
 }

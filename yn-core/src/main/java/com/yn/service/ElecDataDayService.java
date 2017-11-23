@@ -164,7 +164,6 @@ public class ElecDataDayService {
 
 	/**
 	 * 用户每月发电量
-	 *
 	 * @param stations
 	 * @return
 	 */
@@ -183,7 +182,6 @@ public class ElecDataDayService {
 				map.put("kwh", objects[1]);
 				lists.add(map);
 			}
-
 		}
 		for (Map<Object, Object> map : lists) {
 			if (!objectMap.containsKey(map.get("create_dtm"))) {
@@ -194,9 +192,7 @@ public class ElecDataDayService {
 				BigDecimal kwh = new BigDecimal(Double.parseDouble(objectMap.get(map.get("create_dtm")).toString())
 						+ Double.parseDouble(map.get("kwh").toString()));
 				objectMap.put(map.get("create_dtm"), kwh);
-
 			}
-
 		}
 		Object[] key = objectMap.keySet().toArray();
 		for (int i = 0; i < key.length; i++) {

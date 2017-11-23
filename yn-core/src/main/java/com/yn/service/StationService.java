@@ -757,12 +757,7 @@ public class StationService {
 		return newlist;
 	}
 
-	// public List<Station> getstation(Long userId){
-	//
-	// return stationDao.getstation(userId);
-	// }
-	//
-	//
+
 	/**
 	 * 查询用户电站,电表等信息
 	 * 
@@ -797,10 +792,8 @@ public class StationService {
 			map2.put("ammeterScale","0");
 			map.put("ammeterRecode", map2);
 		}
-		
-		Date date = station.getCreateDtm();
-		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1, date));
-		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2, date));
+		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1));
+		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2));
 		return map;
 	}
 
