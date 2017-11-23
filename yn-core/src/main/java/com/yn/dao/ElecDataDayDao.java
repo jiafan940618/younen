@@ -26,10 +26,10 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     @Query("update ElecDataDay set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
-    @Query(value="SELECT record_time AS create_dtm, "
-    		+ "SUM(kwh) AS kwh FROM elec_data_month t WHERE"
+    @Query(value="SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, "
+    		+ "SUM(kwh) AS kwh FROM elec_data_day t WHERE"
     		+ " t.create_dtm is not null AND t.ammeter_code in (?1) AND "
-    		+ "t.type =1 GROUP BY record_time ORDER BY record_time ASC",nativeQuery=true)
+    		+ "t.type =1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m') ORDER BY record_time ASC",nativeQuery=true)
     List<Object[]> sumMonthKwh(List<Long> ammeterCodes);
     
     @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t "
