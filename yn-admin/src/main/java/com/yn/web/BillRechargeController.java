@@ -1,6 +1,9 @@
 package com.yn.web;
 
 import com.yn.vo.re.ResultVOUtil;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,15 +16,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.model.BillRecharge;
+import com.yn.model.Recharge;
 import com.yn.service.BillRechargeService;
+import com.yn.service.FRechargeService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.BillRechargeVo;
+import com.yn.vo.RechargeVo;
 
 @RestController
 @RequestMapping("/server/billRecharge")
 public class BillRechargeController {
     @Autowired
     BillRechargeService billRechargeService;
+    @Autowired
+    FRechargeService rechargeService;
+    
+    
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -63,4 +73,14 @@ public class BillRechargeController {
         Page<BillRecharge> findAll = billRechargeService.findAll(billRecharge, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    @RequestMapping(value = "/RechargefindAll", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object RechargefindAll(RechargeVo RechargeVo) {
+        Recharge billRecharge = new Recharge();
+        BeanCopy.copyProperties(RechargeVo, billRecharge);
+        List<Recharge> findAll = rechargeService.findAll(billRecharge);
+        return ResultVOUtil.success(findAll);
+    }
+    
 }

@@ -55,7 +55,7 @@ public class InverterService {
 			Object[] obj =(Object[])object;
 			
 			Integer brandId =(Integer)obj[0];
-			String brandName =(String)obj[0];
+			String brandName =(String)obj[1];
 			
 			inverter.setBrandId(brandId);
 			inverter.setBrandName(brandName);

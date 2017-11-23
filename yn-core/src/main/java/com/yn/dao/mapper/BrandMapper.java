@@ -10,7 +10,7 @@ import com.yn.model.Page;
 @Mapper
 public interface BrandMapper {
 	
-	/** 根据服务商查出品牌*/
+	/**查出品牌*/
 	
 	List<Brand> getBrand(Page<Brand> page);
 	/** 查询出数目*/

@@ -34,14 +34,14 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 		 		+ " n.id,n.server_id,n.material_json,n.min_purchase,n.unit_price,n.plan_img_url,t.brand_name t_invstername,t.model t_invstermodel,p.brand_name p_brandname"
 		 		+ ",p.model p_brandmodel,n.war_period"+
 	     " FROM new_server_plan n LEFT JOIN inverter t ON t.id = n.inverter_id "+
-	    "LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.faction_id =?1 ",nativeQuery=true)
+	    "LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.server_id =?1 ",nativeQuery=true)
 		   List<Object> selectServerPlan(Long Id);
 	 
-	 @Query(value="SELECT n FROM newServerPlan n  LEFT JOIN solarPanel s ON n.batteryboardId = s.id WHERE s.brandId = ?1",nativeQuery=true)
-	 NewServerPlan FindBybrandId(Long Id);
+	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN solar_panel s ON n.batteryboard_id = s.id WHERE s.brand_id = ?1",nativeQuery=true)
+	List<NewServerPlan> FindBybrandId(Long Id);
 	 
-	 @Query(value="SELECT * FROM newServerPlan n  LEFT JOIN inverter i ON n.inverterId = i.id WHERE i.brandId = ?1",nativeQuery=true)
-	 NewServerPlan FindtwobrandId(Long Id);
+	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN inverter i ON n.inverter_id = i.id WHERE i.brand_id = ?1",nativeQuery=true)
+	 List<NewServerPlan> FindtwobrandId(Long Id);
 	 
 	
 

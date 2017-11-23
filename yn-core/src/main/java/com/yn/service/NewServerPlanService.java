@@ -76,12 +76,12 @@ public class NewServerPlanService {
 		planDao.deleteBatch(ids);
 	}
 	
-	public NewServerPlan FindBybrandId(Long Id){
+	public List<NewServerPlan> FindBybrandId(Long Id){
 		
 		return planDao.FindBybrandId(Id);	
 	}
 	
-	public NewServerPlan FindtwobrandId(Long Id){
+	public List<NewServerPlan> FindtwobrandId01(Long Id){
 		
 		return planDao.FindtwobrandId(Id);	
 	}
@@ -252,7 +252,7 @@ public class NewServerPlanService {
 	         /** 服务费*/
 	        order.setFactoragePrice(price * factorage );
 	         /** 装机容量*/
-	        order.setCapacity(newserverPlan.getMinPurchase());
+	        order.setCapacity(newserverPlan.getCapacity());
 	        /** 状态*/
 	        order.setStatus(0);
 	        order.setGridConnectedIsPay(0);

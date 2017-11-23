@@ -51,82 +51,26 @@ public class BrandService {
 		}
 	}
 	
-	 /** 拿到电池板 的型号*/
-	
-	public List<SolarPanel>  getnewSolarPanel(Integer id){
+  
+	public Integer getCount(com.yn.model.Page<Brand> page){
 		
-		return brandDao.getSolarPanel(id);
-	 }
-	
-	public List<Brand> getSolarPanel(com.yn.model.Page<SolarPanel> page){
-		
-		List<Brand> blist = new LinkedList<Brand>();
-		
-		List<SolarPanel> list = solarPanelMapper.getSolarPanel(page);
-		
-		for (SolarPanel solar : list) {
-			
-			Brand brand = new Brand();
-			brand.setId(Long.valueOf(solar.getBrandId()));
-			brand.setBrandName(solar.getBrandName());
-			
-			blist.add(brand);
-		}
-		
-		return blist;
+		return brandMapper.getCount(page);
 	}
 	
-	public Integer getSolarCount(com.yn.model.Page<SolarPanel> page){
-		
-		List<SolarPanel> list = solarPanelMapper.getCount(page);
-		
-		return list.size();
-	}
-	
-	
-	
-	/** 拿到逆变器型号*/
-	public List<Inverter>  getnewInverter(Integer id){
-		
-		
-		return brandDao.getInverter(id);	
-	}
-	
-	
-	
-	public List<Brand>  getInverter(com.yn.model.Page<Inverter> page){
-		
-		List<Brand> blist = new LinkedList<Brand>();
-		
-		List<Inverter> list = inverterMapper.getInverter(page);
-		
-		for (Inverter inverter : list) {
-			
-			Brand brand = new Brand();
-			brand.setId(Long.valueOf(inverter.getBrandId()));
-			brand.setBrandName(inverter.getBrandName());
-			
-			blist.add(brand);
-		}
-		
-		return blist;	
-	}
-	
-	public Integer getCount(com.yn.model.Page<Inverter> page){
-		
-		List<Inverter> list = inverterMapper.getCount(page);
-		
-		return list.size();
-	}
-	
-	public List<SolarPanel>  getSolarPanel01(Integer id){
-		
-		return brandDao.getSolarPanel(id); 
-	 }
-	
+
 	public List<Brand> getBrand(com.yn.model.Page<Brand> page){
 		
 		return brandMapper.getBrand(page);	
+	}
+	
+	public List<Inverter>  getInverter(Integer id){
+		
+		return brandDao.getInverter(id);
+	}
+	
+	public List<SolarPanel>  getSolarPanel(Integer id){
+		
+		return brandDao.getSolarPanel(id);
 	}
 	
 
