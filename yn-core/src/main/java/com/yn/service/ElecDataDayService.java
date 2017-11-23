@@ -371,7 +371,13 @@ public class ElecDataDayService {
 		map.put("queryEndDtm", elecDataDay.getQueryEndDtm());
 		map.put("type", elecDataDay.getType());
 		List<ElecDataDay> list = elecDataDayMapper.selectByQuery(map);
-		return list;
+		List<ElecDataDay> listElecDataDay=new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			ElecDataDay elecDataDay2=list.get(i);
+			elecDataDay2.setId(i+1l);
+			listElecDataDay.add(elecDataDay2);	
+		}
+		return listElecDataDay;
 	}
 
 	/**

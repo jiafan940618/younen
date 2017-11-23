@@ -218,14 +218,30 @@ public class ElecDataDayController {
 	}
 
 	/**
-	 * 用电/发电记录
+	 * pc端用电/发电记录
+	 */
+	@RequestMapping(value = "/listCountPC", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object listCountPC(ElecDataDayVo elecDataDayVo, Long stationId, Integer pageIndex) {
+		ElecDataDay elecDataDay = new ElecDataDay();
+		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
+		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 15);
+		List<ElecDataDay> elecDataDays = elecDataDayService.findByMapper(elecDataDay, stationId);
+		PageInfo<ElecDataDay> pageInfo = new PageInfo<>(elecDataDays);
+		Map<String, Object> map = new HashMap<>();
+		map.put("pageInfo", pageInfo);
+		return ResultVOUtil.success(map);
+	}
+	
+	/**
+	 * 移动端用电/发电记录
 	 */
 	@RequestMapping(value = "/listCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object listCount(ElecDataDayVo elecDataDayVo, Long stationId, Integer pageIndex) {
 		ElecDataDay elecDataDay = new ElecDataDay();
 		BeanCopy.copyProperties(elecDataDayVo, elecDataDay);
-		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 15);
+		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 5000);
 		List<ElecDataDay> elecDataDays = elecDataDayService.findByMapper(elecDataDay, stationId);
 		PageInfo<ElecDataDay> pageInfo = new PageInfo<>(elecDataDays);
 		Map<String, Object> map = new HashMap<>();
