@@ -322,13 +322,6 @@ public class OrderController {
 	@RequestMapping(value = "/seeOrder")
 	public Object LookOrder(HttpSession session, Integer OrderCode) {
 
-		/*
-		 * Integer num =6; Long userid = 2L; List<Long> list = new
-		 * LinkedList<Long>(); list.add(11L); list.add(13L);
-		 * 
-		 * Double price =7700.00; Long planid =1L;
-		 */
-
 		Double num = (Double) session.getAttribute("num");
 		Long userid = (Long) session.getAttribute("userid");
 

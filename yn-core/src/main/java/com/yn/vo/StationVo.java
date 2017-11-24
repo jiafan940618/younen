@@ -23,7 +23,7 @@ public class StationVo extends QueryVo{
 	private Long cityId;
 	private String cityText;
 	private String addressText;
-	private Integer workTotaTm;
+	private Double workTotaTm;
 	private Double workTotaKwh;
 	private Double nowKw;
 	private Date workDtm;
@@ -156,10 +156,11 @@ public class StationVo extends QueryVo{
 	public void setAddressText(String addressText) {
 		this.addressText = addressText;
 	}
-	public Integer getWorkTotaTm() {
+	
+	public Double getWorkTotaTm() {
 		return workTotaTm;
 	}
-	public void setWorkTotaTm(Integer workTotaTm) {
+	public void setWorkTotaTm(Double workTotaTm) {
 		this.workTotaTm = workTotaTm;
 	}
 	public Double getWorkTotaKwh() {

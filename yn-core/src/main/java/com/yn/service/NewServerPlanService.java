@@ -462,7 +462,6 @@ public class NewServerPlanService {
 	        Long order_planid = newserverPlan.getId();
 	         /** 保修期*/
 	        order.setWarPeriod(newserverPlan.getWarPeriod().intValue());
-	       // order.setCapacity(newserverPlan.getCapacity());
 	        order.setProvinceId(user.getProvinceId());
 	        order.setProvinceText(user.getProvinceText());
 	        order.setServerName(server.getCompanyName());
