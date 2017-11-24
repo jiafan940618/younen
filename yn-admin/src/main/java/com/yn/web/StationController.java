@@ -54,11 +54,14 @@ public class StationController {
     @RequestMapping(value = "/select")
     @ResponseBody
     public Object findOne(Long id) {
-        Station findOne = stationService.findOne(id);
-        
+    	
+    	
+        StationVo stationVo =  orderPlanService.findByid(id);
       
+        Map<String,String>  map = orderPlanService.selectByid(stationVo.getOrderId());
+        
         // 更新记录为已读
-        if (findOne != null) {
+        if (stationVo != null) {
             Long userId = SessionCache.instance().getUserId();
             if (userId != null) {
                 noticeService.update2Read(NoticeEnum.NEW_STATION.getCode(), id, userId);
@@ -66,7 +69,7 @@ public class StationController {
         }
 
 
-        return ResultVOUtil.success(findOne);
+        return ResultVOUtil.newhsuccess(stationVo, map);
     }
 
     

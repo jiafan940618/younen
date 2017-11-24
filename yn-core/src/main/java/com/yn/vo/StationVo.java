@@ -44,9 +44,24 @@ public class StationVo extends QueryVo{
 	
 	private String trees_prm;
 	
+	private String companyName;
+	
+	private String caddr;
 
 	
 
+	public String getCaddr() {
+		return caddr;
+	}
+	public void setCaddr(String caddr) {
+		this.caddr = caddr;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 	public String getCO2_PM() {
 		return CO2_PM;
 	}
