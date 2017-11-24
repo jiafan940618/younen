@@ -101,8 +101,8 @@ public class PatchDataRecordJob {
 
 	public PatchDataRecordJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/patchDataRecordJobLog.log"),true));
-			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
+//			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -163,29 +163,15 @@ public class PatchDataRecordJob {
 					for (AmPhaseRecord apr : amPhaseRecords) {
 						apr.setDealt(1); // 已经处理
 						apr.setDate(date);
-						AmPhaseRecord amPhaseRecord = amPhaseRecordService.selectByPrimaryKey(apr);
 						apr.setDate(date);
-						if (amPhaseRecord == null) {
-							amPhaseRecordService.saveByMapper(apr);
-						} else {
-							amPhaseRecordService.updateByPrimaryKeySelective(apr);
-						}
+						amPhaseRecordService.updateByPrimaryKeySelective(apr);
 						saveAmmeterRecord(ammeter, apr.getMeterTime());
 						updateAmmeterAndStation(ammeter, apr);
-					}
-					if (amPhaseRecords.size() == 0) {
-						ammeter.setNowKw(0D);
-						Ammeter findOne = ammeterDao.findOne(ammeter.getId());
-						if (findOne != null) {
-							ammeterMapper.updateByPrimaryKeySelective(ammeter);
-						} else {
-							ammeterMapper.insert(ammeter);
-						}
 					}
 				}
 			}
 			System.out.println("开始整理临时表中的数据。");
-			doUpdateMonthYear();
+			// doUpdateMonthYear();
 			System.out.println("整理完成。");
 			System.out.println("清空临时表中的数据。");
 			patchDataRecordMapper.truncateTable();
@@ -262,228 +248,50 @@ public class PatchDataRecordJob {
 	 */
 	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
-		String temStationRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd HH");
+		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");
 		String cAddr = ammeter.getcAddr();
 		Long dAddr = apr.getdAddr();
 		Integer dType = ammeter.getdType();
-		Integer wAddr = apr.getwAddr();
+		Integer wAddr = 0;
 		String ammeterCode = ammeter.getcAddr();
+		if (dAddr == null) {
+			return;
+		}
 		CharSequence subSequence = dAddr.toString().subSequence(0, 1);
-
-		// 每小时的。
-		ElecDataHour temStationR = new ElecDataHour();
-		temStationR.setDevConfCode(cAddr);
-		temStationR.setdType(dType);
-		temStationR.setwAddr(wAddr);
-		temStationR.setAmmeterCode(ammeterCode);
-		temStationR.setRecordTime(temStationRecordTime);
-		ElecDataHour temStation = elecDataHourService.findOne(temStationR);
-		if (temStation == null) {
-			ElecDataHour newTemStation = new ElecDataHour();
-			newTemStation.setDevConfCode(cAddr);
-			newTemStation.setdType(dType);
-			newTemStation.setwAddr(wAddr);
-			newTemStation.setAmmeterCode(ammeterCode);
-			newTemStation.setKw(apr.getKw());
-			newTemStation.setKwh(tolKwh);
-			newTemStation.setRecordTime(temStationRecordTime);
+		// 每天的
+		ElecDataDay temStationYearR = new ElecDataDay();
+		temStationYearR.setDevConfCode(cAddr);
+		temStationYearR.setdType(dType);
+		temStationYearR.setwAddr(wAddr);
+		temStationYearR.setdAddr(dAddr);
+		temStationYearR.setAmmeterCode(ammeterCode);
+		temStationYearR.setRecordTime(temStationYearRecordTime);
+		ElecDataDay temStationYear = elecDataDayService.findOne(temStationYearR);
+		if (temStationYear == null) {
+			ElecDataDay newTemStationYear = new ElecDataDay();
+			newTemStationYear.setdAddr(dAddr);
+			newTemStationYear.setDevConfCode(cAddr);
+			newTemStationYear.setdType(dType);
+			newTemStationYear.setwAddr(wAddr);
+			newTemStationYear.setAmmeterCode(ammeterCode);
+			newTemStationYear.setKw(apr.getKw());
+			newTemStationYear.setKwh(tolKwh);
+			newTemStationYear.setRecordTime(temStationYearRecordTime);
 			if (subSequence.equals("1")) {
-				newTemStation.setType(1);
+				newTemStationYear.setType(1);
 			} else if (subSequence.equals("2")) {
-				newTemStation.setType(2);
+				newTemStationYear.setType(2);
 			}
-			elecDataHourService.saveByMapper(newTemStation);
+			elecDataDayService.saveByMapper(newTemStationYear);
 		} else {
 			if (subSequence.equals("1")) {
-				temStation.setType(1);
+				temStationYear.setType(1);
 			} else if (subSequence.equals("2")) {
-				temStation.setType(2);
+				temStationYear.setType(2);
 			}
-			temStation.setKw(apr.getKw());
-			temStation.setKwh(temStation.getKwh() + tolKwh);
-			elecDataHourService.saveByMapper(temStation);
-		}
-	}
-
-	private void doUpdateMonthYear() throws ParseException {
-		List<PatchDataRecord> list = patchDataRecordMapper.selectByExample(null);
-		for (PatchDataRecord patchDataRecord : list) {
-			String recordTime = DateUtil.formatDate(
-					DateUtil.formatString(patchDataRecord.getMeterTime().toString(), "yyMMddHHssmm"), "yyyy-MM-dd HH");
-			String cAddr = patchDataRecord.getcAddr().toString();
-			Long dAddr = patchDataRecord.getdAddr();
-			Integer dType = patchDataRecord.getdType();
-			Integer wAddr = patchDataRecord.getwAddr();
-			String ammeterCode = patchDataRecord.getcAddr().toString();
-			CharSequence subSequence = dAddr.toString().subSequence(0, 1);
-			Double tolKwh = 0D;
-			Double tolKw = 0D;
-			// 每天的。
-			ElecDataHour edh = new ElecDataHour();
-			edh.setRecordTime(recordTime);
-			edh.setAmmeterCode(ammeterCode);
-			List<ElecDataHour> byExample = elecDataHourService.selectByExample(edh);
-			if (byExample.size() > 0) {
-				for (ElecDataHour elecDataHour : byExample) {
-					tolKw += patchDataRecord.getKw().doubleValue();// +
-																	// elecDataHour.getKw().doubleValue();
-					tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
-				}
-			} else {
-				tolKwh = patchDataRecord.getKwh();
-				tolKw = patchDataRecord.getKw();
-			}
-			ElecDataDay elecDataDay = new ElecDataDay();
-			elecDataDay.setdType(dType);
-			elecDataDay.setwAddr(wAddr);
-			elecDataDay.setAmmeterCode(ammeterCode);
-			elecDataDay.setRecordTime(recordTime);
-			ElecDataDay temStationYear = elecDataDayService.findOne(elecDataDay);
-			if (temStationYear == null) {
-				ElecDataDay newTemStationYear = new ElecDataDay();
-				newTemStationYear.setDevConfCode(cAddr);
-				newTemStationYear.setwAddr(wAddr);
-				newTemStationYear.setAmmeterCode(ammeterCode);
-				newTemStationYear.setKw(tolKw);
-				newTemStationYear.setKwh(tolKwh);
-				newTemStationYear.setRecordTime(recordTime);
-				if (subSequence.equals("1")) {
-					newTemStationYear.setType(1);
-				} else if (subSequence.equals("2")) {
-					newTemStationYear.setType(2);
-				}
-				elecDataDayService.saveByMapper(newTemStationYear);
-			} else {
-				if (subSequence.equals("1")) {
-					temStationYear.setType(1);
-				} else if (subSequence.equals("2")) {
-					temStationYear.setType(2);
-				}
-				temStationYear.setKw(patchDataRecord.getKw());
-				temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
-				elecDataDayService.saveByMapper(temStationYear);
-			}
-			tolKwh = 0D;
-			tolKw = 0D;
-			// 每个月的。
-			/*String monthRecord = DateUtil.formatDate(
-					DateUtil.formatString(patchDataRecord.getMeterTime().toString(), "yyMMddHHssmm"), "yyyyMM");
-			List<ElecDataHour> byExample2 = elecDataHourService.selectByExample(edh);
-			if (byExample2.size() > 0) {
-				for (ElecDataHour elecDataHour : byExample2) {
-					ElecDataMonth elecDataMonth = new ElecDataMonth();
-					elecDataMonth.setAmmeterCode(ammeterCode);
-					elecDataMonth.setRecordTime(monthRecord);
-					elecDataMonth.setdAddr(elecDataHour.getdAddr() == null ? 0 : elecDataHour.getdAddr().intValue());
-					List<ElecDataMonth> condition = elecDataMonthService.findByCondition(elecDataMonth);
-					if (condition.size() > 0) {
-						for (ElecDataMonth elecDataMonth2 : condition) {
-							Integer dAddr1 = elecDataMonth2.getdAddr();
-							CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
-							if (subSequence1.equals("1")) {
-								elecDataMonth.setType(1);// 发电
-							} else if (subSequence1.equals("2")) {
-								elecDataMonth.setType(2);// 用电
-							}
-							tolKw += patchDataRecord.getKw().doubleValue();// +
-																			// elecDataHour.getKw().doubleValue();
-							tolKwh += patchDataRecord.getKw().doubleValue() + elecDataHour.getKwh().doubleValue();
-						}
-						elecDataMonth.setKw(BigDecimal.valueOf(tolKw));
-						elecDataMonth.setKwh(BigDecimal.valueOf(tolKwh));
-						boolean falg = elecDataMonthService.updateByExampleSelective(elecDataMonth);
-						if (falg) {
-							System.out.println("修改月成功！：：" + elecDataMonth.getAmmeterCode());
-						} else {
-							System.out.println("修改月异常或失败！：：" + elecDataMonth.getAmmeterCode());
-						}
-					} else {
-						Long dAddr1 = elecDataHour.getdAddr();
-						CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
-						ElecDataMonth edm = new ElecDataMonth();
-						edm.setAmmeterCode(ammeterCode);
-						edm.setRecordTime(monthRecord);
-						edm.setKw(BigDecimal.valueOf(elecDataHour.getKw()));
-						edm.setKwh(BigDecimal.valueOf(elecDataHour.getKwh()));
-						edm.setdAddr(elecDataHour.getdAddr().intValue());
-						edm.setDevConfCode(elecDataHour.getDevConfCode());
-						edm.setdType(elecDataHour.getdType());
-						edm.setwAddr(elecDataHour.getwAddr());
-						if (subSequence1.equals("1")) {
-							edm.setType(1);// 发电
-						} else if (subSequence1.equals("2")) {
-							edm.setType(2);// 用电
-						}
-						edm.setwAddr(elecDataHour.getwAddr());
-						boolean b = elecDataMonthService.saveByMapper(edm);
-						if (b) {
-							System.out.println("保存月成功！：：" + edm.getAmmeterCode());
-						} else {
-							System.out.println("报存月失败或异常！：：" + edm.getAmmeterCode());
-						}
-					}
-					// 删除那一个月的数据、
-//					elecDataMonthService.deleteByRecordTime(elecDataMonth);
-				}
-			}
-			tolKwh = 0D;
-			tolKw = 0D;
-			// 年的。
-			String yearRecord = DateUtil.formatDate(
-					DateUtil.formatString(patchDataRecord.getMeterTime().toString(), "yyMMddHHssmm"), "yyyy");
-			List<ElecDataHour> byExample3 = elecDataHourService.selectByExample(edh);
-			for (ElecDataHour elecDataHour2 : byExample3) {
-				ElecDataYear elecDataYear = new ElecDataYear();
-				elecDataYear.setRecordTime(yearRecord);
-				elecDataYear.setAmmeterCode(ammeterCode);
-				elecDataYear.setdAddr(elecDataHour2.getdAddr() == null ? 0 : elecDataHour2.getdAddr().intValue());
-				List<ElecDataYear> condition = elecDataYearService.findByCondition(elecDataYear);
-				Double totalKw = 0d;
-				Double totalKwh = 0d;
-				if (condition.size() > 0) {
-					for (ElecDataYear elecDataYear2 : condition) {
-						Integer dAddr1 = elecDataYear2.getdAddr();
-						CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
-						if (subSequence1.equals("1")) {
-							elecDataYear2.setType(1);// 用电
-						} else if (subSequence1.equals("2")) {
-							elecDataYear2.setType(2);// 发电
-						}
-						totalKw += elecDataHour2.getKw().doubleValue();// +
-																		// elecDataYear2.getKw().doubleValue();
-						totalKwh += elecDataHour2.getKw().doubleValue() + elecDataYear2.getKwh().doubleValue();
-					}
-					elecDataYear.setKw(BigDecimal.valueOf(totalKw));
-					elecDataYear.setKwh(BigDecimal.valueOf(totalKwh));
-					boolean falg = elecDataYearService.updateByExampleSelective(elecDataYear);
-					if (falg)
-						System.out.println("修改成功！：：" + elecDataYear.getAmmeterCode());
-					else
-						System.out.println("修改异常或失败！：：" + elecDataYear.getAmmeterCode());
-				} else {
-					Long dAddr1 = elecDataHour2.getdAddr();
-					CharSequence subSequence1 = dAddr1.toString().subSequence(0, 1);
-					ElecDataYear edy = new ElecDataYear();
-					edy.setAmmeterCode(ammeterCode);
-					edy.setRecordTime(yearRecord);
-					edy.setKw(BigDecimal.valueOf(elecDataHour2.getKw()));
-					edy.setKwh(BigDecimal.valueOf(elecDataHour2.getKwh()));
-					edy.setdAddr(elecDataHour2.getdAddr().intValue());
-					edy.setDevConfCode(elecDataHour2.getDevConfCode());
-					edy.setdType(elecDataHour2.getdType());
-					if (subSequence1.equals("1")) {
-						edy.setType(1);// 用电
-					} else if (subSequence1.equals("2")) {
-						edy.setType(2);// 发电
-					}
-					edy.setwAddr(elecDataHour2.getwAddr());
-					boolean b = elecDataYearService.saveByMapper(edy);
-					if (b)
-						System.out.println("保存年成功！：：" + edy.getAmmeterCode());
-					else
-						System.out.println("保存年异常或失败！：：" + edy.getAmmeterCode());
-				}
-			}*/
+			temStationYear.setKw(apr.getKw());
+			temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
+			elecDataDayService.saveByMapper(temStationYear);
 		}
 	}
 
@@ -522,8 +330,6 @@ public class PatchDataRecordJob {
 			System.err.println(apr.getcAddr() + "\t" + apr.getMeterTime());
 			System.out.println("kwhTol小于0");
 			// System.exit(0);
-		}
-		if (kwhTol < 0) {
 			kwhTol = 0.0d;
 		}
 		return kwhTol;

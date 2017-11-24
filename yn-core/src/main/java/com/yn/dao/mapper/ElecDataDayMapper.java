@@ -18,7 +18,9 @@ public interface ElecDataDayMapper {
 	int deleteByPrimaryKey(Integer id);
 
 	int insert(ElecDataDay record);
-
+	
+	int insertData(ElecDataDay record);
+	
 	int insertSelective(ElecDataDay record);
 
 	List<ElecDataDay> selectByExample(ElecDataDayExample example);

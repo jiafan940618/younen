@@ -58,9 +58,12 @@ public class AmmeterRecordService {
 	}
 
 	public void saveByMapper(AmmeterRecord ammeterRecord) {
-		ammeterRecord.setQueryStartDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		ammeterRecord.setQueryEndDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		AmmeterRecord one = findOne(ammeterRecord);
+//		ammeterRecord.setQueryStartDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+//		ammeterRecord.setQueryEndDtm(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		if(ammeterRecord.getDate()==null){
+			ammeterRecord.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		}
+		AmmeterRecord one = ammeterRecordMapper.select(ammeterRecord);
 		if (one != null) {
 			try {
 				BeanCopy.beanCopy(ammeterRecord, one);
@@ -73,6 +76,7 @@ public class AmmeterRecordService {
 		} else {
 			ammeterRecord.setUpdateDtm(new Date());
 			ammeterRecord.setCreateDtm(new Date());
+			ammeterRecord.setwAddr(0);
 			ammeterRecordMapper.insert(ammeterRecord);
 			System.out.println("AmmeterJob--> AmmeterRecord新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		}

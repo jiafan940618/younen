@@ -27,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.yn.dao.AmmeterDao;
@@ -641,5 +643,8 @@ public class ElecDataDayService {
 		return maps;
 	}
 
-
+	@Transactional(propagation=Propagation.REQUIRED)
+	public int insertData(ElecDataDay record){
+		return elecDataDayMapper.insertData(record);
+	}
 }

@@ -59,4 +59,30 @@ public interface AmPhaseRecordMapper {
 		public AmPhaseRecord findByMapper4InitKwh(AmPhaseRecord apr);
 		
 		public List<AmPhaseRecord> findAll4DateCaddr(AmPhaseRecord amPhaseRecord);
+		
+		public List<AmPhaseRecord> selectOneBySort(AmPhaseRecord amPhaseRecord);
+		
+		/**
+		 * 
+		    * @Title: findMaxData
+		    * @Description: TODO(查询当天时间最大的一条数据)
+		    * @param @param aprR
+		    * @param @return    参数
+		    * @return AmPhaseRecord    返回类型
+		    * @throws
+		 */
+		public AmPhaseRecord findMaxData(AmPhaseRecord aprR);
+		
+		/**
+		 * 
+		    * @Title: findMinData
+		    * @Description: TODO(当天时间最小的数据)
+		    * @param @param aprR
+		    * @param @return    参数
+		    * @return AmPhaseRecord    返回类型
+		    * @throws
+		 */
+		public AmPhaseRecord findMinData(AmPhaseRecord aprR);
+		
+		public AmPhaseRecord find4Daddr(AmPhaseRecord aprR);
 }
