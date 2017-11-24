@@ -729,28 +729,33 @@ public class StationService {
 			} else if (stationVo.getStatus() == 2) {
 				stationVo.setRemark("电表异常");
 			}
+            if (stationVo.getStatus()!=0) {
+    			List<Object> liststa = ammeterDao.findBynewStationId(station.getId());
+    			/** 累计发电量*/
+    			Double power = 0.0;
+    			for (Object object : liststa) {
 
-			List<Object> liststa = ammeterDao.findBynewStationId(station.getId());
-			/** 累计发电量*/
-			Double power = 0.0;
-			for (Object object : liststa) {
+    				Object[] obj = (Object[]) object;
+    				BigDecimal initKwh = (BigDecimal) obj[0];
+    				BigDecimal workTotalKwh = (BigDecimal) obj[1];
+    				Integer workTotalTm = (Integer) obj[2];
 
-				Object[] obj = (Object[]) object;
-				BigDecimal initKwh = (BigDecimal) obj[0];
-				BigDecimal workTotalKwh = (BigDecimal) obj[1];
-				Integer workTotalTm = (Integer) obj[2];
+    				if (null != initKwh) {
+    					power += initKwh.doubleValue();
+    				}
+    				if (null != workTotalKwh) {
+    					power += workTotalKwh.doubleValue();
+    				}
 
-				if (null != initKwh) {
-					power += initKwh.doubleValue();
-				}
-				if (null != workTotalKwh) {
-					power += workTotalKwh.doubleValue();
-				}
-
-				stationVo.setElectricityGenerationTol(power);
+    				stationVo.setElectricityGenerationTol(power);
+    				/** 工作时长*/
+    				stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
+    				//stationVo.setWorkTotaTm(workTotalTm);
+    			}
+			}else {
+				stationVo.setElectricityGenerationTol(0D);
 				/** 工作时长*/
-				stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
-				//stationVo.setWorkTotaTm(workTotalTm);
+				stationVo.setWorkTotaTm(Double.valueOf(df.format(0D)));
 			}
 			newlist.add(stationVo);
 		}
