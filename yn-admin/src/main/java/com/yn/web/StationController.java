@@ -55,7 +55,7 @@ public class StationController {
     @ResponseBody
     public Object findOne(Long id) {
     	
-    	id= 275L;
+    	
         StationVo stationVo =  orderPlanService.findByid(id);
       
         Map<String,String>  map = orderPlanService.selectByid(stationVo.getOrderId());

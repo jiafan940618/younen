@@ -58,6 +58,7 @@ public class OrderPlanService {
 			String inverterBrand = (String)obj[4];
 			String inverterModel = (String)obj[5];
 			String apoIds = (String)obj[6];
+			Integer batteryBoardWarrantyYear = (Integer)obj[7];
 			
 			map.put("orderCode", orderCode);
 			map.put("constructionStatus", constructionStatus);
@@ -77,6 +78,7 @@ public class OrderPlanService {
 	        	apoids += apolegamy.getApolegamyName()+"  ";
 			}
 	        map.put("apoIds", apoids);
+	        map.put("batteryBoardWarrantyYear", batteryBoardWarrantyYear.toString());
 
 		return map;
     }
@@ -98,6 +100,8 @@ public class OrderPlanService {
     		String companyName = (String)obj[7];
     		Integer caddr = (Integer)obj[8];
     		Integer orderId = (Integer)obj[9];
+    		String linkPhone = (String)obj[10];
+    		
     		
     		staionVo.setId(Long.valueOf(sId));
     		staionVo.setServerId(Long.valueOf(serverId));
@@ -114,7 +118,7 @@ public class OrderPlanService {
     		staionVo.setCaddr(caddr.toString());
     		}
     		staionVo.setOrderId(Long.valueOf(orderId));
-    		
+    		staionVo.setLinkPhone(linkPhone);
 		}
     	
     	
