@@ -138,7 +138,7 @@ public class StationController {
     /**
      * 电站信息
      */
-    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST})
+    @RequestMapping(value = "/stationInfo", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object stationInfo(Long stationId) {
         Map<String, Object> stationInfo = stationService.stationInfo(stationId);
