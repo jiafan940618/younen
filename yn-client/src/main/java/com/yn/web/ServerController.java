@@ -590,6 +590,7 @@ public class ServerController {
 		/*page.setIndex(1);
 		page.setType(0);
 		page.setCityName("南京市");*/
+		
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
 		List<Object> list = null;

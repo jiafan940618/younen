@@ -574,7 +574,7 @@ public class StationService {
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
-			stationVo.setWorkTotaTm(workTotalTm);
+			stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
 			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
@@ -643,7 +643,7 @@ public class StationService {
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
-			stationVo.setWorkTotaTm(workTotalTm);
+			stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
 			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
@@ -749,7 +749,8 @@ public class StationService {
 
 				stationVo.setElectricityGenerationTol(power);
 				/** 工作时长*/
-				stationVo.setWorkTotaTm(workTotalTm);
+				stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
+				//stationVo.setWorkTotaTm(workTotalTm);
 			}
 			newlist.add(stationVo);
 		}
