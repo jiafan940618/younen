@@ -152,12 +152,9 @@ public class UserController {
     	logger.info("--- ---- ---- ------- --HeadImgUrl:"+userVo.getHeadImgUrl());
     	logger.info("--- ---- ---- ------- --Phone:"+userVo.getPhone());
     	
-    	 User newuserVo = SessionCache.instance().getUser();
+    	User newuserVo = SessionCache.instance().getUser();
     	 
-    	User user02 = userService.findByEamil(userVo.getEmail()); 
-    	
-    
-    	
+
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
@@ -167,11 +164,13 @@ public class UserController {
 			return ResultVOUtil.error(777, "抱歉,您的手机号有误!");
 		}
     	
+    	if(null != userVo.getEmail() || !userVo.getEmail().equals("")){
     	
-    	
-    	if(null != user02){
-    		
-    		return ResultVOUtil.error(777, "抱歉,该Email已注册!");
+    		User user02 = userService.findByEamil(userVo.getEmail()); 
+	    	if(null != user02){
+	    		
+	    		return ResultVOUtil.error(777, "抱歉,该Email已注册!");
+	    	}
     	}
     	
     	if(!newuserVo.getPhone().equals(userVo.getPhone())){

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.BrandMapper">
+
+	<resultMap id="brandMap" type="com.yn.model.Brand">
+		<id column="id" property="id"></id>
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		
+		<result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+
+	</resultMap>
+	
+	<select id="getBrand" parameterType="com.yn.model.Page" resultMap="brandMap">
+	
+		SELECT * FROM brand b WHERE b.del = 0 and type = #{type}  limit #{start},#{limit}
+	
+	</select>
+	
+	<select id="getCount" parameterType="com.yn.model.Page" resultType="Integer">
+	
+		select count(1) from brand WHERE del = 0 AND TYPE = #{type} limit #{start},#{limit}
+	
+	</select>
+	
+
+
+
+</mapper>

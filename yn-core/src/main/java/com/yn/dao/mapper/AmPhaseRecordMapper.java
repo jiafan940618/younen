@@ -1,6 +1,7 @@
 package com.yn.dao.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -85,4 +86,13 @@ public interface AmPhaseRecordMapper {
 		public AmPhaseRecord findMinData(AmPhaseRecord aprR);
 		
 		public AmPhaseRecord find4Daddr(AmPhaseRecord aprR);
+		public List<AmPhaseRecord> findByAmmeterCodes(@Param("map")Map<String, Object> map) ;
+		
+		public AmPhaseRecord todayKwh(@Param("map")Map<String, Object> map) ;
+		
+		public List<AmPhaseRecord> nowKw(@Param("map")Map<String, Object> map) ;
+		
+		public AmPhaseRecord nowAmPhaseRecord(@Param("map")Map<String, Object> map) ;
+			
+		
 }

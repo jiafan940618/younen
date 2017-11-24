@@ -63,6 +63,7 @@ public class OssService {
 				|| (type.toLowerCase().equals(".avi") && file != null)
 				|| (type.toLowerCase().equals(".webm") && file != null)
 				|| (type.toLowerCase().equals(".apk") && file != null)
+				|| (type.toLowerCase().equals(".gif") && file != null)
 				
 				) {
 			

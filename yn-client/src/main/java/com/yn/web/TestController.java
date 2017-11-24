@@ -53,6 +53,7 @@ import com.yn.utils.MD5Util;
 import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.utils.PropertyUtils;
 import com.yn.utils.StringUtil;
+import com.yn.vo.ApolegamyVo;
 import com.yn.vo.NewPlanVo;
 import com.yn.vo.NewServer;
 import com.yn.vo.OrderVo;
@@ -99,12 +100,22 @@ public class TestController {
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
-	       public Object helloJsp01(UserVo userVo){  
-	    	  
+	       public Object helloJsp01(ApolegamyVo apolegamyVo){  
 	    	   
-	    	String upload =  systemConfigService.get("user_upload");
+	    	   NewServerPlan findOne = newserverPlanService.findOne(1l);
+	           
+	           Double minpur =	findOne.getMinPurchase().doubleValue();
+	           
+	           logger.info("------ ---- -- -- -- -- - -- - - 购买量为： "+8);
+	           
+	   	        if(null == minpur || minpur > 8 ){
+	   	        	logger.info("------ ---- -- -- -- -- - -- - - 千瓦时不能为空且小于 "+findOne.getMinPurchase());
+	   	        	
+	   	        	return  ResultVOUtil.error(777, Constant.PUR_NULL+findOne.getMinPurchase());
+	   	  	  	}
+	           
 	     
-	   		return ResultVOUtil.success(upload);
+	   		return ResultVOUtil.success(null);
 	        
 	       } 
 	       

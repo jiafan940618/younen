@@ -111,8 +111,26 @@ public class OrderController {
 				noticeService.update2Read(NoticeEnum.NEW_ORDER.getCode(), id, userId);
 			}
 		}
+		String imgUrl = findOne.getApplyStepbimgUrl();
+		
+		String[] img = imgUrl.split(",");
+		
+		List list = new LinkedList();
+		for (int i = 0; i < img.length; i++) {
+			list.add(img[i]);
+		}
+		
+		/* List<BuildImg> list = new LinkedList<BuildImg>();
+		for (int i = 0; i < img.length; i++) {
+			
+			BuildImg build = new BuildImg();
+			build.setImgUrl(img[i]);
+			
+			list.add(build);
+		}*/
+		
 
-		return ResultVOUtil.success(findOne);
+		return ResultVOUtil.newsuccess(findOne,list);
 	}
 
 	@ResponseBody

@@ -116,7 +116,10 @@ public class ElecDataHourController {
 	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
 			) throws NumberFormatException, ParseException {
 		Map<String, Object> workList = new HashMap<>();
-		workList = elecDataHourService.oneHourKwh(stationId);
+		List<Map<String, Object>> listArrayWork=elecDataHourService.oneHourKwh(stationId,1);
+		List<Map<String, Object>> listArrayUse=elecDataHourService.oneHourKwh(stationId,2);
+		workList.put("workKw", listArrayWork);
+		workList.put("useKw", listArrayUse);
 		return ResultVOUtil.success(workList);
 	}
 

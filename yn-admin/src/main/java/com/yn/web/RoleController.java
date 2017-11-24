@@ -80,7 +80,7 @@ public class RoleController {
         return ResultVOUtil.success(findAll);
     }
     
-    @RequestMapping(value = "/find", method = {RequestMethod.POST})
+    @RequestMapping(value = "/find",method = {RequestMethod.POST})
     @ResponseBody
     public Object find(Long roleId) {
         Role findOne = roleService.findOne(roleId);

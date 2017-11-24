@@ -196,15 +196,15 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     @ResponseBody
     @RequestMapping(value = "/Orderplan")
     public ResultData<Object> findOrderplan(ServerVo serverVo) {
-    	/*serverVo.setId(1L);
+    	/*serverVo.setId(1L);*/
     	
-    	serverVo.setServerId("8");*/
+    	//serverVo.setServerId("8");
         //	ServerPlanVo serverPlanVo
         logger.info("传过来的serverId为：-- ---- --- ---- "+serverVo.getId());
             NewServerPlan serverPlan = new NewServerPlan();
             serverPlan.setServerId(Long.valueOf(serverVo.getServerId()));
 
-           List<Object>  list01 = newserverPlanService.selectServerPlan(serverVo.getId());
+           List<Object>  list01 = newserverPlanService.selectServerPlan(Long.valueOf(serverVo.getServerId()));
            
            List<NewPlanVo> list = newserverPlanService.getnewServerPlan(list01);
 

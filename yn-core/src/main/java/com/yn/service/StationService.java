@@ -574,7 +574,7 @@ public class StationService {
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
-			stationVo.setWorkTotaTm(workTotalTm);
+			stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
 			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
@@ -643,7 +643,7 @@ public class StationService {
 			stationVo.setCapacity(capacity.doubleValue());
 			stationVo.setStatus(status);
 			stationVo.setStationCode(stationCode);
-			stationVo.setWorkTotaTm(workTotalTm);
+			stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
 			stationVo.setElectricityGenerationTol(Double.valueOf(df.format(electricityGenerationTol)));
 			stationVo.setUserName(userName);
 
@@ -749,7 +749,8 @@ public class StationService {
 
 				stationVo.setElectricityGenerationTol(power);
 				/** 工作时长*/
-				stationVo.setWorkTotaTm(workTotalTm);
+				stationVo.setWorkTotaTm(Double.valueOf(df.format(workTotalTm/60)));
+				//stationVo.setWorkTotaTm(workTotalTm);
 			}
 			newlist.add(stationVo);
 		}
@@ -757,12 +758,7 @@ public class StationService {
 		return newlist;
 	}
 
-	// public List<Station> getstation(Long userId){
-	//
-	// return stationDao.getstation(userId);
-	// }
-	//
-	//
+
 	/**
 	 * 查询用户电站,电表等信息
 	 * 
@@ -797,10 +793,8 @@ public class StationService {
 			map2.put("ammeterScale","0");
 			map.put("ammeterRecode", map2);
 		}
-		
-		Date date = station.getCreateDtm();
-		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1, date));
-		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2, date));
+		map.put("workInfo", elecDataHourService.getNowToalKwh(stationId, 1));
+		map.put("useInfo", elecDataHourService.getNowToalKwh(stationId, 2));
 		return map;
 	}
 

@@ -65,6 +65,27 @@ public class NewServerPlanService {
 	private static final char b = 'o';
 	/** 进制长度 */
 	private static final int binLen = r.length;
+	
+	public void delete(Long id){
+		
+		planDao.delete(id);
+	}
+	
+	public void deleteBatch(List<Long> ids){
+		
+		planDao.deleteBatch(ids);
+	}
+	
+	public List<NewServerPlan> FindBybrandId(Long Id){
+		
+		return planDao.FindBybrandId(Id);	
+	}
+	
+	public List<NewServerPlan> FindtwobrandId01(Long Id){
+		
+		return planDao.FindtwobrandId(Id);	
+	}
+	
 
 	public static String toSerialCode(long id, int s) {
 		char[] buf = new char[32];
@@ -231,7 +252,7 @@ public class NewServerPlanService {
 	         /** 服务费*/
 	        order.setFactoragePrice(price * factorage );
 	         /** 装机容量*/
-	        order.setCapacity(newserverPlan.getMinPurchase());
+	        order.setCapacity(newserverPlan.getCapacity());
 	        /** 状态*/
 	        order.setStatus(0);
 	        order.setGridConnectedIsPay(0);
@@ -341,6 +362,7 @@ public class NewServerPlanService {
 		        	 BigDecimal apoprice  = (BigDecimal)object01[3];
 		        	 String unit = (String) object01[4];
 		        	 Integer type = (Integer) object01[5];
+		        	 String iconUrl=(String) object01[6];
 		        	 
 		        	 vol.setId(Long.valueOf(id));
 		        	 vol.setApolegamyName(apolegamyName);
@@ -348,7 +370,7 @@ public class NewServerPlanService {
 		        	 vol.setUnit(unit);
 		        	 vol.setType(type);
 		        	 vol.setPrice(apoprice.doubleValue());
-		        	 
+		        	 vol.setIconUrl(iconUrl);
 		        	 newList.add(vol);
 				}
 				return newList;
@@ -440,7 +462,6 @@ public class NewServerPlanService {
 	        Long order_planid = newserverPlan.getId();
 	         /** 保修期*/
 	        order.setWarPeriod(newserverPlan.getWarPeriod().intValue());
-	       // order.setCapacity(newserverPlan.getCapacity());
 	        order.setProvinceId(user.getProvinceId());
 	        order.setProvinceText(user.getProvinceText());
 	        order.setServerName(server.getCompanyName());

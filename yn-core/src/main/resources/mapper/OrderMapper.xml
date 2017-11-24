@@ -42,7 +42,7 @@
 		<result column="status" property="status" jdbcType="INTEGER" />
 		<result column="apply_stepa" property="applyStepA" jdbcType="INTEGER" />
 		<result column="apply_stepb" property="applyStepB" jdbcType="INTEGER" />
-		<result column="apply_stepbimg_url" property="applyStepBImgUrl"
+		<result column="apply_stepbimg_url" property="applyStepbimgUrl"
 			jdbcType="VARCHAR" />
 		<result column="grid_connected_is_pay" property="gridConnectedIsPay"
 			jdbcType="INTEGER" />

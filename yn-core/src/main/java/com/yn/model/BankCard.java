@@ -51,6 +51,9 @@ public class BankCard extends IDomain implements Serializable {
     @Column(columnDefinition = "varchar(10) comment '[11、借记卡  12、信用卡]'")
     private String treatyType;
     
+    private Long serverId;
+    
+    
     
 
     @OneToMany
@@ -69,6 +72,14 @@ public class BankCard extends IDomain implements Serializable {
 	
 	
 	
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
 	public Long getId() {
 		return id;
 	}

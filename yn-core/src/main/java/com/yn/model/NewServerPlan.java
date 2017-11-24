@@ -42,6 +42,9 @@ public class NewServerPlan extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(11) comment '[标识id]'")
 	private Long factionId;
 	
+	private int planId;
+	
+	
 	private Double capacity;
 
 
@@ -63,8 +66,21 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.minPurchase = minPurchase;
 		this.unitPrice = unitPrice;
 	}
-
 	
+	
+	
+	public int getPlanId() {
+		return planId;
+	}
+
+
+
+	public void setPlanId(int planId) {
+		this.planId = planId;
+	}
+
+
+
 	public Long getFactionId() {
 		return factionId;
 	}

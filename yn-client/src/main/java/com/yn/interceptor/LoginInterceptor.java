@@ -70,8 +70,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                     throw new MyException(5003, Constant.NO_LOGIN);
                 }
             }else{
-            	  
-            	 //return true;
+
             	throw new MyException(5003, Constant.NO_LOGIN);
             }
 
@@ -112,10 +111,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         		|| url.indexOf("/client/station/numCapacity")>-1 || url.indexOf("/client/station/stationFenbu")>-1
         		|| url.indexOf("/client/temStationYear/monthKwh")>-1 || url.indexOf("/client/banner")>-1 ||
         		url.indexOf("/client/station/saveType")>-1 || url.indexOf("/client/weather/getWeather")>-1
-
+        		|| url.indexOf("/client/question")>-1|| url.indexOf("/client/download")>-1
         		|| url.indexOf("/client/sign/doresult")>-1 || url.indexOf("/client/sign/doSucRep")>-1
         		|| url.indexOf("/client/appConfig/isSystemMaintain") > -1 || url.indexOf("/systemConfig/updateAndroid") > -1 || url.indexOf("/client/visitor") > -1 ) {
-
+        	    
 
             return true;
         }

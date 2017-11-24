@@ -168,7 +168,9 @@ public class ServerController {
 	        userService.updateToken(user);
 	       
 	        user.setPassword(null);
-
+	        server.setApolegamyServer(null);
+	        server.setUser(null);
+	        server.setNewServerPlan(null);
 	        httpSession.setAttribute("server", server);
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
@@ -588,6 +590,7 @@ public class ServerController {
 		/*page.setIndex(1);
 		page.setType(0);
 		page.setCityName("南京市");*/
+		
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
 		List<Object> list = null;

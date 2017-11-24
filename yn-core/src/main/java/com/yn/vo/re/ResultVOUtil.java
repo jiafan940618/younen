@@ -95,6 +95,15 @@ public class ResultVOUtil {
         resultData.setData(null);
         return resultData;
     }
+    
+    public static ResultData<Object> newerror(Integer code, String msg,Object object) {
+        ResultData resultData = new ResultData();
+        resultData.setCode(code);
+        resultData.setMsg(msg);
+        resultData.setSuccess(false);
+        resultData.setData(object);
+        return resultData;
+    }
 
     public static ResultData<Object> error(ResultEnum resultEnum) {
         ResultData resultData = new ResultData();

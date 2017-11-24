@@ -119,7 +119,7 @@ public class StationController {
 	/**
 	 * 电站信息
 	 */
-	@RequestMapping(value = "/stationInfo", method = { RequestMethod.POST })
+	@RequestMapping(value = "/stationInfo", method = { RequestMethod.POST , RequestMethod.GET})
 	@ResponseBody
 	public Object stationInfo(Long stationId) {
 		Map<String, Object> stationInfo = stationService.stationInfo(stationId);
@@ -144,14 +144,13 @@ public class StationController {
 	public Object runningStation(HttpSession session, Station station) {
 
 		 User newuser = SessionCache.instance().getUser();
-		//NewUserVo userVo = (NewUserVo) session.getAttribute("userVo");
 		Map<String, Object> stationByUser = new HashMap<>();
 
 		if (newuser != null) {
 			station.setUserId(newuser.getId());
 			logger.info("--- ---- ---- ------- --userId:"+newuser.getId());
 
-			if (stationDao.findByUserId(station.getUserId()) != null) {
+			if (stationDao.findByUserId(station.getUserId()).size()>0) {
 				List<Station> stations = stationDao.findByUserId(station.getUserId());
 				stationByUser = stationService.stationByUser(stations);
 			} else {
@@ -173,8 +172,6 @@ public class StationController {
 	@RequestMapping(value = "/runStations", method = { RequestMethod.POST, RequestMethod.GET })
 	public Object runStations(HttpSession session, Station station, HttpServletRequest request,long userId) {
 		Map<String, Object> stationByUser = new HashMap<>();
-		
-		
 			if (userId!=0) {
 				List<Station> stations = stationDao.findByUserId(userId);
 				

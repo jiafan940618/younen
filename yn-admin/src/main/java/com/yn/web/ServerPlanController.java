@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Apolegamy;
 import com.yn.model.NewServerPlan;
 import com.yn.model.ProductionDetail;
+import com.yn.model.Server;
 import com.yn.model.ServerPlan;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
@@ -87,10 +88,38 @@ public class ServerPlanController {
         return ResultVOUtil.success(serverPlan);
     }
 
+     /** */
+    @ResponseBody
+    @RequestMapping(value = "/newsave", method = {RequestMethod.POST})
+    public Object newsave(@RequestBody NewServerPlanVo serverPlanVo,HttpSession session) {
+    	Server server =(Server) session.getAttribute("server");
+    	
+    	if(null == server){
+    		
+    		return ResultVOUtil.error(777, "抱歉你未登录!");
+    	}
+    	
+    	serverPlanVo.setServerId(server.getId());
+    	
+    	
+    	NewServerPlan serverPlan = new NewServerPlan();
+        BeanCopy.copyProperties(serverPlanVo, serverPlan);
+        newserverPlanService.save(serverPlan);
+        return ResultVOUtil.success(serverPlan);
+    }
+    
+    
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
         serverPlanService.delete(id);
+        return ResultVOUtil.success();
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/newdelete", method = {RequestMethod.POST})
+    public Object newdelete(Long id) {
+    	newserverPlanService.delete(id);
         return ResultVOUtil.success();
     }
 
@@ -111,6 +140,26 @@ public class ServerPlanController {
         Page<ServerPlan> findAll = serverPlanService.findAll(serverPlan, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    @RequestMapping(value = "/newfindAll", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
+    	
+    	Server server =(Server) session.getAttribute("server");
+    	
+    	if(null == server){
+    		
+    		return ResultVOUtil.error(777, "抱歉你未登录!");
+    	}
+    	
+    	serverPlanVo.setServerId(server.getId());
+    	
+        NewServerPlan serverPlan = new NewServerPlan();
+        BeanCopy.copyProperties(serverPlanVo, serverPlan);
+       List<NewServerPlan> findAll = newserverPlanService.findAll(serverPlan);
+        return ResultVOUtil.success(findAll);
+    }
+    
  
     /** 处理金额*/
     @ResponseBody

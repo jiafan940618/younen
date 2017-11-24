@@ -409,7 +409,12 @@ public class OrderService {
 		OrderVo orderVo = new OrderVo();
 		orderVo.setId(orderId.longValue());
 		orderVo.setOrderCode(orderCode);
-		orderVo.setTradeNo(tradeNo);
+		if(null != tradeNo){
+			orderVo.setTradeNo(tradeNo);
+		}else{
+			orderVo.setTradeNo("未建电站");
+		}
+
 		orderVo.setCapacity(capacity.doubleValue());
 		orderVo.setTotalPrice(totalPrice.doubleValue());
 		orderVo.setHadPayPrice(payPrice.doubleValue());
@@ -830,7 +835,7 @@ public class OrderService {
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		Order o1 = findOne(o.getId());
 		if (o1.getLoanStatus() == 2) {// 看看是不是貸款成功的。再看有没有上传图片 。
-			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+			if (o1.getApplyStepbimgUrl() == null || o1.getApplyStepbimgUrl().length() < 1) {
 				jsonResult.put("reason", "请先上传报建时所需要的材料。");
 				jsonResult.put("loanStatus", true);
 				jsonResult.put("isOk", false);
@@ -869,7 +874,7 @@ public class OrderService {
 //			jsonResult.put("applyIsPay", true);// 支付成功。
 //		}
 		if (isOk == 1) {
-			if (o1.getApplyStepBImgUrl() == null || o1.getApplyStepBImgUrl().length() < 1) {
+			if (o1.getApplyStepbimgUrl() == null || o1.getApplyStepbimgUrl().length() < 1) {
 				jsonResult.put("reason", "请先上传报建时所需要的材料。");
 				jsonResult.put("applyStepBImgUrl", false);
 				jsonResult.put("isOk", false);

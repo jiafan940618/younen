@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import com.yn.dao.ConstructionDao;
 import com.yn.model.Construction;
@@ -21,6 +22,10 @@ public class ConstructionService {
 		return constructionDao.findbyType(type);  
 	  }
 	 
+	 public void delete(Long id){
+		 
+		 constructionDao.delete(id);
+	 }
 	 
 	public  List<Construction> findbyStruction(){
 		

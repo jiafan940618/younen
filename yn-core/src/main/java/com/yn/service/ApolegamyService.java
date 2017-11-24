@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.ApolegamyDao;
+import com.yn.dao.mapper.ApolegamyMapper;
 import com.yn.model.Apolegamy;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
@@ -20,10 +21,26 @@ public class ApolegamyService {
 	ApolegamyDao apolegamyDao;
 	@Autowired
     ApolegamyServerService apolegamyServerService;
+	@Autowired
+	ApolegamyMapper apolegamyMapper;
 
 	public Apolegamy findOne(Long id) {
 		return apolegamyDao.findOne(id);
 	}
+	
+	/** 根据服务商id显示分页数据*/
+	public	List<Apolegamy> getPage(com.yn.model.Page<Apolegamy> page){
+
+		return apolegamyMapper.getPage(page);
+	}
+
+	/** 找到查询数量*/
+	public int getCount(com.yn.model.Page<Apolegamy> page){
+		
+		
+		return apolegamyMapper.getCount(page);	
+	}
+	
 
 	public void save(Apolegamy apolegamy) {
 		if (apolegamy.getId() != null) {
@@ -37,7 +54,7 @@ public class ApolegamyService {
 		} else {
 			apolegamyDao.save(apolegamy);
 		}
-		System.out.println();
+		
 	}
 
 	public void delete(Long id) {
