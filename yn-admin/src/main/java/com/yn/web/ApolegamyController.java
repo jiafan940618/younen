@@ -103,15 +103,39 @@ public class ApolegamyController {
         return ResultVOUtil.success(findAll);
     }
     
+    @ResponseBody
+    @RequestMapping(value = "/findnewApo")
+    public Object findAponew(ApolegamyVo apolegamyVo,HttpSession httpSession) {
+    	/*SessionCache server =(SessionCache) httpSession.getAttribute("SessionCache");
+    	
+    	if(null == server){
+    		
+    		return ResultVOUtil.error(777, "抱歉你未登录!");
+    	}*/
+    	
+    	Server serverResult = serverService.findOne(1L);
+    	
+    	List<Apolegamy> list = apolegamyService.FindApo(serverResult.getId());
+       
+        return ResultVOUtil.success(list);
+    }
+    
     
     
     @RequestMapping(value = "/findApo", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object findServerAll(com.yn.model.Page<Apolegamy> page,HttpSession httpSession) {
     	
-    	Server server =(Server) httpSession.getAttribute("server");
+    	SessionCache server =(SessionCache) httpSession.getAttribute("SessionCache");
+    	
+    	if(null == server){
+    		
+    		return ResultVOUtil.error(777, "抱歉你未登录!");
+    	}
+    	
+    	Server serverResult = serverService.findOne(server.getUserId());
 
-    	page.setId(server.getId());
+    	page.setId(serverResult.getId());
     	
     	List<Apolegamy> list = apolegamyService.getPage(page);
     	

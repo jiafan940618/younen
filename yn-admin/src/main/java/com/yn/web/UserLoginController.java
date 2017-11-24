@@ -18,6 +18,7 @@ import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
+import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
 import org.slf4j.Logger;
@@ -157,32 +158,34 @@ public class UserLoginController {
         return ResultVOUtil.success(getMD5Code);
     }
     
-    /** 给用户一键添加订单，电站，绑定电表*/
-    @RequestMapping(value = "/dotest02")
+    /** 给用户一键添加订单,电站,绑定电表*/
+    @RequestMapping(value = "/produce")
 	 @ResponseBody
-	    public Object someTest(HttpSession session) {
+	    public Object someTest(UserVo userVo,HttpSession session) {
 
-				 Integer type = 0;
+    			/*userVo.setPhone("15958104696");
+    			userVo.setCapacity(14.8);
+    			userVo.setPrice(9530.0);
+    			userVo.setPlanId(11L);*/
+    	
+				   Integer type = userVo.getType();
 
-				 Long userId = Long.valueOf(69);
-	
 					logger.info("---- ---- ---- ------ ----- 开始生成订单");
 
 					List<Long> listid = new ArrayList<Long>();
 
-					Double apoPrice = 0.0;
+					Double apoPrice = userVo.getPrice();
 
-					Long planid = 11L;
+					Long planid = userVo.getPlanId();
 
 					NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
-
-					User user02 = userService.findOne(userId);
+					User user02 =	userService.findByPhone(userVo.getPhone());
 					
 				    String orderCode =	serverService.getnewOrderCode(newserverPlan.getServerId(), user02.getProvinceId());
 					
 					/** 添加订单*/
 					Order order = newserverPlanService.getnewOrder(newserverPlan, user02,0.0, apoPrice,
-							orderCode, null,type);
+							orderCode, userVo.getCapacity(),type);
 
 					/** 取出订单号并添加*/
 					order.setOrderCode(orderCode);
@@ -212,7 +215,7 @@ public class UserLoginController {
 					neworder.setOrderPlan(newOrdPlan);
 
 					/** 添加电站 */
-					stationService.insertStation(neworder);
+					stationService.insertSta(neworder);
 
 					logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 					APOservice.getapole(neworder, listid);

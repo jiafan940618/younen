@@ -36,6 +36,15 @@
 	
 	</select>
 	
+	<select id="FindApo" parameterType="java.lang.Long" resultMap="apolegamy">
+		SELECT m.`id`,m.`apolegamy_name`,m.`img_url`,m.`price`,m.`unit`,m.`TYPE`,m.`icon_url` 
+    		
+    		FROM apolegamy_server a LEFT JOIN apolegamy m ON m.id =a.`apolegamy_id`
+    		
+    		  WHERE a.del=0 AND a.server_id = #{id} 
+	
+	</select>
+	
 	
 	
 </mapper>

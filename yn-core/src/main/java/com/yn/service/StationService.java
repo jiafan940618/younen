@@ -430,8 +430,8 @@ public class StationService {
 		station.setCityId(order.getCityId());
 		station.setCityText(order.getCityText());
 		station.setServerId(order.getServerId());
-		station.setStatus(1);//默认未绑定。
-		/*Ammeter ammeter = new Ammeter();
+		station.setStatus(0);//默认未绑定。
+		Ammeter ammeter = new Ammeter();
 		ammeter.setcAddr(station.getDevConfCode());
 		if(findOne(station).getId()!=null){
 			return;
@@ -445,9 +445,35 @@ public class StationService {
 					station.setStatus(2);
 				}
 			}
-		}*/
+		}
 		save(station);
 	}
+	
+	public void insertSta(Order order) {
+		/** 生成电站码*/
+		String stradNo = format.format(System.currentTimeMillis()) + df1.format(rd.nextInt(9999));
+		order = orderService.findOne(order.getId());
+		Station station = new Station();
+		station.setStationCode(stradNo);
+		station.setAddressText(order.getAddressText());
+		
+		String StationName = order.getLinkMan()+"的电站";
+
+		station.setStationName(StationName);
+		station.setCapacity(order.getCapacity());
+		station.setOrderId(order.getId());
+		station.setLinkMan(order.getLinkMan());
+		station.setLinkPhone(order.getLinkPhone());
+		station.setUserId(order.getUserId());
+		station.setType(order.getType());
+		station.setCityId(order.getCityId());
+		station.setCityText(order.getCityText());
+		station.setServerId(order.getServerId());
+		station.setStatus(1);//默认未绑定。
+		
+		save(station);
+	}
+	
 
 	/**
 	 * 用户的所有电站信息

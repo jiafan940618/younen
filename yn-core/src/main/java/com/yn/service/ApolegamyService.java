@@ -33,6 +33,11 @@ public class ApolegamyService {
 
 		return apolegamyMapper.getPage(page);
 	}
+	
+	public List<Apolegamy> FindApo(Long id){
+		
+		return apolegamyMapper.FindApo(id);
+	}
 
 	/** 找到查询数量*/
 	public int getCount(com.yn.model.Page<Apolegamy> page){

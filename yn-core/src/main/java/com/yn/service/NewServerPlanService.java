@@ -447,7 +447,7 @@ public class NewServerPlanService {
 		return order;
 	}
 	
-	   public Order getnewOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,String IpoMemo,Integer type){
+	   public Order getnewOrder(NewServerPlan newserverPlan ,User user,Double price,Double apoPrice,String orderCode,Double IpoMemo,Integer type){
 	    	
 	    	Order order = new Order();
 	    	 /** 保存订单*/
@@ -474,7 +474,7 @@ public class NewServerPlanService {
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());
 	        if(null != IpoMemo && !IpoMemo.equals("")){
-	        	 order.setIpoMemo(IpoMemo);
+	        	 order.setIpoMemo("");
 	        }
 	        
 	        order.setLinkPhone(user.getPhone());
@@ -486,9 +486,9 @@ public class NewServerPlanService {
 	        /** 优惠码*/
 	        order.setPrivilegeCode(null);
 	        /** 优能的选配项目价格*/
-	        order.setYnApolegamyPrice(apoPrice);
+	        order.setYnApolegamyPrice(0.0);
 	        /** 服务商选配项目价格*/
-	        order.setServerApolegamyPrice(apoPrice);
+	        order.setServerApolegamyPrice(0.0);
 	        /** 总价格*/
 	        order.setTotalPrice(price+apoPrice);
 	         /** 已付金额*/
@@ -496,7 +496,7 @@ public class NewServerPlanService {
 	         /** 服务费*/
 	        order.setFactoragePrice(0.0);
 	         /** 装机容量*/
-	       order.setCapacity(10.64);
+	       order.setCapacity(IpoMemo);
 	        /** 状态*/
 	        order.setStatus(3);
 	        order.setGridConnectedIsPay(1);

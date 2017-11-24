@@ -108,6 +108,8 @@ public class ServerPlanController {
 
     	NewServerPlan serverPlan = new NewServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
+        serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+        
         newserverPlanService.save(serverPlan);
         return ResultVOUtil.success(serverPlan);
     }
