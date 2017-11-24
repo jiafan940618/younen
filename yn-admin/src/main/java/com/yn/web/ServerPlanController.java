@@ -35,7 +35,9 @@ import com.yn.service.OrderService;
 import com.yn.service.ProductionService;
 import com.yn.service.QualificationsServerService;
 import com.yn.service.ServerPlanService;
+import com.yn.service.ServerService;
 import com.yn.service.UserService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.ResultData;
@@ -67,7 +69,8 @@ public class ServerPlanController {
     QualificationsServerService qualificationsServerService;
     @Autowired
     NewServerPlanService plan;
-    
+    @Autowired
+    ServerService serverService;
     @Autowired
     NewServerPlanService newserverPlanService;
     
@@ -92,16 +95,17 @@ public class ServerPlanController {
     @ResponseBody
     @RequestMapping(value = "/newsave", method = {RequestMethod.POST})
     public Object newsave(@RequestBody NewServerPlanVo serverPlanVo,HttpSession session) {
-    	Server server =(Server) session.getAttribute("server");
+    	SessionCache server =(SessionCache) session.getAttribute("SessionCache");
     	
     	if(null == server){
     		
     		return ResultVOUtil.error(777, "抱歉你未登录!");
     	}
     	
-    	serverPlanVo.setServerId(server.getId());
-    	
-    	
+    	Server serverResult = serverService.findOne(server.getUserId());
+
+    	serverPlanVo.setServerId(serverResult.getId());
+
     	NewServerPlan serverPlan = new NewServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
         newserverPlanService.save(serverPlan);
@@ -118,8 +122,36 @@ public class ServerPlanController {
     
     @ResponseBody
     @RequestMapping(value = "/newdelete", method = {RequestMethod.POST})
-    public Object newdelete(Long id) {
-    	newserverPlanService.delete(id);
+    public Object newdelete(Long id,HttpSession session) {
+    	SessionCache server =(SessionCache) session.getAttribute("SessionCache");
+    	
+    	if(null == server){
+    		
+    		return ResultVOUtil.error(777, "抱歉你未登录!");
+    	}
+    	
+    	Server serverResult = serverService.findOne(server.getUserId());
+    	
+    	NewServerPlan newserverPlan = new NewServerPlan();
+    	
+    	newserverPlan.setServerId(serverResult.getId());
+
+        NewServerPlan newServerPlan =  newserverPlanService.findOne(id);
+        
+        if(newServerPlan.getPlanId() != 1 ){
+        	newserverPlanService.delete(id);
+        }else{
+        	newserverPlanService.delete(id);
+        	
+        	List<NewServerPlan> list =	newserverPlanService.findAll(newserverPlan);
+        	
+        	NewServerPlan ServerPlan = list.get(0);
+        	ServerPlan.setPlanId(1);
+        	
+        	newserverPlanService.save(ServerPlan);
+        	
+        }
+
         return ResultVOUtil.success();
     }
 
@@ -145,14 +177,16 @@ public class ServerPlanController {
     @ResponseBody
     public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
     	
-    	Server server =(Server) session.getAttribute("server");
+    SessionCache server =(SessionCache) session.getAttribute("SessionCache");
     	
     	if(null == server){
     		
     		return ResultVOUtil.error(777, "抱歉你未登录!");
     	}
     	
-    	serverPlanVo.setServerId(server.getId());
+    	Server serverResult = serverService.findOne(server.getUserId());
+    	
+    	serverPlanVo.setServerId(serverResult.getId());
     	
         NewServerPlan serverPlan = new NewServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);

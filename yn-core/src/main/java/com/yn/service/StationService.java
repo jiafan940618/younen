@@ -430,8 +430,8 @@ public class StationService {
 		station.setCityId(order.getCityId());
 		station.setCityText(order.getCityText());
 		station.setServerId(order.getServerId());
-		station.setStatus(0);//默认未绑定。
-		Ammeter ammeter = new Ammeter();
+		station.setStatus(1);//默认未绑定。
+		/*Ammeter ammeter = new Ammeter();
 		ammeter.setcAddr(station.getDevConfCode());
 		if(findOne(station).getId()!=null){
 			return;
@@ -445,7 +445,7 @@ public class StationService {
 					station.setStatus(2);
 				}
 			}
-		}
+		}*/
 		save(station);
 	}
 

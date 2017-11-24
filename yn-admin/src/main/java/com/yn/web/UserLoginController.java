@@ -2,15 +2,26 @@ package com.yn.web;
 
 import com.yn.enums.ResultEnum;
 import com.yn.enums.RoleEnum;
+import com.yn.model.NewServerPlan;
+import com.yn.model.Order;
+import com.yn.model.OrderPlan;
 import com.yn.model.Server;
 import com.yn.model.User;
+import com.yn.service.ApolegamyOrderService;
+import com.yn.service.NewServerPlanService;
+import com.yn.service.OrderPlanService;
+import com.yn.service.OrderService;
 import com.yn.service.ServerService;
+import com.yn.service.StationService;
 import com.yn.service.UserService;
 import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
 import com.yn.utils.MD5Util;
 import com.yn.utils.ObjToMap;
 import com.yn.vo.re.ResultVOUtil;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,18 +34,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/server/userLogin")
 public class UserLoginController {
 
-
+	private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
     @Autowired
     private UserService userService;
     @Autowired
     ServerService serverService;
-
+    
+    @Autowired
+    NewServerPlanService newserverPlanService;
+    
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    OrderPlanService orderPlanService;
+    @Autowired
+    StationService stationService;
+    @Autowired
+	ApolegamyOrderService APOservice;
 
     /**
      * 登入
@@ -87,6 +111,7 @@ public class UserLoginController {
             objectMap.put("serverId", serverResult.getId());
         }
 
+        
         System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
         return ResultVOUtil.success(objectMap);
     }
@@ -131,4 +156,72 @@ public class UserLoginController {
         String getMD5Code = MD5Util.GetMD5Code(code);
         return ResultVOUtil.success(getMD5Code);
     }
+    
+    /** 给用户一键添加订单，电站，绑定电表*/
+    @RequestMapping(value = "/dotest02")
+	 @ResponseBody
+	    public Object someTest(HttpSession session) {
+
+				 Integer type = 0;
+
+				 Long userId = Long.valueOf(69);
+	
+					logger.info("---- ---- ---- ------ ----- 开始生成订单");
+
+					List<Long> listid = new ArrayList<Long>();
+
+					Double apoPrice = 0.0;
+
+					Long planid = 11L;
+
+					NewServerPlan newserverPlan = newserverPlanService.findOne(planid);
+
+					User user02 = userService.findOne(userId);
+					
+				    String orderCode =	serverService.getnewOrderCode(newserverPlan.getServerId(), user02.getProvinceId());
+					
+					/** 添加订单*/
+					Order order = newserverPlanService.getnewOrder(newserverPlan, user02,0.0, apoPrice,
+							orderCode, null,type);
+
+					/** 取出订单号并添加*/
+					order.setOrderCode(orderCode);
+					orderService.newSave(order);
+
+					Order order02 = new Order();
+					order02.setOrderCode(order.getOrderCode());
+
+					Order neworder = orderService.findOne(order02);
+
+					/** 订单计划表*/
+					Long id = newserverPlan.getId();
+
+					NewServerPlan serverPlan = newserverPlanService.findOne(id);
+
+					OrderPlan orderPlan = newserverPlanService.giveOrderPlan(newserverPlan, neworder);
+
+					OrderPlan orderPlan2 = new OrderPlan();
+					orderPlan2.setOrderId(orderPlan.getOrderId());
+
+					OrderPlan newOrdPlan = orderPlanService.findOne(orderPlan2);
+
+					order.setOrderPlanId(newOrdPlan.getId());
+
+					orderPlanService.save(orderPlan);
+
+					neworder.setOrderPlan(newOrdPlan);
+
+					/** 添加电站 */
+					stationService.insertStation(neworder);
+
+					logger.info("---- ---- ------ ----- ----- 开始添加记录表");
+					APOservice.getapole(neworder, listid);
+					logger.info("---- ---- ------ ----- ----- 添加结束！");
+					neworder.getUser().setPassword(null);
+
+				
+					return ResultVOUtil.success();
+				}
+    
+    
 }

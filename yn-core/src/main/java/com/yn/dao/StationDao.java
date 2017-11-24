@@ -63,7 +63,7 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	Object[] stationFenbuById(Long id);
 
 	/** 根据userid查询出电站的信息 */
-	@Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.userId = :userId and s.del=0")
+	@Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.userId = :userId and s.del=0 ")
 	List<Station> getstation(@Param("userId") Long userId);
 
 	@Query("select new Station(id,stationName,userId,capacity,status,stationCode) from Station s WHERE s.orderId = :orderId and s.del=0")
