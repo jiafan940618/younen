@@ -76,7 +76,7 @@ public class ElecDataDayController {
 
 		Map<String, Object> workUseCount = new HashMap<>();
 
-		workUseCount = elecDataDayService.workUseCount(stationId, type);
+		workUseCount = elecDataDayService.workUseCountList(stationId, type);
 
 		return ResultVOUtil.success(workUseCount);
 	}

@@ -34,6 +34,7 @@ import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.ElecDataHourDao;
 import com.yn.dao.StationDao;
+import com.yn.dao.TestKwhDao;
 import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.dao.mapper.ElecDataHourMapper;
@@ -69,6 +70,8 @@ public class ElecDataHourService {
 	AmPhaseRecordMapper amPhaseRecordMapper;
 	@Autowired
 	ElecDataDayDao elecDataDayDao;
+	@Autowired
+	TestKwhDao testKwhDao;
 	
 
 	/**
@@ -266,25 +269,17 @@ public class ElecDataHourService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getTodayKwh(Long serverId, Integer type) {
-
-		 List<Long> stationIds=null;
-		 List<Map<String, Object>> listMap=new ArrayList<>();
-		 SimpleDateFormat dFormat = new SimpleDateFormat("HH");
-		 Integer num= Integer.parseInt(dFormat.format(new Date()));
-		if (serverId == null) {
-		    stationIds=stationDao.findAllStationId();
-		}else {
-			stationIds = stationDao.findId(serverId);
+		List<Map<String, Object>> list =new ArrayList<>();
+		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
+		Integer num= Integer.parseInt(dFormat.format(new Date()));
+		for (int i = 0; i < num; i++) {
+			Map<String, Object> map =new HashMap<>();
+			map.put("time", i);
+			map.put("kwh",testKwhDao.getKwh(i) );
+			list.add(map);
 		}
-		for (Long stationId : stationIds) {
-			List<Map<String, Object>> oneTodayKwh=getTodayKwhByStationId(stationId, type);
-			for (Map<String, Object> map : oneTodayKwh) {
-				listMap.add(map);
-			}
-		}
-        
 		
-		return listMap;
+		return list;
 	}
 
 	/**

@@ -206,17 +206,17 @@ public class HomePageController {
         return ResultVOUtil.success(map);
     }
 
-//    /**
-//     * 今日发电量
-//     *
-//     * @return
-//     */
-//    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
-//    @ResponseBody
-//    public Object todayKwh(Long serverId) {
-//        List<ElecDataHour> todayKwh = elecDataHourService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
-//        return ResultVOUtil.success(todayKwh);
-//    }
+    /**
+     * 今日发电量
+     *
+     * @return
+     */
+    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Object todayKwh(Long serverId) {
+    	List<Map<String, Object>> todayKwh = elecDataHourService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+        return ResultVOUtil.success(todayKwh);
+    }
 
 }
 
