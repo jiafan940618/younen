@@ -1,22 +1,30 @@
 package com.yn.web;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Inverter;
 import com.yn.model.NewServerPlan;
+import com.yn.model.Server;
 import com.yn.model.SolarPanel;
 import com.yn.service.BrandService;
 import com.yn.service.InverterService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.ServerService;
 import com.yn.service.SolarPanelService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.InverterVo;
+import com.yn.vo.NewServerPlanVo;
 import com.yn.vo.SolarPanelVol;
 import com.yn.vo.re.ResultVOUtil;
 
@@ -35,6 +43,10 @@ public class TestController {
 	@Autowired
 	SolarPanelService solarPanelService;
 	
+	@Autowired
+    ServerService serverService;
+   
+	
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
@@ -48,6 +60,38 @@ public class TestController {
         inverterService.save(brand);
         return ResultVOUtil.success(brand);
     }
+	
+	@ResponseBody
+    @RequestMapping(value = "/newdelete")
+    public Object newdelete(Long id,HttpSession session) {
+    	
+		id = 12L;
+    	
+    	Server serverResult = serverService.findOne(1l);
+    	
+    	NewServerPlan newserverPlan = new NewServerPlan();
+    	
+    	newserverPlan.setServerId(serverResult.getId());
+
+        NewServerPlan newServerPlan =  newServerPlanService.findOne(id);
+        
+        if(newServerPlan.getPlanId() != 1 ){
+        	newServerPlanService.delete(id);
+        }else{
+        	newServerPlanService.delete(id);
+        	
+        	List<NewServerPlan> list =	newServerPlanService.findAll(newserverPlan);
+        	
+        	NewServerPlan ServerPlan = list.get(0);
+        	ServerPlan.setPlanId(1);
+        	
+        	newServerPlanService.save(ServerPlan);
+        	
+        }
+
+        return ResultVOUtil.success();
+    }
+	
 	
 	/** 编辑添加电池板*/
 	@ResponseBody
@@ -76,21 +120,28 @@ public class TestController {
 	
 	
 	 @ResponseBody
-	    @RequestMapping(value = "/delete")
-	    public Object delete(Long id) {
-		 id = 10L;
-	     
-	    List<NewServerPlan> list = newServerPlanService.FindBybrandId(id);
-	    
-	    	if(list.size() == 0){
-	    		 list = newServerPlanService.FindtwobrandId01(id);
-	    		 
-	    		 if(list.size() == 0){
-	    			 brandService.delete(id);
-	    			 return  ResultVOUtil.success();
-	    		 }
-	    	}
-	        return ResultVOUtil.newerror(777,"请先删除所有相关的方案",list);
+	    @RequestMapping(value = "/saveser")
+	    public Object delete(NewServerPlanVo serverPlanVo) {
+		 serverPlanVo.setBatteryBoardId(2L);
+		 serverPlanVo.setInverterId(3L);
+		 serverPlanVo.setUnitPrice(51.00);
+		 serverPlanVo.setWarPeriod(new BigDecimal(5));
+		 serverPlanVo.setMinPurchase(8.00);
+		 serverPlanVo.setMaterialJson("sadasdfafsaf");
+		 serverPlanVo.setPlanImgUrl("dffsfdsfds");
+		 
+		 Server serverResult = serverService.findOne(1l);
+
+	    	serverPlanVo.setServerId(serverResult.getId());
+
+	    	NewServerPlan serverPlan = new NewServerPlan();
+	        BeanCopy.copyProperties(serverPlanVo, serverPlan);
+	        serverPlan.setBatteryboardId(2L);
+	        
+	        newServerPlanService.save(serverPlan);
+		 
+		
+	        return ResultVOUtil.success();
 	    }
 	
 	

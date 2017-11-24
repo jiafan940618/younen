@@ -32,14 +32,65 @@ public class UserVo extends QueryVo {
 	
 	private String privilegeCodeInit;
 	
+	private Long planId;
+	
+	private Double capacity;
+	
+	private Double price;
+	
+	private Integer type=1;
+	
 	
 
 	 /** ioc端备注信息*/
 	private String ipoMemo;
 	
+	
+	
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+
 	public String getIpoMemo() {
 		return ipoMemo;
 	}
+
+	
+	public Long getPlanId() {
+		return planId;
+	}
+
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+
+
+	public Double getCapacity() {
+		return capacity;
+	}
+
+
+	public void setCapacity(Double capacity) {
+		this.capacity = capacity;
+	}
+
+
+	public Double getPrice() {
+		return price;
+	}
+
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
 
 	public void setIpoMemo(String ipoMemo) {
 		this.ipoMemo = ipoMemo;

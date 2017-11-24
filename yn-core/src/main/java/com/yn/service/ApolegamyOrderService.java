@@ -6,12 +6,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.ApolegamyOrderDao;
 import com.yn.model.ApolegamyOrder;
 import com.yn.model.Order;
+import com.yn.model.OrderPlan;
+import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.RepositoryUtil;
 
 @Service
 public class ApolegamyOrderService {
@@ -25,6 +29,13 @@ public class ApolegamyOrderService {
 
 		return apolegamyOrderdao.findOne(id);
 	}
+	
+	public ApolegamyOrder findOne(ApolegamyOrder apo) {
+		 Specification<ApolegamyOrder> spec = RepositoryUtil.getSpecification(apo);
+		 ApolegamyOrder findOne = apolegamyOrderdao.findOne(spec);
+		return findOne;	
+	}
+	
 
 	public void save(ApolegamyOrder apolegamyOrder) {
 		if (apolegamyOrder.getId() != null) {

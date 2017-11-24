@@ -25,9 +25,26 @@ public class NewServerPlanVo {
 	
 	private Double warrantyYear;
 	
+	private BigDecimal warPeriod;
+	
+	private String planImgUrl;
 	
 	
 	
+	
+	public String getPlanImgUrl() {
+		return planImgUrl;
+	}
+	public void setPlanImgUrl(String planImgUrl) {
+		this.planImgUrl = planImgUrl;
+	}
+	
+	public BigDecimal getWarPeriod() {
+		return warPeriod;
+	}
+	public void setWarPeriod(BigDecimal warPeriod) {
+		this.warPeriod = warPeriod;
+	}
 	public Double getMinPurchase() {
 		return minPurchase;
 	}

@@ -16,8 +16,8 @@ import com.yn.vo.NewServerPlanVo;
 
 public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, JpaSpecificationExecutor<NewServerPlan>{
     @Modifying
-    @Query("update NewServerPlan set del=1,delDtm=(now()) where id = :id")
-    void delete(@Param("id") Long id);
+    @Query("update NewServerPlan set del=1,delDtm=(now()) where id = ?1")
+    void delete( Long id);
     
     @Transactional
     @Modifying

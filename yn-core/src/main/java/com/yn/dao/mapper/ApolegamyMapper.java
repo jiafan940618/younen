@@ -18,5 +18,9 @@ public interface ApolegamyMapper {
 	int getCount(Page<Apolegamy> page);
 	
 	
+	
+	List<Apolegamy> FindApo(Long id);
+	
+	
 
 }

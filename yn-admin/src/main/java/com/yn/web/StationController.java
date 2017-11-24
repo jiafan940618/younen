@@ -2,8 +2,16 @@ package com.yn.web;
 
 
 import com.yn.enums.NoticeEnum;
+import com.yn.model.Apolegamy;
+import com.yn.model.ApolegamyOrder;
+import com.yn.model.Order;
+import com.yn.model.OrderPlan;
 import com.yn.model.Station;
+import com.yn.service.ApolegamyOrderService;
+import com.yn.service.ApolegamyService;
 import com.yn.service.NoticeService;
+import com.yn.service.OrderPlanService;
+import com.yn.service.OrderService;
 import com.yn.service.StationService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
@@ -17,6 +25,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,14 +39,24 @@ public class StationController {
     StationService stationService;
     @Autowired
     private NoticeService noticeService;
+    @Autowired
+    OrderPlanService orderPlanService;
+    @Autowired
+    ApolegamyOrderService apolegamyOrderService;
+    @Autowired
+    ApolegamyService apolegamyService;
+    @Autowired
+    OrderService orderService;
+    
+    
+   // Thirdsuccess
 
-
-    @RequestMapping(value = "/select", method = {RequestMethod.POST})
+    @RequestMapping(value = "/select")
     @ResponseBody
     public Object findOne(Long id) {
         Station findOne = stationService.findOne(id);
-
-
+        
+      
         // 更新记录为已读
         if (findOne != null) {
             Long userId = SessionCache.instance().getUserId();
@@ -49,6 +69,8 @@ public class StationController {
         return ResultVOUtil.success(findOne);
     }
 
+    
+   
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody StationVo stationVo) {
@@ -132,5 +154,38 @@ public class StationController {
         Map<String, Object> map = stationService.get25YearIncome(stationId);
         return ResultVOUtil.success(map);
     }
+    
+    /**
+     *  OrderPlan orderPlan = new OrderPlan();
+        ApolegamyOrder apolegamyOrder = new ApolegamyOrder();
+        orderPlan.setOrderId(findOne.getOrderId());
+        apolegamyOrder.setOrderId(findOne.getOrderId());
+
+        orderPlan = orderPlanService.findOne(orderPlan);
+        
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("Inverter", orderPlan.getInverterBrand()+"  "+orderPlan.getInverterModel());
+        map.put("solpar", orderPlan.getBatteryBoardBrand()+"  "+orderPlan.getBatteryBoardModel());
+        
+       
+      Order order =  orderService.findOne(findOne.getOrderId());
+      
+      map.put("orderCode", order.getOrderCode());
+      map.put("warPeriod", order.getWarPeriod().toString());
+      map.put("jsonText", order.getConstructionStatus());
+      
+         
+        apolegamyOrder = apolegamyOrderService.findOne(apolegamyOrder);
+        
+        String apoids =  apolegamyOrder.getApoIds();
+        
+        String[] ids =  apoids.split(",");
+        List<Long> list = new LinkedList<Long>();
+        for (int i = 0; i < ids.length; i++) {
+        	list.add(Long.valueOf(ids[i]));
+		}
+        
+        List<Apolegamy>  apolist =  apolegamyService.findAll(list);
+        */
 
 }
