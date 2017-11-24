@@ -20,4 +20,11 @@ public interface QualificationsDao extends JpaRepository<Qualifications, Long>, 
     @Modifying
     @Query("update Qualifications set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+    
+
+    @Query(value="SELECT"
+    		+ " q.id,q.img_url,q.text FROM qualifications q "
+    		+ "LEFT JOIN  qualifications_server s ON s.qualifications_id = q.id WHERE s.server_id =:serverId AND s.del = 0",nativeQuery=true)
+   	List<Object> FindByServerId(@Param("serverId") Long serverId);
+    
 }

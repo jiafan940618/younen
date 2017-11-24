@@ -39,26 +39,32 @@ public class InvSolarController {
 	@ResponseBody
     @RequestMapping(value = "/solarsave", method = {RequestMethod.POST})
     public Object save(@RequestBody SolarPanelVol brandVo) {
-		SolarPanel brand = new SolarPanel();
-        BeanCopy.copyProperties(brandVo, brand);
-        solarPanelService.save(brand);
-        return ResultVOUtil.success(brand);
+		if(brandVo.getType() == 1){
+			SolarPanel brand = new SolarPanel();
+	        BeanCopy.copyProperties(brandVo, brand);
+	        solarPanelService.save(brand);
+	        
+	        return ResultVOUtil.success(brand);
+		}else if(brandVo.getType() == 3){
+			Inverter brand = new Inverter();
+	        BeanCopy.copyProperties(brandVo, brand);
+	        inverterService.save(brand);
+	        return ResultVOUtil.success(brand);
+		}
+		return ResultVOUtil.error(777, "编辑失败!");
     }
 	
-	@ResponseBody
-    @RequestMapping(value = "/invdelete", method = {RequestMethod.POST})
-    public Object invdelete(@RequestBody InverterVo brandVo) {
-		
-		inverterService.delete(brandVo.getId());
-		
-        return ResultVOUtil.success(null);
-    }
+	
 	
 	@ResponseBody
     @RequestMapping(value = "/solardelete", method = {RequestMethod.POST})
     public Object solardelete(@RequestBody SolarPanelVol brandVo) {
+		if(brandVo.getType() == 1){
+			solarPanelService.delete(brandVo.getId());
+		}else if(brandVo.getType() == 3){
+			inverterService.delete(brandVo.getId());
+		}
 		
-		solarPanelService.delete(brandVo.getId());
 		
         return ResultVOUtil.success(null);
     }

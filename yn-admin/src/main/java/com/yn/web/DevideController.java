@@ -5,6 +5,7 @@ import com.yn.vo.re.ResultVOUtil;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -109,9 +110,21 @@ public class DevideController {
     	}else if(page.getType() == 3){
     		for (Brand brand : list) {
     			
-        		List<Inverter> invlist =	brandService.getInverter(brand.getId().intValue());
+        		List<Inverter> invlist = brandService.getInverter(brand.getId().intValue());
         		
-        		brand.setSolar(new HashSet(invlist));
+        		Set<SolarPanel> set = new HashSet<SolarPanel>();
+        		
+        		for (Inverter solarPanel : invlist) {
+        			
+        			SolarPanel sol = new SolarPanel();
+        			
+        			sol.setBrandId(solarPanel.getBrandId());
+        			sol.setBrandName(solarPanel.getModel());
+        			sol.setModel(solarPanel.getBrandName());
+					
+        			set.add(sol);
+				}
+        		brand.setSolar(set);
     			}
     	}
     	

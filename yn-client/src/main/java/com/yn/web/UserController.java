@@ -230,11 +230,13 @@ public class UserController {
     @RequestMapping(value = "/findSomeUs")
     public Object findSomeUs(UserVo userVo,HttpSession httpSession) {
     	
-    	User newuserVo = SessionCache.instance().getUser();
+    	/*User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
-    	}
+    	}*/
+    	User newuserVo =new User();
+    	newuserVo.setId(2l);
     	
     logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
     	/** 电站信息*/

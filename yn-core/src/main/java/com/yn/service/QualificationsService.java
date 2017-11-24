@@ -1,5 +1,6 @@
 package com.yn.service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.QualificationsDao;
@@ -73,6 +75,32 @@ public class QualificationsService {
             }
         }
 	}
+	
+	public List<Qualifications> FindByServerId(Long serverId){
+		
+		List<Qualifications> quList = new LinkedList<Qualifications>();
+		
+		List<Object> list =	qualificationsDao.FindByServerId(serverId);
+		
+		for (Object object : list) {
+			
+			Qualifications qua = new Qualifications();
+			
+			Object[] obj = (Object[])object;
+			
+			Integer id = (Integer)obj[0];
+			String imgUrl = (String)obj[1];
+			String text = (String)obj[2];
+			
+			qua.setId(Long.valueOf(id));
+			qua.setImgUrl(imgUrl);
+			qua.setText(text);
+			
+			quList.add(qua);
+		}
+		return quList;
+	}
+	
 
 	public void deleteBatch(List<Long> id) {
 		qualificationsDao.deleteBatch(id);

@@ -53,14 +53,25 @@ public class TestController {
 	@ResponseBody
     @RequestMapping(value = "/solarsave")
     public Object save(SolarPanelVol brandVo) {
-		brandVo.setBrandId(20);
-		brandVo.setBrandName("测试");
-		brandVo.setModel("测试型号");
+		brandVo.setBrandId(2);
+		brandVo.setBrandName("测试1246");
+		brandVo.setModel("sadsafa");
+		brandVo.setType(3);
 		
-		SolarPanel brand = new SolarPanel();
-        BeanCopy.copyProperties(brandVo, brand);
-        solarPanelService.save(brand);
-        return ResultVOUtil.success(brand);
+		if(brandVo.getType() == 1){
+			SolarPanel brand = new SolarPanel();
+	        BeanCopy.copyProperties(brandVo, brand);
+	        solarPanelService.save(brand);
+	        
+	        return ResultVOUtil.success(brand);
+		}else if(brandVo.getType() == 3){
+			Inverter brand = new Inverter();
+	        BeanCopy.copyProperties(brandVo, brand);
+	        inverterService.save(brand);
+	        return ResultVOUtil.success(brand);
+		}
+		
+        return ResultVOUtil.error(null);
     }
 	
 	

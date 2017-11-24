@@ -27,4 +27,6 @@ public interface ApolegamyDao extends JpaRepository<Apolegamy, Long>, JpaSpecifi
     		+ "  where a.del=0 and a.server_id=?1" ,nativeQuery=true)
     
     	List<Object> selectApo(Long serverid);
+    
+
 }

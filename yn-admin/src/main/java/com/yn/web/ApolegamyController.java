@@ -6,6 +6,8 @@ import com.yn.model.Server;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.ServerService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.ApolegamyVo;
 import com.yn.vo.ServerVo;
@@ -34,7 +36,8 @@ public class ApolegamyController {
     ApolegamyService apolegamyService;
     @Autowired
     NewServerPlanService newServerPlanService;
-    
+    @Autowired
+    ServerService serverService;
     @Autowired
     ApolegamyServerService apolegamyServerService;
 
@@ -48,11 +51,11 @@ public class ApolegamyController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody ApolegamyVo apolegamyVo,HttpSession httpSession) {
+    	
         Apolegamy apolegamy = new Apolegamy();
         BeanCopy.copyProperties(apolegamyVo, apolegamy);
         apolegamyService.save(apolegamy);
-
-        
+       
         return ResultVOUtil.success(apolegamy);
     }
     /** 保存信息*/
@@ -100,6 +103,8 @@ public class ApolegamyController {
         return ResultVOUtil.success(findAll);
     }
     
+    
+    
     @RequestMapping(value = "/findApo", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object findServerAll(com.yn.model.Page<Apolegamy> page,HttpSession httpSession) {
@@ -111,12 +116,9 @@ public class ApolegamyController {
     	List<Apolegamy> list = apolegamyService.getPage(page);
     	
     	Integer count = apolegamyService.getCount(page);
-    	
-    	 if(count <=  0){
- 			page.setTotal(1);
- 		}else{
- 			page.setTotal( count%page.getLimit() == 0 ? count/page.getLimit() : (count-count%page.getLimit())/page.getLimit()+1);	
- 		}
+
+    	page.setTotal(count);
+ 	
  
         return ResultVOUtil.newsuccess(page,list);
     }

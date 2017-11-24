@@ -36,7 +36,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 			+ " e.id ,e.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,e.company_logo ,p.id p_id FROM server e "
 			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id "
-			+ " WHERE e.del=0 AND p.planid=1 and p.type =:#{#page.type} LIMIT :#{#page.start},:#{#page.limit} ", nativeQuery = true)
+			+ " WHERE e.del=0 AND p.plan_id=1 and p.type =:#{#page.type} LIMIT :#{#page.start},:#{#page.limit} ", nativeQuery = true)
 	// List<Object> findObject(@Param("start") Integer start,@Param("limit")
 	// Integer limit);
 	List<Object> findObject(@Param("page") com.yn.model.Page<Server> page);
@@ -45,7 +45,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 			+ " s.id,s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,s.company_logo,p.id p_id  FROM server s "
 			+ " LEFT JOIN new_server_plan p ON s.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE s.del=0 AND "
-			+ " p.planid=1 and s.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
+			+ " p.plan_id=1 and s.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
 		    + "  and p.type =:#{#page.type}   LIMIT :#{#page.start},:#{#page.limit}", nativeQuery = true)
 	List<Object> findtwoObject(@Param("page") com.yn.model.Page<Server> page);
 
@@ -68,7 +68,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 			+ " COUNT(1) FROM server e"
 			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id "
-			+ " WHERE e.del=0 AND p.planid=1 and p.type =:#{#page.type} ", nativeQuery = true)
+			+ " WHERE e.del=0 AND p.plan_id=1 and p.type =:#{#page.type} ", nativeQuery = true)
 
 	Integer findCount(@Param("page") com.yn.model.Page<Server> page);
 
@@ -78,7 +78,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 			+ " COUNT(1) FROM server e"
 			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE e.del=0 AND "
-			+ " p.planid=1 and e.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
+			+ " p.plan_id=1 and e.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"
 		    + " and p.type =:#{#page.type} ",nativeQuery =true)
 
 	Integer findcityCount(@Param("page") com.yn.model.Page<Server> page);
