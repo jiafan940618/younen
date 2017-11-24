@@ -4,6 +4,9 @@ import com.yn.domain.IDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
+import org.springframework.data.annotation.Transient;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,6 +31,7 @@ public class AmmeterRecord extends IDomain implements Serializable {
 	private Date recordDtm;
 	@Column(columnDefinition = "int(1) comment '[电表类型]{1:发电,2:用电}'")
 	private Integer type;
+	@Column(columnDefinition = "varchar(255) comment '[日期]'")
 	private String date;
 	
 

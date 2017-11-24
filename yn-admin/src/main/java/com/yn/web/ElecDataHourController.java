@@ -1,6 +1,7 @@
 package com.yn.web;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class ElecDataHourController {
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
     @ResponseBody
     public Object todayKwh(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
-        List<ElecDataHour> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
+    	List<Map<String, Object>> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
         return ResultVOUtil.success(todayKwhByStationId);
     }
 

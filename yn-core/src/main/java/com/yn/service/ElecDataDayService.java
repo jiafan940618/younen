@@ -652,4 +652,55 @@ public class ElecDataDayService {
 	public int insertData(ElecDataDay record){
 		return elecDataDayMapper.insertData(record);
 	}
+	
+	/**
+	 * 用户发电/用电统计图
+	 */
+	public Map<String, Object> workUseCountList(Long stationId, Integer type) {
+		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+		List<Object[]> list = elecDataDayDao.workUseCount(ammeterCodes, type);
+		Map<Object, Object> linkHashMap = new LinkedHashMap<>();
+		List<Map<Object, Object>> listsMap = new ArrayList<>();
+		List<Map<Object, Object>> lists = new ArrayList<>();
+		Map<Object, Object> objectMap = new TreeMap<Object, Object>();
+		for (Object[] objects : list) {
+			Map<Object, Object> map = new HashMap<>();
+			map.put("create_dtm", objects[0]);
+			map.put("kwh", objects[1]);
+			lists.add(map);
+		}
+
+		for (Map<Object, Object> map : lists) {
+			if (!objectMap.containsKey(map.get("create_dtm"))) {
+
+				objectMap.put(map.get("create_dtm"), map.get("kwh"));
+			} else {
+				BigDecimal kwh = new BigDecimal(Double.parseDouble(objectMap.get(map.get("create_dtm")).toString())
+						+ Double.parseDouble(map.get("kwh").toString()));
+				objectMap.put(map.get("create_dtm"), kwh);
+			}
+
+		}
+		Object[] key = objectMap.keySet().toArray();
+		for (int i = 0; i < key.length; i++) {
+			Map<Object, Object> listMap = new LinkedHashMap<>();
+			linkHashMap.put(key[i], objectMap.get(key[i]));
+			listMap.put("createDtm", key[i]);
+			listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString())));
+			listsMap.add(listMap);
+		}
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", listsMap);
+		map.put("thisYearKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisYearKwh(stationId, type)));
+		map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisMonthKwh(stationId, type)));
+		map.put("lastYearKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastYearKwh(stationId, type)));
+		map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, type)));
+		map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.todayKwh(stationId, type)));
+		map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, type)));
+		map.put("thisWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisWeekKwh(stationId, type)));
+		map.put("lastWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastWeekKwh(stationId, type)));
+		return map;
+	}
+
 }

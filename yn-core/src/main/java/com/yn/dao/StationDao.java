@@ -111,7 +111,8 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	@Query(value = "select id from station  where  del=0", nativeQuery = true)
 	List<Integer> FindByStationId();
 	
-	
+	@Query("select s.id from Station s WHERE s.del=0")
+	List<Long> findAllStationId();
 	
 
 }

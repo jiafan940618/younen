@@ -211,10 +211,10 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
+    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public Object todayKwh(Long serverId) {
-        List<ElecDataHour> todayKwh = elecDataHourService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+    	List<Map<String, Object>> todayKwh = elecDataHourService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
         return ResultVOUtil.success(todayKwh);
     }
 

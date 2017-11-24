@@ -60,10 +60,11 @@ public class AmmeterRecordController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(AmmeterRecordVo ammeterRecordVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(AmmeterRecordVo ammeterRecordVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         AmmeterRecord ammeterRecord = new AmmeterRecord();
         BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
         Page<AmmeterRecord> findAll = ammeterRecordService.findAll(ammeterRecord, pageable);
+        System.out.println(findAll.getSize());
         return ResultVOUtil.success(findAll);
     }
 

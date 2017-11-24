@@ -16,8 +16,14 @@ public class AmmeterRecordVo extends QueryVo{
 	private String statusCode;
 	private Date recordDtm;
 	private Integer type;
+	private String date;
 	
-	
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	public Long getStationId() {
 		return stationId;
 	}
