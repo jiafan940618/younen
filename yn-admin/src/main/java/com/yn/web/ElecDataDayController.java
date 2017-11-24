@@ -1,5 +1,8 @@
 package com.yn.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,4 +66,18 @@ public class ElecDataDayController {
         Page<ElecDataDay> findAll = elecDataDayService.findAll(temStationYear, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    /**
+	 * 用电/发电统计
+	 */
+	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object workUseCount(Long stationId, Integer type) {
+
+		Map<String, Object> workUseCount = new HashMap<>();
+
+		workUseCount = elecDataDayService.workUseCount(stationId, type);
+
+		return ResultVOUtil.success(workUseCount);
+	}
 }

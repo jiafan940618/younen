@@ -101,7 +101,7 @@ public class ElecDataHourController {
 	@ResponseBody
 	public Object todayKwh(@RequestParam(value = "stationId", required = true) Long stationId,
 			@RequestParam(value = "type", required = true) Integer type) {
-		List<ElecDataHour> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
+		List<Map<String, Object>> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);
 		return ResultVOUtil.success(todayKwhByStationId);
 	}
 
@@ -114,7 +114,7 @@ public class ElecDataHourController {
 	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
 	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
-			) throws NumberFormatException, ParseException {
+			){
 		Map<String, Object> workList = new HashMap<>();
 		List<Map<String, Object>> listArrayWork=elecDataHourService.oneHourKwh(stationId,1);
 		List<Map<String, Object>> listArrayUse=elecDataHourService.oneHourKwh(stationId,2);
