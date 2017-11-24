@@ -25,4 +25,6 @@ public interface AmmeterRecordMapper {
     int updateByPrimaryKeySelective(AmmeterRecord record);
 
     int updateByPrimaryKey(AmmeterRecord record);
+
+	AmmeterRecord select(AmmeterRecord ammeterRecord);
 }

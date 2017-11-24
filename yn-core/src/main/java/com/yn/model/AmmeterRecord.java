@@ -28,8 +28,18 @@ public class AmmeterRecord extends IDomain implements Serializable {
 	private Date recordDtm;
 	@Column(columnDefinition = "int(1) comment '[电表类型]{1:发电,2:用电}'")
 	private Integer type;
+	private String date;
+	
 
-    public Long getStationId() {
+    public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public Long getStationId() {
         return stationId;
     }
 

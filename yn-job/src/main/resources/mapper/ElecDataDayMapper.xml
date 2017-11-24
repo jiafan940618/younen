@@ -31,7 +31,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -63,7 +64,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -81,7 +83,8 @@
 		</where>
 	</sql>
 	<sql id="Base_Column_List">
-		id, create_dtm, del, del_dtm, update_dtm, d_addr, d_type, dev_conf_code,
+		id, create_dtm, del, del_dtm, update_dtm, d_addr, d_type,
+		dev_conf_code,
 		kw, kwh,
 		record_time, ammeter_code, type, w_addr
 	</sql>
@@ -108,7 +111,8 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from elec_data_day
+		delete from
+		elec_data_day
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<delete id="deleteByExample" parameterType="com.yn.model.ElecDataDayExample">
@@ -118,17 +122,20 @@
 		</if>
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.ElecDataDay">
-		insert into elec_data_day (id,  del,
-		del_dtm,  d_addr,
+		insert into elec_data_day (id,
+		del,
+		del_dtm, d_addr,
 		d_type, dev_conf_code, kw,
-		kwh, record_time, ammeter_code,
+		kwh, record_time,
+		ammeter_code,
 		type, w_addr)
-		values (#{id,jdbcType=INTEGER}, 
+		values (#{id,jdbcType=INTEGER},
 		0,
-		#{delDtm,jdbcType=TIMESTAMP},  #{dAddr,jdbcType=INTEGER},
+		#{delDtm,jdbcType=TIMESTAMP}, #{dAddr,jdbcType=INTEGER},
 		#{dType,jdbcType=INTEGER}, #{devConfCode,jdbcType=VARCHAR},
 		#{kw,jdbcType=DECIMAL},
-		#{kwh,jdbcType=DECIMAL}, #{recordTime,jdbcType=VARCHAR}, #{ammeterCode,jdbcType=VARCHAR},
+		#{kwh,jdbcType=DECIMAL},
+		#{recordTime,jdbcType=VARCHAR}, #{ammeterCode,jdbcType=VARCHAR},
 		#{type,jdbcType=INTEGER}, #{wAddr,jdbcType=INTEGER})
 	</insert>
 	<insert id="insertSelective" parameterType="com.yn.model.ElecDataDay">
@@ -267,17 +274,26 @@
 	<update id="updateByExample" parameterType="map">
 		update elec_data_day
 		set id = #{record.id,jdbcType=INTEGER},
-		del = #{record.del,jdbcType=INTEGER},
-		del_dtm = #{record.delDtm,jdbcType=TIMESTAMP},
-		d_addr = #{record.dAddr,jdbcType=INTEGER},
-		d_type = #{record.dType,jdbcType=INTEGER},
-		dev_conf_code = #{record.devConfCode,jdbcType=VARCHAR},
-		kw = #{record.kw,jdbcType=DECIMAL},
+		del =
+		#{record.del,jdbcType=INTEGER},
+		del_dtm =
+		#{record.delDtm,jdbcType=TIMESTAMP},
+		d_addr =
+		#{record.dAddr,jdbcType=INTEGER},
+		d_type =
+		#{record.dType,jdbcType=INTEGER},
+		dev_conf_code =
+		#{record.devConfCode,jdbcType=VARCHAR},
+		kw =
+		#{record.kw,jdbcType=DECIMAL},
 		kwh = #{record.kwh,jdbcType=DECIMAL},
 		record_time = #{record.recordTime,jdbcType=VARCHAR},
-		ammeter_code = #{record.ammeterCode,jdbcType=VARCHAR},
-		type = #{record.type,jdbcType=INTEGER},
-		w_addr = #{record.wAddr,jdbcType=INTEGER}
+		ammeter_code =
+		#{record.ammeterCode,jdbcType=VARCHAR},
+		type =
+		#{record.type,jdbcType=INTEGER},
+		w_addr =
+		#{record.wAddr,jdbcType=INTEGER}
 		<if test="_parameter != null">
 			<include refid="Update_By_Example_Where_Clause" />
 		</if>
@@ -322,17 +338,21 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.ElecDataDay">
-		update elec_data_day
-		set  
+		update
+		elec_data_day
+		set
 		del = #{del,jdbcType=INTEGER},
 		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
 		d_addr = #{dAddr,jdbcType=INTEGER},
 		d_type = #{dType,jdbcType=INTEGER},
 		dev_conf_code = #{devConfCode,jdbcType=VARCHAR},
-		kw = #{kw,jdbcType=DECIMAL},
+		kw =
+		#{kw,jdbcType=DECIMAL},
 		kwh = #{kwh,jdbcType=DECIMAL},
-		record_time = #{recordTime,jdbcType=VARCHAR},
-		ammeter_code = #{ammeterCode,jdbcType=VARCHAR},
+		record_time =
+		#{recordTime,jdbcType=VARCHAR},
+		ammeter_code =
+		#{ammeterCode,jdbcType=VARCHAR},
 		type = #{type,jdbcType=INTEGER},
 		w_addr = #{wAddr,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
@@ -367,6 +387,34 @@
 		<!-- <if test="stationId != null"> AND station_id = #{stationId} </if> -->
 		ORDER BY create_dtm DESC
 	</select>
-	
+
+
+	<insert id="insertData" parameterType="com.yn.model.ElecDataDay">
+		INSERT INTO elec_data_day
+		(
+			del,
+			d_addr,
+			d_type,
+			dev_conf_code,
+			kw,
+			kwh,
+			record_time,
+			ammeter_code,
+			TYPE,
+			w_addr,create_dtm
+		)
+		VALUES
+		(
+			0,
+			#{dAddr},
+			#{dType}, #{ammeterCode},
+			#{kw},#{kwh},
+			#{recordTime}, #{ammeterCode},
+			#{type}, 0,#{createDtm}
+		)
+	</insert>
+
+
+
 
 </mapper>

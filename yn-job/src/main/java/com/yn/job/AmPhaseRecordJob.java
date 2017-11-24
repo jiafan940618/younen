@@ -73,8 +73,8 @@ public class AmPhaseRecordJob {
 
 	public AmPhaseRecordJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmPhaseRecordJob.log"),true));
-			mytxt = new PrintStream("./elecDataMonthJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmPhaseRecordJob.log"),true));
+//			mytxt = new PrintStream("./AmPhaseRecordJob.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -100,8 +100,6 @@ public class AmPhaseRecordJob {
 			List<Am3Phase> am3Phases = am1PhaseService.findAllAm3Phase();
 			String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 			String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
-			// date = "2017_10_04";
-			// checkDate = "171004";
 			if (am1Phases.size() > 0) {
 				for (Am1Phase am1Phase : am1Phases) {
 					AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
@@ -121,6 +119,9 @@ public class AmPhaseRecordJob {
 							amPhaseRecord.setAmPhaseRecordId(
 									"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 							Long checkMeterTime = am1Phase.getMeterTime();
+							String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("yyMMddHHmmss").parse(am1Phase.getMeterTime().toString()));
+							amPhaseRecord.setRecordTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(format));
+							amPhaseRecord.setType(am1Phase.getdAddr().toString().indexOf("1")==0?1:2);
 							// 判断数据是不是当天的。
 							if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
 								amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
@@ -131,7 +132,6 @@ public class AmPhaseRecordJob {
 								patchDataRecord.setCreateDtm(new Date());
 								// 存临时表。
 								patchDataRecordMapper.insert(patchDataRecord);
-								// amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
 								continue;
 							}
 							amPhaseRecord.setDealt(0);
@@ -165,6 +165,9 @@ public class AmPhaseRecordJob {
 							amPhaseRecord.setAmPhaseRecordId(
 									"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
 							Long checkMeterTime = am3Phase.getMeterTime();
+							String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("yyMMddHHmmss").parse(am3Phase.getMeterTime().toString()));
+							amPhaseRecord.setRecordTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(format));
+							amPhaseRecord.setType(am3Phase.getdAddr().toString().indexOf("1")==0?1:2);
 							// 判断数据是不是当天的。
 							if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
 								amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
@@ -174,7 +177,6 @@ public class AmPhaseRecordJob {
 								patchDataRecord.setCreateDtm(new Date());
 								// 存临时表。
 								patchDataRecordMapper.insert(patchDataRecord);
-								// amPhaseRecordMapper.deleteByPrimaryKey(amPhaseRecord.getAmPhaseRecordId());
 								continue;
 							}
 							amPhaseRecord.setDate(date);
@@ -198,52 +200,6 @@ public class AmPhaseRecordJob {
 		System.out.println("日志记录：" + taskExecuteRecord.getStatus());
 		System.setOut(out);
 		System.out.println("AmPhaseRecordJob日志保存完毕。");
-	}
-
-	/**
-	 * 更新电表的信息 和 插入电表的工作状态记录
-	 *
-	 * @param amPhaseRecords
-	 */
-	public void dealAmmeter(List<AmPhaseRecord> amPhaseRecords) {
-		for (AmPhaseRecord apr : amPhaseRecords) {
-			Long meterTime = apr.getMeterTime();
-			Ammeter ammeterR = new Ammeter();
-			ammeterR.setcAddr(apr.getcAddr().toString());
-			ammeterR.setdType(apr.getdType());
-			ammeterR.setiAddr(apr.getiAddr());
-			Ammeter ammeter = ammeterService.findOne(ammeterR);
-			if (ammeter != null) {
-				// 更新电表信息
-				String statusCode = apr.getMeterState();
-				AmmeterStatusCode ammeterStatusCode = ammeterStatusCodeService.findByStatusCode(statusCode);
-				if (ammeterStatusCode != null) {
-					ammeter.setStatus(ammeterStatusCode.getIsNormal());
-				}
-				if (ammeter.getWorkDtm() == null) {
-					ammeter.setWorkDtm(new Date());
-				}
-				ammeter.setNowKw(apr.getKw());
-				ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
-				if (ammeterDao.findOne(ammeter.getId()) != null) {
-					ammeterMapper.updateByPrimaryKeySelective(ammeter);
-				} else {
-					ammeterMapper.insert(ammeter);
-				}
-				// 插入电表状态记录
-				AmmeterRecord ammeterRecord = new AmmeterRecord();
-				ammeterRecord.setdAddr(apr.getdAddr());
-				ammeterRecord.setcAddr(ammeter.getcAddr());
-				ammeterRecord.setdType(ammeter.getdType());
-				ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
-				if (ammeter.getStation() != null) {
-					ammeterRecord.setStationId(ammeter.getStationId());
-					ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
-				}
-				ammeterRecord.setStatusCode(statusCode);
-				ammeterRecordService.saveByMapper(ammeterRecord);
-			}
-		}
 	}
 
 }

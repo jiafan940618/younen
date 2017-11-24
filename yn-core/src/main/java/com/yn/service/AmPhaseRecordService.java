@@ -2,17 +2,16 @@ package com.yn.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yn.dao.AmPhaseRecordDao;
@@ -40,7 +39,7 @@ public class AmPhaseRecordService {
 		AmPhaseRecord save = amPhaseRecordDao.save(amPhaseRecord);
 		return save;
 	}
-	
+
 	/**
 	 * 
 	    * @Title: dropTmpTable
@@ -49,7 +48,7 @@ public class AmPhaseRecordService {
 	    * @return void    返回类型
 	    * @throws
 	 */
-	public void dropTmpTable(String date){
+	public void dropTmpTable(String date) {
 		AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
 		amPhaseRecord.setDate(date);
 		amPhaseRecordMapper.dropTmpTable(amPhaseRecord);
@@ -60,16 +59,16 @@ public class AmPhaseRecordService {
 		amPhaseRecordMapper.addAmPhaseRecord(apr);
 	}
 
-	public void createTmpTable(AmPhaseRecord apr){
+	public void createTmpTable(AmPhaseRecord apr) {
 		amPhaseRecordMapper.createTmpTable(apr);
 	}
-	
-	
+
 	@Transactional
 	public int updateByPrimaryKeySelective(AmPhaseRecord record) {
 		amPhaseRecordMapper.createTmpTable(record);
 		return amPhaseRecordMapper.updateByPrimaryKeySelective(record);
 	}
+
 	@Transactional
 	public int updateByPrimaryKey(AmPhaseRecord record) {
 		return amPhaseRecordMapper.updateByPrimaryKey(record);
@@ -92,16 +91,35 @@ public class AmPhaseRecordService {
 		AmPhaseRecord findOne = amPhaseRecordDao.findOne(spec);
 		return findOne;
 	}
+
 	public AmPhaseRecord findOneByMapper(AmPhaseRecord amPhaseRecord) {
-		//RowId cAddr iAddr dAddr dType wAddr MeterTime
+		// RowId cAddr iAddr dAddr dType wAddr MeterTime
 		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
-//		AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
+		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
 		List<AmPhaseRecord> findOne = amPhaseRecordMapper.selectOneByC(amPhaseRecord);
-//		for (AmPhaseRecord amPhaseRecord2 : findOne) {
-//			BeanUtils.copyProperties(amPhaseRecord2, amPhaseRecord1);
-//			
-//		}
-		return findOne.size()==0?null:findOne.get(findOne.size()-1);
+		// for (AmPhaseRecord amPhaseRecord2 : findOne) {
+		// BeanUtils.copyProperties(amPhaseRecord2, amPhaseRecord1);
+		//
+		// }
+		return findOne.size() == 0 ? null : findOne.get(findOne.size() - 1);
+	}
+
+	public AmPhaseRecord findOneByMapper4Daddr(AmPhaseRecord amPhaseRecord) {
+		amPhaseRecord.setMeterState(new SimpleDateFormat("yyyy_MM_dd").format(new Date()));
+		AmPhaseRecord findOne = amPhaseRecordMapper.find4Daddr(amPhaseRecord);
+		return findOne;
+	}
+
+	public AmPhaseRecord findOneByMapperAndSort(AmPhaseRecord amPhaseRecord) {
+		// RowId cAddr iAddr dAddr dType wAddr MeterTime
+		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
+		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
+		List<AmPhaseRecord> findOne = amPhaseRecordMapper.selectOneBySort(amPhaseRecord);
+		// for (AmPhaseRecord amPhaseRecord2 : findOne) {
+		// BeanUtils.copyProperties(amPhaseRecord2, amPhaseRecord1);
+		//
+		// }
+		return findOne.size() == 0 ? null : findOne.get(findOne.size() - 1);
 	}
 
 	public List<AmPhaseRecord> findAll(List<Long> list) {
@@ -119,22 +137,56 @@ public class AmPhaseRecordService {
 		return amPhaseRecordDao.findAll(spec);
 	}
 
-	public List<AmPhaseRecord> findAllByMapper(AmPhaseRecord amPhaseRecord) {
+	public List<AmPhaseRecord> findAllByMapperAndCurrenttime(AmPhaseRecord amPhaseRecord) {
 		AmPhaseRecordExample example = new AmPhaseRecordExample();
 		Criteria criteria = example.createCriteria();
-		// Dealt iAddr dType cAddr dAddr
 		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
 		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
 		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
 		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
-		if(amPhaseRecord.getdAddr()!=null){
+		criteria.andWAddrEqualTo(amPhaseRecord.getwAddr());
+		if (amPhaseRecord.getdAddr() != null) {
 			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
 		}
 		example.setDate(amPhaseRecord.getDate());
+		Date[] thisHourSpace = DateUtil.thisHourSpace();
+		Calendar calendar = Calendar.getInstance();
+		calendar.roll(Calendar.HOUR_OF_DAY, -3);// 3小时前
+		Date date = calendar.getTime();
+		Long startDtm = Long.valueOf(DateUtil.formatDate(date, DateUtil.yyMMddHHmmss));
+		Long endDtm = Long.valueOf(DateUtil.formatDate(thisHourSpace[1], DateUtil.yyMMddHHmmss));
+		criteria.andMeterTimeGreaterThanOrEqualTo(startDtm);
+		criteria.andMeterTimeLessThanOrEqualTo(endDtm);
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
-	
+
+	public List<AmPhaseRecord> findAllByMapper(AmPhaseRecord amPhaseRecord) {
+		AmPhaseRecordExample example = new AmPhaseRecordExample();
+		Criteria criteria = example.createCriteria();
+		if (amPhaseRecord.getDealt() != null) {
+			criteria.andDealtEqualTo(amPhaseRecord.getDealt());
+		}
+		if (amPhaseRecord.getiAddr() != null) {
+			criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
+		}
+		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
+		criteria.andCAddrEqualTo(amPhaseRecord.getcAddr());
+		criteria.andWAddrEqualTo(amPhaseRecord.getwAddr());
+		if (amPhaseRecord.getdAddr() != null) {
+			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
+		}
+		example.setDate(amPhaseRecord.getDate());
+		if (amPhaseRecord.getMeterTime() != null) {
+			criteria.andMeterTimeEqualTo(amPhaseRecord.getMeterTime());
+		}
+		if (amPhaseRecord.getdAddr() != null && amPhaseRecord.getdAddr() == 6) {
+			criteria.andDAddrIn(Arrays.asList(1L, 11L));
+		}
+		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
+		return byExample;
+	}
+
 	public List<AmPhaseRecord> findAllByMapper2(AmPhaseRecord amPhaseRecord) throws ParseException {
 		AmPhaseRecordExample example = new AmPhaseRecordExample();
 		Criteria criteria = example.createCriteria();
@@ -143,15 +195,13 @@ public class AmPhaseRecordService {
 		criteria.andDTypeEqualTo(amPhaseRecord.getdType());
 		criteria.andIAddrEqualTo(amPhaseRecord.getiAddr());
 		criteria.andDealtEqualTo(amPhaseRecord.getDealt());
-		if(amPhaseRecord.getdAddr()!=null){
+		if (amPhaseRecord.getdAddr() != null) {
 			criteria.andDAddrEqualTo(amPhaseRecord.getdAddr());
 		}
 		example.setDate(amPhaseRecord.getDate());
 		List<AmPhaseRecord> byExample = amPhaseRecordMapper.selectByExample(example);
 		return byExample;
 	}
-	
-
 
 	/**
 	 * 删除记录表某一天的数据，。
@@ -190,13 +240,21 @@ public class AmPhaseRecordService {
 		return amPhaseRecordMapper.findByMapper4InitKwh(apr);
 	}
 
-	public List<AmPhaseRecord> findAll(String date,Integer cAddr,Integer type) {
+	public List<AmPhaseRecord> findAll(String date, Integer cAddr, Integer type) {
 		AmPhaseRecord amPhaseRecord = new AmPhaseRecord();
 		amPhaseRecord.setDate(date);
 		amPhaseRecord.setcAddr(cAddr);
 		amPhaseRecord.setdAddr(Long.valueOf(type));
-//		amPhaseRecord.setwAddr(0);xml已固定为0。
+		// amPhaseRecord.setwAddr(0);xml已固定为0。
 		return amPhaseRecordMapper.findAll4DateCaddr(amPhaseRecord);
+	}
+
+	public AmPhaseRecord findMaxData(AmPhaseRecord aprR) {
+		return amPhaseRecordMapper.findMaxData(aprR);
+	}
+
+	public AmPhaseRecord findMinData(AmPhaseRecord aprR) {
+		return amPhaseRecordMapper.findMinData(aprR);
 	}
 
 }

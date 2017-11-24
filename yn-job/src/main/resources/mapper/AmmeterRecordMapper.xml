@@ -18,9 +18,11 @@
 		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, create_dtm, del, del_dtm, c_addr, d_addr, d_type, record_dtm,
+		id, create_dtm, del, del_dtm, c_addr, d_addr, d_type,
+		record_dtm,
 		station_code, station_id,
-		status_code, w_addr, type, update_dtm
+		status_code, w_addr, type,
+		update_dtm
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -30,21 +32,27 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from ammeter_record
+		delete from
+		ammeter_record
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.yn.model.AmmeterRecord">
-		insert into ammeter_record (id, create_dtm, del,
+		insert into ammeter_record
+		(id, create_dtm, del,
 		del_dtm, c_addr, d_addr,
-		d_type, record_dtm, station_code,
+		d_type, record_dtm,
+		station_code,
 		station_id, status_code, w_addr,
 		type, update_dtm)
-		values (#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
+		values
+		(#{id,jdbcType=INTEGER}, #{createDtm,jdbcType=TIMESTAMP},
 		#{del,jdbcType=INTEGER},
-		#{delDtm,jdbcType=TIMESTAMP}, #{cAddr,jdbcType=VARCHAR}, #{dAddr,jdbcType=INTEGER},
+		#{delDtm,jdbcType=TIMESTAMP},
+		#{cAddr,jdbcType=VARCHAR}, #{dAddr,jdbcType=INTEGER},
 		#{dType,jdbcType=INTEGER}, #{recordDtm,jdbcType=TIMESTAMP},
 		#{stationCode,jdbcType=VARCHAR},
-		#{stationId,jdbcType=INTEGER}, #{statusCode,jdbcType=VARCHAR}, #{wAddr,jdbcType=INTEGER},
+		#{stationId,jdbcType=INTEGER},
+		#{statusCode,jdbcType=VARCHAR}, #{wAddr,jdbcType=INTEGER},
 		#{type,jdbcType=INTEGER}, #{updateDtm,jdbcType=TIMESTAMP})
 	</insert>
 	<insert id="insertSelective" parameterType="com.yn.model.AmmeterRecord">
@@ -184,20 +192,46 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.AmmeterRecord">
-		update ammeter_record
+		update
+		ammeter_record
 		set create_dtm = #{createDtm,jdbcType=TIMESTAMP},
-		del = #{del,jdbcType=INTEGER},
+		del =
+		#{del,jdbcType=INTEGER},
 		del_dtm = #{delDtm,jdbcType=TIMESTAMP},
-		c_addr = #{cAddr,jdbcType=VARCHAR},
+		c_addr
+		= #{cAddr,jdbcType=VARCHAR},
 		d_addr = #{dAddr,jdbcType=INTEGER},
-		d_type = #{dType,jdbcType=INTEGER},
-		record_dtm = #{recordDtm,jdbcType=TIMESTAMP},
-		station_code = #{stationCode,jdbcType=VARCHAR},
-		station_id = #{stationId,jdbcType=INTEGER},
-		status_code = #{statusCode,jdbcType=VARCHAR},
+		d_type
+		= #{dType,jdbcType=INTEGER},
+		record_dtm =
+		#{recordDtm,jdbcType=TIMESTAMP},
+		station_code =
+		#{stationCode,jdbcType=VARCHAR},
+		station_id =
+		#{stationId,jdbcType=INTEGER},
+		status_code =
+		#{statusCode,jdbcType=VARCHAR},
 		w_addr = #{wAddr,jdbcType=INTEGER},
 		type = #{type,jdbcType=INTEGER},
-		update_dtm = #{updateDtm,jdbcType=TIMESTAMP}
+		update_dtm =
+		#{updateDtm,jdbcType=TIMESTAMP}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
+
+	<select id="select" parameterType="com.yn.model.AmmeterRecord" resultType="com.yn.model.AmmeterRecord">
+		select
+		<include refid="Base_Column_List" />
+		from ammeter_record
+		where c_addr = #{cAddr,jdbcType=VARCHAR} and
+		d_addr = #{dAddr,jdbcType=INTEGER} and
+		d_type = #{dType,jdbcType=INTEGER} and w_addr = 0 and 
+		<if test="stationCode != null">
+			station_code = #{stationCode,jdbcType=VARCHAR} and
+		</if>
+		<if test="stationId != null">
+			station_id = #{stationId,jdbcType=INTEGER} and
+		</if>
+		record_dtm like CONCAT('${date}','%') and status_code = #{statusCode,jdbcType=VARCHAR}
+	</select>
+
 </mapper>

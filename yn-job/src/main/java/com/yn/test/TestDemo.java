@@ -22,7 +22,10 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ParseException {
-		System.out.println(DateUtil.getDaysByYearMonth(2017, 11));
+		Long s = 171022000000L;
+		Date format =new SimpleDateFormat("yyMMddHHmmss").parse(s.toString());
+		System.out.println(new SimpleDateFormat("yyyy-MM-ddHHmmss").format(format));
+//		System.out.println(DateUtil.getDaysByYearMonth(2017, 11));
 	}
 
 	public void test1() {

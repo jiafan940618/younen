@@ -206,7 +206,7 @@ public class AmPhaseRecordJobController {
 		am1Phases = amPhaseService.findAllAm1PhaseByDate(selectDate);
 		am3Phases = amPhaseService.findAllAm3PhaseByDate(selectDate);
 		String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
-		checkDate = "171108";
+		checkDate = "171118";
 		if (am1Phases != null && am1Phases.size() > 0) {
 			jsonResult.put("am1Phases.size() ", am1Phases.size());
 			for (Am1Phase am1Phase : am1Phases) {
@@ -227,6 +227,9 @@ public class AmPhaseRecordJobController {
 						amPhaseRecord.setAmPhaseRecordId(
 								"am1Phase" + am1Phase.getMeterTime().toString() + am1Phase.getRowId().toString());
 						Long checkMeterTime = am1Phase.getMeterTime();
+						String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("yyMMddHHmmss").parse(am1Phase.getMeterTime().toString()));
+						amPhaseRecord.setRecordTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(format));
+						amPhaseRecord.setType(am1Phase.getdAddr().toString().indexOf("1")==0?1:2);
 						// 判断数据是不是当天的。
 						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
 							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(
@@ -273,6 +276,9 @@ public class AmPhaseRecordJobController {
 						amPhaseRecord.setAmPhaseRecordId(
 								"am3Phase" + am3Phase.getMeterTime().toString() + am3Phase.getRowId().toString());
 						Long checkMeterTime = am3Phase.getMeterTime();
+						String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new SimpleDateFormat("yyMMddHHmmss").parse(am3Phase.getMeterTime().toString()));
+						amPhaseRecord.setRecordTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(format));
+						amPhaseRecord.setType(am3Phase.getdAddr().toString().indexOf("1")==0?1:2);
 						// 判断数据是不是当天的。
 						if (!checkDate.equals(String.valueOf(checkMeterTime).substring(0, 6))) {
 							amPhaseRecord.setDate(new SimpleDateFormat("yyMMddHHssmm").format(

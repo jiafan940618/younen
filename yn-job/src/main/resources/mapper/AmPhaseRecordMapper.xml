@@ -1078,8 +1078,6 @@
 		where
 		am_phase_record_id = #{amPhaseRecordId,jdbcType=VARCHAR}
 	</update>
-
-
 	<insert id="addAmPhaseRecord" parameterType="com.yn.model.AmPhaseRecord">
 		insert into
 		am_phase_record_${date} (am_phase_record_id, a_current,
@@ -1162,13 +1160,12 @@
 		#{rowId,jdbcType=INTEGER},
 		#{volt,jdbcType=DECIMAL},
 		#{voltChange,jdbcType=INTEGER},
-		#{wAddr,jdbcType=INTEGER}, #{record_time}, #{type,jdbcType=INTEGER})
+		#{wAddr,jdbcType=INTEGER}, #{recordTime}, #{type,jdbcType=INTEGER})
 		<selectKey resultType="String" keyProperty="amPhaseRecordId">
 			SELECT @@IDENTITY
 			AS am_phase_record_id
 		</selectKey>
 	</insert>
-
 	<select id="selectOneByC" parameterType="com.yn.model.AmPhaseRecord"
 		resultType="com.yn.model.AmPhaseRecord">
 		<!-- RowId cAddr iAddr dAddr dType wAddr MeterTime -->
@@ -1231,71 +1228,101 @@
 			and type like CONCAT('%','${type}','%')
 		</if>
 	</select>
-
 	<update id="createTmpTable" parameterType="com.yn.model.AmPhaseRecord">
 		Create Table If Not
 		Exists youneng.am_phase_record_${date}
 		(
-		`am_phase_record_id` VARCHAR(32) NOT NULL COMMENT '[id]',
-		`a_current` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`am_phase_record_id`
+		VARCHAR(32) NOT NULL COMMENT '[id]',
+		`a_current` DECIMAL(12,2) DEFAULT
+		NULL COMMENT '[]',
 		`a_kva` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`a_kvar` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`a_kw` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`a_kwh_total` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`a_kw` DECIMAL(12,2)
+		DEFAULT NULL COMMENT '[]',
+		`a_kwh_total` DECIMAL(12,2) DEFAULT NULL
+		COMMENT '[]',
 		`a_power_factor` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`a_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`ab_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`b_current` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`b_kva` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`ab_volt`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`b_current` DECIMAL(12,2)
+		DEFAULT NULL COMMENT '[]',
+		`b_kva` DECIMAL(12,2) DEFAULT NULL COMMENT
+		'[]',
 		`b_kvar` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`b_kw` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`b_kwh_total` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`b_power_factor` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`b_kw`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`b_kwh_total` DECIMAL(12,2)
+		DEFAULT NULL COMMENT '[]',
+		`b_power_factor` DECIMAL(12,2) DEFAULT NULL
+		COMMENT '[]',
 		`b_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`bc_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`c_addr` INT(11) DEFAULT NULL COMMENT '[]',
-		`c_current` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`c_addr` INT(11)
+		DEFAULT NULL COMMENT '[]',
+		`c_current` DECIMAL(12,2) DEFAULT NULL
+		COMMENT '[]',
 		`c_kva` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`c_kvar` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`c_kw` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`c_kwh_total` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`c_kvar`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`c_kw` DECIMAL(12,2) DEFAULT
+		NULL COMMENT '[]',
+		`c_kwh_total` DECIMAL(12,2) DEFAULT NULL COMMENT
+		'[]',
 		`c_power_factor` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`c_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`ca_volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`current` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`current_change` INT(11) DEFAULT NULL COMMENT '[]',
+		`ca_volt`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`current` DECIMAL(12,2)
+		DEFAULT NULL COMMENT '[]',
+		`current_change` INT(11) DEFAULT NULL
+		COMMENT '[]',
 		`current_zero` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`d_addr` BIGINT(20) DEFAULT NULL COMMENT '[]',
-		`d_type` INT(11) DEFAULT NULL COMMENT '[]',
-		`dealt` INT(1) DEFAULT '0' COMMENT '[是否已经处理]{0:未处理,1:已经处理}',
-		`frequency` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`d_type` INT(11) DEFAULT
+		NULL COMMENT '[]',
+		`dealt` INT(1) DEFAULT '0' COMMENT
+		'[是否已经处理]{0:未处理,1:已经处理}',
+		`frequency` DECIMAL(12,2) DEFAULT NULL
+		COMMENT '[]',
 		`i_addr` INT(11) DEFAULT NULL COMMENT '[]',
-		`kva` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`kvar` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`kva`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`kvar` DECIMAL(12,2) DEFAULT
+		NULL COMMENT '[]',
 		`kvarh1` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
 		`kvarh2` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`kw` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`kwh` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`kw` DECIMAL(12,2)
+		DEFAULT NULL COMMENT '[]',
+		`kwh` DECIMAL(12,2) DEFAULT NULL COMMENT
+		'[]',
 		`kwh_rev` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`kwh_total` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`meter_state` VARCHAR(255) DEFAULT NULL COMMENT '[]',
-		`meter_time` BIGINT(20) DEFAULT NULL COMMENT '[]',
+		`kwh_total`
+		DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`meter_state` VARCHAR(255)
+		DEFAULT NULL COMMENT '[]',
+		`meter_time` BIGINT(20) DEFAULT NULL COMMENT
+		'[]',
 		`power_factor` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
-		`row_id` INT(11) DEFAULT NULL COMMENT '[]',
-		`volt` DECIMAL(12,2) DEFAULT NULL COMMENT '[]',
+		`row_id`
+		INT(11) DEFAULT NULL COMMENT '[]',
+		`volt` DECIMAL(12,2) DEFAULT NULL
+		COMMENT '[]',
 		`volt_change` INT(11) DEFAULT NULL COMMENT '[]',
-		`w_addr` INT(11) DEFAULT NULL COMMENT '[]',
-		`record_time` DATETIME DEFAULT NULL COMMENT '[记录时间]',
+		`w_addr`
+		INT(11) DEFAULT NULL COMMENT '[]',
+		`record_time` DATETIME DEFAULT NULL
+		COMMENT '[记录时间]',
 		`type` INT(1) DEFAULT NULL COMMENT '[用电类型]',
-		PRIMARY KEY (`am_phase_record_id`)
+		PRIMARY
+		KEY (`am_phase_record_id`)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4
 	</update>
-
 	<update id="dropTmpTable" parameterType="com.yn.model.AmPhaseRecord">
 		DROP TABLE IF EXISTS
 		youneng.am_phase_record_${date};
 	</update>
-
 	<select id="findByMapper4InitKwh" parameterType="com.yn.model.AmPhaseRecord"
 		resultType="com.yn.model.AmPhaseRecord">
 		<!-- RowId cAddr iAddr dAddr dType wAddr MeterTime -->
@@ -1308,7 +1335,6 @@
 		and c_addr = ${cAddr} order by
 		meter_time desc limit 1 ;
 	</select>
-
 	<select id="findAll4DateCaddr" parameterType="com.yn.model.AmPhaseRecord"
 		resultType="com.yn.model.AmPhaseRecord">
 		select
@@ -1357,9 +1383,108 @@
 		from
 		am_phase_record_${date}
 		where c_addr =
-		${cAddr} and d_addr like CONCAT('%','${dAddr}','%')
+		${cAddr} and
+		d_addr like CONCAT('%','${dAddr}','%')
 		and
 		w_addr = 0;
+	</select>
+	<select id="selectOneBySort" parameterType="com.yn.model.AmPhaseRecord"
+		resultType="com.yn.model.AmPhaseRecord">
+		select
+		kwh_total as kwhTotal
+		from
+		am_phase_record_${date}
+		where 1=1
+		<if test="cAddr != null">
+			and c_addr = ${cAddr}
+		</if>
+		<if test="dAddr != null">
+			and d_addr = ${dAddr}
+		</if>
+		<if test="dType != null">
+			and d_type = ${dType}
+		</if>
+		<if test="wAddr != null">
+			and w_addr = 0
+		</if>
+		<if test="meterTime != null">
+			and meter_time like CONCAT('%','${meterTime}','%')
+		</if>
+		<if test="recordTime != null">
+			and record_time like CONCAT('%','${recordTime}','%')
+		</if>
+		<if test="type != null">
+			and type like CONCAT('%','${type}','%')
+		</if>
+		order by meter_time ${sort}
+	</select>
+
+	<select id="findMaxData" parameterType="com.yn.model.AmPhaseRecord"
+		resultType="com.yn.model.AmPhaseRecord">
+		select
+		d_addr as dAddr, d_type as dType, dealt,kw,
+		kwh_total as kwhTotal,
+		meter_time as meterTime,c_addr as cAddr
+		from
+		am_phase_record_${date}
+		where 1=1
+		<if test="cAddr != null">
+			and c_addr = ${cAddr}
+		</if>
+		<if test="dAddr != null">
+			and d_addr = ${dAddr}
+		</if>
+		<if test="dType != null">
+			and d_type = ${dType}
+		</if>
+		and w_addr = 0
+		order by meter_time desc limit 1
+	</select>
+	<select id="findMinData" parameterType="com.yn.model.AmPhaseRecord"
+		resultType="com.yn.model.AmPhaseRecord">
+		select
+		d_addr as dAddr, d_type as dType, dealt,kw,
+		kwh_total as kwhTotal,
+		meter_time as meterTime,c_addr as cAddr
+		from
+		am_phase_record_${date}
+		where 1=1
+		<if test="cAddr != null">
+			and c_addr = ${cAddr}
+		</if>
+		<if test="dAddr != null">
+			and d_addr = ${dAddr}
+		</if>
+		<if test="dType != null">
+			and d_type = ${dType}
+		</if>
+		and w_addr = 0
+		order by meter_time asc limit 1
+	</select>
+
+	<select id="find4Daddr" parameterType="com.yn.model.AmPhaseRecord"
+		resultType="com.yn.model.AmPhaseRecord">
+		select
+		d_addr as dAddr, d_type as dType, dealt,kw,
+		kwh_total as kwhTotal,
+		meter_time as meterTime,c_addr as cAddr
+		from
+		am_phase_record_${meterState}
+		where 1=1
+		<if test="cAddr != null">
+			and c_addr = ${cAddr}
+		</if>
+		<if test="dAddr != null">
+			and d_addr = ${dAddr}
+		</if>
+		<if test="dType != null">
+			and d_type = ${dType}
+		</if>
+		<if test="meterTime != null">
+			and meter_time = ${meterTime}
+		</if>
+		and w_addr = 0
+		order by meter_time asc limit 1
 	</select>
 
 
