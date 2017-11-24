@@ -1423,7 +1423,8 @@
 			</foreach>
 		</if> 
 		AND d_addr =#{map.type}
-		AND w_addr =0 DESC LIMIT 1  
+		AND w_addr =0 
+		ORDER BY row_id DESC LIMIT 1  
 	</select>
 	
 </mapper>
