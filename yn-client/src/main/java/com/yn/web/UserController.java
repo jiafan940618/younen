@@ -617,10 +617,15 @@ public class UserController {
 	@ResponseBody
 	@RequestMapping(value = "/logout")
 	public Object logout(@RequestParam("countType") Integer countType, HttpSession httpSession) {
+		
+		User user = SessionCache.instance().getUser();
+		if(null == user){
+			
+			return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		}
 
 		if(countType == 1){
 
-			 User user = SessionCache.instance().getUser();
 			 user.setToken(null);
 		     userService.updateTokenBeforeLogout(user);
 

@@ -26,7 +26,7 @@ public class Inverter extends IDomain implements Serializable {
 	private String brandName;
 	@Column(columnDefinition = "varchar(255) comment '[型号]'")
 	private String model;
-	@Column(columnDefinition = "int(1) comment '[相数]'")
+	@Column(columnDefinition = "int(1) comment '[相数,1、单相 3、三相]'")
 	private int phases;
 	@Column(columnDefinition = "int(3) comment '[电压]'")
 	private int voltage;

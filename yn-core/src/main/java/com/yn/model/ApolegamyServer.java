@@ -18,6 +18,8 @@ public class ApolegamyServer extends IDomain implements Serializable {
     private Long serverId;
     @Column(columnDefinition = "int(11) comment'[选配项目id]'")
     private Long apolegamyId;
+    @Column(columnDefinition = "int(11) comment'[方案id]'")
+    private Long newServerPlanId;
 
 
     /**
@@ -31,7 +33,17 @@ public class ApolegamyServer extends IDomain implements Serializable {
         return serverId;
     }
 
-    public void setServerId(Long serverId) {
+    
+    
+    public Long getNewServerPlanId() {
+		return newServerPlanId;
+	}
+
+	public void setNewServerPlanId(Long newServerPlanId) {
+		this.newServerPlanId = newServerPlanId;
+	}
+
+	public void setServerId(Long serverId) {
         this.serverId = serverId;
     }
 
