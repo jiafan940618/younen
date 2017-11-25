@@ -163,10 +163,10 @@ public class UserLoginController {
 	 @ResponseBody
 	    public Object someTest(UserVo userVo,HttpSession session) {
 
-    			/*userVo.setPhone("15958104696");
-    			userVo.setCapacity(14.8);
-    			userVo.setPrice(9530.0);
-    			userVo.setPlanId(11L);*/
+//    			userVo.setPhone("13712621200");
+//    			userVo.setCapacity(10.08);
+//    			userVo.setPrice(110880.00);
+//    			userVo.setPlanId(11L);
     	
 				   Integer type = userVo.getType();
 
