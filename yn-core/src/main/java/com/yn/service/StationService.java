@@ -273,10 +273,18 @@ public class StationService {
 
 		// 电站总发电量
 		Double egt = 0D;
+		Double nowKw=0D;
+		Integer workTotaTm=0;
 		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
 		for (Ammeter ammeter : ammeters) {
 			egt += ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
+			nowKw+=ammeter.getNowKw();
+			workTotaTm +=ammeter.getWorkTotalTm();	
 		}
+		objectMap.put("electricityGenerationTol", NumberUtil.accurateToTwoDecimal(egt));
+		objectMap.put("nowKw", NumberUtil.accurateToTwoDecimal(nowKw));
+		objectMap.put("workTotaTm", workTotaTm);
+		
 		// 电站装机容量
 		Double capacity = station.getCapacity();
 		// 相当于植树

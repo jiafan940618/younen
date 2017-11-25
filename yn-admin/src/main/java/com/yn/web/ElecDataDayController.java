@@ -72,11 +72,11 @@ public class ElecDataDayController {
 	 */
 	@RequestMapping(value = "/workUseCount", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object workUseCount(Long stationId, Integer type) {
+	public Object workUseCount(Long stationId, Integer type,String dateStr,Integer plan) {
 
 		Map<String, Object> workUseCount = new HashMap<>();
 
-		workUseCount = elecDataDayService.workUseCountList(stationId, type);
+		workUseCount = elecDataDayService.workUseCountList(stationId, type,dateStr,plan);
 
 		return ResultVOUtil.success(workUseCount);
 	}

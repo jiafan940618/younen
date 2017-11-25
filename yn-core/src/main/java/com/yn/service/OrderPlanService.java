@@ -77,14 +77,13 @@ public class OrderPlanService {
 	        for (Apolegamy apolegamy : apolist) {
 	        	apoids += apolegamy.getApolegamyName()+"  ";
 			}
-	        
+ 
 	        if(apoids.equals("")){
 	        	map.put("apoIds", "未选择配选项目");
 	        }else{
 	        	 map.put("apoIds", apoids);
 	        }
-	        
-	       
+
 	        map.put("batteryBoardWarrantyYear", batteryBoardWarrantyYear.toString());
 
 		return map;
