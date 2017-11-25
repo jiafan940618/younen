@@ -66,17 +66,11 @@ public class QuestionController {
 
 	    @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
 	    @ResponseBody
-	    public Object findAll(QuestionVo questionVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+	    public Object findAll(QuestionVo questionVo) {
 	    	Question question = new Question();
 	        BeanCopy.copyProperties(questionVo, question);
 	        List<Question> findAll = questionService.findAll(question);
-	        List<Question> listQuestion=new ArrayList<>();
-			for (int i = 0; i < findAll.size(); i++) {
-				Question Question2=findAll.get(i);
-				Question2.setId(i+1l);
-				listQuestion.add(Question2);	
-			}
-	        return ResultVOUtil.success(listQuestion);
+	        return ResultVOUtil.success(findAll);
 	    }
 	
 }

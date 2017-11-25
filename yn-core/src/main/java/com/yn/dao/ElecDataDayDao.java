@@ -60,4 +60,8 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=?3 AND t.ammeter_code in (?4) AND t.del=0",nativeQuery=true)
     double sumKwhByDays(String start, String end, Integer type, List<Long> ammeterCodes);
 
+    @Query(value="SELECT DATE_FORMAT(create_dtm,?2) AS create_dtm, SUM(kwh) AS kwh FROM elec_data_day as t "
+    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type =?4 AND "
+    		+ "t.create_dtm LIKE CONCAT('%',?3,'%') GROUP BY DATE_FORMAT(create_dtm,?2)ORDER BY create_dtm ASC",nativeQuery=true)
+    List<Object[]> oneKwh(@Param("ammeterCodes")List<Long> ammeterCodes,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr,@Param("type")Integer type);
 }

@@ -656,9 +656,17 @@ public class ElecDataDayService {
 	/**
 	 * 用户发电/用电统计图
 	 */
-	public Map<String, Object> workUseCountList(Long stationId, Integer type) {
+	public Map<String, Object> workUseCountList(Long stationId, Integer type,String dateStr,Integer plan) {
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		List<Object[]> list = elecDataDayDao.workUseCount(ammeterCodes, type);
+		String dateFormat = "";
+		if (plan == 0) {
+			dateFormat = "%Y";
+		} else if (plan == 1) {
+			dateFormat = "%Y-%m";
+		} else if (plan == 2) {
+			dateFormat = "%Y-%m-%d";
+		}
+		List<Object[]> list = elecDataDayDao.oneKwh(ammeterCodes, dateFormat, dateStr, type);
 		Map<Object, Object> linkHashMap = new LinkedHashMap<>();
 		List<Map<Object, Object>> listsMap = new ArrayList<>();
 		List<Map<Object, Object>> lists = new ArrayList<>();
