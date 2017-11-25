@@ -124,6 +124,11 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
     	
     	User newuserVo = SessionCache.instance().getUser();
 
+		if(null == newuserVo){
+			
+			return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		}
+
     	for (Long long1 : checkedId) {
 			logger.info("id串为：-------- ----- ----- ---- "+long1);
 		}
