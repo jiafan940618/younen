@@ -660,12 +660,10 @@ public class ElecDataDayService {
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		String dateFormat = "";
 		if (plan == 0) {
-			dateFormat = "%Y";
-		} else if (plan == 1) {
 			dateFormat = "%Y-%m";
-		} else if (plan == 2) {
+		} else if (plan == 1) {
 			dateFormat = "%Y-%m-%d";
-		}
+		} 
 		List<Object[]> list = elecDataDayDao.oneKwh(ammeterCodes, dateFormat, dateStr, type);
 		Map<Object, Object> linkHashMap = new LinkedHashMap<>();
 		List<Map<Object, Object>> listsMap = new ArrayList<>();
