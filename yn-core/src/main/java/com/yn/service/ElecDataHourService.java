@@ -1,5 +1,7 @@
 package com.yn.service;
 
+import static org.mockito.Matchers.notNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -269,17 +271,30 @@ public class ElecDataHourService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getTodayKwh(Long serverId, Integer type) {
-		List<Map<String, Object>> list =new ArrayList<>();
+		List<Long> stationIds=stationDao.findId(serverId);
+		List<Map<String, Object>> todayKwh=new ArrayList<>();
+		List<Map<String, Object>> todayKwhAll=new ArrayList<>();
+		for (Long stationId : stationIds) {
+			List<Map<String, Object>> todayKwhOne=getTodayKwhByStationId(stationId, type);
+			for (Map<String, Object> map : todayKwhOne) {
+				todayKwhAll.add(map);
+			}	
+		}
 		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
 		Integer num= Integer.parseInt(dFormat.format(new Date()));
 		for (int i = 0; i < num; i++) {
-			Map<String, Object> map =new HashMap<>();
-			map.put("time", i);
-			map.put("kwh",testKwhDao.getKwh(i) );
-			list.add(map);
+			Map<String, Object> mapOne=new HashMap<>();
+			Double kwh =0D;
+			for (Map<String, Object> map : todayKwhAll) {
+				if (i==(Integer)map.get("time")) {
+					kwh+=(Double)map.get("kwh");
+				}
+			}
+			mapOne.put("time", i);
+			mapOne.put("kwh",NumberUtil.accurateToTwoDecimal(kwh) );
+			todayKwh.add(mapOne);
 		}
-		
-		return list;
+		return todayKwh;
 	}
 
 	/**
@@ -294,6 +309,8 @@ public class ElecDataHourService {
 		List<Map<String, Object>> list = new ArrayList<>();
 		List<Map<String, Object>> listArray = new ArrayList<>();
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
+		//判断是否绑定电表码
+		if (ammeterCodes.size()>0) {
 		String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
 		Date[] todaySpace = DateUtil.getTodaySpace();
 		Date startTime = todaySpace[0];
@@ -459,6 +476,7 @@ public class ElecDataHourService {
 				listArray.add(mapObject);
 			}
 		}
+	}
 	}
 		return 	listArray;
 	}

@@ -45,13 +45,13 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	@Query("select COALESCE(sum(s.capacity),0) from Station s WHERE s.serverId=?1 AND s.del=0")
 	double sumCapacity(Long serverId);
 
-	@Query(value = "select * from station as s where s.user_id=?1 and s.status in(1,2)", nativeQuery = true)
+	@Query(value = "select * from station as s where s.user_id=?1 and s.status in(1,2) AND s.del=0", nativeQuery = true)
 	List<Station> findByUserId(long userid);
 
-	@Query(value = "select * from station as s where s.status in(1,2)", nativeQuery = true)
+	@Query(value = "select * from station as s where s.status in(1,2) AND s.del=0", nativeQuery = true)
 	List<Station> findAllStation();
 
-	@Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.id=?1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
+	@Query("SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.id=?1 AND t.del=0 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC")
 	List<Map<Object, Object>> findUserCapacity(Long stationId);
 
 	@Query(value = "SELECT t2.province_text AS provinceName, COUNT(*) AS stationNum FROM station t1 INNER JOIN province t2 "
@@ -74,7 +74,7 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	 * 按时间查询装机并网总量
 	 */
 
-	@Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.createDtm LIKE CONCAT('%',:dateStr,'%') AND t.id=:stationId GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
+	@Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(capacity) AS capacity FROM Station t WHERE t.createDtm is not null AND t.del=0 AND t.createDtm LIKE CONCAT('%',:dateStr,'%') AND t.id=:stationId GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
 	List<Map<Object, Object>> numCapacity(@Param("stationId") Long stationId, @Param("dateFormat") String dateFormat,
 			@Param("dateStr") String dateStr);
 
@@ -105,7 +105,7 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	@Query("select s from Station s WHERE  s.del=0")
 	List<Station> getselStation();
 	
-	@Query("select v from Station v where v.id in (stationIds)")
+	@Query("select v from Station v where v.id in (stationIds) AND v.del=0")
 	List<Station> findByStation(String stationIds);
 	
 	@Query(value = "select id from station  where  del=0", nativeQuery = true)
