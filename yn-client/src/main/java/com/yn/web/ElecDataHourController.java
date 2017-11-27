@@ -113,13 +113,8 @@ public class ElecDataHourController {
 	 */
 	@RequestMapping(value = "/oneHourKwh", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId
-			){
-		Map<String, Object> workList = new HashMap<>();
-		List<Map<String, Object>> listArrayWork=elecDataHourService.oneHourKwh(stationId,1);
-		List<Map<String, Object>> listArrayUse=elecDataHourService.oneHourKwh(stationId,2);
-		workList.put("workKw", listArrayWork);
-		workList.put("useKw", listArrayUse);
+	public Object oneHourKwh(@RequestParam(value = "stationId", required = true) Long stationId){
+		List<Map<String, Object>> workList = elecDataHourService.oneHourKwh(stationId);
 		return ResultVOUtil.success(workList);
 	}
 
