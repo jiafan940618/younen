@@ -61,19 +61,19 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
 			" p.battery_board_brand,p.battery_board_model,p.inverter_brand,p.inverter_model,"
 			+ "p.other_material_json_text,o.capacity,o.plan_price,d.apo_ids,d.price,o.total_price,o.war_period,o.status,o.ipo_memo,o.loan_status,o.create_dtm,o.had_pay_price "+
 				"  FROM t_order o LEFT JOIN order_plan p ON o.id = p.order_id"+ 
-				 "  LEFT JOIN apolegamy_order d ON d.order_id = o.id WHERE o.id =:orderId",nativeQuery=true)
+				 "  LEFT JOIN apolegamy_order d ON d.order_id = o.id WHERE o.id =:orderId and o.del = 0 ",nativeQuery=true)
 		   
 		   Object getIosInfoOrder(@Param("orderId") Long orderId);
   
     
   	@Query(value="SELECT o.id,o.status,o.had_pay_price,o.total_price FROM `bill_order`"
-  			+ " b LEFT JOIN t_order o ON b.order_id = o.id WHERE b.trade_no = :tradeNo ;",nativeQuery=true)
+  			+ " b LEFT JOIN t_order o ON b.order_id = o.id WHERE b.trade_no = :tradeNo and o.del = 0 ;",nativeQuery=true)
   	Object FindByTradeNo(@Param("tradeNo") String tradeNo);
   	
   	
   	@Transactional
 	@Modifying
-	@Query("update Order set status =:#{#order.status} where id = :#{#order.id}")
+	@Query("update Order set status =:#{#order.status} where id = :#{#order.id} ")
 	void updateOrderbyId(@Param("order") Order order);
 
 
