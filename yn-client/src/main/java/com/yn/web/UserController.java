@@ -163,14 +163,17 @@ public class UserController {
 			
 			return ResultVOUtil.error(777, "抱歉,您的手机号有误!");
 		}
-    	
+
     	if(null != userVo.getEmail() || !userVo.getEmail().equals("")){
-    	
+    		
+    		if(!userVo.getEmail().equals(newuserVo.getEmail()) ){
+
     		User user02 = userService.findByEamil(userVo.getEmail()); 
 	    	if(null != user02){
 	    		
 	    		return ResultVOUtil.error(777, "抱歉,该Email已注册!");
 	    	}
+    		}	
     	}
     	
     	if(!newuserVo.getPhone().equals(userVo.getPhone())){

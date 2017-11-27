@@ -27,6 +27,7 @@ import com.yn.domain.OrderDetailAccounts;
 import com.yn.enums.NoticeEnum;
 import com.yn.enums.OrderDetailEnum;
 import com.yn.model.Apolegamy;
+import com.yn.model.ApolegamyOrder;
 import com.yn.model.BillOrder;
 import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
@@ -120,14 +121,7 @@ public class OrderController {
 			list.add(img[i]);
 		}
 		
-		/* List<BuildImg> list = new LinkedList<BuildImg>();
-		for (int i = 0; i < img.length; i++) {
-			
-			BuildImg build = new BuildImg();
-			build.setImgUrl(img[i]);
-			
-			list.add(build);
-		}*/
+		
 		
 
 		return ResultVOUtil.newsuccess(findOne,list);
@@ -224,11 +218,37 @@ public class OrderController {
 	}
 
 
-
+	/** 删除订单*/
 	@ResponseBody
-	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
+	@RequestMapping(value = "/delete", method ={RequestMethod.POST})
 	public Object delete(Long id) {
+		
+		
+		Station station = stationService.FindByStationCode(id);
+		
+		if(null != station){
+			
+			return ResultVOUtil.error(777, "该订单已绑定电站,不能删除!");
+		}
+
 		orderService.delete(id);
+		
+		ApolegamyOrder apo = new ApolegamyOrder();
+		
+		apo.setOrderId(id);
+		
+		OrderPlan orderPlan = new OrderPlan();
+		
+		orderPlan.setOrderId(id);
+		
+		apo = APOservice.findOne(apo);
+		
+		orderPlan =	orderPlanService.findOne(orderPlan);
+		
+		APOservice.delete(apo.getId());
+		
+		orderPlanService.delete(orderPlan.getId());
+
 		return ResultVOUtil.success();
 	}
 

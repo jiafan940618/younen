@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.ApolegamyOrderDao;
@@ -29,6 +30,13 @@ public class ApolegamyOrderService {
 
 		return apolegamyOrderdao.findOne(id);
 	}
+	
+	public void delete(Long id){
+		
+		apolegamyOrderdao.delete(id);
+	 }
+	
+	
 	
 	public ApolegamyOrder findOne(ApolegamyOrder apo) {
 		 Specification<ApolegamyOrder> spec = RepositoryUtil.getSpecification(apo);
