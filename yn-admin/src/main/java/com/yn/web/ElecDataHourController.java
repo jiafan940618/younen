@@ -82,7 +82,7 @@ public class ElecDataHourController {
      * @param type
      * @return
      */
-    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST})
+    @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object todayKwh(@RequestParam("stationId") Long stationId, @RequestParam("type") Integer type) {
     	List<Map<String, Object>> todayKwhByStationId = elecDataHourService.getTodayKwhByStationId(stationId, type);

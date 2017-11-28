@@ -28,17 +28,17 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     
     @Query(value="SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, "
     		+ "SUM(kwh) AS kwh FROM elec_data_day t WHERE"
-    		+ " t.create_dtm is not null AND t.ammeter_code in (?1) AND "
+    		+ " t.create_dtm is not null AND t.del=0 AND t.ammeter_code in (?1) AND "
     		+ "t.type =1 GROUP BY DATE_FORMAT(create_dtm,'%Y-%m') ORDER BY record_time ASC",nativeQuery=true)
     List<Object[]> sumMonthKwh(List<Long> ammeterCodes);
     
     @Query("SELECT DATE_FORMAT(create_dtm,:dateFormat) AS create_dtm, SUM(kwh) AS kwh FROM ElecDataDay t "
-    		+ "WHERE t.createDtm is not null AND t.ammeterCode in (:ammeterCodes) AND t.type =1 AND "
+    		+ "WHERE t.createDtm is not null AND t.ammeterCode in (:ammeterCodes) AND t.type =1 AND t.del=0 AND "
     		+ "t.createDtm LIKE CONCAT('%',:dateStr,'%') GROUP BY DATE_FORMAT(create_dtm,:dateFormat)ORDER BY create_dtm ASC")
     List<Object[]> sumKwh(@Param("ammeterCodes")List<Long> ammeterCodes,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr);
     
     @Query(value="SELECT DATE_FORMAT(create_dtm,'%Y-%m') AS create_dtm, SUM(kwh) AS kwh FROM elec_data_day t "
-    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type=?2 GROUP BY "
+    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.del=0 AND t.type=?2 GROUP BY "
     		+ "DATE_FORMAT(create_dtm,'%Y-%m')ORDER BY create_dtm ASC",nativeQuery=true)
     List<Object[]> workUseCount(List<Long> ammeterCodes,Integer type);
     
@@ -61,7 +61,7 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     double sumKwhByDays(String start, String end, Integer type, List<Long> ammeterCodes);
 
     @Query(value="SELECT DATE_FORMAT(create_dtm,?2) AS create_dtm, SUM(kwh) AS kwh FROM elec_data_day as t "
-    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type =?4 AND "
+    		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type =?4 AND t.del=0 AND "
     		+ "t.create_dtm LIKE CONCAT('%',?3,'%') GROUP BY DATE_FORMAT(create_dtm,?2)ORDER BY create_dtm ASC",nativeQuery=true)
     List<Object[]> oneKwh(@Param("ammeterCodes")List<Long> ammeterCodes,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr,@Param("type")Integer type);
 }

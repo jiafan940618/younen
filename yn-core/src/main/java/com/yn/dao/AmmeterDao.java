@@ -33,7 +33,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	 * 
 
 	 */
-	@Query(value="select * from ammeter as a where a.station_id=?1 ",nativeQuery=true)
+	@Query(value="select * from ammeter as a where a.station_id=?1 AND a.del=0 ",nativeQuery=true)
     List<Ammeter> findByStationId(Long stationId);
 	
     @Query(value="SELECT a.init_kwh,a.work_total_kwh,a.work_total_tm  FROM station s  LEFT JOIN ammeter a ON s.id = a.station_id WHERE s.user_id = :#{#userVo.id} AND s.del = 0",nativeQuery=true)
@@ -42,7 +42,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     @Query(value="SELECT a.init_kwh,a.work_total_kwh,a.work_total_tm FROM station s  LEFT JOIN ammeter a ON s.id = a.station_id WHERE s.id = :stationId AND s.del = 0 ",nativeQuery=true)
     List<Object> findBynewStationId(@Param("stationId") Long stationId);
     
-	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 ",nativeQuery=true)
+	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 AND a.del=0",nativeQuery=true)
     List<Long> selectAmmeterCode(Long stationId);
 	
     @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.del=0",nativeQuery=true)
@@ -65,7 +65,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
     Ammeter findByCAddr(String caddr);
     
-    @Query(value="select a.c_addr from ammeter as a ",nativeQuery=true)
+    @Query(value="select a.c_addr from ammeter as a WHERE a.del=0",nativeQuery=true)
     List<Long> selectAllAmmeter();
     
     @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
@@ -79,5 +79,6 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
     @Query(value="select a.c_addr from ammeter as a where a.station_id=(?1) AND s.del=0",nativeQuery=true)
     List<Long> selectAmmeterCodeByStationIds(Long stationId);
+
 }
 
