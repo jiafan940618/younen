@@ -26,7 +26,7 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 	
 	 @Transactional
 	    @Modifying
-	    @Query("select new NewServerPlan(serverId,minPurchase,unitPrice) from  NewServerPlan where id = :#{#newserverPlan.id} ")
+	    @Query("select new NewServerPlan(serverId,minPurchase,unitPrice) from  NewServerPlan where id = :#{#newserverPlan.id} and del = 0 ")
 	    NewServerPlan selectOne(NewServerPlanVo newserverPlan);
 	 
 
@@ -37,10 +37,10 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 	    "LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.server_id =?1 ",nativeQuery=true)
 		   List<Object> selectServerPlan(Long Id);
 	 
-	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN solar_panel s ON n.batteryboard_id = s.id WHERE s.brand_id = ?1",nativeQuery=true)
+	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN solar_panel s ON n.batteryboard_id = s.id WHERE s.brand_id = ?1 and n.del=0 ",nativeQuery=true)
 	List<NewServerPlan> FindBybrandId(Long Id);
 	 
-	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN inverter i ON n.inverter_id = i.id WHERE i.brand_id = ?1",nativeQuery=true)
+	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN inverter i ON n.inverter_id = i.id WHERE i.brand_id = ?1 and n.del = 0",nativeQuery=true)
 	 List<NewServerPlan> FindtwobrandId(Long Id);
 	 
 	

@@ -2,12 +2,17 @@ package com.yn.web;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Inverter;
+
 import com.yn.model.SolarPanel;
 import com.yn.service.InverterService;
 import com.yn.service.SolarPanelService;
@@ -82,15 +87,27 @@ public class InvSolarController {
     }
 	
 	@ResponseBody
-    @RequestMapping(value = "/solarfindAll")
-    public Object solarfindAll(SolarPanelVol brandVo) {
+    @RequestMapping(value = "/solarfindAll", method = {RequestMethod.POST, RequestMethod.GET})
+    public Object solarfindAll(SolarPanelVol brandVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		
-		SolarPanel solarPanel = new SolarPanel();
-		BeanCopy.copyProperties(brandVo, solarPanel);
+		if(brandVo.getType() == 1){
+			Inverter inverter = new Inverter();
+			BeanCopy.copyProperties(brandVo, inverter);
+			
+			Page<Inverter> list =	 inverterService.findAll(inverter, pageable);
+			return ResultVOUtil.success(list);
+		}else if(brandVo.getType() == 3){
+			SolarPanel solarPanel = new SolarPanel();
+			BeanCopy.copyProperties(brandVo, solarPanel);
+			
+			Page<SolarPanel> list = solarPanelService.findAll(solarPanel,pageable);
+			
+			return ResultVOUtil.success(list);
+		}
 		
-		List<SolarPanel> list = solarPanelService.findAll(solarPanel);
 		
-		return ResultVOUtil.success(list);
+		
+		return ResultVOUtil.success();
 	
 	}
 	

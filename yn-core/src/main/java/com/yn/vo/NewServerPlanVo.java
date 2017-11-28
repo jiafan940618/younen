@@ -29,9 +29,23 @@ public class NewServerPlanVo {
 	
 	private String planImgUrl;
 	
+	private Long factionId;
+	
+	private int planId;
 	
 	
-	
+	public Long getFactionId() {
+		return factionId;
+	}
+	public void setFactionId(Long factionId) {
+		this.factionId = factionId;
+	}
+	public int getPlanId() {
+		return planId;
+	}
+	public void setPlanId(int planId) {
+		this.planId = planId;
+	}
 	public String getPlanImgUrl() {
 		return planImgUrl;
 	}

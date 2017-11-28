@@ -116,6 +116,19 @@ private static final Logger logger = LoggerFactory.getLogger(ServerPlanControlle
         Page<ServerPlan> findAll = serverPlanService.findAll(serverPlan, pageable);
         return ResultVOUtil.success(findAll);
     }
+    
+    @RequestMapping(value = "/findnewSerAll", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Object findnewSerAll(NewServerPlanVo newServerPlanVo) {
+    	NewServerPlan newServerPlan = new NewServerPlan();
+        BeanCopy.copyProperties(newServerPlanVo, newServerPlan);
+        
+        List<NewServerPlan> findAll = newserverPlanService.findAll(newServerPlan);
+        
+        return ResultVOUtil.success(findAll);
+    }
+    
+    
     //@RequestParam("checkedId")   @RequestParam("moneyTotal")
     /** 处理金额*/
     @ResponseBody

@@ -21,6 +21,11 @@ public class InverterVo {
 		private Double qualityAssurance;
 
 		private Double boardYear;
+		
+		
+	
+		
+		
 
 		public Long getId() {
 			return id;
