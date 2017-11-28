@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.AmmeterDao;
 import com.yn.model.ElecDataDay;
 import com.yn.service.ElecDataDayService;
 import com.yn.utils.BeanCopy;
@@ -25,6 +26,8 @@ import com.yn.vo.re.ResultVOUtil;
 public class ElecDataDayController {
     @Autowired
     ElecDataDayService elecDataDayService;
+    @Autowired
+    AmmeterDao ammeterDao;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -63,6 +66,7 @@ public class ElecDataDayController {
     public Object findAll(TemStationYearVo temStationYearVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
     	ElecDataDay temStationYear = new ElecDataDay();
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
+        temStationYear.setAmmeterCode(ammeterDao.selectAmmeterByStationId(temStationYearVo.getStationId()).toString());
         Page<ElecDataDay> findAll = elecDataDayService.findAll(temStationYear, pageable);
         return ResultVOUtil.success(findAll);
     }

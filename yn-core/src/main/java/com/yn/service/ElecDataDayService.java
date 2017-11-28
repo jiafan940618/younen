@@ -700,14 +700,6 @@ public class ElecDataDayService {
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("list", listsMap);
-		map.put("thisYearKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisYearKwh(stationId, type)));
-		map.put("thisMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisMonthKwh(stationId, type)));
-		map.put("lastYearKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastYearKwh(stationId, type)));
-		map.put("lastMonthKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastMonthKwh(stationId, type)));
-		map.put("todayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.todayKwh(stationId, type)));
-		map.put("yesterdayKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.yesterdayKwh(stationId, type)));
-		map.put("thisWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.thisWeekKwh(stationId, type)));
-		map.put("lastWeekKwh", NumberUtil.accurateToTwoDecimal(elecDataHourService.lastWeekKwh(stationId, type)));
 		return map;
 	}
 
