@@ -91,23 +91,24 @@ public class InvSolarController {
     public Object solarfindAll(SolarPanelVol brandVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		
 		if(brandVo.getType() == 1){
+			SolarPanel solarPanel = new SolarPanel();
+			BeanCopy.copyProperties(brandVo, solarPanel);
+			
+			Page<SolarPanel> list = solarPanelService.findAll(solarPanel,pageable);
+			return ResultVOUtil.success(list);
+		}else if(brandVo.getType() == 3){
+			
 			Inverter inverter = new Inverter();
 			BeanCopy.copyProperties(brandVo, inverter);
 			
 			Page<Inverter> list =	 inverterService.findAll(inverter, pageable);
 			return ResultVOUtil.success(list);
-		}else if(brandVo.getType() == 3){
-			SolarPanel solarPanel = new SolarPanel();
-			BeanCopy.copyProperties(brandVo, solarPanel);
-			
-			Page<SolarPanel> list = solarPanelService.findAll(solarPanel,pageable);
-			
-			return ResultVOUtil.success(list);
+
 		}
 		
 		
 		
-		return ResultVOUtil.success();
+		return ResultVOUtil.error(null);
 	
 	}
 	

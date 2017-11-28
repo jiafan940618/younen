@@ -396,6 +396,8 @@ public class UserController {
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 
+	 
+	  
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());
@@ -407,7 +409,7 @@ public class UserController {
 		  Double   memo =0.0;
 			// 进度条
 			Double a = order.getTotalPrice(), b = order.getHadPayPrice();
-			if(b ==null ){
+			if(b ==null || b==0.0 ){
 				order.setIpoMemo("已支付总工程款的0%");
 			}else{
 				DecimalFormat df = new DecimalFormat("#.00");
