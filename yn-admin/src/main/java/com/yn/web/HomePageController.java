@@ -26,6 +26,7 @@ import com.yn.model.ElecDataHour;
 import com.yn.model.Order;
 import com.yn.model.Station;
 import com.yn.model.User;
+import com.yn.service.AmmeterService;
 import com.yn.service.ElecDataHourService;
 import com.yn.session.SessionCache;
 import com.yn.utils.NumberUtil;
@@ -54,6 +55,8 @@ public class HomePageController {
     AmmeterDao ammeterDao;
     @Autowired
     private NoticeDao noticeDao;
+    @Autowired
+    AmmeterService ammeterService;
 
 
     /**
@@ -218,5 +221,16 @@ public class HomePageController {
         return ResultVOUtil.success(todayKwh);
     }
 
+    /**
+     * 首页的全网植树和碳排量
+     *
+     * @return
+     */
+    @RequestMapping(value = "/energyConservation", method = {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Object energyConservation(Long serverId) {
+        Map<String, Object> energyConservation = ammeterService.energyConservation(serverId);
+        return ResultVOUtil.success(energyConservation);
+    }
 }
 

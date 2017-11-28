@@ -12,6 +12,7 @@ import com.yn.model.Province;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
+import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.StringUtil;
 import com.yn.vo.AmmeterVo;
@@ -54,6 +55,8 @@ public class AmmeterService {
     private UserDao userDao;
     @Autowired
     private AmmeterMapper ammeterMapper;
+	@Autowired
+	SystemConfigService systemConfigService;
     
    public Ammeter findByCAddr(String caddr){
     	return ammeterDao.findByCAddr(caddr);
@@ -284,5 +287,23 @@ public class AmmeterService {
             stationDao.save(station);
         }
     }
-
+    /**
+     * 管理后台的节能减排量
+     * @param stationId
+     */
+    public Map<String, Object> energyConservation(Long serverId){
+    	Map<String, Object> objectMap = new HashMap<>();
+    	double kwh=ammeterDao.sumKwh(serverId);
+    	// 相当于植树
+    	double plantTreesPrm = Double.valueOf(systemConfigService.get("plant_trees_prm"));
+    	objectMap.put("plantTreesPrm", NumberUtil.accurateToTwoDecimal(plantTreesPrm * kwh));
+    	// 相当于减排二氧化碳
+    	Double CO2Prm = Double.valueOf(systemConfigService.get("CO2_prm"));
+    	objectMap.put("CO2Prm", NumberUtil.accurateToTwoDecimal(CO2Prm * kwh/1000));
+    	// 相当于减排二氧化硫
+    	Double SOPrm = Double.valueOf(systemConfigService.get("SO_prm"));
+    	objectMap.put("SOPrm", NumberUtil.accurateToTwoDecimal(SOPrm * kwh/1000));
+    	
+    	return objectMap;
+    }
 }
