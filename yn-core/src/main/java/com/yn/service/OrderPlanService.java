@@ -59,6 +59,8 @@ public class OrderPlanService {
 			String inverterModel = (String)obj[5];
 			String apoIds = (String)obj[6];
 			Integer batteryBoardWarrantyYear = (Integer)obj[7];
+			Integer id = (Integer)obj[8];
+			
 			
 			map.put("orderCode", orderCode);
 			map.put("constructionStatus", constructionStatus);
@@ -85,7 +87,8 @@ public class OrderPlanService {
 	        }
 
 	        map.put("batteryBoardWarrantyYear", batteryBoardWarrantyYear.toString());
-
+	        map.put("plan_id", id.toString());
+	        
 		return map;
     }
     
