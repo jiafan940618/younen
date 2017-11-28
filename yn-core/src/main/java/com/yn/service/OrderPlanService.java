@@ -76,10 +76,12 @@ public class OrderPlanService {
 	        List<Apolegamy>  apolist =  apolegamyService.findAll(newlist);
 	        
 	        String apoids = "";
-	        for (Apolegamy apolegamy : apolist) {
-	        	apoids += apolegamy.getApolegamyName()+"  ";
-			}
- 
+	        if(apolist.size() !=0){
+
+		        for (Apolegamy apolegamy : apolist) {
+		        	apoids += apolegamy.getApolegamyName()+"、";
+				}
+	        }
 	        if(apoids.equals("")){
 	        	map.put("apoIds", "未选择配选项目");
 	        }else{
