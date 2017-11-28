@@ -79,6 +79,10 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
     @Query(value="select a.c_addr from ammeter as a where a.station_id=(?1) AND s.del=0",nativeQuery=true)
     List<Long> selectAmmeterCodeByStationIds(Long stationId);
+    
+    @Query(value="SELECT SUM(init_kwh)+SUM(work_total_kwh) FROM ammeter WHERE del=0 AND station_id "
+    		+ "IN(SELECT id FROM station WHERE server_id=?1 AND del=0);",nativeQuery=true)
+    double sumKwh(Long serverId);
 
 }
 
