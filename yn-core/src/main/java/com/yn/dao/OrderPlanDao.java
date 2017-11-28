@@ -21,7 +21,7 @@ public interface OrderPlanDao extends JpaRepository<OrderPlan, Long>, JpaSpecifi
     @Query("update OrderPlan set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
     
-    @Query(value = "SELECT o.order_code,o.construction_status ,p.battery_board_brand,p.battery_board_model,p.inverter_brand,p.inverter_model,a.apo_ids,o.war_period FROM t_order o" 
+    @Query(value = "SELECT o.order_code,o.construction_status ,p.battery_board_brand,p.battery_board_model,p.inverter_brand,p.inverter_model,a.apo_ids,o.war_period,p.id  FROM t_order o" 
     		+" LEFT JOIN order_plan p ON o.id = p.order_id"
     		+" LEFT JOIN  apolegamy_order a ON a.order_id = o.id"
     		+" WHERE o.id = ?1 AND o.del = 0",nativeQuery=true)
