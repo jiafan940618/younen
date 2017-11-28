@@ -25,8 +25,10 @@ import org.springframework.util.StringUtils;
 import com.yn.dao.AmmeterDao;
 import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.ElecDataHourDao;
+import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.TestKwhDao;
+import com.yn.dao.UserDao;
 import com.yn.dao.mapper.AmPhaseRecordMapper;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.dao.mapper.ElecDataHourMapper;
@@ -59,6 +61,10 @@ public class ElecDataHourService {
 	ElecDataDayDao elecDataDayDao;
 	@Autowired
 	TestKwhDao testKwhDao;
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	ServerDao serverDao;
 	
 
 	/**
@@ -255,19 +261,14 @@ public class ElecDataHourService {
 	 *
 	 * @return
 	 */
-	public List<Map<String, Object>> getTodayKwh(Long serverId, Integer type) {
-//		List<Map<String, Object>> list =new ArrayList<>();
-//		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
-//		Integer num= Integer.parseInt(dFormat.format(new Date()));
-//		for (int i = 0; i < num; i++) {
-//			Map<String, Object> map =new HashMap<>();
-//			map.put("time", i);
-//			map.put("kwh",testKwhDao.getKwh(i) );
-//			list.add(map);
-//		}
-//		
-//		return list;
-		List<Long> stationIds=stationDao.findId(serverId);
+	public List<Map<String, Object>> getTodayKwh(Long userId, Integer type) {
+		List<Long> stationIds=new ArrayList<>();
+		if (userDao.findOne(userId).getRoleId()==1) {
+			stationIds=stationDao.findAllStationId();
+		}else if(userDao.findOne(userId).getRoleId()==5){
+			Long serverId=serverDao.findByUserid(userId);
+			stationIds=stationDao.findId(serverId);
+		}
 		List<Map<String, Object>> todayKwh=new ArrayList<>();
 		List<Map<String, Object>> todayKwhAll=new ArrayList<>();
 		for (Long stationId : stationIds) {

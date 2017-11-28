@@ -1,6 +1,7 @@
 package com.yn.service;
 
 import com.yn.dao.AmmeterDao;
+import com.yn.dao.ServerDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.UserDao;
 import com.yn.dao.mapper.AmmeterMapper;
@@ -57,6 +58,8 @@ public class AmmeterService {
     private AmmeterMapper ammeterMapper;
 	@Autowired
 	SystemConfigService systemConfigService;
+	@Autowired
+    ServerDao serverDao;
     
    public Ammeter findByCAddr(String caddr){
     	return ammeterDao.findByCAddr(caddr);
@@ -291,9 +294,16 @@ public class AmmeterService {
      * 管理后台的节能减排量
      * @param stationId
      */
-    public Map<String, Object> energyConservation(Long serverId){
+    public Map<String, Object> energyConservation(Long userId){
+    	double kwh=0D;
+    	if (userDao.findOne(userId).getRoleId()==1) {
+    		 kwh=ammeterDao.sumKwh();
+		}else if(userDao.findOne(userId).getRoleId()==5){
+			Long serverId=serverDao.findByUserid(userId);
+			 kwh=ammeterDao.sumKwh(serverId);
+		}
     	Map<String, Object> objectMap = new HashMap<>();
-    	double kwh=ammeterDao.sumKwh(serverId);
+    	
     	// 相当于植树
     	double plantTreesPrm = Double.valueOf(systemConfigService.get("plant_trees_prm"));
     	objectMap.put("plantTreesPrm", NumberUtil.accurateToTwoDecimal(plantTreesPrm * kwh));

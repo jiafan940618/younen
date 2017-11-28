@@ -9,9 +9,9 @@ public class TemStationYearVo extends QueryVo{
 	private String stationCode;
 	private Long serverId;
 	private String devConfCode;
-	private Long d_addr;
-	private Integer d_type;
-	private Integer w_addr;
+	private Long dAddr;
+	private Integer dType;
+	private Integer wAddr;
 	private Double kw;
 	private Double kwh;
 	private Integer type;
@@ -35,23 +35,23 @@ public class TemStationYearVo extends QueryVo{
 	public void setDevConfCode(String devConfCode) {
 		this.devConfCode = devConfCode;
 	}
-	public Long getD_addr() {
-		return d_addr;
+	public Long getdAddr() {
+		return dAddr;
 	}
-	public void setD_addr(Long d_addr) {
-		this.d_addr = d_addr;
+	public void setdAddr(Long dAddr) {
+		this.dAddr = dAddr;
 	}
-	public Integer getD_type() {
-		return d_type;
+	public Integer getdType() {
+		return dType;
 	}
-	public void setD_type(Integer d_type) {
-		this.d_type = d_type;
+	public void setdType(Integer dType) {
+		this.dType = dType;
 	}
-	public Integer getW_addr() {
-		return w_addr;
+	public Integer getwAddr() {
+		return wAddr;
 	}
-	public void setW_addr(Integer w_addr) {
-		this.w_addr = w_addr;
+	public void setwAddr(Integer wAddr) {
+		this.wAddr = wAddr;
 	}
 	public Double getKw() {
 		return kw;

@@ -228,8 +228,8 @@ public class HomePageController {
      */
     @RequestMapping(value = "/energyConservation", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public Object energyConservation(Long serverId) {
-        Map<String, Object> energyConservation = ammeterService.energyConservation(serverId);
+    public Object energyConservation(Long userId) {
+        Map<String, Object> energyConservation = ammeterService.energyConservation(userId);
         return ResultVOUtil.success(energyConservation);
     }
 }
