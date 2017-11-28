@@ -407,7 +407,7 @@ public class UserController {
 		  Double   memo =0.0;
 			// 进度条
 			Double a = order.getTotalPrice(), b = order.getHadPayPrice();
-			if(b ==null ){
+			if(b ==null || b==0.0){
 				order.setIpoMemo("已支付总工程款的0%");
 			}else{
 				DecimalFormat df = new DecimalFormat("#.00");
