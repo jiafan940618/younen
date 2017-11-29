@@ -31,20 +31,22 @@ public class BrandController {
 	BrandService brandService;
 	@Autowired 
 	NewServerPlanService newServerPlanService;
-	
+	//, method = {RequestMethod.POST}@RequestBody 
 	@ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody BrandVo brandVo) {
+
 		Brand brand = new Brand();
         BeanCopy.copyProperties(brandVo, brand);
         brandService.save(brand);
         return ResultVOUtil.success(brand);
     }
 
+	//, method = {RequestMethod.POST}
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public Object delete(Long id) {
-     
+
     List<NewServerPlan> list = newServerPlanService.FindBybrandId(id);
     
     	if(list.size() == 0){
@@ -85,8 +87,6 @@ public class BrandController {
     @RequestMapping(value = "/findBrand")
     public Object findBrand(com.yn.model.Page page) {
     	
-    	page.setType(1);
-    	page.setId(1L);
     	Integer count = 0;
     	List<Brand> list = new LinkedList<Brand>();
     	
@@ -113,11 +113,8 @@ public class BrandController {
     	
     	count =	brandService.getCount(page);
 
-    	if(count <=  0){
- 			page.setTotal(1);
- 		}else{
- 			page.setTotal( count%page.getLimit() == 0 ? count/page.getLimit() : (count-count%page.getLimit())/page.getLimit()+1);	
- 		}
+ 		page.setTotal(count);
+ 		
  
         return ResultVOUtil.newsuccess(page,list);
     }

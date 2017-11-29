@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.yn.dao.InverterDao;
 import com.yn.model.Inverter;
-import com.yn.model.SolarPanel;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
 
@@ -22,6 +21,17 @@ public class InverterService {
 
 	public Inverter findOne(Long id) {
 		return inverterDao.findOne(id);
+	}
+	
+	public List<Inverter> FindByall(com.yn.model.Page page){
+		
+		
+		return inverterDao.FindByall(page);
+	}
+	
+	public int FindByconut(){
+		
+		return inverterDao.FindByconut();
 	}
 
 	public void save(Inverter inverter) {

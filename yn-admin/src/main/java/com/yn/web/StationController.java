@@ -119,6 +119,7 @@ public class StationController {
 		}
           station.setUserId(null);
         Page<Station> findAll = stationService.findAll(station, pageable);
+
         // 判断是否已读
         Long userId = SessionCache.instance().getUserId();
         if (userId != null) {

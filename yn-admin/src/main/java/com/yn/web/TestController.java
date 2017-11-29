@@ -8,6 +8,10 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,15 +54,17 @@ public class TestController {
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave(InverterVo brandVo) {
-		brandVo.setBrandId(11);
-		brandVo.setBrandName("测试");
-		brandVo.setModel("测试型号");
-
-		Inverter brand = new Inverter();
-        BeanCopy.copyProperties(brandVo, brand);
-        inverterService.save(brand);
-        return ResultVOUtil.success(brand);
+    public Object invsave(SolarPanelVol brandVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		
+		SolarPanel solarPanel = new SolarPanel();
+		
+		BeanCopy.copyProperties(brandVo, solarPanel);
+		
+		Page<SolarPanel> page =	solarPanelService.findAll(solarPanel, pageable);
+		
+		return ResultVOUtil.success(page);
+		
+     
     }
 	
 	@ResponseBody
