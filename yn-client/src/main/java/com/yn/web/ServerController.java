@@ -167,15 +167,24 @@ public class ServerController {
 	        user.setToken(userService.getToken(user));
 	        userService.updateToken(user);
 	       
+	        NewUserVo newuserVo = new NewUserVo();
+	        
+	        newuserVo.setEmail(user.getEmail());
+	        newuserVo.setFullAddressText(user.getFullAddressText());
+	        newuserVo.setId(user.getId());
+	        newuserVo.setNickName(user.getNickName());
+	        newuserVo.setUserName(user.getUserName());
+	        newuserVo.setPhone(user.getPhone());
+	        newuserVo.setToken(user.getToken()); 
+	        newuserVo.setHeadImgUrl(user.getHeadImgUrl());
+
 	        user.setPassword(null);
-	        server.setApolegamyServer(null);
-	        server.setUser(null);
-	        server.setNewServerPlan(null);
-	        httpSession.setAttribute("server", server);
+
+	       
 	        
 	        logger.info("---- ---- --- --- - --- - --- ----结束");
 	        
-	        return ResultVOUtil.success(server);
+	        return ResultVOUtil.success(newuserVo);
 
 		
 	}

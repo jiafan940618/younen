@@ -98,7 +98,8 @@ public class InvSolarController {
 			
 			Page<SolarPanel> page =	solarPanelService.findAll(solarPanel, pageable);
 			
-			
+			page.getContent();
+
 			return ResultVOUtil.success(page);
 			
 		}else if(brandVo.getType() == 3){

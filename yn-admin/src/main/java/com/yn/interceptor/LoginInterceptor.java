@@ -47,11 +47,17 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
             UserService userService = (UserService) factory.getBean("userService");
             String token = request.getHeader("token");
+            
+            logger.info("传递后台的token为:--- ---- ---- --->"+token);
+            
             if (!StringUtil.isEmpty(token)) {
                 User userR = new User();
                 userR.setToken(token);
                 User user = userService.findOne(userR);
                 if (user != null) {
+                	
+                	 logger.info("获得服务商登陆的对象Id :--- ---- ---- --->"+user.getId());
+                	
                     SessionCache.instance().setUserId(user.getId());
                     return true;
                 }
