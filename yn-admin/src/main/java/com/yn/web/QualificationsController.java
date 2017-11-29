@@ -47,14 +47,11 @@ public class QualificationsController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody QualificationsVo qualificationsVo,HttpSession session) {
-    	
-    	
-    	
+
         Qualifications qualifications = new Qualifications();
         BeanCopy.copyProperties(qualificationsVo, qualifications);
         qualificationsService.saveWithApolegamy(qualifications);
 
-        
         return ResultVOUtil.success(qualifications);
     }
 
