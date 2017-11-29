@@ -164,26 +164,19 @@ public class UserLoginController {
     /** 给用户一键添加订单,电站,绑定电表*/
     @RequestMapping(value = "/produce")
 	 @ResponseBody
-	    public Object someTest(UserVo userVo,HttpSession session) {
+	    public Object someTest(UserVo userVo,HttpSession session,User user) {
 
-    			userVo.setPhone("13580808022");
-    			userVo.setCapacity(6.72);
-    			userVo.setPrice(73920.00);
+    			userVo.setPhone("15999720703");
+    			userVo.setCapacity(10.08);
+    			userVo.setPrice(110880.00);
     			userVo.setPlanId(5L);
-//    			User user =new User();
-//    			user.setAccount("13580808022");
-//    			user.setPhone(user.getAccount());
-//    			user.setPassword("123456");
 //    			user.setAddressText("东莞市长安镇乌沙社区光裕三路三巷7号");
-//    			user.setFullAddressText(user.getAddressText());
-//    			user.setCityId(213L);
-//    			user.setCityText("东莞市");
-//    			user.setProvinceId(19L);
-//    			user.setProvinceText("广东省");
-//    			user.setRoleId(6L);
-//    			userDao.save(user);
+//    			user.setUserName("");
     			
-    	
+//    			   user.setPhone(userVo.getPhone());
+//    			   /** 添加用户 */
+//    			   userService.saveQuickly(user);
+//    			   logger.info("---- ---- ------ ----- ----- 用户添加成功！");
 				   Integer type = userVo.getType();
 
 					logger.info("---- ---- ---- ------ ----- 开始生成订单");

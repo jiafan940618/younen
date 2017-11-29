@@ -375,6 +375,25 @@ public class UserService {
         userDao.updateTokenBeforeLogout(user);
     }
     
-   
+   /**
+    * 用户一键注册
+    */
+    
+    public void saveQuickly(User user) {
+     User newUser =new User();
+     newUser.setPhone(user.getPhone());
+     newUser.setPassword("123456");//默认：123456
+     newUser.setAccount(user.getPhone());
+     newUser.setAddressText(user.getAddressText());
+     newUser.setFullAddressText(user.getAddressText());
+     newUser.setCityId(213L);
+     newUser.setCityText("东莞市");
+     newUser.setProvinceId(19L);
+     newUser.setProvinceText("广东省");
+     newUser.setUserName(user.getUserName());
+     newUser.setNickName(user.getUserName());
+     newUser.setRoleId(6L);//默认是普通用户
+     
+    }
 
 }

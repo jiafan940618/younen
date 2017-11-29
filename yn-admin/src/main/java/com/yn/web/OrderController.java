@@ -50,6 +50,7 @@ import com.yn.service.OrderService;
 import com.yn.service.ServerPlanService;
 import com.yn.service.ServerService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.UserService;
 import com.yn.service.WalletService;
 import com.yn.session.SessionCache;
@@ -96,7 +97,6 @@ public class OrderController {
 	OrderService ordService;
 	@Autowired
 	ApolegamyOrderService APOservice;
-
 	@Autowired
 	BillOrderService billOrderService;
 	@Autowired
@@ -105,6 +105,8 @@ public class OrderController {
 	UserDao userDao;
 	@Autowired
 	ServerDao serverDao;
+	@Autowired
+	SystemConfigService systemConfigService;
 
 	@RequestMapping(value = "/select")
 	@ResponseBody
@@ -276,7 +278,7 @@ public class OrderController {
 			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
-		if(userDao.findOne(managerId).getRoleId()==5){
+		if(userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
 			Long serverId=serverDao.findByUserid(managerId);
 			order.setServerId(serverId);
 		}
