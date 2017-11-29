@@ -139,7 +139,7 @@ public class ElecDataDayService {
 	}
 
 	public ElecDataDay findOne(ElecDataDay elecDataDay) {
-		Specification<ElecDataDay> spec = RepositoryUtil.getSpecification(elecDataDay);
+		Specification<ElecDataDay> spec = getSpecification(elecDataDay);
 		ElecDataDay findOne = elecDataDayDao.findOne(spec);
 		return findOne;
 	}
@@ -149,7 +149,7 @@ public class ElecDataDayService {
 	}
 
 	public Page<ElecDataDay> findAll(ElecDataDay elecDataDay, Pageable pageable) {
-		Specification<ElecDataDay> spec = RepositoryUtil.getSpecification(elecDataDay);
+		Specification<ElecDataDay> spec = getSpecification(elecDataDay);
 		Page<ElecDataDay> findAll = elecDataDayDao.findAll(spec, pageable);
 		return findAll;
 	}

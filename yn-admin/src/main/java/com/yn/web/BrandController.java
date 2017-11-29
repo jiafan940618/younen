@@ -87,8 +87,6 @@ public class BrandController {
     @RequestMapping(value = "/findBrand")
     public Object findBrand(com.yn.model.Page page) {
     	
-    	page.setType(1);
-    	page.setId(1L);
     	Integer count = 0;
     	List<Brand> list = new LinkedList<Brand>();
     	
