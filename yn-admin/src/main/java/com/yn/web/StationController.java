@@ -109,12 +109,12 @@ public class StationController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(StationVo stationVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(StationVo stationVo,Long managerId, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
-        if (userDao.findOne(station.getUserId()).getRoleId()==1) {	
-		} else if(userDao.findOne(station.getUserId()).getRoleId()==5){
-			Long serverId=serverDao.findByUserid(station.getUserId());
+        if (userDao.findOne(managerId).getRoleId()==1) {	
+		} else if(userDao.findOne(managerId).getRoleId()==5){
+			Long serverId=serverDao.findByUserid(managerId);
 			station.setServerId(serverId);
 		}
           station.setUserId(null);

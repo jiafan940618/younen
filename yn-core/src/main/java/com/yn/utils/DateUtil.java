@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateUtil {
@@ -520,5 +522,50 @@ public class DateUtil {
 		now.set(Calendar.MINUTE, 59);
 		now.set(Calendar.SECOND, 59);
 		return now.getTime();
+	}
+	
+	/**
+	 * 某一年的天数
+	 */
+   public static int whichYear(String date) {
+		int days=0;
+		if (date.equals(Calendar.getInstance().get(Calendar.YEAR))) {
+			days=Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+		}else {
+			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);  
+		    sdf.applyPattern("yyyy");  
+			 Calendar calendar = new GregorianCalendar(); 
+			 try {
+				calendar.setTime(sdf.parse(date));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		    days = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
+		}
+		
+		return days;
+		
+	}
+   /**
+	 * 某一月的天数
+	 */
+  public static int whichMonth(String date) {
+		int days=0;
+		if (date.equals((Calendar.getInstance().get(Calendar.YEAR)+"-"+(Calendar.getInstance().get(Calendar.MONTH)+1)).toString())) {
+			days=Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		}else {
+			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);  
+		    sdf.applyPattern("yyyy-MM");  
+			 Calendar calendar = new GregorianCalendar(); 
+			 try {
+				calendar.setTime(sdf.parse(date));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		    days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		}
+		
+		return days;
+		
 	}
 }
