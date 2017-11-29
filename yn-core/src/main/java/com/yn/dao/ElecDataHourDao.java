@@ -41,7 +41,7 @@ public interface ElecDataHourDao extends JpaRepository<ElecDataHour, Long>, JpaS
     @Query("select COALESCE(sum(t.kwh),0) from ElecDataHour t WHERE t.createDtm>=?1 AND t.createDtm<?2 AND t.type=?3 AND t.ammeterCode=?4 AND t.del=0")
     double sumKwhByAmmeterCode(Date startDtm, Date endDtm, Integer type, String ammeterCode);
 
-    @Query(value="SELECT  d_addr FROM elec_data_day WHERE ammeter_code IN(SELECT c_addr FROM ammeter WHERE station_id=?1 AND del=0) AND del=0 AND type=?2 GROUP BY d_addr",nativeQuery=true)
+    @Query(value="SELECT  d_addr FROM elec_data_day WHERE ammeter_code IN(SELECT c_addr FROM ammeter WHERE station_id=?1 AND del=0) AND del=0 AND d_addr like CONCAT(?2,'%')",nativeQuery=true)
     Set<Long> findDAddr(Long stationId, Integer type);
     
     @Query(value="select * from elec_data_hour as t WHERE t.create_dtm>=?2 AND t.create_dtm<?3 AND t.type =?1  AND t.del=0",nativeQuery=true)

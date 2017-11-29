@@ -478,6 +478,7 @@ public class StationService {
 		station.setCityText(order.getCityText());
 		station.setServerId(order.getServerId());
 		station.setStatus(1);//默认未绑定。
+		station.setType(1);//默认居民
 		
 		save(station);
 	}

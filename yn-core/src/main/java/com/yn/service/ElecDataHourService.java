@@ -263,9 +263,9 @@ public class ElecDataHourService {
 	 */
 	public List<Map<String, Object>> getTodayKwh(Long userId, Integer type) {
 		List<Long> stationIds=new ArrayList<>();
-		if (userDao.findOne(userId).getRoleId()==1) {
+		if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {
 			stationIds=stationDao.findAllStationId();
-		}else if(userDao.findOne(userId).getRoleId()==5){
+		}else if(userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
 			Long serverId=serverDao.findByUserid(userId);
 			stationIds=stationDao.findId(serverId);
 		}

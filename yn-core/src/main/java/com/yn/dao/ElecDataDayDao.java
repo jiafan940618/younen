@@ -3,6 +3,7 @@ package com.yn.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -64,4 +65,12 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type =?4 AND t.del=0 AND "
     		+ "t.create_dtm LIKE CONCAT('%',?3,'%') GROUP BY DATE_FORMAT(create_dtm,?2)ORDER BY create_dtm ASC",nativeQuery=true)
     List<Object[]> oneKwh(@Param("ammeterCodes")List<Long> ammeterCodes,@Param("dateFormat")String dateFormat,@Param("dateStr")String dateStr,@Param("type")Integer type);
+    
+    @Query(value="SELECT  d_addr FROM elec_data_day WHERE ammeter_code IN(SELECT c_addr FROM ammeter WHERE station_id=?1 AND del=0) AND del=0 AND d_addr like CONCAT(?2,'%')",nativeQuery=true)
+    Set<Long> findDAddr(Long stationId, Integer type);
+    
+//  @Query("select o.dAddr from ElecDataHour o where o.stationId = ?1 and o.dAddr like CONCAT(?2,'%') and o.del = 0")
+
+//  Set<Long> findDAddr(Long stationId, Long dAddr);
+
 }

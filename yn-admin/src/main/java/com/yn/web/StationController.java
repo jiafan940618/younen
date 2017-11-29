@@ -15,6 +15,7 @@ import com.yn.service.NoticeService;
 import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.StationVo;
@@ -53,7 +54,8 @@ public class StationController {
     UserDao userDao;
     @Autowired
     ServerDao serverDao;
-    
+    @Autowired
+    SystemConfigService systemConfigService;
     
     
    // Thirdsuccess
@@ -112,8 +114,8 @@ public class StationController {
     public Object findAll(StationVo stationVo,Long managerId, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
-        if (userDao.findOne(managerId).getRoleId()==1) {	
-		} else if(userDao.findOne(managerId).getRoleId()==5){
+        if (userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {	
+		} else if(userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
 			Long serverId=serverDao.findByUserid(managerId);
 			station.setServerId(serverId);
 		}

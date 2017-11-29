@@ -28,6 +28,7 @@ import com.yn.model.Station;
 import com.yn.model.User;
 import com.yn.service.AmmeterService;
 import com.yn.service.ElecDataHourService;
+import com.yn.service.SystemConfigService;
 import com.yn.session.SessionCache;
 import com.yn.utils.NumberUtil;
 import com.yn.vo.re.ResultVOUtil;
@@ -57,6 +58,9 @@ public class HomePageController {
     private NoticeDao noticeDao;
     @Autowired
     AmmeterService ammeterService;
+    @Autowired
+    SystemConfigService systemConfigService;
+    
 
 
     /**
@@ -69,10 +73,10 @@ public class HomePageController {
     public Object tolNowKwAndTolKwh(Long userId) {
         double sumNowKw = 0;
         double sumKwh = 0;
-        if (userDao.findOne(userId).getRoleId()==1) { 	
+        if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) { 	
         	sumNowKw=ammeterDao.sumNowKw();
         	sumKwh=ammeterDao.sumInitKwh()+ammeterDao.sumWorkTotalKwh();
-        } else if (userDao.findOne(userId).getRoleId()==5) {
+        } else if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))) {
         	Long serverId=serverDao.findByUserid(userId);
         	List<Long> stationIds=stationDao.findId(serverId);
         	sumNowKw=ammeterDao.sumNowKwByStationIds(stationIds);
@@ -184,13 +188,13 @@ public class HomePageController {
         double stationCapacity = 0;
         double orderCapacity = 0;
         long userNum = 0;
-        if (userDao.findOne(userId).getRoleId()==1) {
+        if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {
             stationNum = stationDao.count(Example.of(station));
             orderNum = orderDao.count(Example.of(order));
             stationCapacity = stationDao.sumCapacity();
             orderCapacity = orderDao.sumCapacity();
             userNum = userDao.countNum();
-        } else if(userDao.findOne(userId).getRoleId()==5){
+        } else if(userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
         	Long serverId=serverDao.findByUserid(userId);
             station.setServerId(serverId);
             stationNum = stationDao.count(Example.of(station));
