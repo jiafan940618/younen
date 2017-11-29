@@ -27,11 +27,11 @@ public class Inverter extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(255) comment '[型号]'")
 	private String model;
 	@Column(columnDefinition = "int(1) comment '[相数,1、单相 3、三相]'")
-	private int phases;
+	private Integer phases;
 	@Column(columnDefinition = "int(3) comment '[电压]'")
-	private int voltage;
+	private Integer voltage;
 	@Column(columnDefinition = "int(3) comment '[频率]'")
-	private int frequency;
+	private Integer frequency;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器板质保期 年]'")
 	private Double qualityAssurance;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
@@ -79,27 +79,27 @@ public class Inverter extends IDomain implements Serializable {
 		this.model = model;
 	}
 
-	public int getPhases() {
+	public Integer getPhases() {
 		return phases;
 	}
 
-	public void setPhases(int phases) {
+	public void setPhases(Integer phases) {
 		this.phases = phases;
 	}
 
-	public int getVoltage() {
+	public Integer getVoltage() {
 		return voltage;
 	}
 
-	public void setVoltage(int voltage) {
+	public void setVoltage(Integer voltage) {
 		this.voltage = voltage;
 	}
 
-	public int getFrequency() {
+	public Integer getFrequency() {
 		return frequency;
 	}
 
-	public void setFrequency(int frequency) {
+	public void setFrequency(Integer frequency) {
 		this.frequency = frequency;
 	}
 

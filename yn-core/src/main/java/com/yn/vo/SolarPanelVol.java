@@ -10,9 +10,9 @@ public class SolarPanelVol {
 
 	private String model;
 
-	private int type;
+	private Integer type;
 
-	private int conversionEfficiency;
+	private Integer conversionEfficiency;
 
 	private Double qualityAssurance;
 
@@ -52,19 +52,19 @@ public class SolarPanelVol {
 		this.model = model;
 	}
 
-	public int getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(int type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
-	public int getConversionEfficiency() {
+	public Integer getConversionEfficiency() {
 		return conversionEfficiency;
 	}
 
-	public void setConversionEfficiency(int conversionEfficiency) {
+	public void setConversionEfficiency(Integer conversionEfficiency) {
 		this.conversionEfficiency = conversionEfficiency;
 	}
 
