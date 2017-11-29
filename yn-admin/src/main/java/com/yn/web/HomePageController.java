@@ -64,16 +64,16 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/tolNowKwAndTolKwh", method = {RequestMethod.POST})
+    @RequestMapping(value = "/tolNowKwAndTolKwh", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public Object tolNowKwAndTolKwh(Long serverId) {
-
+    public Object tolNowKwAndTolKwh(Long userId) {
         double sumNowKw = 0;
         double sumKwh = 0;
-        if (serverId == null) {
+        if (userDao.findOne(userId).getRoleId()==1) { 	
         	sumNowKw=ammeterDao.sumNowKw();
         	sumKwh=ammeterDao.sumInitKwh()+ammeterDao.sumWorkTotalKwh();
-        } else {
+        } else if (userDao.findOne(userId).getRoleId()==5) {
+        	Long serverId=serverDao.findByUserid(userId);
         	List<Long> stationIds=stationDao.findId(serverId);
         	sumNowKw=ammeterDao.sumNowKwByStationIds(stationIds);
             sumKwh =ammeterDao.sumInitKwhByStationIds(stationIds)+ammeterDao.sumWorkTotalKwhByStationIds(stationIds);
@@ -135,7 +135,7 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/latestNews", method = {RequestMethod.POST})
+    @RequestMapping(value = "/latestNews", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public Object latestNews() {
 
@@ -169,9 +169,9 @@ public class HomePageController {
      *
      * @return
      */
-    @RequestMapping(value = "/businessData", method = {RequestMethod.POST})
+    @RequestMapping(value = "/businessData", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public Object businessData(Long serverId) {
+    public Object businessData(Long userId) {
         Station station = new Station();
         station.setDel(0);
         Order order = new Order();
@@ -184,13 +184,14 @@ public class HomePageController {
         double stationCapacity = 0;
         double orderCapacity = 0;
         long userNum = 0;
-        if (serverId == null) {
+        if (userDao.findOne(userId).getRoleId()==1) {
             stationNum = stationDao.count(Example.of(station));
             orderNum = orderDao.count(Example.of(order));
             stationCapacity = stationDao.sumCapacity();
             orderCapacity = orderDao.sumCapacity();
             userNum = userDao.countNum();
-        } else {
+        } else if(userDao.findOne(userId).getRoleId()==5){
+        	Long serverId=serverDao.findByUserid(userId);
             station.setServerId(serverId);
             stationNum = stationDao.count(Example.of(station));
             order.setServerId(serverId);
@@ -216,8 +217,8 @@ public class HomePageController {
      */
     @RequestMapping(value = "/todayKwh", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
-    public Object todayKwh(Long serverId) {
-    	List<Map<String, Object>> todayKwh = elecDataHourService.getTodayKwh(serverId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
+    public Object todayKwh(Long userId) {
+    	List<Map<String, Object>> todayKwh = elecDataHourService.getTodayKwh(userId, AmmeterTypeEnum.GENERATED_ELECTRICITY.getCode());
         return ResultVOUtil.success(todayKwh);
     }
 

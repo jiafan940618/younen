@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.dao.UserDao;
 import com.yn.enums.ResultEnum;
 import com.yn.enums.RoleEnum;
 import com.yn.model.NewServerPlan;
@@ -60,6 +61,8 @@ public class UserLoginController {
     StationService stationService;
     @Autowired
 	ApolegamyOrderService APOservice;
+    @Autowired
+    UserDao userDao;
 
     /**
      * 登入
@@ -163,10 +166,23 @@ public class UserLoginController {
 	 @ResponseBody
 	    public Object someTest(UserVo userVo,HttpSession session) {
 
-//    			userVo.setPhone("13712621200");
-//    			userVo.setCapacity(10.08);
-//    			userVo.setPrice(110880.00);
-//    			userVo.setPlanId(11L);
+    			userVo.setPhone("13580808022");
+    			userVo.setCapacity(6.72);
+    			userVo.setPrice(73920.00);
+    			userVo.setPlanId(5L);
+//    			User user =new User();
+//    			user.setAccount("13580808022");
+//    			user.setPhone(user.getAccount());
+//    			user.setPassword("123456");
+//    			user.setAddressText("东莞市长安镇乌沙社区光裕三路三巷7号");
+//    			user.setFullAddressText(user.getAddressText());
+//    			user.setCityId(213L);
+//    			user.setCityText("东莞市");
+//    			user.setProvinceId(19L);
+//    			user.setProvinceText("广东省");
+//    			user.setRoleId(6L);
+//    			userDao.save(user);
+    			
     	
 				   Integer type = userVo.getType();
 

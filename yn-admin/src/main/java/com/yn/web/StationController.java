@@ -1,6 +1,8 @@
 package com.yn.web;
 
 
+import com.yn.dao.ServerDao;
+import com.yn.dao.UserDao;
 import com.yn.enums.NoticeEnum;
 import com.yn.model.Apolegamy;
 import com.yn.model.ApolegamyOrder;
@@ -47,6 +49,11 @@ public class StationController {
     ApolegamyService apolegamyService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    UserDao userDao;
+    @Autowired
+    ServerDao serverDao;
+    
     
     
    // Thirdsuccess
@@ -105,9 +112,13 @@ public class StationController {
     public Object findAll(StationVo stationVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
+        if (userDao.findOne(station.getUserId()).getRoleId()==1) {	
+		} else if(userDao.findOne(station.getUserId()).getRoleId()==5){
+			Long serverId=serverDao.findByUserid(station.getUserId());
+			station.setServerId(serverId);
+		}
+          station.setUserId(null);
         Page<Station> findAll = stationService.findAll(station, pageable);
-
-
         // 判断是否已读
         Long userId = SessionCache.instance().getUserId();
         if (userId != null) {
@@ -119,8 +130,6 @@ public class StationController {
                 }
             }
         }
-
-
         return ResultVOUtil.success(findAll);
     }
 

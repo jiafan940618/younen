@@ -294,10 +294,10 @@ public class AmmeterService {
      * 管理后台的节能减排量
      * @param stationId
      */
-    public Map<String, Object> energyConservation(Long userId){
+    public Map<String, Object> energyConservation(Long userId){ 
     	double kwh=0D;
     	if (userDao.findOne(userId).getRoleId()==1) {
-    		 kwh=ammeterDao.sumKwh();
+    		 kwh=ammeterDao.sumAllKwh();
 		}else if(userDao.findOne(userId).getRoleId()==5){
 			Long serverId=serverDao.findByUserid(userId);
 			 kwh=ammeterDao.sumKwh(serverId);
