@@ -36,6 +36,8 @@ public class Inverter extends IDomain implements Serializable {
 	private Double qualityAssurance;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
 	private Double boardYear;
+	
+	private Integer type;
 
 	
 	public Inverter() {}
@@ -53,6 +55,15 @@ public class Inverter extends IDomain implements Serializable {
 		this.id = id;
 		this.brandName = brandName;
 		this.model = model;
+	}
+
+	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	public Long getId() {

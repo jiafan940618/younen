@@ -106,14 +106,14 @@ public class ApolegamyController {
     @ResponseBody
     @RequestMapping(value = "/findnewApo")
     public Object findAponew(ApolegamyVo apolegamyVo,HttpSession httpSession) {
-    	/*SessionCache server =(SessionCache) httpSession.getAttribute("SessionCache");
+    	SessionCache server =(SessionCache) httpSession.getAttribute("SessionCache");
     	
     	if(null == server){
     		
     		return ResultVOUtil.error(777, "抱歉你未登录!");
-    	}*/
+    	}
     	
-    	Server serverResult = serverService.findOne(1L);
+    	Server serverResult = serverService.findOne(server.getUserId());
     	
     	List<Apolegamy> list = apolegamyService.FindApo(serverResult.getId());
        

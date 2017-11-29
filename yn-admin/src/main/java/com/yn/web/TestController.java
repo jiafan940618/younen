@@ -56,15 +56,16 @@ public class TestController {
     @RequestMapping(value = "/invsave")
     public Object invsave(SolarPanelVol brandVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		
-		SolarPanel solarPanel = new SolarPanel();
+		Inverter inverter = new Inverter();
 		
-		BeanCopy.copyProperties(brandVo, solarPanel);
+		BeanCopy.copyProperties(brandVo, inverter);
+		inverter.setType(3);
 		
-		Page<SolarPanel> page =	solarPanelService.findAll(solarPanel, pageable);
+		
+		Page<Inverter> page =	inverterService.findAll(inverter, pageable);
 		
 		return ResultVOUtil.success(page);
-		
-     
+
     }
 	
 	@ResponseBody

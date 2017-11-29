@@ -96,12 +96,9 @@ public class InvSolarController {
 			
 			BeanCopy.copyProperties(brandVo, solarPanel);
 			
-			solarPanel.setConversionEfficiency(null);
-			
-			solarPanel.setType(null);
-			
 			Page<SolarPanel> page =	solarPanelService.findAll(solarPanel, pageable);
-
+			
+			
 			return ResultVOUtil.success(page);
 			
 		}else if(brandVo.getType() == 3){
@@ -109,7 +106,7 @@ public class InvSolarController {
 			Inverter inverter = new Inverter();
 			
 			BeanCopy.copyProperties(brandVo, inverter);
-			
+
 			Page<Inverter> page =	inverterService.findAll(inverter, pageable);
 			
 			return ResultVOUtil.success(page);

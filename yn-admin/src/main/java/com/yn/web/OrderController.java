@@ -108,9 +108,10 @@ public class OrderController {
 	@Autowired
 	SystemConfigService systemConfigService;
 
-	@RequestMapping(value = "/select", method = { RequestMethod.POST })
+	@RequestMapping(value = "/select")
 	@ResponseBody
 	public Object findOne(Long id) {
+
 		Order findOne = orderService.findOne(id);
 
 		// 更新记录为已读
@@ -122,15 +123,17 @@ public class OrderController {
 		}
 		String imgUrl = findOne.getApplyStepbimgUrl();
 		
-		String[] img = imgUrl.split(",");
-		
 		List list = new LinkedList();
-		for (int i = 0; i < img.length; i++) {
-			list.add(img[i]);
+		
+		if(null != imgUrl && !imgUrl.equals("")){
+			
+		String[] img = imgUrl.split(",");
+
+			for (int i = 0; i < img.length; i++) {
+				list.add(img[i]);
+			}
+		
 		}
-		
-		
-		
 
 		return ResultVOUtil.newsuccess(findOne,list);
 	}
