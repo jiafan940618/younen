@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.OrderDao;
 import com.yn.dao.OrderPlanDao;
+import com.yn.dao.ServerDao;
+import com.yn.dao.UserDao;
 import com.yn.domain.OrderDetailAccounts;
 import com.yn.enums.NoticeEnum;
 import com.yn.enums.OrderDetailEnum;
@@ -99,6 +101,10 @@ public class OrderController {
 	BillOrderService billOrderService;
 	@Autowired
 	StationService stationService;
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	ServerDao serverDao;
 
 	@RequestMapping(value = "/select", method = { RequestMethod.POST })
 	@ResponseBody
@@ -263,11 +269,15 @@ public class OrderController {
 
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object findAll(OrderVo orderVo,
+	public Object findAll(OrderVo orderVo,Long managerId,
 			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
-		Page<Order> findAll = orderService.findAll(order, pageable);
+		if(userDao.findOne(managerId).getRoleId()==5){
+			Long serverId=serverDao.findByUserid(managerId);
+			order.setServerId(serverId);
+		}
+          Page<Order> findAll = orderService.findAll(order, pageable);
 
 		// 判断是否已读
 		Long userId = SessionCache.instance().getUserId();

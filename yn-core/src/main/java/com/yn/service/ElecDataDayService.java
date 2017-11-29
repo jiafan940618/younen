@@ -68,6 +68,8 @@ public class ElecDataDayService {
 	ElecDataYearDao elecDataYearDao;
 	@Autowired
 	StationDao stationDao;
+	@Autowired
+	SystemConfigService systemConfigService;
 
 	public List<ElecDataDay> selectByExample(ElecDataDayExample example) {
 		return elecDataDayMapper.selectByExample(example);
@@ -695,12 +697,33 @@ public class ElecDataDayService {
 			linkHashMap.put(key[i], objectMap.get(key[i]));
 			listMap.put("createDtm", key[i]);
 			listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString())));
+			double capacity=stationDao.findCapacity(stationId);
+			listMap.put("wantKwh", NumberUtil.accurateToTwoDecimal(capacity*lengthOfLight(plan,(String)key[i])));
 			listsMap.add(listMap);
 		}
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("list", listsMap);
 		return map;
+	}
+	
+	/**
+	 * 电站的日照时长
+	 */
+	public double lengthOfLight (Integer plan,String date){
+		Double lengthOfLight=0D;
+		int days=0;
+		if (plan==0) {
+			days=DateUtil.whichYear(date);
+			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"))*days;
+		}else if (plan==1) {
+			days=DateUtil.whichMonth(date);
+			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"))*days;
+		}else if (plan==3) {
+			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"));
+		}
+		
+		return lengthOfLight;
 	}
 
 }
