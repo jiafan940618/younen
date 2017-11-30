@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 
 /**
@@ -39,7 +42,7 @@ public class Inverter extends IDomain implements Serializable {
 	
 	private Integer type;
 
-	
+
 	public Inverter() {}
 
 	public Inverter(Long id, String model,Double qualityAssurance) {
@@ -50,11 +53,12 @@ public class Inverter extends IDomain implements Serializable {
 	
 	
 
-	public Inverter(Long id, String brandName, String model) {
+	public Inverter(Long id, String brandName, String model,Integer brandId) {
 		super();
 		this.id = id;
 		this.brandName = brandName;
 		this.model = model;
+		this.brandId = brandId;
 	}
 
 	

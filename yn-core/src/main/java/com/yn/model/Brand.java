@@ -1,6 +1,7 @@
 package com.yn.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,27 +22,40 @@ public class Brand extends IDomain implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id", insertable = false, updatable = true)
-	private Set<SolarPanel> solar;
+	private List<SolarPanel> solar;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id", insertable = false, updatable = true)
-	private Set<Inverter> inverter;
+	private List<Inverter> inverter;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id", insertable = false, updatable = true)
+	private List<OtherInfo> info;
+	
+	
+	
+	
+	public List<OtherInfo> getInfo() {
+		return info;
+	}
 
-	
-	public Set<SolarPanel> getSolar() {
+	public void setInfo(List<OtherInfo> info) {
+		this.info = info;
+	}
+
+	public List<SolarPanel> getSolar() {
 		return solar;
 	}
 
-	public void setSolar(Set<SolarPanel> solar) {
+	public void setSolar(List<SolarPanel> solar) {
 		this.solar = solar;
 	}
 
-	public Set<Inverter> getInverter() {
+	public List<Inverter> getInverter() {
 		return inverter;
 	}
 
-	public void setInverter(Set<Inverter> inverter) {
+	public void setInverter(List<Inverter> inverter) {
 		this.inverter = inverter;
 	}
 

@@ -15,9 +15,11 @@ import com.yn.model.Brand;
 import com.yn.model.City;
 import com.yn.model.Inverter;
 import com.yn.model.NewServerPlan;
+import com.yn.model.OtherInfo;
 import com.yn.model.SolarPanel;
 import com.yn.service.BrandService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.OtherInfoService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.BrandVo;
 import com.yn.vo.CityVo;
@@ -31,6 +33,10 @@ public class BrandController {
 	BrandService brandService;
 	@Autowired 
 	NewServerPlanService newServerPlanService;
+	@Autowired
+    OtherInfoService otherInfoService;
+	
+	
 	//, method = {RequestMethod.POST}@RequestBody 
 	@ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
@@ -98,7 +104,7 @@ public class BrandController {
     			
         		List<SolarPanel> Solarlist =	brandService.getSolarPanel(brand.getId().intValue());
         		
-        		brand.setSolar(new HashSet(Solarlist));
+        		brand.setSolar(Solarlist);
     			}
     		
     		
@@ -107,10 +113,19 @@ public class BrandController {
     			
         		List<Inverter> invlist =	brandService.getInverter(brand.getId().intValue());
         		
-        		brand.setInverter(new HashSet(invlist));
+        		brand.setInverter(invlist);
     			}
+    	}else if(page.getType() == 2){
+    		for(Brand brand : list){
+    			
+    			OtherInfo otherInfo = new OtherInfo();
+    			otherInfo.setBrandId(brand.getId().intValue());
+    			
+    			List<OtherInfo> infolist = otherInfoService.findAll(otherInfo);
+        		
+        		brand.setInfo(infolist);
+    		}
     	}
-    	
     	count =	brandService.getCount(page);
 
  		page.setTotal(count);

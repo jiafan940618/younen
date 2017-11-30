@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,13 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.yn.model.Brand;
+import com.yn.model.Devide;
 import com.yn.model.Inverter;
 import com.yn.model.NewServerPlan;
+import com.yn.model.OtherInfo;
+import com.yn.model.Page;
 import com.yn.model.Server;
 import com.yn.model.SolarPanel;
 import com.yn.service.BrandService;
+import com.yn.service.DevideService;
 import com.yn.service.InverterService;
 import com.yn.service.NewServerPlanService;
+import com.yn.service.OtherInfoService;
 import com.yn.service.ServerService;
 import com.yn.service.SolarPanelService;
 import com.yn.session.SessionCache;
@@ -46,7 +52,10 @@ public class TestController {
 	InverterService inverterService;
 	@Autowired
 	SolarPanelService solarPanelService;
-	
+	@Autowired
+	DevideService devideService;
+	@Autowired
+	OtherInfoService otherInfoService;
 	@Autowired
     ServerService serverService;
    
@@ -54,17 +63,23 @@ public class TestController {
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave(SolarPanelVol brandVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object invsave() {
 		
-		Inverter inverter = new Inverter();
+		Page page = new Page();
+		page.setType(2);
 		
-		BeanCopy.copyProperties(brandVo, inverter);
-		inverter.setType(3);
+		List<Brand> list = brandService.getBrand(page);
 		
+		for(Brand brand : list){
+			
+			OtherInfo otherInfo = new OtherInfo();
+			otherInfo.setBrandId(brand.getId().intValue());
+			List<OtherInfo> infolist = otherInfoService.findAll(otherInfo);
+    		
+    		brand.setInfo(infolist);
+		}
 		
-		Page<Inverter> page =	inverterService.findAll(inverter, pageable);
-		
-		return ResultVOUtil.success(page);
+		return ResultVOUtil.success(list);
 
     }
 	

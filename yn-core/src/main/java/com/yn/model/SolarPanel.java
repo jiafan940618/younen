@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 
 /** 
@@ -36,7 +39,6 @@ public class SolarPanel extends IDomain implements Serializable {
 	@Column(columnDefinition = "varchar(255) comment '[电池板的每平米发电功率]'")
 	private String powerGeneration;
 	
-	
 
 	public SolarPanel() {}
 
@@ -51,10 +53,11 @@ public class SolarPanel extends IDomain implements Serializable {
 	
 	
 
-	public SolarPanel(Long id, String model, String brandName) {
+	public SolarPanel(Long id, String model, String brandName,Integer brandId) {
 		this.id = id;
 		this.brandName = brandName;
 		this.model = model;
+		this.brandId = brandId;
 	}
 
 	public String getPowerGeneration() {
