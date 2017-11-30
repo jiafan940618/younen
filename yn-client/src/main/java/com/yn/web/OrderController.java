@@ -682,7 +682,7 @@ public class OrderController {
 	/** 显示购买的状态 */
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
-	public Object giveStatus(@RequestParam("orderId") Long orderId) {
+	public Object giveStatus(@RequestParam("orderId") Long orderId,HttpSession session) {
 		Order order = orderService.findstatus(orderId);
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		jsonResult.put("loanStatus", order.getLoanStatus());
@@ -715,6 +715,7 @@ public class OrderController {
 		jsonResult.put("gridConnectedIsPay", order.getGridConnectedIsPay());
 		jsonResult.put("gridConnectedStepA", order.getGridConnectedStepA());
 		jsonResult.put("orderCode", order.getOrderCode());
+	    session.setAttribute("orderCode", order.getOrderCode());
 		return ResultVOUtil.success(jsonResult);
 	}
 
