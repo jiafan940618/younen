@@ -715,7 +715,9 @@ public class OrderController {
 		jsonResult.put("gridConnectedIsPay", order.getGridConnectedIsPay());
 		jsonResult.put("gridConnectedStepA", order.getGridConnectedStepA());
 		jsonResult.put("orderCode", order.getOrderCode());
-	    session.setAttribute("orderCode", order.getOrderCode());
+		
+	    session.setAttribute("order_code", findOne.getOrderCode());
+	    logger.info("------------------------------------orderCode:"+findOne.getOrderCode());
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -781,7 +783,13 @@ public class OrderController {
 		UploadPhoto uploadPhoto = new UploadPhoto();
 		uploadPhoto.setLoadImg(finaltime);
 		uploadPhoto.setUserId(newuser.getId());
-		String orderCode = (String) session.getAttribute("orderCode");
+		String orderCode=null;
+		if (session.getAttribute("orderCode")==null) {
+			orderCode= (String) session.getAttribute("order_code");
+		}else {
+			orderCode = (String) session.getAttribute("orderCode");
+		}
+		logger.info("------------------paydetail------------------orderCode:"+orderCode);
 		Order order = orderMapper.findOrderCode(orderCode);
 		order.setApplyStepbimgUrl(finaltime);
 		orderService.updateApplyStepBImgUrl(order);
