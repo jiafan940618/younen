@@ -29,10 +29,10 @@ public interface BrandDao extends JpaRepository<Brand, Long>, JpaSpecificationEx
 	 
 	 //SELECT DISTINCT(model),brand_name FROM inverter WHERE brand_id =7 AND del =0;
 	 
-	 @Query("SELECT new Inverter(id,model,brandName) FROM Inverter WHERE brandId =:id AND del =0")
+	 @Query("SELECT new Inverter(id,model,brandName,brandId) FROM Inverter WHERE brandId =:id AND del =0")
 	 List<Inverter>  getInverter(@Param("id") Integer id);
 	 
-	 @Query("SELECT new SolarPanel(id,model,brandName) FROM SolarPanel WHERE brandId =:id AND del =0")
+	 @Query("SELECT new SolarPanel(id,model,brandName,brandId) FROM SolarPanel WHERE brandId =:id AND del =0")
 	 List<SolarPanel>  getSolarPanel(@Param("id") Integer id);
 	 
 	

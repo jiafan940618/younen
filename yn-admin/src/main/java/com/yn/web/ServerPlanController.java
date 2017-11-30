@@ -124,35 +124,9 @@ public class ServerPlanController {
     
     @ResponseBody
     @RequestMapping(value = "/newdelete", method = {RequestMethod.POST})
-    public Object newdelete(Long id,HttpSession session) {
-    	SessionCache server =(SessionCache) session.getAttribute("SessionCache");
+    public Object newdelete(Long id) {
     	
-    	if(null == server){
-    		
-    		return ResultVOUtil.error(777, "抱歉你未登录!");
-    	}
-    	
-    	Server serverResult = serverService.findOne(server.getUserId());
-    	
-    	NewServerPlan newserverPlan = new NewServerPlan();
-    	
-    	newserverPlan.setServerId(serverResult.getId());
-
-        NewServerPlan newServerPlan =  newserverPlanService.findOne(id);
-        
-        if(newServerPlan.getPlanId() != 1 ){
-        	newserverPlanService.delete(id);
-        }else{
-        	newserverPlanService.delete(id);
-        	
-        	List<NewServerPlan> list =	newserverPlanService.findAll(newserverPlan);
-        	
-        	NewServerPlan ServerPlan = list.get(0);
-        	ServerPlan.setPlanId(1);
-        	
-        	newserverPlanService.save(ServerPlan);
-        	
-        }
+    	newserverPlanService.delete(id);
 
         return ResultVOUtil.success();
     }

@@ -10,11 +10,14 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.yn.dao.RechargeDao;
 import com.yn.model.Recharge;
+import com.yn.utils.BeanCopy;
 import com.yn.utils.DateUtil;
 import com.yn.utils.ObjToMap;
 
@@ -23,13 +26,53 @@ public class FRechargeService {
 	
 	@Autowired
 	RechargeDao rechargeDao;
-	
-	
+
+	public Recharge findOne(Long id) {
+		return rechargeDao.findOne(id);
+	}
+
+	public void save(Recharge recharge) {
+		if (recharge.getId() != null) {
+			Recharge one = rechargeDao.findOne(recharge.getId());
+			try {
+				BeanCopy.beanCopy(recharge, one);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			rechargeDao.save(one);
+		} else {
+			rechargeDao.save(recharge);
+		}	
+	   }
+
+	public void delete(Long id) {
+		rechargeDao.delete(id);
+	}
+
+	public void deleteBatch(List<Long> id) {
+		rechargeDao.deleteBatch(id);
+	}
+
+	public Recharge findOne(Recharge recharge) {
+		Specification<Recharge> spec = getSpecification(recharge);
+		Recharge findOne = rechargeDao.findOne(spec);
+		return findOne;
+	}
+
+	public List<Recharge> findAll(List<Long> list) {
+		return rechargeDao.findAll(list);
+	}
+
+	public Page<Recharge> findAll(Recharge billRecharge, Pageable pageable) {
+		Specification<Recharge> spec = getSpecification(billRecharge);
+		Page<Recharge> findAll = rechargeDao.findAll(spec, pageable);
+		return findAll;
+	}
+
 	public List<Recharge> findAll(Recharge billRecharge) {
 		Specification<Recharge> spec = getSpecification(billRecharge);
 		return rechargeDao.findAll(spec);
 	} 
-	
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Specification<Recharge> getSpecification(Recharge billRecharge) {

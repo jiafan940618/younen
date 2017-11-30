@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.yn.model.Inverter;
+import com.yn.model.OtherInfo;
 import com.yn.model.SolarPanel;
 import com.yn.service.InverterService;
+import com.yn.service.OtherInfoService;
 import com.yn.service.SolarPanelService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.InverterVo;
@@ -29,21 +31,18 @@ public class InvSolarController {
 	InverterService inverterService;
 	@Autowired
 	SolarPanelService solarPanelService;
+	@Autowired
+	OtherInfoService otherInfoService;
 	
-	/** 编辑添加逆变器*/
-	@ResponseBody
-    @RequestMapping(value = "/invsave", method = {RequestMethod.POST})
-    public Object invsave(@RequestBody InverterVo brandVo) {
-		Inverter brand = new Inverter();
-        BeanCopy.copyProperties(brandVo, brand);
-        inverterService.save(brand);
-        return ResultVOUtil.success(brand);
-    }
 	
 	/** 编辑添加电池板*/
 	@ResponseBody
     @RequestMapping(value = "/solarsave", method = {RequestMethod.POST})
     public Object save(@RequestBody SolarPanelVol brandVo) {
+		
+		System.out.println("传递的Id为：---- ---- ---- "+brandVo.getId());
+		System.out.println("传递的type为：---- ---- ---- "+brandVo.getType());
+		
 		if(brandVo.getType() == 1){
 			SolarPanel brand = new SolarPanel();
 	        BeanCopy.copyProperties(brandVo, brand);
@@ -55,7 +54,14 @@ public class InvSolarController {
 	        BeanCopy.copyProperties(brandVo, brand);
 	        inverterService.save(brand);
 	        return ResultVOUtil.success(brand);
+		}else if(brandVo.getType() == 2){
+			OtherInfo otherInfo = new OtherInfo();
+	        BeanCopy.copyProperties(brandVo, otherInfo);
+	        otherInfoService.save(otherInfo);
+	        return ResultVOUtil.success(otherInfo);
 		}
+		
+		
 		return ResultVOUtil.error(777, "编辑失败!");
     }
 	
@@ -63,11 +69,17 @@ public class InvSolarController {
 	
 	@ResponseBody
     @RequestMapping(value = "/solardelete", method = {RequestMethod.POST})
-    public Object solardelete(@RequestBody SolarPanelVol brandVo) {
+    public Object solardelete(SolarPanelVol brandVo) {
+		
+		System.out.println("传递的Id为：---- ---- ---- "+brandVo.getId());
+		System.out.println("传递的type为：---- ---- ---- "+brandVo.getType());
+		
 		if(brandVo.getType() == 1){
 			solarPanelService.delete(brandVo.getId());
 		}else if(brandVo.getType() == 3){
 			inverterService.delete(brandVo.getId());
+		}else if(brandVo.getType() == 2){
+			otherInfoService.delete(brandVo.getId());
 		}
 		
 		
@@ -112,6 +124,14 @@ public class InvSolarController {
 			
 			return ResultVOUtil.success(page);
 
+		}else if(brandVo.getType() == 2){
+			OtherInfo otherInfo = new OtherInfo();
+			
+			BeanCopy.copyProperties(brandVo, otherInfo);
+
+			Page<OtherInfo> page =	otherInfoService.findAll(otherInfo, pageable);
+			
+			return ResultVOUtil.success(page);
 		}
 
 		return ResultVOUtil.error(null);

@@ -22,10 +22,12 @@ import com.yn.model.Apolegamy;
 import com.yn.model.Brand;
 import com.yn.model.Devide;
 import com.yn.model.Inverter;
+import com.yn.model.OtherInfo;
 import com.yn.model.SolarPanel;
 import com.yn.service.BrandService;
 import com.yn.service.DevideService;
 import com.yn.service.InverterService;
+import com.yn.service.OtherInfoService;
 import com.yn.service.SolarPanelService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.DevideVo;
@@ -39,7 +41,8 @@ public class DevideController {
     BrandService brandService;
     @Autowired
     SolarPanelService solarPanelService;
-    
+    @Autowired
+    OtherInfoService otherInfoService;
     @Autowired
     InverterService inverterService;
     
@@ -101,9 +104,9 @@ public class DevideController {
     	if(page.getType() == 1){
     		for (Brand brand : list) {
     			
-        		List<SolarPanel> Solarlist =	brandService.getSolarPanel(brand.getId().intValue());
+        		List<SolarPanel> Solarlist =brandService.getSolarPanel(brand.getId().intValue());
         		
-        		brand.setSolar(new HashSet(Solarlist));
+        		brand.setSolar(Solarlist);
     			}
     		
     		
@@ -112,12 +115,12 @@ public class DevideController {
     			
         		List<Inverter> invlist = brandService.getInverter(brand.getId().intValue());
         		
-        		Set<SolarPanel> set = new HashSet<SolarPanel>();
+        		List<SolarPanel> set = new LinkedList<SolarPanel>();
         		
         		for (Inverter solarPanel : invlist) {
         			
         			SolarPanel sol = new SolarPanel();
-        			
+        			sol.setId(solarPanel.getId());
         			sol.setBrandId(solarPanel.getBrandId());
         			sol.setBrandName(solarPanel.getModel());
         			sol.setModel(solarPanel.getBrandName());
@@ -126,8 +129,29 @@ public class DevideController {
 				}
         		brand.setSolar(set);
     			}
+    	}else if(page.getType() == 2){
+    		for(Brand brand : list){
+    			
+    			OtherInfo otherInfo = new OtherInfo();
+    			otherInfo.setBrandId(brand.getId().intValue());
+    			List<OtherInfo> infolist = otherInfoService.findAll(otherInfo);
+    			List<SolarPanel> set = new LinkedList<SolarPanel>();
+    			
+    			for (OtherInfo otherInfo2 : infolist) {
+    				
+    				SolarPanel sol = new SolarPanel();
+        			sol.setId(otherInfo2.getId());
+        			sol.setBrandId(otherInfo2.getBrandId());
+        			sol.setBrandName(otherInfo2.getBrandName());
+        			sol.setModel(otherInfo2.getModel());
+        			set.add(sol);
+    				
+				}
+ 
+    			brand.setSolar(set);
+    		}
     	}
-    	
+
     	count =	brandService.getCount(page);
 
  		page.setTotal(count);
