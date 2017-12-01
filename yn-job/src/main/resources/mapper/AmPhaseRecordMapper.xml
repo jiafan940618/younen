@@ -1004,7 +1004,7 @@
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.yn.model.AmPhaseRecord">
 		update
-		am_phase_record
+		am_phase_record_${date} 
 		set a_current = #{aCurrent,jdbcType=DECIMAL},
 		a_kva =
 		#{aKva,jdbcType=DECIMAL},

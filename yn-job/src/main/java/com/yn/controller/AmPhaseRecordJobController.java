@@ -52,29 +52,6 @@ public class AmPhaseRecordJobController {
 	@Autowired
 	PatchDataRecordMapper patchDataRecordMapper;
 	
-	/**
-	 * 模拟测试。两个数据源。
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/getInfo")
-	@ResponseBody
-	public Object getInfo() {
-		Object[] objs = new Object[5];
-		// List<Am1Phase> findAll1 = amPhaseService.findAllAm1Phase();
-		// List<AmPhaseRecord> findAll2 = amPhaseRecordService.findAll(new
-		// AmPhaseRecord());
-		List<Ammeter> findAll3 = ammeterService.findAll(new Ammeter());
-		// List<Station> findAll4 = stationService.findAll(new Station());
-		// List<AmmeterRecord> findAll5 = ammeterRecordService.findAll(new
-		// AmmeterRecord());
-		// objs[0] = findAll1.size();// Am1Phase
-		// objs[1] = findAll2.size();// AmPhaseRecord
-		objs[2] = findAll3.size();// Ammeter
-		// objs[3] = findAll4.size();// Station
-		// objs[4] = findAll5.size();// AmmeterRecord
-		return objs;
-	}
 
 	/**
 	 * 
@@ -174,7 +151,7 @@ public class AmPhaseRecordJobController {
 			System.out.println("您输入的时间是" + year + "年" + month + "月" + day + "号。");
 			selectDate = year + "" + m + "" + (day <= 9 ? "0" + day : day);// 20101111
 			date = parseDate(year, month, day);// 2017_11_11
-			amPhaseRecordService.dropTmpTable(date);
+//			amPhaseRecordService.dropTmpTable(date);
 			System.out.println("存在am_phase_record_" + date + "表就删除！");
 			Map<String, Object> map = this.job(selectDate, date);
 			jsonResult.put("map", map);
@@ -206,7 +183,6 @@ public class AmPhaseRecordJobController {
 		am1Phases = amPhaseService.findAllAm1PhaseByDate(selectDate);
 		am3Phases = amPhaseService.findAllAm3PhaseByDate(selectDate);
 		String checkDate = DateUtil.formatDate(new Date(), "yyMMdd");
-		checkDate = "171118";
 		if (am1Phases != null && am1Phases.size() > 0) {
 			jsonResult.put("am1Phases.size() ", am1Phases.size());
 			for (Am1Phase am1Phase : am1Phases) {

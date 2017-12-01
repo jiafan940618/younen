@@ -33,6 +33,8 @@ import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataHour;
 import com.yn.model.PatchDataRecord;
+import com.yn.model.PatchDataRecordExample;
+import com.yn.model.PatchDataRecordExample.Criteria;
 import com.yn.model.Station;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmPhaseService;
@@ -102,7 +104,7 @@ public class PatchDataRecordJob {
 	public PatchDataRecordJob() {
 		try {
 			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
-//			 mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+//			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -111,15 +113,14 @@ public class PatchDataRecordJob {
 	/**
 	 * 
 	    * @Title: job
-	    * @Description: TODO(每天执行一次)
+	    * @Description: TODO(每天1点执行一次)
 	    * @param @throws ParseException    参数
 	    * @return void    返回类型
 	    * @throws
 	 */
-	@Scheduled(cron = "0 0 0 * * ? ")
-	// @Scheduled(fixedDelay = 25 * 1000)
-	@Transactional
-	private void job() throws ParseException {
+	 @Scheduled(cron = "0 0 1 * * ? ")
+//	@Scheduled(fixedDelay = 25 * 1000)
+	public void job() throws ParseException {
 		// 设置日志文件输出路径。
 		out = System.out;
 		System.setOut(mytxt);
@@ -146,38 +147,40 @@ public class PatchDataRecordJob {
 						.format(new SimpleDateFormat("yyMMddHHssmm").parse(meterTimeCode));
 				AmPhaseRecord key = amPhaseRecordService.selectByPrimaryKey(amPhaseRecord1);
 				if (key == null) {
+					amPhaseRecord1.setDate(date);
 					amPhaseRecordService.saveByMapper(amPhaseRecord1);
 				} else {
+					amPhaseRecord1.setDate(date);
 					amPhaseRecordService.updateByPrimaryKey(amPhaseRecord1);
 				}
 				List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
 				for (Ammeter ammeter : findAll) {
-					AmPhaseRecord aprR = new AmPhaseRecord();
-					aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-					aprR.setdType(ammeter.getdType());
-					aprR.setiAddr(ammeter.getiAddr());
-					aprR.setDealt(0);
-					// 添加查询日期
-					aprR.setDate(date);
-					List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper2(aprR);
-					for (AmPhaseRecord apr : amPhaseRecords) {
+					PatchDataRecordExample ex = new PatchDataRecordExample();
+					Criteria criteria = ex.createCriteria();
+					criteria.andDealtEqualTo(0);
+					criteria.andCAddrEqualTo(Integer.parseInt(ammeter.getcAddr()));
+					criteria.andDTypeEqualTo(ammeter.getdType());
+					criteria.andIAddrEqualTo(ammeter.getiAddr());
+					criteria.andWAddrEqualTo(0);
+					List<PatchDataRecord> example = patchDataRecordMapper.selectByExample(ex);
+					for (PatchDataRecord apr : example) {
 						apr.setDealt(1); // 已经处理
-						apr.setDate(date);
-						apr.setDate(date);
-						amPhaseRecordService.updateByPrimaryKeySelective(apr);
-						saveAmmeterRecord(ammeter, apr.getMeterTime());
+						patchDataRecordMapper.updateByPrimaryKeySelective(apr);
+						saveAmmeterRecord(ammeter, apr);
 						updateAmmeterAndStation(ammeter, apr);
 					}
+					System.out.println("處理电表、每日等信息。。。");
 				}
+				System.out.println("wancheng...");
 			}
 			System.out.println("开始整理临时表中的数据。");
-			// doUpdateMonthYear();
 			System.out.println("整理完成。");
 			System.out.println("清空临时表中的数据。");
-			patchDataRecordMapper.truncateTable();
+			 patchDataRecordMapper.truncateTable();
 		}
 		System.setOut(out);
 		System.out.println("PatchDataRecordJob日志保存完毕。");
+
 	}
 
 	/**
@@ -186,16 +189,36 @@ public class PatchDataRecordJob {
 	 * @param ammeter
 	 * @param meterTime
 	 */
-	private void saveAmmeterRecord(Ammeter ammeter, Long meterTime) {
+	private void saveAmmeterRecord(Ammeter ammeter, PatchDataRecord apr) {
 		AmmeterRecord ammeterRecord = new AmmeterRecord();
 		ammeterRecord.setcAddr(ammeter.getcAddr());
 		ammeterRecord.setdType(ammeter.getdType());
-		ammeterRecord.setRecordDtm(DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss));
+		String meterTimeCode = apr.getMeterTime().toString();
+		String date = null;
+		try {
+			date = new SimpleDateFormat("yyyy-MM-dd")
+				.format(new SimpleDateFormat("yyMMddHHssmm").parse(meterTimeCode));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		ammeterRecord.setRecordDtm(DateUtil.parseString(apr.getMeterTime().toString(),DateUtil.yyMMddHHmmss));
+//		ammeterRecord.setRecordDtm(DateUtil.parseString(date,"yyyy-MM-dd"));
+//		ammeterRecord.setRecordDtm(null);
 		if (ammeter.getStation() != null) {
 			ammeterRecord.setStationId(ammeter.getStationId());
 			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
 		}
+		Long dAddr = apr.getdAddr();
+		CharSequence subSequence = dAddr.toString().subSequence(0, 1);
+		if (subSequence.equals("1")) {
+			ammeterRecord.setType(1);
+		} else if (subSequence.equals("2")) {
+			ammeterRecord.setType(2);
+		}
+		ammeterRecord.setdAddr(apr.getdAddr());
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
+		
+		ammeterRecord.setDate(date);
 		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
 
@@ -206,9 +229,9 @@ public class PatchDataRecordJob {
 	 * @param apr
 	 * @throws ParseException 
 	 */
-	private void updateAmmeterAndStation(Ammeter ammeter, AmPhaseRecord apr) throws ParseException {
+	private void updateAmmeterAndStation(Ammeter ammeter, PatchDataRecord apr1) throws ParseException {
 		// 更新电表信息
-		String statusCode = apr.getMeterState();
+		String statusCode = apr1.getMeterState();
 		AmmeterStatusCode ammeterStatusCode = ammeterStatusCodeService.findByStatusCode(statusCode);
 		if (ammeterStatusCode != null) {
 			ammeter.setStatus(ammeterStatusCode.getIsNormal());
@@ -216,26 +239,39 @@ public class PatchDataRecordJob {
 		if (ammeter.getWorkDtm() == null) {
 			ammeter.setWorkDtm(new Date());
 		}
-		Double kwhTol = getKwhTol(apr);
+		Double kwhTol = getKwhTol(apr1);
+		Double totalKw = 0d;
 		ammeter.setStatusCode(statusCode);
-		ammeter.setNowKw(apr.getKw());
+		PatchDataRecord apr = apr1;
+		if (apr.getdAddr() == 1) {
+			apr.setdAddr(11L);
+			PatchDataRecord theDaddr = patchDataRecordMapper.find4Daddr(apr);
+			if (theDaddr != null) {
+				totalKw = apr.getKw() + theDaddr.getKw();
+			} else {
+				totalKw = apr.getKw();
+			}
+			apr.setdAddr(1L);
+		} else if (apr.getdAddr() == 11) {
+			apr.setdAddr(1L);
+			PatchDataRecord theDaddr = patchDataRecordMapper.find4Daddr(apr);
+			if (theDaddr != null) {
+				totalKw = apr.getKw() + theDaddr.getKw();
+			} else {
+				totalKw = apr.getKw();
+			}
+			apr.setdAddr(11L);
+		} else if (apr.getdAddr() == 2) {
+			totalKw = apr.getKw();
+		}
+		ammeter.setNowKw(totalKw);
 		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		ammeter.setUpdateDtm(new Date());
-		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
-		if (findOne != null) {
-			ammeterMapper.updateByPrimaryKeySelective(ammeter);
-		} else {
-			ammeterMapper.insert(ammeter);
-		}
+		ammeterMapper.updateByPrimaryKeySelective(ammeter);
 
-		Long stationId = ammeter.getStationId();
-		if (stationId != null) {
-			Station station = stationService.findOne(stationId);
-			System.err.println(ammeter.getNowKw());
-			stationMapper.updateByPrimaryKeySelective(station);
-			saveTemStation(station, ammeter, apr, kwhTol);
-		}
+		saveTemStation(ammeter, apr1, kwhTol);
+
 	}
 
 	/**
@@ -246,7 +282,7 @@ public class PatchDataRecordJob {
 	 * @param apr
 	 * @param tolKwh
 	 */
-	private void saveTemStation(Station station, Ammeter ammeter, AmPhaseRecord apr, Double tolKwh) {
+	private void saveTemStation(Ammeter ammeter, PatchDataRecord apr, Double tolKwh) {
 		Date meterTime = DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss);
 		String temStationYearRecordTime = DateUtil.formatDate(meterTime, "yyyy-MM-dd");
 		String cAddr = ammeter.getcAddr();
@@ -301,7 +337,7 @@ public class PatchDataRecordJob {
 	 * @param apr
 	 * @throws ParseException 
 	 */
-	private Double getKwhTol(AmPhaseRecord apr) throws ParseException {
+	private Double getKwhTol(PatchDataRecord apr) throws ParseException {
 		Double kwhTol = 0d;
 
 		Long meterTime = apr.getMeterTime();

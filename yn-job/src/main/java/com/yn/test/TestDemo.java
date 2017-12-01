@@ -2,11 +2,11 @@ package com.yn.test;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-
-import com.yn.utils.DateUtil;
 
 public class TestDemo {
 
@@ -21,11 +21,40 @@ public class TestDemo {
 		}
 	}
 
+	public static int daysBetween(String s, String b) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date smdate = sdf.parse(s);
+		Date bdate = sdf.parse(s);
+		smdate = sdf.parse(sdf.format(smdate));
+		bdate = sdf.parse(sdf.format(bdate));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smdate);
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(bdate);
+		long time2 = cal.getTimeInMillis();
+		long between_days = (time2 - time1) / (1000 * 3600 * 24);
+
+		return Integer.parseInt(String.valueOf(between_days));
+	}
+	
+	public static void s(){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try
+		{
+			Date d1 = new Date();
+		   Date d2 = df.parse("2017-07-05 18:13:49");
+		   long diff = d1.getTime() - d2.getTime();
+		   long days = diff / (1000 * 60 * 60 * 24);
+		  System.out.println(days);
+		}
+		catch (Exception e)
+		{
+		}
+	}
+
 	public static void main(String[] args) throws ParseException {
-		Long s = 171022000000L;
-		Date format =new SimpleDateFormat("yyMMddHHmmss").parse(s.toString());
-		System.out.println(new SimpleDateFormat("yyyy-MM-ddHHmmss").format(format));
-//		System.out.println(DateUtil.getDaysByYearMonth(2017, 11));
+//		System.out.println(daysBetween("2016-01-01","2017-01-01"));
+		s();
 	}
 
 	public void test1() {

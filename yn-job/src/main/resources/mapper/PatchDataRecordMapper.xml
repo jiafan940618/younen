@@ -952,4 +952,31 @@
 	<update id="truncateTable">
 		truncate table patch_data_record
 	</update>
+	
+	<select id="find4Daddr" parameterType="com.yn.model.PatchDataRecord"
+		resultType="com.yn.model.PatchDataRecord">
+		select
+		d_addr as dAddr, d_type as dType, dealt,kw,
+		kwh_total as kwhTotal,
+		meter_time as meterTime,c_addr as cAddr
+		from
+			patch_data_record
+		where 1=1
+		<if test="cAddr != null">
+			and c_addr = ${cAddr}
+		</if>
+		<if test="dAddr != null">
+			and d_addr = ${dAddr}
+		</if>
+		<if test="dType != null">
+			and d_type = ${dType}
+		</if>
+		<if test="meterTime != null">
+			and meter_time = ${meterTime}
+		</if>
+		and w_addr = 0
+		order by meter_time asc limit 1
+	</select>
+	
+	
 </mapper>
