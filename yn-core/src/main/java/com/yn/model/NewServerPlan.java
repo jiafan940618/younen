@@ -51,7 +51,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 
 	private String planName;
 	
-	
+	private Integer type;
 
 	/** 电池板*/
 	@OneToOne
@@ -72,6 +72,16 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 	
+	
+	
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
 	public String getPlanName() {
 		return planName;
 	}

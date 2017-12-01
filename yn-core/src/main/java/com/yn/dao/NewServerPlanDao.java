@@ -43,7 +43,7 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN inverter i ON n.inverter_id = i.id WHERE i.brand_id = ?1 and n.del = 0",nativeQuery=true)
 	 List<NewServerPlan> FindtwobrandId(Long Id);
 	 
-	 @Query(value="INSERT new_server_plan INTO "+
+	 @Query(value="INSERT INTO new_server_plan  "+
      " (server_id,batteryboard_id,inverter_id,material_json,min_purchase,unit_price,plan_img_url,plan_id,war_period,faction_id,TYPE,plan_name)" 
       +" VALUES (:#{#newServerPlan.serverId},:#{#newServerPlan.batteryboardId},:#{#newServerPlan.inverterId},"
       + ":#{#newServerPlan.materialJson},:#{#newServerPlan.minPurchase},:#{#newServerPlan.unitPrice},:#{#newServerPlan.planImgUrl},"
