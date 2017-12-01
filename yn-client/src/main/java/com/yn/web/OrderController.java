@@ -37,6 +37,7 @@ import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
 import com.yn.model.Order;
 import com.yn.model.OrderPlan;
+import com.yn.model.Station;
 import com.yn.model.UploadPhoto;
 import com.yn.model.User;
 import com.yn.model.Wallet;
@@ -547,7 +548,9 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-
+					stationService.insertStation(order);
+				// 绑定电表
+			
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
 			logger.info("---- ---- ------ ----- ----- 添加结束！");

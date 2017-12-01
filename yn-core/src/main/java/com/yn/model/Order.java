@@ -497,4 +497,23 @@ public class Order extends IDomain implements Serializable {
 	public void setConstructionStatus(String constructionStatus) {
 		this.constructionStatus = constructionStatus;
 	}
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", orderCode=" + orderCode + ", serverId=" + serverId + ", serverName=" + serverName
+				+ ", userId=" + userId + ", linkMan=" + linkMan + ", linkPhone=" + linkPhone + ", provinceId="
+				+ provinceId + ", provinceText=" + provinceText + ", cityId=" + cityId + ", warPeriod=" + warPeriod
+				+ ", cityText=" + cityText + ", addressText=" + addressText + ", privilegeCode=" + privilegeCode
+				+ ", type=" + type + ", ipoMemo=" + ipoMemo + ", orderPlanId=" + orderPlanId + ", capacity=" + capacity
+				+ ", planPrice=" + planPrice + ", serverApolegamyPrice=" + serverApolegamyPrice + ", ynApolegamyPrice="
+				+ ynApolegamyPrice + ", factoragePrice=" + factoragePrice + ", totalPrice=" + totalPrice
+				+ ", hadPayPrice=" + hadPayPrice + ", loanStatus=" + loanStatus + ", status=" + status + ", applyIsPay="
+				+ applyIsPay + ", applyStepA=" + applyStepA + ", applyStepB=" + applyStepB + ", applyStepbimgUrl="
+				+ applyStepbimgUrl + ", buildIsPay=" + buildIsPay + ", buildStepA=" + buildStepA + ", buildStepB="
+				+ buildStepB + ", gridConnectedIsPay=" + gridConnectedIsPay + ", gridConnectedStepA="
+				+ gridConnectedStepA + ", constructionStatus=" + constructionStatus + ", isRead=" + isRead + ", user="
+				+ user + ", server=" + server + ", apolegamyOrder=" + apolegamyOrder + ", orderPlan=" + orderPlan
+				+ ", billOrder=" + billOrder + "]";
+	}
+	
 }

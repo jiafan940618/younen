@@ -122,20 +122,20 @@ public class OrderController {
 			}
 		}
 		String imgUrl = findOne.getApplyStepbimgUrl();
-		
+
 		List list = new LinkedList();
-		
-		if(null != imgUrl && !imgUrl.equals("")){
-			
-		String[] img = imgUrl.split(",");
+
+		if (null != imgUrl && !imgUrl.equals("")) {
+
+			String[] img = imgUrl.split(",");
 
 			for (int i = 0; i < img.length; i++) {
 				list.add(img[i]);
 			}
-		
+
 		}
 
-		return ResultVOUtil.newsuccess(findOne,list);
+		return ResultVOUtil.newsuccess(findOne, list);
 	}
 
 	@ResponseBody
@@ -145,66 +145,68 @@ public class OrderController {
 		BeanCopy.copyProperties(orderVo, order);
 		// 修改订单的状态为施工中。
 		Integer applyStepA = 0;
-		if(order.getApplyStepA()!=null){
+		if (order.getApplyStepA() != null) {
 			applyStepA = order.getApplyStepA();
 		}
-		Integer applyStepB =0;
-		if( order.getApplyStepB()!=null){
+		Integer applyStepB = 0;
+		if (order.getApplyStepB() != null) {
 			applyStepB = order.getApplyStepB();
 		}
-		
+
 		if (applyStepA == 2 && applyStepB == 2) {
 			order.setStatus(1);
 		}
 		Integer buildStepB = 0;
-		if(order.getBuildStepB()!=null){
-			buildStepB =order.getBuildStepB();
+		if (order.getBuildStepB() != null) {
+			buildStepB = order.getBuildStepB();
 		}
-		if(order.getStatus()!=null){
-			if(order.getStatus()==1){
-				/** 添加电站 */
-				Station station = new Station();
-				station.setOrder(order);
-				station.setOrderId(order.getId());
-				Station findOne = stationService.findOne(station);
-				if(findOne==null){
-					stationService.insertStation(order);
-				}
-				//绑定电表
-				//修改施工状态。
-				if(buildStepB==0){
-					//初始化操作
-					orderService.updateConstructionStatus(order, null,null);
-				}else{
+		if (order.getStatus() != null) {
+//			if (order.getStatus() == 0) {
+//				/** 添加电站 */
+//				Station station = new Station();
+//				station.setOrder(order);
+//				station.setOrderId(order.getId());
+//				Station findOne = stationService.findOne(station);
+//				if (findOne == null) {
+//					stationService.insertStation(order);
+//				}
+//				// 绑定电表
+//			}
+			if (order.getStatus() == 1) {
+				// 修改施工状态。
+				if (buildStepB == 0) {
+					// 初始化操作
+					orderService.updateConstructionStatus(order, null, null);
+				} else {
 					ResVo rv = new ResVo();
-					if(buildStepB==1){
+					if (buildStepB == 1) {
 						rv.setTarget("materialapproac");
 						rv.setTitle("材料进场");
-					}else if(buildStepB==2){
+					} else if (buildStepB == 2) {
 						rv.setTarget("foundationbuilding");
 						rv.setTitle("基础建筑");
-					}else if(buildStepB==3){
+					} else if (buildStepB == 3) {
 						rv.setTarget("supportinstallation");
 						rv.setTitle("支架安装");
-					}else if(buildStepB==4){
+					} else if (buildStepB == 4) {
 						rv.setTarget("photovoltaicpanelinstallation");
 						rv.setTitle("光伏板安装");
-					}else if(buildStepB==5){
+					} else if (buildStepB == 5) {
 						rv.setTarget("dcconnection");
 						rv.setTitle("直流接线");
-					}else if(buildStepB==6){
+					} else if (buildStepB == 6) {
 						rv.setTarget("electricboxinverter");
 						rv.setTitle("电箱逆变器");
-					}else if(buildStepB==7){
+					} else if (buildStepB == 7) {
 						rv.setTarget("busboxinstallation");
 						rv.setTitle("汇流箱安装");
-					}else if(buildStepB==8){
+					} else if (buildStepB == 8) {
 						rv.setTarget("acline");
 						rv.setTitle("交流辅线");
-					}else if(buildStepB==8){
+					} else if (buildStepB == 8) {
 						rv.setTarget("lightningprotectiongroundingtest");
 						rv.setTitle("防雷接地测试");
-					}else if(buildStepB==10){
+					} else if (buildStepB == 10) {
 						rv.setTarget("gridconnectedacceptance");
 						rv.setTitle("材料并网验收场");
 					}
@@ -212,15 +214,15 @@ public class OrderController {
 				}
 			}
 		}
-		Integer gridConnectedStepA =0; 
-		if(order.getGridConnectedStepA()!=null){
-			gridConnectedStepA = 	order.getGridConnectedStepA();
+		Integer gridConnectedStepA = 0;
+		if (order.getGridConnectedStepA() != null) {
+			gridConnectedStepA = order.getGridConnectedStepA();
 		}
-		//并网申请中
+		// 并网申请中
 		if (buildStepB == 10 && gridConnectedStepA == 1) {
 			order.setStatus(2);
 		}
-		//并网发电。
+		// 并网发电。
 		if (gridConnectedStepA == 2) {
 			order.setStatus(3);
 		}
@@ -228,36 +230,34 @@ public class OrderController {
 		return ResultVOUtil.success(order);
 	}
 
-
 	/** 删除订单*/
 	@ResponseBody
-	@RequestMapping(value = "/delete", method ={RequestMethod.POST})
+	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
 	public Object delete(Long id) {
-		
-		
+
 		Station station = stationService.FindByStationCode(id);
-		
-		if(null != station){
-			
+
+		if (null != station) {
+
 			return ResultVOUtil.error(777, "该订单已绑定电站,不能删除!");
 		}
 
 		orderService.delete(id);
-		
+
 		ApolegamyOrder apo = new ApolegamyOrder();
-		
+
 		apo.setOrderId(id);
-		
+
 		OrderPlan orderPlan = new OrderPlan();
-		
+
 		orderPlan.setOrderId(id);
-		
+
 		apo = APOservice.findOne(apo);
-		
-		orderPlan =	orderPlanService.findOne(orderPlan);
-		
+
+		orderPlan = orderPlanService.findOne(orderPlan);
+
 		APOservice.delete(apo.getId());
-		
+
 		orderPlanService.delete(orderPlan.getId());
 
 		return ResultVOUtil.success();
@@ -274,15 +274,15 @@ public class OrderController {
 
 	@RequestMapping(value = "/findAll", method = { RequestMethod.POST, RequestMethod.GET })
 	@ResponseBody
-	public Object findAll(OrderVo orderVo,Long managerId,
+	public Object findAll(OrderVo orderVo, Long managerId,
 			@PageableDefault(value = 15, sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable) {
 		Order order = new Order();
 		BeanCopy.copyProperties(orderVo, order);
-		if(userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
-			Long serverId=serverDao.findByUserid(managerId);
+		if (userDao.findOne(managerId).getRoleId() == Long.parseLong(systemConfigService.get("server_role_id"))) {
+			Long serverId = serverDao.findByUserid(managerId);
 			order.setServerId(serverId);
 		}
-          Page<Order> findAll = orderService.findAll(order, pageable);
+		Page<Order> findAll = orderService.findAll(order, pageable);
 
 		// 判断是否已读
 		Long userId = SessionCache.instance().getUserId();
@@ -544,7 +544,7 @@ public class OrderController {
 		// ** 添加订单*//*
 
 		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-				plan.getOrderCode(), null,0);
+				plan.getOrderCode(), null, 0);
 
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());

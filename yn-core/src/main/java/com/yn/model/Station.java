@@ -300,4 +300,15 @@ public class Station extends IDomain implements Serializable {
     public void setIsRead(Integer isRead) {
         this.isRead = isRead;
     }
+
+	@Override
+	public String toString() {
+		return "Station [id=" + id + ", stationName=" + stationName + ", stationCode=" + stationCode + ", orderId="
+				+ orderId + ", userId=" + userId + ", serverId=" + serverId + ", linkMan=" + linkMan + ", linkPhone="
+				+ linkPhone + ", capacity=" + capacity + ", provinceId=" + provinceId + ", provinceText=" + provinceText
+				+ ", cityId=" + cityId + ", cityText=" + cityText + ", addressText=" + addressText + ", devConfCode="
+				+ devConfCode + ", status=" + status + ", passageModel=" + passageModel + ", type=" + type + ", isRead="
+				+ isRead + ", order=" + order + ", user=" + user + ", server=" + server + ", ammeter=" + ammeter + "]";
+	}
+    
 }
