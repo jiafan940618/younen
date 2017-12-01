@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.yn.dao.NewServerPlanDao;
 import com.yn.dao.ServerDao;
+import com.yn.dao.mapper.NewServerPlanMapper;
 import com.yn.model.NewServerPlan;
 import com.yn.model.News;
 import com.yn.model.Order;
@@ -49,7 +50,8 @@ public class NewServerPlanService {
     OrderPlanService orderPlanService;
 	@Autowired
 	NewServerPlanDao planDao;
-
+	@Autowired
+	NewServerPlanMapper planMapper;
 	@Autowired
 	ServerDao serverDao;
 
@@ -83,7 +85,7 @@ public class NewServerPlanService {
 	
 	public void insert(NewServerPlan newServerPlan){
 		
-		planDao.insert(newServerPlan);
+		planMapper.insert(newServerPlan);
 	}
 	
 	public List<NewServerPlan> FindtwobrandId01(Long Id){

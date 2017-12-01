@@ -102,11 +102,14 @@ public class ServerPlanController {
     		return ResultVOUtil.error(777, "抱歉你未登录!");
     	}
     	
-    	Server serverResult = serverService.findOne(server.getUserId());
+    	Server newserver = new Server();
+    	newserver.setUserId(server.getUserId());
+    	
+    	Server serverResult = serverService.findOne(newserver);
     	
     	NewServerPlan serverPlan = new NewServerPlan();
     	
-    	serverPlan.setId(serverResult.getId());
+    	serverPlan.setServerId(serverResult.getId());
     	
     	List<NewServerPlan> list = newserverPlanService.findAll(serverPlan);
     	
@@ -115,16 +118,24 @@ public class ServerPlanController {
     	if(list.size() == 0){
     		
     		serverPlanVo.setDel(1);
+    		
     		serverPlanVo.setPlanId(1);
     		
     		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		newserverPlanService.save(serverPlan);
+    		
+    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+    		
+    		newserverPlanService.insert(serverPlan);
     		
     		serverPlanVo.setDel(0);
     		serverPlanVo.setPlanId(0);
     		
     		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		newserverPlanService.save(serverPlan);
+    		serverPlan.setId(null);
+    		
+    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+    		
+    		newserverPlanService.insert(serverPlan);
     		
     		return ResultVOUtil.success(serverPlan);
     		
@@ -135,6 +146,7 @@ public class ServerPlanController {
         serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
         
         newserverPlanService.save(serverPlan);
+        
         return ResultVOUtil.success(serverPlan);
     }
     
@@ -184,7 +196,10 @@ public class ServerPlanController {
     		return ResultVOUtil.error(777, "抱歉你未登录!");
     	}
     	
-    	Server serverResult = serverService.findOne(server.getUserId());
+    	Server newserver = new Server();
+    	newserver.setUserId(server.getUserId());
+    	
+    	Server serverResult = serverService.findOne(newserver);
     	
     	serverPlanVo.setServerId(serverResult.getId());
     	
