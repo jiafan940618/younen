@@ -135,7 +135,7 @@ public class AmmeterJobController {
 						// 保存电表记录。
 						saveAmmeterRecord(ammeter, apr,date);
 						// 更新电表和电站。
-						updateAmmeterAndStation(ammeter, apr,date);
+//						updateAmmeterAndStation(ammeter, apr,date);
 						System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"
 								+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					}
@@ -193,7 +193,7 @@ public class AmmeterJobController {
 		if (ammeter.getWorkDtm() == null) {
 			ammeter.setWorkDtm(new Date());
 		}
-//		Double kwhTol = getKwhTol(apr,date);
+		Double kwhTol = getKwhTol(apr,date);
 		ammeter.setStatusCode(statusCode);
 		/*System.out.println("电表码："+apr.getcAddr()+"..."+"apr.getKw()："+apr.getKw()+"\t计算出来的kwhTol："+kwhTol);
 		if(!(apr.getKw()<=0.00d||apr.getKw()==null)){
@@ -209,7 +209,7 @@ public class AmmeterJobController {
 			ammeterMapper.insert(ammeter);
 		}
 		// 更新电站每小时 和 每天 的发电/用电
-//		saveTemStation(ammeter, apr, kwhTol);
+		saveTemStation(ammeter, apr, kwhTol);
 	}
 
 	/**

@@ -34,4 +34,6 @@ public interface PatchDataRecordMapper {
 	int updateByPrimaryKey(PatchDataRecord record);
 
 	int truncateTable();
+	
+	PatchDataRecord find4Daddr(PatchDataRecord record);
 }

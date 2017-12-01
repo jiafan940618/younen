@@ -42,7 +42,6 @@ public class ImportData4DayTable {
 			aprR.setDealt(0);
 			aprR.setDate(date);// 设置需要导入的时间。
 			aprR.setwAddr(0);
-
 			aprR.setdAddr(1L);
 			AmPhaseRecord max1 = amPhaseRecordService.findMaxData(aprR);
 			AmPhaseRecord min1 = amPhaseRecordService.findMinData(aprR);

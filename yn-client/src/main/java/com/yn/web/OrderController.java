@@ -37,6 +37,7 @@ import com.yn.model.Comment;
 import com.yn.model.NewServerPlan;
 import com.yn.model.Order;
 import com.yn.model.OrderPlan;
+import com.yn.model.Station;
 import com.yn.model.UploadPhoto;
 import com.yn.model.User;
 import com.yn.model.Wallet;
@@ -547,7 +548,9 @@ public class OrderController {
 			neworder.setOrderPlan(newOrdPlan);
 
 			/** 添加电站 */
-
+			stationService.insertStation(order);
+				// 绑定电表
+			
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
 			logger.info("---- ---- ------ ----- ----- 添加结束！");
@@ -637,8 +640,9 @@ public class OrderController {
 			orderPlanService.save(orderPlan);
 
 			neworder.setOrderPlan(newOrdPlan);
-
-
+			
+			stationService.insertStation(order);
+			
 			logger.info("---- ---- ------ ----- ----- 开始添加记录表");
 			APOservice.getapole(neworder, listid);
 			logger.info("---- ---- ------ ----- ----- 添加结束！");
@@ -682,7 +686,7 @@ public class OrderController {
 	/** 显示购买的状态 */
 	@ResponseBody
 	@RequestMapping(value = "/OrderStatus")
-	public Object giveStatus(@RequestParam("orderId") Long orderId) {
+	public Object giveStatus(@RequestParam("orderId") Long orderId,HttpSession session) {
 		Order order = orderService.findstatus(orderId);
 		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		jsonResult.put("loanStatus", order.getLoanStatus());
@@ -715,6 +719,9 @@ public class OrderController {
 		jsonResult.put("gridConnectedIsPay", order.getGridConnectedIsPay());
 		jsonResult.put("gridConnectedStepA", order.getGridConnectedStepA());
 		jsonResult.put("orderCode", order.getOrderCode());
+		
+	    session.setAttribute("order_code", findOne.getOrderCode());
+	    logger.info("------------------------------------orderCode:"+findOne.getOrderCode());
 		return ResultVOUtil.success(jsonResult);
 	}
 
@@ -780,7 +787,13 @@ public class OrderController {
 		UploadPhoto uploadPhoto = new UploadPhoto();
 		uploadPhoto.setLoadImg(finaltime);
 		uploadPhoto.setUserId(newuser.getId());
-		String orderCode = (String) session.getAttribute("orderCode");
+		String orderCode=null;
+		if (session.getAttribute("orderCode")==null) {
+			orderCode= (String) session.getAttribute("order_code");
+		}else {
+			orderCode = (String) session.getAttribute("orderCode");
+		}
+		logger.info("------------------paydetail------------------orderCode:"+orderCode);
 		Order order = orderMapper.findOrderCode(orderCode);
 		order.setApplyStepbimgUrl(finaltime);
 		orderService.updateApplyStepBImgUrl(order);

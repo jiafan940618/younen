@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.yn.dao.mapper.OrderMapper">
@@ -244,4 +245,252 @@
 	
 	
 
+=======
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yn.dao.mapper.OrderMapper">
+	<resultMap id="BaseResultMap" type="com.yn.model.Order">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="del_dtm" property="delDtm" jdbcType="TIMESTAMP" />
+		<result column="create_dtm" property="createDtm" jdbcType="TIMESTAMP" />
+		<result column="update_dtm" property="updateDtm" jdbcType="TIMESTAMP" />
+		<result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
+		<result column="server_id" property="serverId" jdbcType="INTEGER" />
+		<result column="server_name" property="serverName" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="link_Man" property="linkMan" jdbcType="VARCHAR" />
+		<result column="link_phone" property="linkPhone" jdbcType="VARCHAR" />
+		<result column="province_id" property="provinceId" jdbcType="INTEGER" />
+		<result column="province_text" property="provinceText"
+			jdbcType="VARCHAR" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="city_text" property="cityText" jdbcType="VARCHAR" />
+		<result column="address_text" property="addressText" jdbcType="VARCHAR" />
+		<result column="privilege_code" property="privilegeCode"
+			jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="order_plan_id" property="orderPlanId" jdbcType="INTEGER" />
+		<result column="capacity" property="capacity" jdbcType="DOUBLE" />
+		<result column="plan_price" property="planPrice" jdbcType="DOUBLE" />
+		<result column="server_apolegamy_price" property="serverApolegamyPrice"
+			jdbcType="DOUBLE" />
+		<result column="yn_apolegamy_price" property="ynApolegamyPrice"
+			jdbcType="DOUBLE" />
+		<result column="factorage_price" property="factoragePrice"
+			jdbcType="DOUBLE" />
+		<result column="total_price" property="totalPrice" jdbcType="DOUBLE" />
+		<result column="had_pay_price" property="hadPayPrice" jdbcType="DOUBLE" />
+
+		<result column="loan_status" property="loanStatus" jdbcType="INTEGER" />
+
+		<result column="construction_status" property="constructionStatus"
+			jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="apply_stepa" property="applyStepA" jdbcType="INTEGER" />
+		<result column="apply_stepb" property="applyStepB" jdbcType="INTEGER" />
+		<result column="apply_stepbimg_url" property="applyStepbimgUrl"
+			jdbcType="VARCHAR" />
+		<result column="grid_connected_is_pay" property="gridConnectedIsPay"
+			jdbcType="INTEGER" />
+		<result column="apply_is_pay" property="applyIsPay" jdbcType="INTEGER" />
+		<result column="grid_connected_is_pay" property="gridConnectedIsPay"
+			jdbcType="INTEGER" />
+		<result column="grid_connected_stepa" property="gridConnectedStepA"
+			jdbcType="INTEGER" />
+		<result column="build_is_pay" property="buildIsPay" jdbcType="INTEGER" />
+		<result column="build_stepa" property="buildStepA" jdbcType="INTEGER" />
+		<result column="build_stepb" property="buildStepB" jdbcType="INTEGER" />
+		<result column="ipo_memo" property="ipoMemo" jdbcType="VARCHAR" />
+		
+	</resultMap>
+
+	<update id="updateByCondition" parameterType="com.yn.model.Order">
+		update t_order
+		<set>
+			<if test="loanStatus != null">
+				loan_status = #{loanStatus,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="applyIsPay != null">
+				apply_is_pay = #{applyIsPay,jdbcType=INTEGER},
+			</if>
+			<if test="gridConnectedIsPay != null">
+				grid_connected_is_pay =
+				#{gridConnectedIsPay,jdbcType=INTEGER},
+			</if>
+			<if test="gridConnectedStepA != null">
+				grid_connected_stepa =
+				#{gridConnectedStepA,jdbcType=INTEGER},
+			</if>
+			<if test="buildIsPay != null">
+				build_is_pay = #{buildIsPay,jdbcType=INTEGER},
+			</if>
+			<if test="buildStepA != null">
+				build_stepa = #{buildStepA,jdbcType=INTEGER},
+			</if>
+			<if test="buildStepB != null">
+				build_stepb = #{buildStepB,jdbcType=INTEGER},
+			</if>
+			<if test="applyStepB != null">
+				apply_stepb = #{applyStepB,jdbcType=INTEGER},
+			</if>
+			<if test="applyStepA != null">
+				apply_stepa = #{applyStepA,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="findstatus" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		SELECT
+		o.loan_status,
+		o.apply_is_pay,
+		o.apply_stepa,
+		o.apply_stepb,
+		o.status,
+		o.apply_stepbimg_url,
+		o.build_is_pay,
+		o.build_stepa,
+		o.build_stepb,
+		o.grid_connected_is_pay,
+		o.grid_connected_stepa
+
+		FROM t_order o WHERE o.id =#{orderId}
+
+	</select>
+
+
+
+
+	<select id="findOrderCode" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT o.id,o.order_code
+
+		FROM t_order o WHERE o.order_code =#{orderCode}
+
+	</select>
+
+	<update id="updateConstructionStatus" parameterType="com.yn.model.Order">
+		update t_order
+		<set>
+			construction_status = #{constructionStatus}
+		</set>
+		where id = #{id}
+	</update>
+
+
+	<update id="UpdateOrder" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			<if test="status == 9">
+				o.apply_is_pay = 0,
+			</if>
+			<if test="status == 0">
+				o.apply_is_pay = 1,
+			</if>
+			<if test="status == 1">
+				o.build_is_pay = 1,
+			</if>
+			<if test="status == 2">
+				o.grid_connected_is_pay = 1,
+			</if>
+		
+			o.had_pay_price = #{hadPayPrice}
+		</set>
+		where o.id = #{id}
+	</update>
+
+	<update id="updateBuildStepB" parameterType="com.yn.model.Order">
+		update t_order
+		<set>
+			build_stepb = #{buildStepB}
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="UpdateOrderStatus" parameterType="com.yn.model.Order">
+		update t_order o
+		set o.status =#{status} where o.id =#{id}
+	</update>
+
+	<update id="updateLoanStatus" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			loan_status = #{loanStatus,jdbcType=INTEGER}
+			<if test="hadPayPrice != null">
+				,had_pay_price = #{hadPayPrice}
+			</if>
+		</set>
+
+		where o.id = #{id}
+	</update>
+	<update id="updateApplyStepBImgUrl" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			apply_stepbimg_url = #{applyStepbimgUrl,jdbcType=INTEGER}
+		</set>
+		where o.id = #{id}
+	</update>
+	<update id="updateOrderStauts43Step" parameterType="com.yn.model.Order">
+		update t_order o
+		<set>
+			<if test="status != null">
+				o.status = #{status}
+			</if>
+		</set>
+		where o.id = #{id}
+	</update>
+	
+	<select id="findBystatus" parameterType="com.yn.model.Page" resultMap="BaseResultMap">
+		SELECT 
+		
+		id,order_code,STATUS,server_name,capacity,total_price
+		
+		 FROM t_order WHERE
+		 
+		user_id = #{userId} and del = 0 
+		 
+		  <if test="status != 9">
+		 	 and STATUS = #{status} 
+		</if>
+		
+		ORDER BY create_dtm DESC
+		  
+		  LIMIT #{start},#{limit}
+
+	</select>
+	
+	<select id="findByNum" parameterType="com.yn.model.Page" resultType="Integer">
+	  SELECT 	
+		 COUNT(1)
+		 FROM t_order WHERE
+		user_id = #{userId} and del = 0 
+		 
+		  <if test="status != 9">
+		 	 and STATUS = #{status} 
+		</if>
+
+	</select> 
+	
+	<select id="findByiosstatus" parameterType="com.yn.model.User" resultMap="BaseResultMap">
+	SELECT 
+		
+		id,order_code,STATUS,server_name,capacity,had_pay_price,total_price,address_text
+		
+		 FROM t_order WHERE
+		 
+		user_id = #{id} and del = 0 
+
+		ORDER BY create_dtm DESC
+
+	</select>
+	
+	
+
+>>>>>>> fb7a50819a3ab4f7a1c3f106c50c7e4602b5e7b6
 </mapper>

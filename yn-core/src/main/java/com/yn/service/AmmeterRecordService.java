@@ -71,11 +71,19 @@ public class AmmeterRecordService {
 				e.printStackTrace();
 			}
 			one.setUpdateDtm(new Date());
+			
 			ammeterRecordMapper.updateByPrimaryKeySelective(one);
 			System.out.println("AmmeterJob--> AmmeterRecord更新成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 		} else {
 			ammeterRecord.setUpdateDtm(new Date());
 			ammeterRecord.setCreateDtm(new Date());
+//			if(ammeterRecord.getRecordDtm()==null){
+//				try {
+//					ammeterRecord.setRecordDtm(DateUtil.formatString(ammeterRecord.getDate(), "yyyy-MM-dd"));
+//				} catch (ParseException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			ammeterRecord.setwAddr(0);
 			ammeterRecordMapper.insert(ammeterRecord);
 			System.out.println("AmmeterJob--> AmmeterRecord新增成功！-->"+new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));

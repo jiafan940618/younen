@@ -439,21 +439,7 @@ public class StationService {
 		station.setCityText(order.getCityText());
 		station.setServerId(order.getServerId());
 		station.setStatus(0);//默认未绑定。
-		Ammeter ammeter = new Ammeter();
-		ammeter.setcAddr(station.getDevConfCode());
-		if(findOne(station).getId()!=null){
-			return;
-		}
-		if (ammeter != null) {
-			Ammeter findOne = ammeterService.findByCAddr(ammeter.getcAddr());
-			if(findOne!=null){
-				if(findOne.getStatus()==0){
-					station.setStatus(1);
-				}else if(findOne.getStatus()==1){
-					station.setStatus(2);
-				}
-			}
-		}
+		
 		save(station);
 	}
 	
