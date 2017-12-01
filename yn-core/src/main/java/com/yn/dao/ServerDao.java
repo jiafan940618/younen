@@ -36,7 +36,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 			+ " e.id ,e.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,e.company_logo ,p.id p_id FROM server e "
 			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id "
-			+ " WHERE p.del=1 AND p.plan_id=1 and p.type =:#{#page.type} and e.del = 0 LIMIT :#{#page.start},:#{#page.limit} ", nativeQuery = true)
+			+ " WHERE  p.plan_id=1 and p.type =:#{#page.type} and e.del = 0 LIMIT :#{#page.start},:#{#page.limit} ", nativeQuery = true)
 	// List<Object> findObject(@Param("start") Integer start,@Param("limit")
 	// Integer limit);
 	List<Object> findObject(@Param("page") com.yn.model.Page<Server> page);

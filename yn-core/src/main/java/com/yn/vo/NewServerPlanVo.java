@@ -33,7 +33,34 @@ public class NewServerPlanVo {
 	
 	private int planId;
 	
+	private int type;
 	
+	private int del;
+	
+	
+	private String planName;
+	
+	
+	
+	
+	public String getPlanName() {
+		return planName;
+	}
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public int getDel() {
+		return del;
+	}
+	public void setDel(int del) {
+		this.del = del;
+	}
 	public Long getFactionId() {
 		return factionId;
 	}

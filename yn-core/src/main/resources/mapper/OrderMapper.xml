@@ -184,7 +184,7 @@
 	<update id="updateApplyStepBImgUrl" parameterType="com.yn.model.Order">
 		update t_order o
 		<set>
-			apply_stepbimg_url = #{applyStepBImgUrl,jdbcType=INTEGER}
+			apply_stepbimg_url = #{applyStepbimgUrl,jdbcType=INTEGER}
 		</set>
 		where o.id = #{id}
 	</update>

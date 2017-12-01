@@ -63,23 +63,64 @@ public class TestController {
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave() {
+    public Object invsave(NewServerPlanVo serverPlanVo) {
 		
-		Page page = new Page();
-		page.setType(2);
+		serverPlanVo.setBatteryBoardId(1l);
+		serverPlanVo.setInverterId(3l);
+		serverPlanVo.setMinPurchase(15.3);
+		serverPlanVo.setUnitPrice(8000.0);
+		serverPlanVo.setType(1);
+		serverPlanVo.setMaterialJson("测试001");
+		serverPlanVo.setPlanImgUrl("测试Url");
+		serverPlanVo.setWarPeriod(new BigDecimal(5.0));
 		
-		List<Brand> list = brandService.getBrand(page);
+		Server server = new Server();
 		
-		for(Brand brand : list){
-			
-			OtherInfo otherInfo = new OtherInfo();
-			otherInfo.setBrandId(brand.getId().intValue());
-			List<OtherInfo> infolist = otherInfoService.findAll(otherInfo);
+		server.setUserId(2L);
+
+		Server serverResult = serverService.findOne(server);
+    	
+    	NewServerPlan serverPlan = new NewServerPlan();
+    	
+    	serverPlan.setServerId(serverResult.getId());
+    	
+    	List<NewServerPlan> list = newServerPlanService.findAll(serverPlan);
+    	
+    	serverPlanVo.setServerId(serverResult.getId());
+    	
+    	if(list.size() == 0){
     		
-    		brand.setInfo(infolist);
-		}
-		
-		return ResultVOUtil.success(list);
+    		serverPlanVo.setDel(1);
+    		
+    		serverPlanVo.setPlanId(1);
+    		
+    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
+    		
+    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+    		
+    		newServerPlanService.insert(serverPlan);
+    		
+    		serverPlanVo.setDel(0);
+    		serverPlanVo.setPlanId(0);
+    		
+    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
+    		serverPlan.setId(null);
+    		
+    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+    		
+    		newServerPlanService.insert(serverPlan);
+    		
+    		return ResultVOUtil.success(serverPlan);
+    		
+    	}
+
+        BeanCopy.copyProperties(serverPlanVo, serverPlan);
+        
+        serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
+        
+        newServerPlanService.save(serverPlan);
+        
+        return ResultVOUtil.success(serverPlan);
 
     }
 	

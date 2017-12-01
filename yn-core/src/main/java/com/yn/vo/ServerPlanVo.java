@@ -27,7 +27,15 @@ public class ServerPlanVo {
 	private Integer minPurchase;
 	private Double unitPrice;
 	
+	private String planName;
 	
+	
+	public String getPlanName() {
+		return planName;
+	}
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
 	public Long getServerId() {
 		return serverId;
 	}

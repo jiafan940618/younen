@@ -32,9 +32,9 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 
 	 @Query(value="SELECT"
 		 		+ " n.id,n.server_id,n.material_json,n.min_purchase,n.unit_price,n.plan_img_url,t.brand_name t_invstername,t.model t_invstermodel,p.brand_name p_brandname"
-		 		+ ",p.model p_brandmodel,n.war_period"+
+		 		+ ",p.model p_brandmodel,n.war_period,n.plan_name "+
 	     " FROM new_server_plan n LEFT JOIN inverter t ON t.id = n.inverter_id "+
-	    "LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.server_id =?1 ",nativeQuery=true)
+	     " LEFT JOIN solar_panel p ON n.batteryboard_id = p.id  WHERE n.del=0 AND n.plan_id =0 and n.server_id =?1 ",nativeQuery=true)
 		   List<Object> selectServerPlan(Long Id);
 	 
 	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN solar_panel s ON n.batteryboard_id = s.id WHERE s.brand_id = ?1 and n.del=0 ",nativeQuery=true)
@@ -42,6 +42,13 @@ public interface NewServerPlanDao  extends JpaRepository<NewServerPlan, Long>, J
 	 
 	 @Query(value="SELECT * FROM new_server_plan n  LEFT JOIN inverter i ON n.inverter_id = i.id WHERE i.brand_id = ?1 and n.del = 0",nativeQuery=true)
 	 List<NewServerPlan> FindtwobrandId(Long Id);
+	 
+	 @Query(value="INSERT new_server_plan INTO "+
+     " (server_id,batteryboard_id,inverter_id,material_json,min_purchase,unit_price,plan_img_url,plan_id,war_period,faction_id,TYPE,plan_name)" 
+      +" VALUES (:#{#newServerPlan.serverId},:#{#newServerPlan.batteryboardId},:#{#newServerPlan.inverterId},"
+      + ":#{#newServerPlan.materialJson},:#{#newServerPlan.minPurchase},:#{#newServerPlan.unitPrice},:#{#newServerPlan.planImgUrl},"
+      + ":#{#newServerPlan.planId},:#{#newServerPlan.warPeriod},:#{#newServerPlan.factionId},:#{#newServerPlan.type},:#{#newServerPlan.planName})",nativeQuery=true)
+	 void insert(@Param("newServerPlan") NewServerPlan newServerPlan);
 	 
 	
 

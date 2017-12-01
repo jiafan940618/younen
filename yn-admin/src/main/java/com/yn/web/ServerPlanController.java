@@ -103,11 +103,35 @@ public class ServerPlanController {
     	}
     	
     	Server serverResult = serverService.findOne(server.getUserId());
-
-    	serverPlanVo.setServerId(serverResult.getId());
-
+    	
     	NewServerPlan serverPlan = new NewServerPlan();
+    	
+    	serverPlan.setId(serverResult.getId());
+    	
+    	List<NewServerPlan> list = newserverPlanService.findAll(serverPlan);
+    	
+    	serverPlanVo.setServerId(serverResult.getId());
+    	
+    	if(list.size() == 0){
+    		
+    		serverPlanVo.setDel(1);
+    		serverPlanVo.setPlanId(1);
+    		
+    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
+    		newserverPlanService.save(serverPlan);
+    		
+    		serverPlanVo.setDel(0);
+    		serverPlanVo.setPlanId(0);
+    		
+    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
+    		newserverPlanService.save(serverPlan);
+    		
+    		return ResultVOUtil.success(serverPlan);
+    		
+    	}
+
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
+        
         serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
         
         newserverPlanService.save(serverPlan);
@@ -231,17 +255,17 @@ public class ServerPlanController {
     /** 方案接口*/
     @ResponseBody
     @RequestMapping(value = "/Orderplan")
-    public ResultData<Object> findOrderplan() {
-        //	ServerPlanVo serverPlanVo
-        	
-            NewServerPlan serverPlan = new NewServerPlan();
-            serverPlan.setServerId(1L);
+    public ResultData<Object> findOrderplan(ServerPlanVo serverPlanVo) {
+    
+    		serverPlanVo.setServerId(1L);
+    	
+	    	ServerPlan serverPlan = new ServerPlan();
+	        BeanCopy.copyProperties(serverPlanVo, serverPlan);
 
             List<NewPlanVo> list = new ArrayList<NewPlanVo>();
 
            List<Object>  list01 = newserverPlanService.selectServerPlan(serverPlan.getServerId());
-           
-
+         
             for (Object obj : list01) {
     			NewPlanVo newPlanVo  = new NewPlanVo();
             	
@@ -255,11 +279,8 @@ public class ServerPlanController {
             	String invstername = (String)object[6] +"   " +(String)object[7];
             	String brandname =(String)object[8] +"   " +(String)object[9];
             	String conent = (String)object[10];
-            	BigDecimal bigcapacity =(BigDecimal)object[11];
-            	
-            	Integer capacity =	bigcapacity.intValue();
-            	
-            	
+            	String  planName =(String)object[11];
+
             	BigDecimal  allMoney = unitPrice.multiply(minPurchase);
             	
             	newPlanVo.setId(id);
@@ -271,7 +292,7 @@ public class ServerPlanController {
             	newPlanVo.setBrandname(brandname);
             	newPlanVo.setAllMoney(allMoney.doubleValue());
             	newPlanVo.setConent(conent);
-            	newPlanVo.setCapacity(capacity.doubleValue());
+            	newPlanVo.setPlanName(planName);
             	newPlanVo.setMinPurchase(minPurchase.doubleValue());
             	
             	list.add(newPlanVo);

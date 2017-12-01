@@ -76,9 +76,8 @@ public class TestController {
 	       @ResponseBody
 	       public Object helloJsp01(ApolegamyVo apolegamyVo){  
 	    	   
-	    	List<Qualifications>  List =  qualificationsService.FindByServerId(1l); 
-	     
-	   		return ResultVOUtil.success(List);
+	    	  
+	   		return ResultVOUtil.success();
 	        
 	       } 
 	       

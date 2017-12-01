@@ -81,6 +81,11 @@ public class NewServerPlanService {
 		return planDao.FindBybrandId(Id);	
 	}
 	
+	public void insert(NewServerPlan newServerPlan){
+		
+		planDao.insert(newServerPlan);
+	}
+	
 	public List<NewServerPlan> FindtwobrandId01(Long Id){
 		
 		return planDao.FindtwobrandId(Id);	
@@ -174,7 +179,8 @@ public class NewServerPlanService {
 	            	String invstername = (String)object[6] +"   " +(String)object[7];
 	            	String brandname =(String)object[8] +"   " +(String)object[9];
 	            	BigDecimal warPer =(BigDecimal)object[10];
-
+	            	String  planName =(String)object[11];
+	            	
 	            	Integer warPeriod =	warPer.intValue();
 	            	
 	            	
@@ -190,6 +196,8 @@ public class NewServerPlanService {
 	            	newPlanVo.setAllMoney(allMoney.doubleValue());
 	            	newPlanVo.setWarPeriod(warPeriod);
 	            	newPlanVo.setMinPurchase(minPurchase.doubleValue());
+	            	newPlanVo.setPlanName(planName);
+	            	
 	            	list01.add(newPlanVo);
 	    		}
 			return list01;

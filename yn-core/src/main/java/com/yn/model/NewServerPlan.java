@@ -46,7 +46,12 @@ public class NewServerPlan extends IDomain implements Serializable {
 	
 	
 	private Double capacity;
+	
+	private Integer del;
 
+	private String planName;
+	
+	
 
 	/** 电池板*/
 	@OneToOne
@@ -67,61 +72,57 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 	
-	
-	
+	public String getPlanName() {
+		return planName;
+	}
+
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
+
+	public Integer getDel() {
+		return del;
+	}
+
+	public void setDel(Integer del) {
+		this.del = del;
+	}
+
 	public int getPlanId() {
 		return planId;
 	}
-
-
 
 	public void setPlanId(int planId) {
 		this.planId = planId;
 	}
 
-
-
 	public Long getFactionId() {
 		return factionId;
 	}
-
-
 
 	public void setFactionId(Long factionId) {
 		this.factionId = factionId;
 	}
 
-
-
 	public Double getCapacity() {
 		return capacity;
 	}
-
-
 
 	public void setCapacity(Double capacity) {
 		this.capacity = capacity;
 	}
 
-
-
 	public BigDecimal getWarPeriod() {
 		return warPeriod;
 	}
-
-
 
 	public void setWarPeriod(BigDecimal warPeriod) {
 		this.warPeriod = warPeriod;
 	}
 
-
-
 	public String getPlanImgUrl() {
 		return planImgUrl;
 	}
-
-
 
 	public void setPlanImgUrl(String planImgUrl) {
 		this.planImgUrl = planImgUrl;

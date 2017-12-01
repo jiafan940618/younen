@@ -33,7 +33,7 @@ public class NewPlanVo {
 	
 	private Integer status;
 	
-
+	private String planName;
 
 	//订单服务商与用户的信息
 	private String companyName;
@@ -54,6 +54,14 @@ public class NewPlanVo {
 	
 	private String speed;
 	
+	
+	
+	public String getPlanName() {
+		return planName;
+	}
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
 	public Double getHadPayPrice() {
 		return hadPayPrice;
 	}
