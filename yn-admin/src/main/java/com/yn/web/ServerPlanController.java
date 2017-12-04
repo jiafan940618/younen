@@ -189,15 +189,9 @@ public class ServerPlanController {
     @ResponseBody
     public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
     	
-    SessionCache server =(SessionCache) session.getAttribute("SessionCache");
-    	
-    	if(null == server){
-    		
-    		return ResultVOUtil.error(777, "抱歉你未登录!");
-    	}
-    	
+   
     	Server newserver = new Server();
-    	newserver.setUserId(server.getUserId());
+    	newserver.setUserId(serverPlanVo.getServerId());
     	
     	Server serverResult = serverService.findOne(newserver);
     	
