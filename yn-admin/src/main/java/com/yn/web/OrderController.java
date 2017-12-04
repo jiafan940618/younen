@@ -225,6 +225,12 @@ public class OrderController {
 		// 并网发电。
 		if (gridConnectedStepA == 2) {
 			order.setStatus(3);
+			//设置电站为发电。
+			Station station = stationService.FindByStationCode(order.getId());
+			if(station!=null){
+				station.setStatus(1);
+				stationService.save(station);
+			}
 		}
 		orderService.save(order);
 		return ResultVOUtil.success(order);

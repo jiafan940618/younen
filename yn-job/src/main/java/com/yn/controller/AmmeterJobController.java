@@ -108,7 +108,7 @@ public class AmmeterJobController {
 							// 保存电表记录。
 							saveAmmeterRecord(ammeter, apr,date);
 							// 更新电表和电站。
-							updateAmmeterAndStation(ammeter, apr,date);
+//							updateAmmeterAndStation(ammeter, apr,date);
 							System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"
 									+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 						}
