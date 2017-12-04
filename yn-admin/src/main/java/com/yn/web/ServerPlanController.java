@@ -188,12 +188,9 @@ public class ServerPlanController {
     @RequestMapping(value = "/newfindAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
+
     	
-   
-    	Server newserver = new Server();
-    	newserver.setUserId(serverPlanVo.getServerId());
-    	
-    	Server serverResult = serverService.findOne(newserver);
+    	Server serverResult = serverService.findOne(serverPlanVo.getServerId());
     	
     	serverPlanVo.setServerId(serverResult.getId());
     	
