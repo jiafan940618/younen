@@ -434,49 +434,52 @@ public class ElecDataDayService {
 	public List<Map<String, Object>> dayInfo(List<Long> ammeterCodes, Integer type)
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listDay = new ArrayList<>();
+		List<Map<String, Object>> listDays = new ArrayList<>();
 		Date [] dateYesterday = DateUtil.getYesterdaySpace();
 		Date endStart=dateYesterday[1];
-		Date[] todaySpace = DateUtil.getThisMonthSpace();
-		Date dayStartTime = todaySpace[0];
-		String dayStart = new SimpleDateFormat("yyyy-MM-dd").format(dayStartTime);
 		String end = new SimpleDateFormat("yyyy-MM-dd").format(endStart);
-		SimpleDateFormat dFormat = new SimpleDateFormat("dd");
-		List<Integer> recordTimeList = new ArrayList<>();
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, -31);//计算30天后的时间
+		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
 		Object[] elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
-		String nowTime = dFormat.format(endStart);
-		Integer num = Integer.parseInt(nowTime);
-		List<Map<String, Object>> listDays = new ArrayList<>();
-		for (Object ElecDataDay : elecDataDays) {
-			Object[] objects = (Object[]) ElecDataDay;
-			recordTimeList.add(Integer
-					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString()))));
-		}
-		for (int i = 1; i <= num; i++) {
-			if (!recordTimeList.contains(i)) {
-				Map<String, Object> map = new HashMap<>();
-				map.put("time", i);
-				map.put("kwh", 0.00);
-				map.put("kw", 0.00);
-				listDays.add(map);
-			}
+		List<String> dateString=new ArrayList<>();
+		List<String> recordTimeList = new ArrayList<>();
+		for (int i = 1; i <= 30; i++) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, -i);//计算30天后的时间
+			String days=new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+			dateString.add(days);
 		}
 		for (Object ElecDataDay : elecDataDays) {
-			Object[] objects = (Object[]) ElecDataDay;
+		Object[] objects = (Object[]) ElecDataDay;
+		   recordTimeList.add((String)objects[0]);
+	    }
+		for (int i = 0; i <dateString.size(); i++) {
+		if (!recordTimeList.contains(dateString.get(i))) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("time", Integer
-					.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString()))));
-			map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
-			map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
+			map.put("time", new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
+			map.put("kwh", 0.00);
+			map.put("kw", 0.00);
 			listDays.add(map);
 		}
-		for (int i = 1; i <= listDays.size(); i++) {
+	}
+		for (Object ElecDataDay : elecDataDays) {
+		Object[] objects = (Object[]) ElecDataDay;
+		Map<String, Object> map = new HashMap<>();
+		map.put("time", new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString())));
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
+		listDays.add(map);
+	}
+		for (int i = dateString.size()-1; i>=0; i--) {
+			String dateTime=String.valueOf(new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
 			for (Map<String, Object> mapObject : listDays) {
-				if (i == (int) mapObject.get("time")) {
-					listDay.add(mapObject);
-				}
+			if (dateTime.equals(mapObject.get("time").toString()) ) {
+				listDay.add(mapObject);
 			}
 		}
-		return listDay;
+	}
+	return listDay;
 
 	}
 
