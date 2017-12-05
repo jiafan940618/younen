@@ -238,15 +238,14 @@ public class UserController {
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
-    	/*User newuserVo =new User();
-    	newuserVo.setId(2l);*/
+    
     	
-    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
-    	/** 电站信息*/
-    List<StationVo> list = stationService.getnewstation(newuserVo.getId());
-     
-    	/** 个人资料*/
-    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
+	    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
+	    	/** 电站信息*/
+	    List<StationVo> list = stationService.getnewstation(newuserVo.getId());
+	     
+	    	/** 个人资料*/
+	    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
     
 
     	 return ResultVOUtil.newsuccess(walletVo, list);
@@ -571,8 +570,7 @@ public class UserController {
  		}else{
  			page.setTotal(total%page.getLimit() == 0 ? total/page.getLimit() : (total-total%page.getLimit())/page.getLimit()+1);
  		}
-    	 
-    	 
+
 		return ResultVOUtil.newsuccess(page, list);  
     }
     
