@@ -230,6 +230,8 @@ public class OrderController {
 			if(station!=null){
 				station.setStatus(1);
 				stationService.save(station);
+			}else{
+				System.out.println("电站为空。。。。订单id是："+order.getId());
 			}
 		}
 		orderService.save(order);
