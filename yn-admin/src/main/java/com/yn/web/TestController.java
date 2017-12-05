@@ -1,7 +1,10 @@
 package com.yn.web;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,19 +19,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.RoleDao;
 import com.yn.model.Brand;
 import com.yn.model.Devide;
 import com.yn.model.Inverter;
+import com.yn.model.Menu;
 import com.yn.model.NewServerPlan;
 import com.yn.model.OtherInfo;
 import com.yn.model.Page;
+import com.yn.model.Role;
 import com.yn.model.Server;
 import com.yn.model.SolarPanel;
 import com.yn.service.BrandService;
 import com.yn.service.DevideService;
 import com.yn.service.InverterService;
+import com.yn.service.MenuService;
 import com.yn.service.NewServerPlanService;
 import com.yn.service.OtherInfoService;
+import com.yn.service.RoleService;
 import com.yn.service.ServerService;
 import com.yn.service.SolarPanelService;
 import com.yn.session.SessionCache;
@@ -58,69 +66,63 @@ public class TestController {
 	OtherInfoService otherInfoService;
 	@Autowired
     ServerService serverService;
+    @Autowired
+    RoleService roleService;
+    @Autowired
+    RoleDao roleDao;
+    @Autowired
+    MenuService menuService;
    
 	
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave(NewServerPlanVo serverPlanVo) {
+    public Object invsave(Long roleId) {
 		
-		serverPlanVo.setBatteryBoardId(1l);
-		serverPlanVo.setInverterId(3l);
-		serverPlanVo.setMinPurchase(15.3);
-		serverPlanVo.setUnitPrice(8000.0);
-		serverPlanVo.setType(1);
-		serverPlanVo.setMaterialJson("测试001");
-		serverPlanVo.setPlanImgUrl("测试Url");
-		serverPlanVo.setWarPeriod(new BigDecimal(5.0));
+		roleId = 1l;
 		
-		Server server = new Server();
-		
-		server.setUserId(2L);
-
-		Server serverResult = serverService.findOne(server);
-    	
-    	NewServerPlan serverPlan = new NewServerPlan();
-    	
-    	serverPlan.setServerId(serverResult.getId());
-    	
-    	List<NewServerPlan> list = newServerPlanService.findAll(serverPlan);
-    	
-    	serverPlanVo.setServerId(serverResult.getId());
-    	
-    	if(list.size() == 0){
-    		
-    		serverPlanVo.setDel(1);
-    		
-    		serverPlanVo.setPlanId(1);
-    		
-    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		
-    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-    		
-    		newServerPlanService.insert(serverPlan);
-    		
-    		serverPlanVo.setDel(0);
-    		serverPlanVo.setPlanId(0);
-    		
-    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		serverPlan.setId(null);
-    		
-    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-    		
-    		newServerPlanService.insert(serverPlan);
-    		
-    		return ResultVOUtil.success(serverPlan);
-    		
-    	}
-
-        BeanCopy.copyProperties(serverPlanVo, serverPlan);
+			Role findOne = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map = new LinkedHashMap<>();
+	        Set<Menu> menus = findOne.getMenu();
         
-        serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-        
-        newServerPlanService.save(serverPlan);
-        
-        return ResultVOUtil.success(serverPlan);
+	        roleId = 2l;
+			
+			Role findOne02 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map02 = new LinkedHashMap<>();
+	        Set<Menu> menus02 = findOne02.getMenu(); 
+	        
+	        roleId = 3l;
+			
+			Role findOne03 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map03 = new LinkedHashMap<>();
+	        Set<Menu> menus03 = findOne03.getMenu();
+	        
+	        roleId = 4l;
+			
+			Role findOne04 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map04 = new LinkedHashMap<>();
+	        Set<Menu> menus04 = findOne04.getMenu();
+	        
+	        roleId = 5l;
+			
+			Role findOne05 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map05 = new LinkedHashMap<>();
+	        Set<Menu> menus05 = findOne05.getMenu();  
+	        
+	        roleId = 6l;
+			
+			Role findOne06 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map06 = new LinkedHashMap<>();
+	        Set<Menu> menus06 = findOne06.getMenu();   
+	     
+	        roleId = 7l;
+			
+			Role findOne07 = roleService.findOne(roleId);
+	        Map<Menu, List<Menu>> map07 = new LinkedHashMap<>();
+	        Set<Menu> menus07 = findOne07.getMenu();   
+	        
+	        
+        return ResultVOUtil.success();
 
     }
 	
