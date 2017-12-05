@@ -108,7 +108,7 @@ public class UserLoginController {
         SessionCache.instance().setUserId(user.getId());
         user.setPassword(null);
 
-
+        
         // 返回服务商id
         Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
         if(userDao.findOne(user.getId()).getRoleId()!=Long.parseLong(systemConfigService.get("admin_role_id"))){
