@@ -52,6 +52,17 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private String planName;
 	
 	private Integer type;
+	
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板质保期 年]'")
+	private Double batteryBoardShelfLife;
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板保修年限 年]'")
+	private Double batteryBoardWarrantyYear;
+	
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器质保期 年]'")
+	private Double inverterShelfLife;
+	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
+	private Double inverterWarrantyYear;
+	
 
 	/** 电池板*/
 	@OneToOne
@@ -74,6 +85,46 @@ public class NewServerPlan extends IDomain implements Serializable {
 	
 	
 	
+	public Double getBatteryBoardShelfLife() {
+		return batteryBoardShelfLife;
+	}
+
+	public void setBatteryBoardShelfLife(Double batteryBoardShelfLife) {
+		this.batteryBoardShelfLife = batteryBoardShelfLife;
+	}
+
+	public Double getBatteryBoardWarrantyYear() {
+		return batteryBoardWarrantyYear;
+	}
+
+	public void setBatteryBoardWarrantyYear(Double batteryBoardWarrantyYear) {
+		this.batteryBoardWarrantyYear = batteryBoardWarrantyYear;
+	}
+
+	public Double getInverterShelfLife() {
+		return inverterShelfLife;
+	}
+
+
+
+	public void setInverterShelfLife(Double inverterShelfLife) {
+		this.inverterShelfLife = inverterShelfLife;
+	}
+
+
+
+	public Double getInverterWarrantyYear() {
+		return inverterWarrantyYear;
+	}
+
+
+
+	public void setInverterWarrantyYear(Double inverterWarrantyYear) {
+		this.inverterWarrantyYear = inverterWarrantyYear;
+	}
+
+
+
 	public Integer getType() {
 		return type;
 	}
