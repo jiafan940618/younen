@@ -14,6 +14,7 @@ import com.yn.service.OrderPlanService;
 import com.yn.service.OrderService;
 import com.yn.service.ServerService;
 import com.yn.service.StationService;
+import com.yn.service.SystemConfigService;
 import com.yn.service.UserService;
 import com.yn.session.SessionCache;
 import com.yn.utils.CodeUtil;
@@ -63,6 +64,8 @@ public class UserLoginController {
 	ApolegamyOrderService APOservice;
     @Autowired
     UserDao userDao;
+    @Autowired
+    SystemConfigService systemConfigService;
 
     /**
      * 登入
@@ -108,15 +111,16 @@ public class UserLoginController {
 
         // 返回服务商id
         Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
-        Server server = new Server();
-        server.setUserId(user.getId());
-        Server serverResult = serverService.findOne(server);
-        if (serverResult != null) {
-            objectMap.put("serverId", serverResult.getId());
+        if(userDao.findOne(user.getId()).getRoleId()!=Long.parseLong(systemConfigService.get("admin_role_id"))){
+        	Server server = new Server();
+            server.setUserId(user.getId());
+            Server serverResult = serverService.findOne(server);
+            if (serverResult != null) {
+                objectMap.put("serverId", serverResult.getId());
+            }
+            System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
         }
-
         
-        System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
         return ResultVOUtil.success(objectMap);
     }
 

@@ -225,6 +225,14 @@ public class OrderController {
 		// 并网发电。
 		if (gridConnectedStepA == 2) {
 			order.setStatus(3);
+			//设置电站为发电位绑定电表。
+			Station station = stationService.FindByStationCode(order.getId());
+			if(station!=null){
+				station.setStatus(0);
+				stationService.save(station);
+			}else{
+				System.out.println("电站为空。。。。订单id是："+order.getId());
+			}
 		}
 		orderService.save(order);
 		return ResultVOUtil.success(order);
