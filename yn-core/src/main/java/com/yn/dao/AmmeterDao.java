@@ -89,6 +89,9 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     
 	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 AND a.del=0",nativeQuery=true)
     Long selectAmmeterByStationId(Long stationId);
+	
+	@Query(value="SELECT MIN(a.create_dtm) FROM ammeter as a WHERE a.station_id=?1 AND a.del=0",nativeQuery=true)
+    Date selectCreateDtm(Long stationId);
 
 }
 

@@ -560,8 +560,8 @@ public class ElecDataDayService {
 			throws NumberFormatException, ParseException {
 		Map<String, Object> maps = new HashMap<>();
 
-		Station station = stationDao.findOne(stationId);
-		Date startTime = station.getCreateDtm();
+		//Station station = stationDao.findOne(stationId);
+		Date startTime = ammeterDao.selectCreateDtm(stationId);
 		List<Map<String, Object>> listYear = new ArrayList<>();
 		Date endStart = new Date();
 		String yearStart = new SimpleDateFormat("yyyy-MM-dd").format(startTime);
