@@ -7,8 +7,8 @@ import com.yn.domain.QueryVo;
 /**
  * 电站
  */
-public class StationVo extends QueryVo{
 
+public class StationVo extends QueryVo{
 	private Long id;
 	private String stationName;
 	private String stationCode;

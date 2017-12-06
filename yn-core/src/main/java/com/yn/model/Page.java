@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.yn.utils.PropertyUtils;
 
-public class Page<T> {
 
+public class Page<T> {
 	private Integer limit =Integer.valueOf(PropertyUtils.getProperty("limit"));
 	private List<T> list;
 	private T example;
