@@ -74,6 +74,7 @@ public class UserController {
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object findAll(UserVo userVo, Long serverId, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+
         User user = new User();
         BeanCopy.copyProperties(userVo, user);
         Page<User> findAll = userService.findAll(user, serverId, pageable);
