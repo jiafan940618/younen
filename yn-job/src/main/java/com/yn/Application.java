@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 // @ComponentScan
 // @MapperScan("com.cj.dao.mapper")
-//@EnableScheduling
+@EnableScheduling
 public class Application {
 
  

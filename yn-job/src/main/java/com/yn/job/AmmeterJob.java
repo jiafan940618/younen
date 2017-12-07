@@ -70,8 +70,8 @@ public class AmmeterJob {
 
 	public AmmeterJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
-			 mytxt = new PrintStream("./AmmeterJob.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
+//			 mytxt = new PrintStream("./AmmeterJob.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -106,14 +106,6 @@ public class AmmeterJob {
 					saveAmmeterRecord(ammeter, apr);
 					// 更新电表和电站。
 					updateAmmeterAndStation(ammeter, apr);
-					/**更新电表实时功率。**/
-					// apr.setMeterTime(apr.getMeterTime());
-//					// 由于只统计用电，d_addr为6,方便下面方法区分是做什么操作的。
-//					apr.setdAddr(6L);
-//					List<AmPhaseRecord> maybe2Data = amPhaseRecordService.findAllByMapper(apr);
-//					for (AmPhaseRecord amPhaseRecord2 : maybe2Data) {
-//						totalKw += amPhaseRecord2.getKw();
-//					}
 					System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"
 							+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					// 已经处理
@@ -122,43 +114,6 @@ public class AmmeterJob {
 					apr.setMeterState(msg);
 					amPhaseRecordService.updateByPrimaryKeySelective(apr);
 				}
-				/*if (amPhaseRecords.size() == 0) {
-					ammeter.setNowKw(0D);
-					ammeterMapper.updateByPrimaryKeySelective(ammeter);
-				}*/
-				// 更新电表的实时功率。。。。。
-				// List<AmPhaseRecord> aa =
-				// amPhaseRecordService.findAllByMapper(aprR);
-				// List<AmPhaseRecord> aa =
-				// amPhaseRecordService.findAllByMapperAndCurrenttime(aprR);
-				// aa.forEach(amPhaseRecord -> {
-				// AmPhaseRecord apr = new AmPhaseRecord();
-				// apr.setcAddr(Integer.parseInt(ammeter.getcAddr()));
-				// apr.setdType(ammeter.getdType());
-				// apr.setiAddr(ammeter.getiAddr());
-				// apr.setDate(date);
-				// apr.setwAddr(0);
-				// apr.setMeterTime(amPhaseRecord.getMeterTime());
-				// Double totalKw = 0d;
-				// // 由于只统计用电，d_addr为6,方便下面方法区分是做什么操作的。
-				// apr.setdAddr(6L);
-				// List<AmPhaseRecord> maybe2Data =
-				// amPhaseRecordService.findAllByMapper(apr);
-				// List<AmPhaseRecord> maybe2Data =
-				// amPhaseRecordService.findAllByMapperAndCurrenttime(aprR);
-				/*
-				 * if (maybe2Data.size() == 2) {// 说明是存在dAddr为1和11的情况的，那就相加
-				 * totalKw = maybe2Data.get(0).getKw() +
-				 * maybe2Data.get(1).getKw(); } else if (maybe2Data.size() == 1)
-				 * {// 只存在1或者11的。 totalKw = maybe2Data.get(0).getKw(); }
-				 */
-				// for (AmPhaseRecord amPhaseRecord2 : maybe2Data) {
-				// totalKw += amPhaseRecord2.getKw();
-				// }
-				// System.out.println("更新电表的Kw:" + totalKw);
-				// ammeter.setNowKw(totalKw);
-				// ammeterMapper.updateByPrimaryKeySelective(ammeter);
-				// });
 			}
 		} catch (Exception e) {
 			System.out.println("Exception：：-->" + new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
@@ -215,11 +170,6 @@ public class AmmeterJob {
 		Double kwhTol = getKwhTol(apr);
 		Double totalKw = 0d;
 		ammeter.setStatusCode(statusCode);
-		/*
-		 * System.out.println("电表码：" + apr.getcAddr() + "..." + "apr.getKw()：" +
-		 * apr.getKw()); if (!(apr.getKw() <= 0.00d || apr.getKw() == null)) {
-		 * ammeter.setNowKw(apr.getKw()); }
-		 */
 		AmPhaseRecord apr1 = apr;
 		if(apr1.getdAddr()==1){
 			apr1.setdAddr(11L);
@@ -239,20 +189,17 @@ public class AmmeterJob {
 				totalKw = apr1.getKw();
 			}
 			apr.setdAddr(11L);
-		}else if(apr1.getdAddr()==2){
+		}/*else if(apr1.getdAddr()==2){
 			totalKw = apr1.getKw();
+		}*/
+		if(apr1.getdAddr()!=2){
+			System.out.println("更新电表的Kw:" + totalKw);
+			ammeter.setNowKw(totalKw);
 		}
-		System.out.println("更新电表的Kw:" + totalKw);
-		ammeter.setNowKw(totalKw);
 		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
 		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
-		Ammeter findOne = ammeterDao.findOne(ammeter.getId());
 		ammeter.setUpdateDtm(new Date());
-		if (findOne != null) {
-			ammeterMapper.updateByPrimaryKeySelective(ammeter);
-		} else {
-			ammeterMapper.insert(ammeter);
-		}
+		ammeterMapper.updateByPrimaryKeySelective(ammeter);
 		// 更新电站 每天 的发电/用电
 		saveTemStation(ammeter, apr, kwhTol);
 	}
