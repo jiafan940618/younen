@@ -55,7 +55,7 @@ public class OrderService {
 	protected OrderDao orderDao;
 	@Autowired
 	private NoticeService noticeService;
-	@Resource
+	@Autowired
 	private OrderMapper mapper;
 	@Autowired
 	ApolegamyOrderService apoleService;
@@ -74,6 +74,12 @@ public class OrderService {
 	public int findByNum(com.yn.model.Page<Order> page) {
 
 		return mapper.findByNum(page);
+	}
+
+	 /** 根据订单id查找serverId*/
+	public Long findByOrderId(Long id){
+
+		return orderDao.findByOrderId(id);
 	}
 
 	/** 修改退款状态*/

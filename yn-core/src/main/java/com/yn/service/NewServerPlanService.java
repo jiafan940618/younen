@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import com.yn.dao.InverterDao;
+import com.yn.dao.SolarPanelDao;
+import com.yn.vo.re.ResultVOUtil;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +57,12 @@ public class NewServerPlanService {
 	NewServerPlanMapper planMapper;
 	@Autowired
 	ServerDao serverDao;
+	@Autowired
+	InverterDao inverterDao;
+	@Autowired
+	private SolarPanelDao solarPanelDao;
+
+
 
 	static DecimalFormat df = new DecimalFormat("0.00");
 	static DecimalFormat df1 = new DecimalFormat("0000");
@@ -520,12 +529,77 @@ public class NewServerPlanService {
 	        order.setBuildStepB(10);
 	        /** 安装类型 默认为 0：居民*/
 	        order.setType(type);
-	       
-	        
 	        order.setUser(user);
 	        
 			return order;
 	    }
 
-	
+	    /** 后台添加,编辑方案操作*/
+
+	    public Object insertServerPlan(List<NewServerPlan> list,NewServerPlan serverPlan,NewServerPlanVo serverPlanVo){
+
+			if(list.size() == 0){
+
+				serverPlanVo.setDel(1);
+
+				serverPlanVo.setPlanId(1);
+
+				BeanCopy.copyProperties(serverPlanVo, serverPlan);
+				serverPlan.setBatteryboardId(serverPlanVo.getSolarPanel().getId());
+				serverPlan.setBatteryBoardShelfLife(serverPlanVo.getSolarPanel().getQualityAssurance());
+				serverPlan.setBatteryBoardWarrantyYear(serverPlanVo.getSolarPanel().getBoardYear());
+
+				serverPlan.setInverterId(serverPlanVo.getInverter().getId());
+				serverPlan.setInverterShelfLife(serverPlanVo.getInverter().getQualityAssurance());
+				serverPlan.setInverterWarrantyYear(serverPlanVo.getInverter().getBoardYear());
+				serverPlan.setWarPeriod(new BigDecimal(serverPlanVo.getInverter().getQualityAssurance()));
+
+				serverPlan.setInverter(null);
+				serverPlan.setSolarPanel(null);
+
+
+				insert(serverPlan);
+
+				serverPlanVo.setDel(0);
+				serverPlanVo.setPlanId(0);
+
+				BeanCopy.copyProperties(serverPlanVo, serverPlan);
+				serverPlan.setBatteryboardId(serverPlanVo.getSolarPanel().getId());
+				serverPlan.setBatteryBoardShelfLife(serverPlanVo.getSolarPanel().getQualityAssurance());
+				serverPlan.setBatteryBoardWarrantyYear(serverPlanVo.getSolarPanel().getBoardYear());
+
+				serverPlan.setInverterId(serverPlanVo.getInverter().getId());
+				serverPlan.setInverterShelfLife(serverPlanVo.getInverter().getQualityAssurance());
+				serverPlan.setInverterWarrantyYear(serverPlanVo.getInverter().getBoardYear());
+				serverPlan.setWarPeriod(new BigDecimal(serverPlanVo.getInverter().getQualityAssurance()));
+
+				serverPlan.setInverter(null);
+				serverPlan.setSolarPanel(null);
+				serverPlan.setId(null);
+
+				insert(serverPlan);
+
+				return ResultVOUtil.success(serverPlan);
+
+			}
+
+			BeanCopy.copyProperties(serverPlanVo, serverPlan);
+			serverPlan.setBatteryboardId(serverPlanVo.getSolarPanel().getId());
+			serverPlan.setBatteryBoardShelfLife(serverPlanVo.getSolarPanel().getQualityAssurance());
+			serverPlan.setBatteryBoardWarrantyYear(serverPlanVo.getSolarPanel().getBoardYear());
+
+			serverPlan.setInverterId(serverPlanVo.getInverter().getId());
+			serverPlan.setInverterShelfLife(serverPlanVo.getInverter().getQualityAssurance());
+			serverPlan.setInverterWarrantyYear(serverPlanVo.getInverter().getBoardYear());
+			serverPlan.setWarPeriod(new BigDecimal(serverPlanVo.getInverter().getQualityAssurance()));
+
+			serverPlan.setInverter(null);
+			serverPlan.setSolarPanel(null);
+
+			save(serverPlan);
+
+			return ResultVOUtil.success(serverPlan);
+
+		}
+
 }

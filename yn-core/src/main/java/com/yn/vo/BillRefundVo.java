@@ -19,8 +19,17 @@ public class BillRefundVo extends QueryVo{
 	private Double money;
     private Date applyDtm;
 	private Integer status;
-	
-	
+
+	private Long serverId;
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
 	public Long getId() {
 		return id;
 	}

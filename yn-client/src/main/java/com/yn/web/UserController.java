@@ -385,7 +385,7 @@ public class UserController {
 		return ResultVOUtil.success(null);
     }
    
-   
+   /** 移动端的订单管理*/
   @ResponseBody
   @RequestMapping(value = "/findiosQueryOrder")
   public Object findStation(HttpSession httpSession) {
@@ -395,8 +395,6 @@ public class UserController {
 	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
 	  	}
 
-	 
-	  
 	  	List<OrderVo> listVo = new LinkedList<OrderVo>();
 	  	
 	  logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+newuserVo.getId());

@@ -38,9 +38,17 @@ public class BillOrderVo extends QueryVo{
 	private String subject;
 	
 	private String bankType;
-	
-	
-	
+
+	private Long serverId;
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
 	public String getBankType() {
 		return bankType;
 	}

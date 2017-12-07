@@ -74,10 +74,11 @@ public class TestController {
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
-	       public Object helloJsp01(ApolegamyVo apolegamyVo){  
-	    	   
+	       public Object helloJsp01(ApolegamyVo apolegamyVo){
+
+			 Long serverId =  orderService.findByOrderId(1L);
 	    	  
-	   		return ResultVOUtil.success();
+	   		return ResultVOUtil.success(serverId);
 	        
 	       } 
 	       

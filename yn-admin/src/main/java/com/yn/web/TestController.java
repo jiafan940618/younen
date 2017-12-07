@@ -78,49 +78,49 @@ public class TestController {
 	@ResponseBody
     @RequestMapping(value = "/invsave")
     public Object invsave(Long roleId) {
-		
+
 		roleId = 1l;
-		
+
 			Role findOne = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map = new LinkedHashMap<>();
 	        Set<Menu> menus = findOne.getMenu();
-        
+
 	        roleId = 2l;
-			
+
 			Role findOne02 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map02 = new LinkedHashMap<>();
-	        Set<Menu> menus02 = findOne02.getMenu(); 
-	        
+	        Set<Menu> menus02 = findOne02.getMenu();
+
 	        roleId = 3l;
-			
+
 			Role findOne03 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map03 = new LinkedHashMap<>();
 	        Set<Menu> menus03 = findOne03.getMenu();
-	        
+
 	        roleId = 4l;
-			
+
 			Role findOne04 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map04 = new LinkedHashMap<>();
 	        Set<Menu> menus04 = findOne04.getMenu();
-	        
+
 	        roleId = 5l;
-			
+
 			Role findOne05 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map05 = new LinkedHashMap<>();
-	        Set<Menu> menus05 = findOne05.getMenu();  
-	        
+	        Set<Menu> menus05 = findOne05.getMenu();
+
 	        roleId = 6l;
-			
+
 			Role findOne06 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map06 = new LinkedHashMap<>();
-	        Set<Menu> menus06 = findOne06.getMenu();   
-	     
+	        Set<Menu> menus06 = findOne06.getMenu();
+
 	        roleId = 7l;
-			
+
 			Role findOne07 = roleService.findOne(roleId);
 	        Map<Menu, List<Menu>> map07 = new LinkedHashMap<>();
-	        Set<Menu> menus07 = findOne07.getMenu();   
-	        
+	        Set<Menu> menus07 = findOne07.getMenu();
+
 	        
         return ResultVOUtil.success();
 
@@ -194,6 +194,7 @@ public class TestController {
 		 serverPlanVo.setMinPurchase(8.00);
 		 serverPlanVo.setMaterialJson("sadasdfafsaf");
 		 serverPlanVo.setPlanImgUrl("dffsfdsfds");
+		 serverPlanVo.setDel(1);
 		 
 		 Server serverResult = serverService.findOne(1l);
 
@@ -203,7 +204,7 @@ public class TestController {
 	        BeanCopy.copyProperties(serverPlanVo, serverPlan);
 	        serverPlan.setBatteryboardId(2L);
 	        
-	        newServerPlanService.save(serverPlan);
+	        newServerPlanService.insert(serverPlan);
 		 
 		
 	        return ResultVOUtil.success();

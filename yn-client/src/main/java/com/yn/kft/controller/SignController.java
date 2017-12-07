@@ -75,6 +75,7 @@ public class SignController {
 			  	
 			  	billOrderVo.setUserId(newuserVo.getId());
 
+
 			/*billOrderVo.setMoney(new BigDecimal("0.01"));
 			billOrderVo.setPayWay(4);
 			billOrderVo.setUserId(3L);

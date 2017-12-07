@@ -31,7 +31,9 @@ public class BillOrder extends IDomain implements Serializable{
     private String remark;
 	@Column(columnDefinition = "int(1) default 0 comment '[交易状态]{0:成功,1:失败}'")
 	private Integer status;
-	
+
+	private Long serverId;
+
 	/**
 	 * 用户
 	 */
@@ -47,8 +49,14 @@ public class BillOrder extends IDomain implements Serializable{
 //    @JoinColumn(name = "orderId", insertable = false, updatable = false)
 //	@JsonIgnoreProperties(value = {"billOrder"})
 //    private Order order;
-	
-	
+
+
+	public Long getServerId() {
+		return serverId;
+	}
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
 	public Long getOrderId() {
 		return orderId;
 	}

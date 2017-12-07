@@ -2,6 +2,7 @@
 package com.yn.web;
 
 import com.yn.enums.NoticeEnum;
+import com.yn.model.NewServerPlan;
 import com.yn.model.User;
 import com.yn.service.NoticeService;
 import com.yn.session.SessionCache;
@@ -23,6 +24,7 @@ import com.yn.utils.BeanCopy;
 import com.yn.vo.ServerVo;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/server/server")
@@ -49,6 +51,20 @@ public class ServerController {
             }
         }
 
+
+      Set<NewServerPlan> set =  findOne.getNewServerPlan();
+
+        for (NewServerPlan newServerPlan: set) {
+
+            newServerPlan.getSolarPanel().setQualityAssurance(newServerPlan.getBatteryBoardShelfLife());
+            newServerPlan.getSolarPanel().setBoardYear(newServerPlan.getBatteryBoardWarrantyYear());
+            newServerPlan.getSolarPanel().setConversionEfficiency(newServerPlan.getConversionEfficiency());
+
+            newServerPlan.getInverter().setBoardYear(newServerPlan.getInverterWarrantyYear());
+            newServerPlan.getInverter().setQualityAssurance(newServerPlan.getInverterShelfLife());
+        }
+
+        findOne.setNewServerPlan(set);
 
         return ResultVOUtil.success(findOne);
     }

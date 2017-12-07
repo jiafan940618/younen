@@ -62,6 +62,14 @@ public class Devide extends IDomain implements Serializable {
 		this.devideModel = devideModel;
 	}
 
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getDevideName() {
 		return devideName;

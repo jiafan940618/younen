@@ -76,10 +76,10 @@ public class BillRechargeController {
     
     @RequestMapping(value = "/RechargefindAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object RechargefindAll(RechargeVo RechargeVo) {
+    public Object RechargefindAll(RechargeVo RechargeVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Recharge billRecharge = new Recharge();
         BeanCopy.copyProperties(RechargeVo, billRecharge);
-        List<Recharge> findAll = rechargeService.findAll(billRecharge);
+        Page<Recharge> findAll = rechargeService.findAll(billRecharge,pageable);
         return ResultVOUtil.success(findAll);
     }
     

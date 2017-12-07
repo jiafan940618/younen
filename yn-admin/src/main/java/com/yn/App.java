@@ -19,6 +19,7 @@ public class App {
 
     @Bean
     public HibernateJpaSessionFactoryBean sessionFactory() {
+
         return new HibernateJpaSessionFactoryBean();
     }
 }

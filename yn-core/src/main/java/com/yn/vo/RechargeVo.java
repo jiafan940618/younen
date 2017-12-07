@@ -27,10 +27,18 @@ public class RechargeVo {
 	private BigDecimal totalmoney;
 	
 	private Long userId;
-	
-	
-	
-	
+
+	private Long serverId;
+
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}

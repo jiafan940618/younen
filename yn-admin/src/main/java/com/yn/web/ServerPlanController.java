@@ -91,63 +91,32 @@ public class ServerPlanController {
         return ResultVOUtil.success(serverPlan);
     }
 
-     /** */
+     /** 添加后台服务商方案*/
     @ResponseBody
     @RequestMapping(value = "/newsave", method = {RequestMethod.POST})
     public Object newsave(@RequestBody NewServerPlanVo serverPlanVo,HttpSession session) {
-    	SessionCache server =(SessionCache) session.getAttribute("SessionCache");
-    	
-    	if(null == server){
-    		
-    		return ResultVOUtil.error(777, "抱歉你未登录!");
-    	}
-    	
-    	Server newserver = new Server();
-    	newserver.setUserId(server.getUserId());
-    	
-    	Server serverResult = serverService.findOne(newserver);
+
+        logger.info("传递的serverId为：----- ---- ---- --- ---"+serverPlanVo.getServerId());
+        logger.info("传递SolarPanel的Id为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getId());
+        logger.info("传递SolarPanel的QualityAssurance为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getQualityAssurance());
+        logger.info("传递SolarPanel的BoardYear为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getBoardYear());
+
+        logger.info("传递Inverter的Id为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getId());
+        logger.info("传递Inverter的QualityAssurance为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getQualityAssurance());
+        logger.info("传递Inverter的BoardYear为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getBoardYear());
+
+    	Server serverResult = serverService.findOne(serverPlanVo.getServerId());
     	
     	NewServerPlan serverPlan = new NewServerPlan();
-    	
+
     	serverPlan.setServerId(serverResult.getId());
     	
     	List<NewServerPlan> list = newserverPlanService.findAll(serverPlan);
     	
     	serverPlanVo.setServerId(serverResult.getId());
-    	
-    	if(list.size() == 0){
-    		
-    		serverPlanVo.setDel(1);
-    		
-    		serverPlanVo.setPlanId(1);
-    		
-    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		
-    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-    		
-    		newserverPlanService.insert(serverPlan);
-    		
-    		serverPlanVo.setDel(0);
-    		serverPlanVo.setPlanId(0);
-    		
-    		BeanCopy.copyProperties(serverPlanVo, serverPlan);
-    		serverPlan.setId(null);
-    		
-    		serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-    		
-    		newserverPlanService.insert(serverPlan);
-    		
-    		return ResultVOUtil.success(serverPlan);
-    		
-    	}
+        serverPlanVo.setType(1);
 
-        BeanCopy.copyProperties(serverPlanVo, serverPlan);
-        
-        serverPlan.setBatteryboardId(serverPlanVo.getBatteryBoardId());
-        
-        newserverPlanService.save(serverPlan);
-        
-        return ResultVOUtil.success(serverPlan);
+        return newserverPlanService.insertServerPlan(list,serverPlan,serverPlanVo);
     }
     
     

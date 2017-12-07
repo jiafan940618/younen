@@ -26,8 +26,20 @@ public class Apolegamy extends IDomain implements Serializable {
     private Long qualificationsId;
     @Column(columnDefinition = "int(1) NOT NULL comment '[类型]{0:优能的选配项目,1:服务商的选配项目}'")
     private Integer type;
+    
+    private String apolegamyText;
 
-    public String getApolegamyName() {
+    
+    
+    public String getApolegamyText() {
+		return apolegamyText;
+	}
+
+	public void setApolegamyText(String apolegamyText) {
+		this.apolegamyText = apolegamyText;
+	}
+
+	public String getApolegamyName() {
         return apolegamyName;
     }
 

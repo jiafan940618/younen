@@ -33,7 +33,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	Server findServer(@Param("serverid") Long serverid);
 
 	@Query(value = "SELECT"
-			+ " e.id ,e.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,e.company_logo ,p.id p_id FROM server e "
+			+ " e.id ,e.company_name,o.type,p.conversion_efficiency,p.battery_board_warranty_year,p.battery_board_shelf_life,e.company_logo ,p.id p_id FROM server e "
 			+ " LEFT JOIN new_server_plan p ON e.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id "
 			+ " WHERE  p.plan_id=1 and p.type =:#{#page.type} and e.del = 0 LIMIT :#{#page.start},:#{#page.limit} ", nativeQuery = true)
@@ -42,7 +42,7 @@ public interface ServerDao extends JpaRepository<Server, Long>, JpaSpecification
 	List<Object> findObject(@Param("page") com.yn.model.Page<Server> page);
 
 	@Query(value = "SELECT "
-			+ " s.id,s.company_name,o.type,o.conversion_efficiency,o.quality_assurance,o.board_year,s.company_logo,p.id p_id  FROM server s "
+			+ " s.id,s.company_name,o.type,p.conversion_efficiency,p.battery_board_warranty_year,p.battery_board_shelf_life,s.company_logo,p.id p_id  FROM server s "
 			+ " LEFT JOIN new_server_plan p ON s.id = p.`server_id`"
 			+ " LEFT JOIN solar_panel o ON  p.`batteryboard_id` = o.id  WHERE s.del=0 AND p.del = 1 and "
 			+ " p.plan_id=1 and s.`server_city_text` like CONCAT ('%',:#{#page.cityName},'%')"

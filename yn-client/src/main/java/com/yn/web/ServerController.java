@@ -597,8 +597,8 @@ public class ServerController {
 	@RequestMapping(value = "/find")
 	public ResultData<Object> find(com.yn.model.Page<Server> page) {
 		/*page.setIndex(1);
-		page.setType(0);
-		page.setCityName("南京市");*/
+		page.setType(1);*/
+		/*page.setCityName("南京市");*/
 		
 		List<SolarPanelVo> solar = null;
 		List<QualificationsVo> quali =null;
@@ -631,6 +631,9 @@ public class ServerController {
 			
 			 logger.info("--- --- --- --- --- --- --- "+page.getTotal());
 		}
+
+
+
 			solar  =solarService.getpanel(list);
 			
 			List<Long> ids = new LinkedList<Long>();

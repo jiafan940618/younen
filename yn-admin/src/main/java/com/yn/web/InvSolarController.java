@@ -1,7 +1,12 @@
 package com.yn.web;
 
 
+import java.util.LinkedList;
 import java.util.List;
+
+import com.yn.model.Brand;
+import com.yn.service.BrandService;
+import com.yn.vo.NewDev;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +38,8 @@ public class InvSolarController {
 	SolarPanelService solarPanelService;
 	@Autowired
 	OtherInfoService otherInfoService;
+	@Autowired
+	BrandService brandService;
 	
 	
 	/** 编辑添加电池板*/
@@ -125,13 +132,43 @@ public class InvSolarController {
 			return ResultVOUtil.success(page);
 
 		}else if(brandVo.getType() == 2){
-			OtherInfo otherInfo = new OtherInfo();
-			
-			BeanCopy.copyProperties(brandVo, otherInfo);
 
-			Page<OtherInfo> page =	otherInfoService.findAll(otherInfo, pageable);
-			
-			return ResultVOUtil.success(page);
+			com.yn.model.Page newpage = new com.yn.model.Page();
+
+			newpage.setType(2);
+
+			List<Brand> list =	brandService.getBrand(newpage);
+
+			List<NewDev> newlist = new LinkedList<NewDev>();
+
+			for (Brand brand: list) {
+				OtherInfo otherInfo = new OtherInfo();
+				otherInfo.setBrandId(brand.getId().intValue());
+				List<OtherInfo> infolist = otherInfoService.findAll(otherInfo);
+				List<SolarPanel> set = new LinkedList<SolarPanel>();
+
+				NewDev dev = new NewDev();
+				dev.setId(brand.getId());
+				dev.setDevideName(brand.getBrandName());
+
+				List<NewDev> children = new LinkedList<NewDev>();
+
+				for (OtherInfo otherInfo2 : infolist) {
+
+					NewDev cdev = new NewDev();
+
+					cdev.setId(otherInfo2.getId());
+					cdev.setDevideName(otherInfo2.getModel());
+
+					children.add(cdev);
+				}
+
+				dev.setChildren(children);
+
+				newlist.add(dev);
+			}
+
+			return ResultVOUtil.success(newlist);
 		}
 
 		return ResultVOUtil.error(null);

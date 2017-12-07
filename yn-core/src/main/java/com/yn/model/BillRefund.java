@@ -43,7 +43,18 @@ public class BillRefund extends IDomain implements Serializable {
 	@JoinColumn(name = "userId", insertable = false, updatable = false)
 	@JsonIgnoreProperties(value = {"password","role"})
 	private User user;
-	
+
+	private Long serverId;
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
+
 	public Long getUserId() {
 		return userId;
 	}

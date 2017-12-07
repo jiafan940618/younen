@@ -31,7 +31,7 @@ public class SolarPanel extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(1) comment '[类型:0:单晶硅  1：多晶硅]'")
 	private Integer type;
 	@Column(columnDefinition = "int(2) comment '[转换效率]'")
-	private Integer conversionEfficiency;
+	private Double conversionEfficiency;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池组件保期 年]'")
 	private Double qualityAssurance;
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[附件年限 年]'")
@@ -42,7 +42,7 @@ public class SolarPanel extends IDomain implements Serializable {
 
 	public SolarPanel() {}
 
-	public SolarPanel(Long id, String model,int conversionEfficiency,String powerGeneration,Double qualityAssurance) {
+	public SolarPanel(Long id, String model,Double conversionEfficiency,String powerGeneration,Double qualityAssurance) {
 		this.id = id;
 		this.model = model;
 		this.conversionEfficiency = conversionEfficiency;
@@ -109,11 +109,13 @@ public class SolarPanel extends IDomain implements Serializable {
 		this.type = type;
 	}
 
-	public Integer getConversionEfficiency() {
+	
+
+	public Double getConversionEfficiency() {
 		return conversionEfficiency;
 	}
 
-	public void setConversionEfficiency(Integer conversionEfficiency) {
+	public void setConversionEfficiency(Double conversionEfficiency) {
 		this.conversionEfficiency = conversionEfficiency;
 	}
 

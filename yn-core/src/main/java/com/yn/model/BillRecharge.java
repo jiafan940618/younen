@@ -35,7 +35,16 @@ public class BillRecharge extends IDomain implements Serializable {
 	@JsonIgnoreProperties(value = {"password","role"})
     private User user;
 	
-	
+	private Long serverId;
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}

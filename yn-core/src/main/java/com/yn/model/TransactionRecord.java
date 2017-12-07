@@ -29,7 +29,15 @@ public class TransactionRecord extends IDomain implements Serializable{
 	
 	private String orderNo;
 
-	
+	private Long serverId;
+
+	public Long getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(Long serverId) {
+		this.serverId = serverId;
+	}
 	
 	public String getOrderNo() {
 		return orderNo;

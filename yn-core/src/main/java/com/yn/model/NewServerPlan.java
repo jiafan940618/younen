@@ -43,8 +43,7 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private Long factionId;
 	
 	private int planId;
-	
-	
+
 	private Double capacity;
 	
 	private Integer del;
@@ -52,17 +51,22 @@ public class NewServerPlan extends IDomain implements Serializable {
 	private String planName;
 	
 	private Integer type;
-	
+
+	/** 下面5个参数与电池板表与逆变器的表存在冲突，3.0以后以这个类为准来修改，电池表，逆变器的这几个参数全部去除*/
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板质保期 年]'")
 	private Double batteryBoardShelfLife;
+	
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[电池板保修年限 年]'")
 	private Double batteryBoardWarrantyYear;
 	
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器质保期 年]'")
 	private Double inverterShelfLife;
+	
 	@Column(precision = 12, scale = 2, columnDefinition = "decimal(12,2) comment '[逆变器保修年限 年]'")
 	private Double inverterWarrantyYear;
-	
+
+	@Column(columnDefinition = "int(2) comment '[转换效率]'")
+	private Double conversionEfficiency;
 
 	/** 电池板*/
 	@OneToOne
@@ -82,9 +86,15 @@ public class NewServerPlan extends IDomain implements Serializable {
 		this.minPurchase = minPurchase;
 		this.unitPrice = unitPrice;
 	}
-	
-	
-	
+
+	public Double getConversionEfficiency() {
+		return conversionEfficiency;
+	}
+
+	public void setConversionEfficiency(Double conversionEfficiency) {
+		this.conversionEfficiency = conversionEfficiency;
+	}
+
 	public Double getBatteryBoardShelfLife() {
 		return batteryBoardShelfLife;
 	}

@@ -39,6 +39,9 @@ public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationEx
     @Query("select COALESCE(sum(s.capacity),0) from Order s WHERE s.serverId=?1 AND s.del=0")
     double sumCapacity(Long serverId);
 
+	@Query("select o.serverId from Order o where o.del=0 and o.id=?1")
+	Long findByOrderId(Long id);
+
     @Query("select o.userId from Order o where o.del=0 and o.serverId=?1")
     Set<Long> findUserId(Long serverId);
     

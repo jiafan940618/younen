@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import com.yn.model.Inverter;
 import com.yn.model.SolarPanel;
 
+import javax.persistence.Column;
+
 public class NewServerPlanVo {
 	
 	private Long id;
@@ -39,10 +41,59 @@ public class NewServerPlanVo {
 	
 	
 	private String planName;
+
+	private Double batteryBoardShelfLife;
+
+	private Double batteryBoardWarrantyYear;
+
+
+	private Double inverterShelfLife;
+
+	private Double inverterWarrantyYear;
+
+	private Double conversionEfficiency;
+
 	
-	
-	
-	
+	public Double getConversionEfficiency() {
+		return conversionEfficiency;
+	}
+
+	public void setConversionEfficiency(Double conversionEfficiency) {
+		this.conversionEfficiency = conversionEfficiency;
+	}
+
+	public Double getBatteryBoardShelfLife() {
+		return batteryBoardShelfLife;
+	}
+
+	public void setBatteryBoardShelfLife(Double batteryBoardShelfLife) {
+		this.batteryBoardShelfLife = batteryBoardShelfLife;
+	}
+
+	public Double getBatteryBoardWarrantyYear() {
+		return batteryBoardWarrantyYear;
+	}
+
+	public void setBatteryBoardWarrantyYear(Double batteryBoardWarrantyYear) {
+		this.batteryBoardWarrantyYear = batteryBoardWarrantyYear;
+	}
+
+	public Double getInverterShelfLife() {
+		return inverterShelfLife;
+	}
+
+	public void setInverterShelfLife(Double inverterShelfLife) {
+		this.inverterShelfLife = inverterShelfLife;
+	}
+
+	public Double getInverterWarrantyYear() {
+		return inverterWarrantyYear;
+	}
+
+	public void setInverterWarrantyYear(Double inverterWarrantyYear) {
+		this.inverterWarrantyYear = inverterWarrantyYear;
+	}
+
 	public String getPlanName() {
 		return planName;
 	}
