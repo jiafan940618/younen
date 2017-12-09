@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.yn.utils.DateUtil;
+
 public class TestDemo {
 
 	private static PrintStream mytxt;
@@ -53,8 +55,10 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws ParseException {
+		String date ="2010_10_10";
+		System.err.println(DateUtil.formatDate(DateUtil.formatString(date, "yyyy_MM_dd"), "yyMMdd"));
 //		System.out.println(daysBetween("2016-01-01","2017-01-01"));
-		s();
+//		s();
 	}
 
 	public void test1() {

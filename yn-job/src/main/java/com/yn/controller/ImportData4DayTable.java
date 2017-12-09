@@ -17,6 +17,7 @@ import com.yn.model.ElecDataDay;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmmeterService;
 import com.yn.service.ElecDataDayService;
+import com.yn.utils.DateUtil;
 
 @RestController
 @RequestMapping("/job/iddt")
@@ -43,6 +44,12 @@ public class ImportData4DayTable {
 			aprR.setDate(date);// 设置需要导入的时间。
 			aprR.setwAddr(0);
 			aprR.setdAddr(1L);
+			try {
+				// 此处设置时间，即当天表只处理当天数据。
+				aprR.setTable(DateUtil.formatDate(DateUtil.formatString(date, "yyyy_MM_dd"), "yyMMdd"));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
 			AmPhaseRecord max1 = amPhaseRecordService.findMaxData(aprR);
 			AmPhaseRecord min1 = amPhaseRecordService.findMinData(aprR);
 			if (max1 != null && min1 != null) {
