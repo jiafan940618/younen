@@ -21,7 +21,18 @@ public class NewUserVo {
 	
 	private String ipoMemo;
 	
+	private Long roleId;
 	
+	
+	
+	
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 
 	public String getIpoMemo() {
 		return ipoMemo;

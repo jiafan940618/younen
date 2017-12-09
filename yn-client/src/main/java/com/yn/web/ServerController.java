@@ -177,6 +177,7 @@ public class ServerController {
 	        newuserVo.setPhone(user.getPhone());
 	        newuserVo.setToken(user.getToken()); 
 	        newuserVo.setHeadImgUrl(user.getHeadImgUrl());
+	        newuserVo.setRoleId(user.getRoleId());
 
 	        user.setPassword(null);
 

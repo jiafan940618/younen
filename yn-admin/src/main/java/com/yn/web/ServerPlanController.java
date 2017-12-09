@@ -115,6 +115,8 @@ public class ServerPlanController {
     	List<NewServerPlan> list = newserverPlanService.findAll(serverPlan);
     	
     	serverPlanVo.setServerId(serverResult.getId());
+    	
+    	serverPlanVo.setConversionEfficiency(serverPlanVo.getSolarPanel().getConversionEfficiency());
 
         serverPlanVo.setType(1);
 

@@ -66,8 +66,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 SessionCache.instance().setUserId(user.getId());
                 return true;
             }
-
-            throw new MyException(ResultEnum.NO_LOGIN);
+            return true;
+            //throw new MyException(ResultEnum.NO_LOGIN);
         }
 
         return true;
