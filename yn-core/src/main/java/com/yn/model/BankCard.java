@@ -52,6 +52,8 @@ public class BankCard extends IDomain implements Serializable {
     private String treatyType;
     
     private Long serverId;
+
+    private String bankName;
     
     
     
@@ -69,9 +71,17 @@ public class BankCard extends IDomain implements Serializable {
 		this.treatyId = treatyId;
 		this.orderNo = orderNo;
 	}
-	
-	
-	
+
+   
+
+    public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
 	public Long getServerId() {
 		return serverId;
 	}

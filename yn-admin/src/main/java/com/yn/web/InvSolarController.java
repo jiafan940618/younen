@@ -44,7 +44,7 @@ public class InvSolarController {
 	
 	/** 编辑添加电池板*/
 	@ResponseBody
-    @RequestMapping(value = "/solarsave", method = {RequestMethod.POST})
+    @RequestMapping(value = "/solarsave")
     public Object save(@RequestBody SolarPanelVol brandVo) {
 		
 		System.out.println("传递的Id为：---- ---- ---- "+brandVo.getId());

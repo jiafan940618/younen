@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -403,11 +404,16 @@ public class OrderController {
 		List<String> newlist = billOrderService.getSay(billlist);
 		
 		String ids = newPlanVo.getIds();
-
-		List<Long> listids = APOservice.Transformation(ids);
-
-		List<Apolegamy> list = apolegamyService.findAll(listids);
 		
+		List<Apolegamy> list = new LinkedList<Apolegamy>();
+		
+		if(ids != null){
+			
+			List<Long> listids = APOservice.Transformation(ids);
+
+			 list = apolegamyService.findAll(listids);
+		}
+
 		session.setAttribute("orderCode", newPlanVo.getOrderCode());
 		
 		return ResultVOUtil.Thirdsuccess(newPlanVo, list, newlist);

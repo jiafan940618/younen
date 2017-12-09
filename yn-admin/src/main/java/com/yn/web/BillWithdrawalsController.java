@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.service.kftService.KFTpayService;
 import com.yn.vo.re.ResultVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,9 @@ public class BillWithdrawalsController {
     @Autowired
     BillWithdrawalsService billWithdrawalsService;
 
+    @Autowired
+    KFTpayService kFTpayService;
+
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
@@ -33,9 +37,29 @@ public class BillWithdrawalsController {
     @ResponseBody
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public Object save(@RequestBody BillWithdrawalsVo billWithdrawalsVo) {
+    	
+    	/**  后台正式接入支付以后再使用*/
+    	/*if (billWithdrawalsVo.getStatus() == 0) {
+
+            try {
+                kFTpayService.init();
+
+                return   kFTpayService.payToBankAccount(billWithdrawalsVo);
+
+
+            }catch (Exception e) {
+
+                e.printStackTrace();
+            }
+
+    	}*/
         BillWithdrawals billWithdrawals = new BillWithdrawals();
         BeanCopy.copyProperties(billWithdrawalsVo, billWithdrawals);
         billWithdrawalsService.save(billWithdrawals);
+        
+        
+        
+        
         return ResultVOUtil.success(billWithdrawals);
     }
 
@@ -63,4 +87,7 @@ public class BillWithdrawalsController {
         Page<BillWithdrawals> findAll = billWithdrawalsService.findAll(billWithdrawals, pageable);
         return ResultVOUtil.success(findAll);
     }
+
+    
+
 }

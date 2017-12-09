@@ -11,7 +11,16 @@ public class QualificationsVo {
     private String imgUrl;
     private String text;
     private Set<ApolegamyVo> apolegamy;
-    
+
+    private Long serverId;
+
+    public Long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(Long serverId) {
+        this.serverId = serverId;
+    }
 
     public Long getId() {
         return id;

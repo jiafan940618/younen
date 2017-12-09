@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.yn.utils.BeanCopy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,6 +206,7 @@ public class KFTpayService {
 			billOrder.setUserId(billOrderVo.getUserId());
 			billOrder.setMoney(billOrderVo.getMoney().doubleValue()*0.01);
 			billOrder.setTradeNo(billOrderVo.getTradeNo());
+			billOrder.setServerId(billOrderVo.getServerId());
 	    	billOrder.setPayWay(5);
 	  
 
@@ -338,7 +341,7 @@ public class KFTpayService {
 			  return ResultVOUtil.error(777, "抱歉,充值失败,详情请联系客服!");
 			}	
 		}
-		
+
 		public  Object payToBankAccount(BillWithdrawalsVo billWithdrawalsVo) throws GatewayClientException {
 			PayToBankAccountDTO dto = new PayToBankAccountDTO();
 			dto.setService("gbp_pay");//接口名称，固定不变
@@ -350,7 +353,7 @@ public class KFTpayService {
 			dto.setMerchantBankAccountNo("商户对公账号");//商户用于付款的银行账户,资金不落地模式时必填（重要参数）		
 
 			dto.setTradeTime(new Date());//交易时间,注意此时间取值一般为商户方系统时间而非快付通生成此时间
-			dto.setAmount("60");//交易金额，单位：分，不支持小数点
+			dto.setAmount(billWithdrawalsVo.getMoney()*100+"");//交易金额，单位：分，不支持小数点
 			dto.setCurrency("CNY");//快付通定义的扣费币种,详情请看文档
 			dto.setCustBankNo(billWithdrawalsVo.getBankNo());//客户银行帐户银行别，测试环境只支持：中、农、建
 			dto.setCustBankAccountNo(billWithdrawalsVo.getBankCardNum());//本次交易中,付款到客户哪张卡
@@ -363,20 +366,11 @@ public class KFTpayService {
 			//TradeResultDTO [orderNo=8o6615079499770435677, status=1, errorCode=, failureDetails=]
 			
 			BillWithdrawals billWithdrawals = new BillWithdrawals();
-			billWithdrawals.setStatus(1);
-			billWithdrawals.setDel(0);
-			billWithdrawals.setWalletId(billWithdrawalsVo.getWalletId());
-			billWithdrawals.setUserId(billWithdrawalsVo.getUserId());
-			billWithdrawals.setTradeNo(billWithdrawalsVo.getTradeNo());
-			billWithdrawals.setMoney(billWithdrawalsVo.getMoney());
-			billWithdrawals.setBankName(billWithdrawalsVo.getBankName());
-			billWithdrawals.setBankCardNum(billWithdrawalsVo.getBankCardNum());
-			billWithdrawals.setRealName(billWithdrawalsVo.getRealName());
-			billWithdrawals.setPhone(billWithdrawalsVo.getPhone());
-			
-			billWithdrawalsService.save(billWithdrawals);
-			
-			
+
+			BeanCopy.copyProperties(billWithdrawalsVo, billWithdrawals);
+
+			//return ResultVOUtil.success("提现申请已提交!我们会在1-3个工作日处理");
+
 			if(result.getStatus() == 1){
 				billWithdrawals.setStatus(0);
 				
@@ -397,7 +391,7 @@ public class KFTpayService {
 				
 				transactionRecordService.InsertBillAll(billWithdrawals);
 				billWithdrawalsService.save(billWithdrawals);
-				 return ResultVOUtil.error(777, "抱歉,提现失败,详情请咨询客服!");	
+				 return ResultVOUtil.error(777, "抱歉,提现失败,详情请咨询相关技术人员!");
 			}	
 		}
 	
@@ -458,7 +452,7 @@ public class KFTpayService {
 			System.out.println("响应信息为:" + result.toString());
 		}
 		
-		
+		/** 后台处理提现*/
 	
 		
 		

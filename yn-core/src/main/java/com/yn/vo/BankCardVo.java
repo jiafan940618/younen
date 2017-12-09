@@ -14,6 +14,8 @@ public class BankCardVo {
 	private String phone;
 	private String accountName;
 	private Integer type;
+
+
 	
 	private String bankNo;
 	
@@ -27,10 +29,10 @@ public class BankCardVo {
 
 	private int bank_card_type;
 	      
-	 private String img_url;   
-	    
-	    
-	    public String getImg_url() {
+	 private String img_url;
+
+
+	public String getImg_url() {
 	    	return img_url;
 	    }
 	    public void setImg_url(String img_url) {

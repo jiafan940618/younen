@@ -76,13 +76,8 @@ public class QualificationsController {
     @RequestMapping(value = "/findServer", method = {RequestMethod.POST})
     public Object findByServerId(QualificationsVo qualificationsVo,HttpSession session) {
     	
-    	 SessionCache server =(SessionCache) session.getAttribute("SessionCache");
-      	
-      	if(null == server){
-      		
-      		return ResultVOUtil.error(777, "抱歉你未登录!");
-      	}
-      	Server serverResult = serverService.findOne(server.getUserId());
+
+      	Server serverResult = serverService.findOne(qualificationsVo.getServerId());
       	
       	List<Qualifications>  list = 	qualificationsService.FindByServerId(serverResult.getId());
       	

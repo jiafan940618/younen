@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.yn.model.BillWithdrawals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,8 @@ public class SignController {
 			/** 手机端是微信app支付*/  /** wxApp*/
 			/** 手机端是支付宝app支付*/  /** alipayApp*/
 			billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getUserId()));
-			
+			Long serverId =	orderService.findByOrderId(billOrderVo.getOrderId());
+			billOrderVo.setServerId(serverId);
 			
 			logger.info("--- ---- ---- ---- ----- ---- --- 支付的类型："+billOrderVo.getPayWay());
 			logger.info("--- ---- ---- --- --- -- --  传递的订单号为："+billOrderVo.getTradeNo());
@@ -135,6 +138,7 @@ public class SignController {
 					billOrder.setUserId(billOrderVo.getUserId());
 					billOrder.setMoney(billOrderVo.getMoney().doubleValue()/100);
 					billOrder.setTradeNo(billOrderVo.getTradeNo());
+					billOrder.setServerId(billOrderVo.getServerId());
 			    	billOrder.setPayWay(billOrderVo.getPayWay());
 			    	billOrder.setStatus(1);
 			    	//billOrder.setDel(0);
@@ -370,7 +374,7 @@ public class SignController {
 			return resultMap;
 		}
 		
-		/*** 提现的接口 */
+		/*** 提现的接口 ,只有优能才有权限看见*/
 	  @ResponseBody
 		@RequestMapping(value="/bankRefund")
 		public  Object getRefund(BillWithdrawalsVo billWithdrawalsVo){
@@ -398,21 +402,24 @@ public class SignController {
 		  }
 		  
 		  /** 将查询出来的行号替换成treatyType*/
-		  
-		 
-		  
-		  try {
-			  kFTpayService.init();
-			  
-			kFTpayService.payToBankAccount(billWithdrawals);
+
+
+		   BillWithdrawals newBillWithdrawals = new BillWithdrawals();
+		   newBillWithdrawals.setStatus(1);
+		   newBillWithdrawals.setDel(0);
+		   newBillWithdrawals.setWalletId(billWithdrawals.getWalletId());
+		   newBillWithdrawals.setUserId(billWithdrawals.getUserId());
+		   newBillWithdrawals.setTradeNo(billWithdrawals.getTradeNo());
+		   newBillWithdrawals.setMoney(billWithdrawals.getMoney());
+		   newBillWithdrawals.setBankName(billWithdrawals.getBankName());
+		   newBillWithdrawals.setBankCardNum(billWithdrawals.getBankCardNum());
+		   newBillWithdrawals.setRealName(billWithdrawals.getRealName());
+		   newBillWithdrawals.setPhone(billWithdrawals.getPhone());
+
+		  billWithdrawalsService.save(newBillWithdrawals);
+
 			
-			
-		  }catch (Exception e) {
-			
-			e.printStackTrace();
-		}
-			
-			return	ResultVOUtil.success(null);
+			return	ResultVOUtil.success("提交申请成功!");
 
 		}
 		

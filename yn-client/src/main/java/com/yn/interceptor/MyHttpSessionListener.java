@@ -58,12 +58,6 @@ public class MyHttpSessionListener implements HttpSessionListener {
 		list.remove(sessioncache);
 	
 	}
-	
-	
-	
-	
-	
-	
 
 }
 

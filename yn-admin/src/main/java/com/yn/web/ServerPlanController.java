@@ -96,6 +96,7 @@ public class ServerPlanController {
     @RequestMapping(value = "/newsave", method = {RequestMethod.POST})
     public Object newsave(@RequestBody NewServerPlanVo serverPlanVo,HttpSession session) {
 
+
         logger.info("传递的serverId为：----- ---- ---- --- ---"+serverPlanVo.getServerId());
         logger.info("传递SolarPanel的Id为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getId());
         logger.info("传递SolarPanel的QualityAssurance为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getQualityAssurance());
@@ -114,6 +115,7 @@ public class ServerPlanController {
     	List<NewServerPlan> list = newserverPlanService.findAll(serverPlan);
     	
     	serverPlanVo.setServerId(serverResult.getId());
+
         serverPlanVo.setType(1);
 
         return newserverPlanService.insertServerPlan(list,serverPlan,serverPlanVo);
@@ -158,7 +160,6 @@ public class ServerPlanController {
     @ResponseBody
     public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
 
-    	
     	Server serverResult = serverService.findOne(serverPlanVo.getServerId());
     	
     	serverPlanVo.setServerId(serverResult.getId());

@@ -79,6 +79,7 @@ public class TransactionRecordService {
 		    	transactionRecord.setUserId(billOrder.getUserId());
 		    	transactionRecord.setType(2);
 		    	transactionRecord.setStatus(billOrder.getStatus());
+		    	transactionRecord.setServerId(billOrder.getServerId());
 		    	transactionRecord.setPayWay(billOrder.getPayWay());
 		    	
 	    	}else if(object instanceof Recharge){

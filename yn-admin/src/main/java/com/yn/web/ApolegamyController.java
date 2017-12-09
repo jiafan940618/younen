@@ -107,9 +107,9 @@ public class ApolegamyController {
     @RequestMapping(value = "/findnewApo")
     public Object findAponew(ApolegamyVo apolegamyVo,HttpSession httpSession) {
     	SessionCache server =(SessionCache) httpSession.getAttribute("SessionCache");
-    	
+
     	if(null == server){
-    		
+
     		return ResultVOUtil.error(777, "抱歉你未登录!");
     	}
     	

@@ -722,7 +722,7 @@ public class ElecDataDayService {
 		}else if (plan==1) {
 			days=DateUtil.whichMonth(date);
 			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"))*days;
-		}else if (plan==3) {
+		}else if (plan==2) {
 			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"));
 		}
 		

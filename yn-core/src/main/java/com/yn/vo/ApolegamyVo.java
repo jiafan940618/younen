@@ -16,6 +16,16 @@ public class ApolegamyVo extends QueryVo {
     private Long qualificationsId;
     private Integer type;
 
+    private Long serverId;
+
+    public Long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(Long serverId) {
+        this.serverId = serverId;
+    }
+
     public Long getId() {
         return id;
     }

@@ -131,6 +131,7 @@ public class PyOrderService {
 		billOrder.setMoney(billOrderVo.getMoney().doubleValue()*0.01);
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
     	billOrder.setPayWay(billOrderVo.getPayWay());
+		billOrder.setServerId(billOrderVo.getServerId());
     	billOrder.setStatus(1);
     	billOrder.setDel(0);
     	billOrderService.newsave(billOrder);
@@ -186,6 +187,7 @@ public class PyOrderService {
 		billOrder.setMoney(billOrderVo.getMoney().doubleValue());
 		logger.info("-- --- ----保存的金额为："+billOrderVo.getMoney().doubleValue());		
 		billOrder.setTradeNo(billOrderVo.getTradeNo());
+		billOrder.setServerId(billOrderVo.getServerId());
     	billOrder.setPayWay(billOrderVo.getPayWay());
     	billOrder.setStatus(0);
     	billOrder.setDel(0);

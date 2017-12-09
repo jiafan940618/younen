@@ -1,13 +1,16 @@
 package com.yn.web;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSON;
+import com.yn.model.*;
+import com.yn.service.*;
+import com.yn.vo.*;
+import net.sf.json.JSONArray;
+import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,30 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yn.dao.RoleDao;
-import com.yn.model.Brand;
-import com.yn.model.Devide;
-import com.yn.model.Inverter;
-import com.yn.model.Menu;
-import com.yn.model.NewServerPlan;
-import com.yn.model.OtherInfo;
-import com.yn.model.Page;
-import com.yn.model.Role;
-import com.yn.model.Server;
-import com.yn.model.SolarPanel;
-import com.yn.service.BrandService;
-import com.yn.service.DevideService;
-import com.yn.service.InverterService;
-import com.yn.service.MenuService;
-import com.yn.service.NewServerPlanService;
-import com.yn.service.OtherInfoService;
-import com.yn.service.RoleService;
-import com.yn.service.ServerService;
-import com.yn.service.SolarPanelService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
-import com.yn.vo.InverterVo;
-import com.yn.vo.NewServerPlanVo;
-import com.yn.vo.SolarPanelVol;
+import com.yn.utils.JsonUtil;
 import com.yn.vo.re.ResultVOUtil;
 
 @RestController
@@ -72,57 +54,27 @@ public class TestController {
     RoleDao roleDao;
     @Autowired
     MenuService menuService;
+
+	@Autowired
+	ApolegamyService apolegamyService;
    
 	
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave(Long roleId) {
+    public Object invsave(com.yn.model.Page<Apolegamy> page) {
 
-		roleId = 1l;
+		Server serverResult = serverService.findOne(2L);
 
-			Role findOne = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map = new LinkedHashMap<>();
-	        Set<Menu> menus = findOne.getMenu();
+		page.setId(serverResult.getId());
 
-	        roleId = 2l;
+		List<Apolegamy> list = apolegamyService.getPage(page);
 
-			Role findOne02 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map02 = new LinkedHashMap<>();
-	        Set<Menu> menus02 = findOne02.getMenu();
+		Integer count = apolegamyService.getCount(page);
 
-	        roleId = 3l;
-
-			Role findOne03 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map03 = new LinkedHashMap<>();
-	        Set<Menu> menus03 = findOne03.getMenu();
-
-	        roleId = 4l;
-
-			Role findOne04 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map04 = new LinkedHashMap<>();
-	        Set<Menu> menus04 = findOne04.getMenu();
-
-	        roleId = 5l;
-
-			Role findOne05 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map05 = new LinkedHashMap<>();
-	        Set<Menu> menus05 = findOne05.getMenu();
-
-	        roleId = 6l;
-
-			Role findOne06 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map06 = new LinkedHashMap<>();
-	        Set<Menu> menus06 = findOne06.getMenu();
-
-	        roleId = 7l;
-
-			Role findOne07 = roleService.findOne(roleId);
-	        Map<Menu, List<Menu>> map07 = new LinkedHashMap<>();
-	        Set<Menu> menus07 = findOne07.getMenu();
-
+		page.setTotal(count);
 	        
-        return ResultVOUtil.success();
+        return ResultVOUtil.newsuccess(page,list);
 
     }
 	

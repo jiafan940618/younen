@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.yn.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,6 @@ import com.yn.model.BankCard;
 import com.yn.model.BankCode;
 import com.yn.model.User;
 import com.yn.model.Wallet;
-import com.yn.service.BankCardService;
-import com.yn.service.BankCodeService;
-import com.yn.service.ServerService;
-import com.yn.service.TransactionRecordService;
-import com.yn.service.WalletService;
 import com.yn.service.kftService.CheckBankCard;
 import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
@@ -62,6 +58,9 @@ public class PayOrderAction {
 	private KFTpayService kftpayService;
 	@Autowired
 	private ServerService serverService;
+	@Autowired
+	private OrderService orderService;
+
 	
 	/** 得先判断该用户是否绑定银行卡*/
 	/** 使用快通支付*/
@@ -93,7 +92,8 @@ public class PayOrderAction {
 
 		return ResultVOUtil.success(null);
 	}
-	
+
+	 /*** 使用快付通实现支付*/
 	@ResponseBody
 	@RequestMapping(value="/bindIng")
 	public  Object getdIng(BillOrderVo billOrderVo,BankCardVo bankCardVo){
@@ -120,15 +120,22 @@ public class PayOrderAction {
 		
 		
 		billOrderVo.setTradeNo(serverService.getOrderCode(billOrderVo.getOrderId()));
-		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getUserId());
+
+
+
+		logger.info("======= ========= ======== =======传递的OrderId:"+billOrderVo.getOrderId());
 		logger.info("======= ========= ======== =======传递的UserId:"+billOrderVo.getUserId());
 		logger.info("======= ========= ======== =======传递的TradeNo:"+billOrderVo.getTradeNo());
 		logger.info("======= ========= ======== =======传递的money:"+billOrderVo.getMoney());
 		
 		logger.info("======= ========= ======== =======传递的协议号TreatyId:"+bankCardVo.getTreatyId());
-		
-		
+
 		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
+
+		Long serverId = orderService.findByOrderId(billOrderVo.getOrderId());
+		billOrderVo.setServerId(serverId);
+
+
 		 if (null!=bankCardVo.getTreatyId() && !bankCardVo.getTreatyId().equals("") ){
 		    	
 		    	try {
@@ -276,10 +283,11 @@ public class PayOrderAction {
 	@ResponseBody
 	@RequestMapping(value="/selectCard")
 	public Object getdelete(BankCardVo bankCardVo){
+
 		logger.info("----- ----- ------- ------ ---- 协议号为："+bankCardVo.getTreatyId());
-		
-	
+
 	 if (null!=bankCardVo.getTreatyId() || bankCardVo.getTreatyId().equals("") ){
+
 		 BankCard bankCard= bankCardService.findByBankcard(bankCardVo.getTreatyId());
 			
 			Object object =null;
