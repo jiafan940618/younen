@@ -273,7 +273,7 @@ public class OrderController {
 			result.put("gridConnectedIsPay", findOne.getGridConnectedIsPay());// 并网发电支付状态
 			result.put("gridConnectedStepA", findOne.getGridConnectedStepA());// 并网发电并网状态
 		}
-		result.put("flag4Money", flag4Money == 0 ? 1 : 0);
+		result.put("flag4Money", flag4Money == -1 ? 1 : 0);
 		result.put("loanStatus", findOne.getLoanStatus());// 贷款状态
 		result.put("status", findOne.getStatus());// 订单状态
 		return ResultVOUtil.success(result);

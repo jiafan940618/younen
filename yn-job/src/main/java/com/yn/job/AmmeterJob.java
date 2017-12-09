@@ -194,10 +194,10 @@ public class AmmeterJob {
 		}*/
 		if(apr1.getdAddr()!=2){
 			System.out.println("更新电表的Kw:" + totalKw);
+			ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
+			ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 			ammeter.setNowKw(totalKw);
 		}
-		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
-		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		ammeter.setUpdateDtm(new Date());
 		ammeterMapper.updateByPrimaryKeySelective(ammeter);
 		// 更新电站 每天 的发电/用电

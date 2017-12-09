@@ -1437,7 +1437,7 @@
 		<if test="dType != null">
 			and d_type = ${dType}
 		</if>
-		and w_addr = 0
+		and w_addr = 0 and meter_time CONCAT('${table}','%')
 		order by meter_time desc limit 1
 	</select>
 	<select id="findMinData" parameterType="com.yn.model.AmPhaseRecord"
@@ -1458,7 +1458,7 @@
 		<if test="dType != null">
 			and d_type = ${dType}
 		</if>
-		and w_addr = 0
+		and w_addr = 0 and meter_time CONCAT('${table}','%')
 		order by meter_time asc limit 1
 	</select>
 
