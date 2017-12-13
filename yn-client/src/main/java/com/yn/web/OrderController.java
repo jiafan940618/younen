@@ -307,7 +307,7 @@ public class OrderController {
 		System.out.println(orderId + "-->orderId");
 		Order order = orderService.findOne(orderId);
 		// 支付过的或者贷款的。
-		if (order.getLoanStatus() == 2 || order.getGridConnectedIsPay() == 2) {
+		if (order.getLoanStatus() == 2 || order.getGridConnectedIsPay() == 1) {
 			// 并网完成的。
 			if (order.getGridConnectedStepA() == 2) {
 				boolean stationRun = orderDetailService.pushComment(comment);

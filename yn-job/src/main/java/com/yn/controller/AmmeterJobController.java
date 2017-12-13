@@ -65,7 +65,6 @@ public class AmmeterJobController {
 	@Autowired
 	AmmeterMapper ammeterMapper;
 	
-	String date = "";
 	
 	/**
 	 * 
@@ -84,6 +83,7 @@ public class AmmeterJobController {
 	@RequestMapping("/simulationAGAndS/{year}/{month}")
 	public @ResponseBody Object job(@PathVariable("year") int year, @PathVariable("month") int month,
 			@RequestParam(value = "day", required = false, defaultValue = "-1") int day) {
+		String date = "";
 		try {
 			if (day == -1) {
 				int days = DateUtil.getDaysByYearMonth(year, month);
@@ -101,8 +101,8 @@ public class AmmeterJobController {
 						aprR.setwAddr(0);
 						List<AmPhaseRecord> amPhaseRecords = amPhaseRecordService.findAllByMapper(aprR);
 						for (AmPhaseRecord apr : amPhaseRecords) {
-							apr.setDealt(1);
 							// 已经处理
+							apr.setDealt(1);
 							apr.setDate(date);
 							amPhaseRecordService.updateByPrimaryKeySelective(apr);
 							// 保存电表记录。

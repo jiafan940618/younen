@@ -435,16 +435,17 @@ public class ElecDataDayService {
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listDay = new ArrayList<>();
 		List<Map<String, Object>> listDays = new ArrayList<>();
-		Date [] dateYesterday = DateUtil.getYesterdaySpace();
-		Date endStart=dateYesterday[1];
+		Date [] day = DateUtil.getThisMonthSpace();
+		Date endStart=new Date();
 		String end = new SimpleDateFormat("yyyy-MM-dd").format(endStart);
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DATE, -31);//计算30天后的时间
-		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
+		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(day[0]);
 		Object[] elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
+		SimpleDateFormat dFormat = new SimpleDateFormat("MM");
+		String nowTime = dFormat.format(endStart);
+		Integer num = Integer.parseInt(nowTime);
 		List<String> dateString=new ArrayList<>();
 		List<String> recordTimeList = new ArrayList<>();
-		for (int i = 1; i <= 30; i++) {
+		for (int i = 0; i < num; i++) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, -i);//计算30天后的时间
 			String days=new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
@@ -480,6 +481,7 @@ public class ElecDataDayService {
 		}
 	}
 	return listDay;
+
 
 	}
 
