@@ -228,9 +228,20 @@ public class UserLoginController {
 
         User user = userService.findOne(userR);
         user.setPassword(null);
+        
+        Map<String, Object> objectMap = ObjToMap.getObjectMap(user);
+        if(userDao.findOne(user.getId()).getRoleId()!=Long.parseLong(systemConfigService.get("admin_role_id"))){
+        	Server server = new Server();
+            server.setUserId(user.getId());
+            Server serverResult = serverService.findOne(server);
+            if (serverResult != null) {
+                objectMap.put("serverId", serverResult.getId());
+            }
+            System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
+        }
 
 
-        return ResultVOUtil.success(user);
+        return ResultVOUtil.success(objectMap);
     }
 
 

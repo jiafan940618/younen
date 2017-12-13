@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yn.domain.IDomain;
 
 /**
@@ -13,7 +16,7 @@ import com.yn.domain.IDomain;
 @Entity
 public class BillOrder extends IDomain implements Serializable{
 
-	private static final long serialVersionUID = 8510442621915013786L;
+	
 	
 	@Column(columnDefinition = "int(11) comment '[订单id]'")
     private Long orderId;
@@ -37,10 +40,10 @@ public class BillOrder extends IDomain implements Serializable{
 	/**
 	 * 用户
 	 */
-//	@ManyToOne
-//    @JoinColumn(name = "userId", insertable = false, updatable = false)
-//	@JsonIgnoreProperties(value = {"password","role"})
-//    private User user;
+	@ManyToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+	@JsonIgnoreProperties(value = {"password","role"})
+    private User user;
 	
 	/**
 	 * 订单
@@ -53,6 +56,12 @@ public class BillOrder extends IDomain implements Serializable{
 
 	public Long getServerId() {
 		return serverId;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public void setServerId(Long serverId) {
 		this.serverId = serverId;
