@@ -23,6 +23,7 @@ import com.yn.service.ServerService;
 import com.yn.service.kftService.CheckBankCard;
 import com.yn.service.kftService.IdcardUtil;
 import com.yn.service.kftService.KFTpayService;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
 import com.yn.utils.PhoneFormatCheckUtils;
@@ -86,6 +87,15 @@ public class BankCardController {
     @RequestMapping(value = "/findBankCard", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object insertBankCard(BankCardVo bankCardVo){
+    	
+    	Long userId = SessionCache.instance().getUserId();
+    	
+    	if(null == userId){
+    		
+    		  return ResultVOUtil.error(5003, "抱歉您未登录!");
+    	}
+    	bankCardVo.setUserId(userId);
+    	
     	logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());
 		logger.info("======= ========= ======== =======传递的卡类型(11、借计卡扣款  12、信用卡扣款):treatyType:"+bankCardVo.getTreatyType());
@@ -165,6 +175,8 @@ public class BankCardController {
 				
 				BankCard bankCard = new BankCard();
 			    BeanCopy.copyProperties(bankCardVo, bankCard);
+
+				bankCard.setAccountName(bankCardVo.getBankName());
 				
 			    bankCardService.save(bankCard);
 				return ResultVOUtil.success("绑定银行卡成功!");

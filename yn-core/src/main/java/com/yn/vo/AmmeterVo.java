@@ -4,6 +4,8 @@ import com.yn.domain.QueryVo;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+
 /**
  * 电表
  */
@@ -37,8 +39,7 @@ public class AmmeterVo extends QueryVo{
 	private Integer type;
 	private Integer status;
 	private String statusCode;
-	
-	
+
 
     public Long getId() {
         return id;

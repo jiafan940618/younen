@@ -15,7 +15,7 @@ import com.yn.domain.IDomain;
 public class TransactionRecord extends IDomain implements Serializable{
 	
 	
-	private Integer type; /** 1、充值 2、支付  3、提现 9、全部 */
+	private Integer type; /** 1、充值 2、支付  3、提现  4、退款   9、全部 */
 	
 	private Integer payWay;/** 1、余额支付 2、微信 3、支付宝  4、银联  5 快付通   9、全部*/
 	
@@ -25,7 +25,7 @@ public class TransactionRecord extends IDomain implements Serializable{
 	
 	private Long userId;
 	
-	private Integer status; /** 0、成功  1、失败   9、全部 */
+	private Integer status; /**[状态]{0:申请中,1:退款成功,2:退款失败,9:全部} */
 	
 	private String orderNo;
 

@@ -1,5 +1,6 @@
 package com.yn.web;
 
+import com.yn.model.*;
 import com.yn.vo.re.ResultVOUtil;
 
 import java.math.BigDecimal;
@@ -22,11 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.model.Apolegamy;
-import com.yn.model.NewServerPlan;
-import com.yn.model.ProductionDetail;
-import com.yn.model.Server;
-import com.yn.model.ServerPlan;
 import com.yn.service.ApolegamyServerService;
 import com.yn.service.ApolegamyService;
 import com.yn.service.NewServerPlanService;
@@ -162,12 +158,18 @@ public class ServerPlanController {
     @ResponseBody
     public Object newfindAll(NewServerPlanVo serverPlanVo,HttpSession session) {
 
-    	Server serverResult = serverService.findOne(serverPlanVo.getServerId());
+        Long userId = SessionCache.instance().getUserId();
+
+        Server server = new Server();
+        server.setUserId(userId);
+
+    	Server serverResult = serverService.findOne(server);
     	
     	serverPlanVo.setServerId(serverResult.getId());
     	
         NewServerPlan serverPlan = new NewServerPlan();
         BeanCopy.copyProperties(serverPlanVo, serverPlan);
+
        List<NewServerPlan> findAll = newserverPlanService.findAll(serverPlan);
         return ResultVOUtil.success(findAll);
     }

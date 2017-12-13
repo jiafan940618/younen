@@ -47,6 +47,15 @@ public class Ammeter extends IDomain implements Serializable {
 	private Integer status;
 	@Column(columnDefinition = "varchar(255) comment '[电表状态码]'")
 	private String statusCode;
+	
+	 @Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
+	    protected Long provinceId;
+	    @Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
+	    protected String provinceText;
+	    @Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
+	    protected Long cityId;
+	    @Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
+	    private String cityText;
 
 
     /**
@@ -71,6 +80,40 @@ public class Ammeter extends IDomain implements Serializable {
 	public Ammeter(Double workTotalKwh, Double initKwh) {
 		this.workTotalKwh = workTotalKwh;
 		this.initKwh = initKwh;
+	}
+
+	
+	
+	public Long getProvinceId() {
+		return provinceId;
+	}
+
+	public void setProvinceId(Long provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	public String getProvinceText() {
+		return provinceText;
+	}
+
+	public void setProvinceText(String provinceText) {
+		this.provinceText = provinceText;
+	}
+
+	public Long getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Long cityId) {
+		this.cityId = cityId;
+	}
+
+	public String getCityText() {
+		return cityText;
+	}
+
+	public void setCityText(String cityText) {
+		this.cityText = cityText;
 	}
 
 	public String getcAddr() {

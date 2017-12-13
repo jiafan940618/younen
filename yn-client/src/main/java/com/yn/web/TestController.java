@@ -4,32 +4,17 @@ package com.yn.web;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
+
+import com.yn.model.*;
+import com.yn.service.*;
+import com.yn.utils.BeanCopy;
+import com.yn.vo.OrderVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.yn.model.NewServerPlan;
-import com.yn.model.Order;
-import com.yn.model.OrderPlan;
-import com.yn.model.Qualifications;
-import com.yn.model.User;
-import com.yn.service.ApolegamyOrderService;
-import com.yn.service.ApolegamyService;
-import com.yn.service.BankCardService;
-import com.yn.service.BillOrderService;
-import com.yn.service.ConstructionService;
-import com.yn.service.NewServerPlanService;
-import com.yn.service.OrderPlanService;
-import com.yn.service.OrderService;
-import com.yn.service.QualificationsService;
-import com.yn.service.ServerService;
-import com.yn.service.StationService;
-import com.yn.service.SystemConfigService;
-import com.yn.service.TransactionRecordService;
-import com.yn.service.UserService;
-import com.yn.service.WalletService;
 import com.yn.vo.ApolegamyVo;
 import com.yn.vo.RechargeVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -69,16 +54,30 @@ public class TestController {
 	SystemConfigService  systemConfigService;
 	@Autowired
 	QualificationsService qualificationsService;
-	
-	
+
+	@Autowired
+	BillRefundService billRefundService;
 	
 	       @RequestMapping("/dotest") 
 	       @ResponseBody
-	       public Object helloJsp01(ApolegamyVo apolegamyVo){
+	       public Object helloJsp01(OrderVo orderVo){
 
-			 Long serverId =  orderService.findByOrderId(1L);
+			   orderVo.setId(804L);
+			   orderVo.setStatus(4);
+
+			   Order order = new Order();
+			   BeanCopy.copyProperties(orderVo, order);
+
+			   orderService.updateOrderbyId(order);
+
+			   BillRefund billRefund = bankCardService.getBank(order.getId());
+			   billRefund.setStatus(0);
+
+			   billRefundService.save(billRefund);
+
+			   transactionRecordService.InsertBillAll(billRefund);
 	    	  
-	   		return ResultVOUtil.success(serverId);
+	   		return ResultVOUtil.success();
 	        
 	       } 
 	       

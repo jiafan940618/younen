@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.yn.service.UserService;
+import com.yn.session.SessionCache;
 import com.yn.vo.re.ResultVOUtil;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import com.yn.vo.RoleVo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -43,6 +46,9 @@ public class RoleController {
     RoleDao roleDao;
     @Autowired
     MenuService menuService;
+    @Autowired
+    UserService userService;
+
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -115,14 +121,25 @@ public class RoleController {
     }
 
     @RequestMapping(value = "/newFind")
-    public void newfind(Long roleId, HttpServletResponse response,HttpServletRequest request) throws IOException {
+    public void newfind(Long roleId, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
+        
+       response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        response.setHeader("Access-Control-Allow-Credentials","true");
+        
 
-        response.setHeader("Access-Control-Allow-Origin", "http://mt.u-en.cn/api/");
+      //  response.setHeader("Access-Control-Allow-Origin", "http://mt.u-en.cn/");
 
-        System.out.println("传递的roleId为:--- --- -- --- --->"+roleId);
+       Long userid = SessionCache.instance().getUserId();
+
+        System.out.println("传递的roleId为:--- --- -- --- --->"+roleId+"userId--- ----"+userid);
+
+        SessionCache.instance().setUserId(1L);
 
         Role findOne = roleService.findOne(roleId);
 

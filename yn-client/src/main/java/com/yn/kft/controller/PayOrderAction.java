@@ -177,8 +177,7 @@ public class PayOrderAction {
 		  	}
 		  	
 		  	bankCardVo.setUserId(newuserVo.getId());
-		
-		
+
 		/** 测试数据*/
 		logger.info("======= ========= ======== =======传递的用户id:userId:"+bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的银行卡号:bankCardNum:"+bankCardVo.getBankCardNum());
@@ -191,6 +190,8 @@ public class PayOrderAction {
 		logger.info("======= ========= ======== =======传递的类型(1、个人账户):Type:"+bankCardVo.getType());
 		
 		BankCard newbankCard =	bankCardService.findBybank(bankCardVo.getBankCardNum());
+
+		BankCode bandCode =	bankCodeService.findOne(bankCardVo.getBankId().longValue());
 		
 		if(null != newbankCard){
 			return ResultVOUtil.error(777, "该银行卡已绑定!");
@@ -230,6 +231,8 @@ public class PayOrderAction {
 	String orderNo = serverService.getOrderNo(bankCardVo.getUserId());
 		logger.info("======= ========= ======== =======传递的orderNo:"+orderNo);
 	bankCardVo.setOrderNo(orderNo);
+
+
 		try {
 			kftpayService.init();
 			
@@ -259,7 +262,9 @@ public class PayOrderAction {
 				
 				BankCard bankCard = new BankCard();
 			    BeanCopy.copyProperties(bankCardVo, bankCard);
-				
+
+				bankCard.setAccountName(bandCode.getBankName());
+
 			    bankCardService.save(bankCard);
 				return ResultVOUtil.success("绑定银行卡成功!");
 			}

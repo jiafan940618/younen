@@ -62,19 +62,21 @@ public class TestController {
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave(com.yn.model.Page<Apolegamy> page) {
+    public Object invsave(NewServerPlanVo serverPlanVo) {
 
-		Server serverResult = serverService.findOne(2L);
+		Server server = new Server();
+		server.setUserId(3L);
 
-		page.setId(serverResult.getId());
+		Server serverResult = serverService.findOne(server);
 
-		List<Apolegamy> list = apolegamyService.getPage(page);
+		serverPlanVo.setServerId(serverResult.getId());
 
-		Integer count = apolegamyService.getCount(page);
+		NewServerPlan serverPlan = new NewServerPlan();
+		BeanCopy.copyProperties(serverPlanVo, serverPlan);
 
-		page.setTotal(count);
+		List<NewServerPlan> findAll = newServerPlanService.findAll(serverPlan);
 	        
-        return ResultVOUtil.newsuccess(page,list);
+        return ResultVOUtil.success(findAll);
 
     }
 	
