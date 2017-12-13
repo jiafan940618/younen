@@ -67,21 +67,27 @@ public class OrderPlanService {
 			map.put("batteryBoard", batteryBoardBrand+" "+batteryBoardModel);
 			map.put("inverter", inverterBrand+" "+inverterModel);
 
+		String apoids = "";
+			if(apoIds != null ){
 	        String[] ids =  apoIds.split(",");
+
 	        List<Long> newlist = new LinkedList<Long>();
 	        for (int i = 0; i < ids.length; i++) {
 	        	newlist.add(Long.valueOf(ids[i]));
 			}
-	        
+
+
 	        List<Apolegamy>  apolist =  apolegamyService.findAll(newlist);
-	        
-	        String apoids = "";
+
+
+
 	        if(apolist.size() !=0){
 
 		        for (Apolegamy apolegamy : apolist) {
 		        	apoids += apolegamy.getApolegamyName()+"、";
 				}
 	        }
+			}
 	        if(apoids.equals("")){
 	        	map.put("apoIds", "未选择配选项目");
 	        }else{

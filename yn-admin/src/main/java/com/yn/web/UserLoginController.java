@@ -17,11 +17,12 @@ import com.yn.service.StationService;
 import com.yn.service.SystemConfigService;
 import com.yn.service.UserService;
 import com.yn.session.SessionCache;
-import com.yn.utils.CodeUtil;
-import com.yn.utils.MD5Util;
-import com.yn.utils.ObjToMap;
+import com.yn.utils.*;
+import com.yn.vo.NewUserVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
+
+import net.sf.json.JSONArray;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,6 +124,115 @@ public class UserLoginController {
         
         return ResultVOUtil.success(objectMap);
     }
+
+    /** 前端跳转后台登陆
+     * @throws IOException */
+    @RequestMapping(value = "/JumpLogin")
+    public void JumpLogin(UserVo userVo,HttpServletResponse response,HttpServletRequest request) throws IOException {
+
+    	response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        response.setHeader("Access-Control-Allow-Credentials","true");
+
+     //  response.setHeader("Access-Control-Allow-Origin", "http://mt.u-en.cn/");
+    	
+        User user = userService.findByPhone(userVo.getPhone());
+
+        if (user == null) {
+            logger.info("----- --- ----- 该用户不存在！");
+            
+            JSONArray jsonArray = JSONArray.fromObject(ResultVOUtil.error(777, Constant.NO_THIS_USER));
+            String result = jsonArray.toString();
+
+             //前端传过来的回调函数名称
+               String callback = request.getParameter("callback");
+               //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
+               result = callback + "(" + result + ")";
+
+               response.getWriter().write(result);
+
+           
+        } else if (!user.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))) {
+            logger.info("----- --- ----- 密码错误！");
+            
+            JSONArray jsonArray = JSONArray.fromObject(ResultVOUtil.error(777, Constant.PASSWORD_ERROR));
+            String result = jsonArray.toString();
+
+             //前端传过来的回调函数名称
+               String callback = request.getParameter("callback");
+               //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
+               result = callback + "(" + result + ")";
+
+               response.getWriter().write(result);
+            
+           
+        }
+
+        Server server = new Server();
+        server.setUserId(user.getId());
+
+        server = serverService.findOne(server);
+        if(null == server){
+            logger.info("----- --- ----- 抱歉,用户未注册服务商的身份");
+            
+            JSONArray jsonArray = JSONArray.fromObject(ResultVOUtil.error(777, Constant.PASSWORD_ERROR));
+            String result = jsonArray.toString();
+
+             //前端传过来的回调函数名称
+               String callback = request.getParameter("callback");
+               //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
+               result = callback + "(" + result + ")";
+
+               response.getWriter().write(result);
+           
+        }
+
+        user.setToken(userService.getToken(user));
+
+        userService.updateToken(user);
+
+        SessionCache.instance().setUserId(user.getId());
+
+        user.setPassword(null);
+        
+
+        
+        JSONArray jsonArray = JSONArray.fromObject(user);
+        String result = jsonArray.toString();
+
+         //前端传过来的回调函数名称
+           String callback = request.getParameter("callback");
+           //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
+           result = callback + "(" + result + ")";
+
+           response.getWriter().write(result);
+
+        logger.info("---- ---- --- --- - --- - --- ----结束");
+
+    }
+
+    /** 获得Token实现跨域登陆*/
+    @RequestMapping(value = "/logIn")
+    @ResponseBody
+    public Object logIn(UserVo userVo) {
+        User userR = new User();
+        BeanCopy.copyProperties(userVo, userR);
+
+
+        logger.info("拿到Token----- ---- ---- --->"+userR.getToken());
+
+        User user = userService.findOne(userR);
+        user.setPassword(null);
+
+
+        return ResultVOUtil.success(user);
+    }
+
 
     /**
      * 登出

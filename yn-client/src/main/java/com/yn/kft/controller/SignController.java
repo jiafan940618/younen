@@ -405,7 +405,7 @@ public class SignController {
 
 
 		   BillWithdrawals newBillWithdrawals = new BillWithdrawals();
-		   newBillWithdrawals.setStatus(1);
+		   newBillWithdrawals.setStatus(0);
 		   newBillWithdrawals.setDel(0);
 		   newBillWithdrawals.setWalletId(billWithdrawals.getWalletId());
 		   newBillWithdrawals.setUserId(billWithdrawals.getUserId());

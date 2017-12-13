@@ -35,5 +35,7 @@ public interface BrandDao extends JpaRepository<Brand, Long>, JpaSpecificationEx
 	 @Query("SELECT new SolarPanel(id,model,brandName,brandId) FROM SolarPanel WHERE brandId =:id AND del =0")
 	 List<SolarPanel>  getSolarPanel(@Param("id") Integer id);
 	 
+	 
+	 
 	
 }

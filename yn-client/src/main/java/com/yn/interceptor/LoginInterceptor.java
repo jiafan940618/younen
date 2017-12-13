@@ -37,6 +37,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+
+
+
+
         String ip = GetIP.getRemoteAddress(request);
         String requestURL = request.getRequestURL().toString();
         String url = request.getQueryString() == null ? requestURL + "" : (requestURL + "?" + request.getQueryString());
@@ -70,8 +74,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                     throw new MyException(5003, Constant.NO_LOGIN);
                 }
             }else{
-            	//return true;
-            	throw new MyException(5003, Constant.NO_LOGIN);
+            	return true;
+            	//throw new MyException(5003, Constant.NO_LOGIN);
             }
 
             }

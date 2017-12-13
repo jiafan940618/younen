@@ -63,8 +63,7 @@ public class StationController {
     @RequestMapping(value = "/select")
     @ResponseBody
     public Object findOne(Long id) {
-    	
-    	
+
         StationVo stationVo =  orderPlanService.findByid(id);
       
         Map<String,String>  map = orderPlanService.selectByid(stationVo.getOrderId());

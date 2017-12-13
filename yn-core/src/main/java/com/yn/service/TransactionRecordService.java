@@ -2,17 +2,16 @@ package com.yn.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
+import com.yn.model.*;
+import com.yn.utils.RepositoryUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.yn.dao.TransactionRecordDao;
 import com.yn.dao.mapper.TransactionRecordMapper;
-import com.yn.model.BillOrder;
-import com.yn.model.BillWithdrawals;
-import com.yn.model.Page;
-import com.yn.model.Recharge;
-import com.yn.model.TransactionRecord;
 import com.yn.utils.BeanCopy;
 
 @Service
@@ -32,7 +31,7 @@ public class TransactionRecordService {
 		return transactionRecordDao.FindByNum(userId); 
 	 }
 	
-	public int FindBynewNum(Page<TransactionRecord> page){
+	public int FindBynewNum(com.yn.model.Page<TransactionRecord> page){
 		
 		return transactionRecordMapper.FindByNum(page);
 	}
@@ -56,10 +55,17 @@ public class TransactionRecordService {
 	            return transactionRecordDao.save(transactionRecord);
 	        }
 	    }
-	    public List<TransactionRecord> GivePage(Page<TransactionRecord> page){
+	    public List<TransactionRecord> GivePage(com.yn.model.Page<TransactionRecord> page){
 	    	
 			return transactionRecordMapper.GivePage(page);
 	    }
+
+	public Page<TransactionRecord> findAll(TransactionRecord transactionRecord, Pageable pageable) {
+		Specification<TransactionRecord> spec = RepositoryUtil.getSpecification(transactionRecord);
+		Page<TransactionRecord> findAll = transactionRecordDao.findAll(spec, pageable);
+		return findAll;
+	}
+
 	  
 	
 	 /** 将3种记录保存在一个表中*/
@@ -105,6 +111,18 @@ public class TransactionRecordService {
 	    		transactionRecord.setOrderNo(billWithdrawals.getTradeNo());
 	    		transactionRecord.setUserId(billWithdrawals.getUserId());
 	    		
+	    	}else if(object instanceof BillRefund){
+
+				BillRefund billRefund =(BillRefund)object;
+
+				transactionRecord.setRemark(billRefund.getRemark());
+				transactionRecord.setMoney(billRefund.getMoney());
+				transactionRecord.setStatus(billRefund.getStatus());
+				transactionRecord.setOrderNo(billRefund.getTradeNo());
+				transactionRecord.setUserId(billRefund.getUserId());
+				transactionRecord.setServerId(billRefund.getServerId());
+				transactionRecord.setPayWay(4);
+				transactionRecord.setType(4);
 	    	}
 	    	
 	    	save(transactionRecord);

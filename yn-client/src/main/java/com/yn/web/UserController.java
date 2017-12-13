@@ -1,5 +1,7 @@
 package com.yn.web;
 
+import com.yn.model.*;
+import com.yn.service.*;
 import com.yn.vo.re.ResultVOUtil;
 
 import java.text.DecimalFormat;
@@ -25,19 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yn.model.Ammeter;
-import com.yn.model.Order;
-import com.yn.model.Station;
-import com.yn.model.TransactionRecord;
-import com.yn.model.User;
-import com.yn.model.VisitorStation;
-import com.yn.service.AmmeterService;
-import com.yn.service.OrderService;
-import com.yn.service.StationService;
-import com.yn.service.SystemConfigService;
-import com.yn.service.TransactionRecordService;
-import com.yn.service.UserService;
-import com.yn.service.VisitorStationService;
 import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.Constant;
@@ -70,9 +59,15 @@ public class UserController {
 	TransactionRecordService transactionRecordService;
     @Autowired
     VisitorStationService visitorStationService;
-    
-    
-    @RequestMapping(value = "/select", method = {RequestMethod.POST})
+	@Autowired
+	BillRefundService billRefundService;
+	@Autowired
+	BankCardService bankCardService;
+
+
+
+
+	@RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
     public Object findOne(Long id) {
         User findOne = userService.findOne(id);
@@ -462,7 +457,7 @@ public class UserController {
 		return ResultVOUtil.newsuccess(page, list);
     }
     
-    /** 点击贷款修改订单状态*/
+    /** 点击退款修改订单状态*/
     @ResponseBody
     @RequestMapping(value = "/updateQueOrder")
     public Object updateOrder(OrderVo orderVo) {
@@ -472,8 +467,16 @@ public class UserController {
     	
     	Order order = new Order();
     	BeanCopy.copyProperties(orderVo, order);
-    	
+
     	orderService.updateOrderbyId(order);
+
+		BillRefund billRefund = bankCardService.getBank(order.getId());
+		billRefund.setStatus(0);
+
+		billRefundService.save(billRefund);
+
+		transactionRecordService.InsertBillAll(billRefund);
+    	
     	
 	 return ResultVOUtil.success(null);   	
     }
@@ -531,7 +534,7 @@ public class UserController {
   	  		return ResultVOUtil.error(5003, "抱歉,您未登录!");
   	  	}
     	
-  	    page.setUserId(2l);
+  	    page.setUserId(newuserVo.getId());
   	    if(null != page.getTime_to()){
   	    	page.setTime_to(page.getTime_to()+" "+"23:59:59");
   	    }

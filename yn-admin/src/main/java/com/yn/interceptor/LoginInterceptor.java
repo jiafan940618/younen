@@ -32,6 +32,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+
         String ip = GetIP.getRemoteAddress(request);
         String requestURL = request.getRequestURL().toString();
         String url = request.getQueryString() == null ? requestURL + "" : (requestURL + "?" + request.getQueryString());
@@ -66,9 +67,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 SessionCache.instance().setUserId(user.getId());
                 return true;
             }
-            return true;
-            //throw new MyException(ResultEnum.NO_LOGIN);
+            logger.info("登陆失败没有session:--- ---- ---- --->");
+           /* SessionCache.instance().setUserId(1L);
+            return true;*/
+            throw new MyException(ResultEnum.NO_LOGIN);
         }
+
+        logger.info("得到session的userId:--- ---- ---- --->"+userId);
 
         return true;
     }

@@ -36,6 +36,9 @@ public class BillRefund extends IDomain implements Serializable {
 	@Column(columnDefinition = "int(1) default 0 comment '[退款状态]{0:申请中,1:退款成功,2:退款失败}'")
 	private Integer status;
 
+	@Column(columnDefinition = "varchar(255) comment '[退款信息备注]'")
+	private String remark;
+
 	/**
 	 * 用户
 	 */
@@ -54,6 +57,13 @@ public class BillRefund extends IDomain implements Serializable {
 		this.serverId = serverId;
 	}
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public Long getUserId() {
 		return userId;

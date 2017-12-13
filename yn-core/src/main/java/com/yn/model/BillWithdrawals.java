@@ -35,7 +35,7 @@ public class BillWithdrawals extends IDomain implements Serializable {
 	private Double money;
 	@Column(columnDefinition = "datetime default CURRENT_TIMESTAMP comment '[申请时间]'")
     private Date applyDtm;
-	@Column(columnDefinition = "int(1) default 0 comment '[提现状态]{0:提现成功,1:提现失败}'")
+	@Column(columnDefinition = "int(1) default 0 comment '[提现状态]{0:申请中,1:退款成功,2:退款失败}'")
 	private Integer status;
 	
 	private String remark;

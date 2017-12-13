@@ -1,8 +1,12 @@
 package com.yn.service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import com.yn.model.BillRefund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -131,8 +135,37 @@ public class BankCardService {
 		return bankCard;	
 		
 	}
-	
 
-	
-	
+
+    //bank_card_num,b.account_name,b.real_name,o.had_pay_price,b.phone,o.order_code
+	public BillRefund getBank(Long id){
+
+		BillRefund billRefund = new BillRefund();
+
+		Object object = bankCardDao.getBank(id);
+
+		Object[] obj = (Object[])object;
+
+		String bankCardNum = (String)obj[0];
+		String accountName = (String)obj[1];
+		String realName = (String)obj[2];
+		BigDecimal hadPayPrice = (BigDecimal)obj[3];
+		String phone = (String)obj[4];
+		String orderCode = (String)obj[5];
+		Integer userId =(Integer)obj[6];
+		Integer serverId =(Integer)obj[7];
+
+
+		billRefund.setBankCardNum(bankCardNum);
+		billRefund.setBankName(accountName);
+		billRefund.setRealName(realName);
+		billRefund.setMoney(hadPayPrice.doubleValue());
+		billRefund.setPhone(phone);
+		billRefund.setTradeNo(orderCode);
+		billRefund.setUserId(userId.longValue());
+		billRefund.setServerId(serverId.longValue());
+
+		return billRefund;
+	}
+
 }
