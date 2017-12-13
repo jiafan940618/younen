@@ -382,7 +382,7 @@ public class UserService {
     public void saveQuickly(User user) {
      User newUser =new User();
      newUser.setPhone(user.getPhone());
-     newUser.setPassword("123456");//默认：123456
+     newUser.setPassword("e10adc3949ba59abbe56e057f20f883e");//默认：123456
      newUser.setAccount(user.getPhone());
      newUser.setAddressText(user.getAddressText());
      newUser.setFullAddressText(user.getAddressText());
@@ -393,6 +393,7 @@ public class UserService {
      newUser.setUserName(user.getUserName());
      newUser.setNickName(user.getUserName());
      newUser.setRoleId(6L);//默认是普通用户
+     userDao.save(newUser);
      
     }
 

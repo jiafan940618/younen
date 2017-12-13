@@ -494,8 +494,7 @@ public class ElecDataDayService {
 	public List<Map<String, Object>> monthInfo(List<Long> ammeterCodes, Integer type)
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listMonth = new ArrayList<>();
-		Date [] dateYesterday = DateUtil.getYesterdaySpace();
-		Date endStart=dateYesterday[1];
+		Date endStart=new Date();
 		Date[] monthSpace = DateUtil.getThisYearSpace();
 		Date monthStartTime = monthSpace[0];
 		String monthStart = new SimpleDateFormat("yyyy-MM").format(monthStartTime);

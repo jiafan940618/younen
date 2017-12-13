@@ -280,13 +280,13 @@ public class UserLoginController {
 	 @ResponseBody
 	    public Object someTest(UserVo userVo,HttpSession session,User user) {
 
-    			userVo.setPhone("13711951949");
-    			userVo.setCapacity(10.08);
-    			userVo.setPrice(110880.00);
+    			userVo.setPhone("13790662344");
+    			userVo.setCapacity(11.20);
+    			userVo.setPrice(123200.00);
     			userVo.setPlanId(5L);
-//    			user.setAddressText("东莞市长安镇乌沙社区光裕三路三巷7号");
-//    			user.setUserName("");
-    			
+//    			user.setAddressText("东莞市万江区永泰街徐家尾一巷8号	");
+//    			user.setUserName("招杰伟");
+//    			
 //    			   user.setPhone(userVo.getPhone());
 //    			   /** 添加用户 */
 //    			   userService.saveQuickly(user);
