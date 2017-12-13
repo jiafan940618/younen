@@ -72,5 +72,9 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
 //  @Query("select o.dAddr from ElecDataHour o where o.stationId = ?1 and o.dAddr like CONCAT(?2,'%') and o.del = 0")
 
 //  Set<Long> findDAddr(Long stationId, Long dAddr);
-
+    @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=1 AND t.ammeter_code in (?3) AND t.del=0",nativeQuery=true)
+    double sumKwh(String start, String end, List<Long> ammeterCodes);
+    
+    @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=1 AND t.del=0",nativeQuery=true)
+    double sumKwhAll(String start, String end);
 }

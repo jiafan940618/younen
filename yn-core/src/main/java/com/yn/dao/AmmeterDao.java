@@ -77,8 +77,8 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     @Query(value="select COALESCE(sum(s.init_kwh),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
     double initTotalkwh(Long stationId);
     
-    @Query(value="select a.c_addr from ammeter as a where a.station_id=(?1) AND s.del=0",nativeQuery=true)
-    List<Long> selectAmmeterCodeByStationIds(Long stationId);
+    @Query(value="select a.c_addr from ammeter as a where a.station_id in(?1) AND a.del=0",nativeQuery=true)
+    List<Long> selectAmmeterCodeByStationIds(List<Long> stationIds);
     
     @Query(value="SELECT SUM(init_kwh)+SUM(work_total_kwh) FROM ammeter WHERE del=0 AND station_id "
     		+ "IN(SELECT id FROM station WHERE server_id=?1 AND del=0);",nativeQuery=true)
@@ -92,6 +92,7 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
 	
 	@Query(value="SELECT MIN(a.create_dtm) FROM ammeter as a WHERE a.station_id=?1 AND a.del=0",nativeQuery=true)
     Date selectCreateDtm(Long stationId);
+	
 
 }
 

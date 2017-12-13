@@ -2,6 +2,7 @@ package com.yn.service;
 
 
 import com.yn.dao.AmmeterDao;
+import com.yn.dao.ElecDataDayDao;
 import com.yn.dao.OrderDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.SubsidyDao;
@@ -60,6 +61,8 @@ public class StationService {
 	private NoticeService noticeService;
 	@Autowired
 	OrderService orderService;
+	@Autowired
+	ElecDataDayDao elecDataDayDao;
 	
 
 	private static DecimalFormat df = new DecimalFormat("0.00");
@@ -842,4 +845,51 @@ public class StationService {
 
 		return map;
 	}
+	/**
+	 * 
+	    * @Title: majorKeyByUserId
+	    * @Description: TODO(这里用一句话描述这个方法的作用)
+	    * @param @param stations
+	    * @param @return    参数
+	    * @return Map<String,Object>    返回类型
+	    * @throws
+	 */
+	public Map<String, Object> majorKeyByUserId(List<Station> stations) {
+		
+		Map<String, Object> map = new HashMap<>();
+		List<Long> stationIds=new ArrayList<>();
+	    for (Station station : stations) {
+		    stationIds.add(station.getId());
+	     }
+	    Date date=new Date();
+		String dateTime=new SimpleDateFormat("yyyy-MM-dd").format(date);
+		List<Long>ammeterCodes=ammeterDao.selectAmmeterCodeByStationIds(stationIds);
+	    double kw=ammeterDao.sumNowKwByStationIds(stationIds);
+	    double kwh=elecDataDayDao.sumKwh(dateTime, dateTime, ammeterCodes);
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(kwh));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(kw));
+		
+		return map;
+	}
+	/**
+	 * 
+	    * @Title: majorKeyByAll
+	    * @Description: TODO(这里用一句话描述这个方法的作用)
+	    * @return Map<String,Object>    返回类型
+	    * @throws
+	 */
+	public Map<String, Object> majorKeyByAll() {
+		
+		Date date=new Date();
+		String dateTime=new SimpleDateFormat("yyyy-MM-dd").format(date);
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		double kwh=elecDataDayDao.sumKwhAll(dateTime, dateTime);
+		double kw=ammeterDao.sumNowKw();
+		map.put("kwh", NumberUtil.accurateToTwoDecimal(kwh));
+		map.put("kw", NumberUtil.accurateToTwoDecimal(kw));		
+		return map;
+	}
+	
 }

@@ -170,7 +170,7 @@ public class UserLoginController {
 	 @ResponseBody
 	    public Object someTest(UserVo userVo,HttpSession session,User user) {
 
-    			userVo.setPhone("15999720703");
+    			userVo.setPhone("13711951949");
     			userVo.setCapacity(10.08);
     			userVo.setPrice(110880.00);
     			userVo.setPlanId(5L);

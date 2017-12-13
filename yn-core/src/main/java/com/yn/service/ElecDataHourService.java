@@ -930,6 +930,9 @@ public class ElecDataHourService {
 		if (type == 1) {
 			double treeNum = todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm"));
 			maps.put("treeNum", NumberUtil.accurateToTwoDecimal(treeNum));
+			logger.info("-----------------------------------------限制后treeNum:"+ todayKwh * Double.valueOf(systemConfigService.get("plant_trees_prm")));
+			logger.info("-----------------------------------------treeNum:"+treeNum);
+			logger.info("-----------------------------------------限制后treeNum:"+ NumberUtil.accurateToTwoDecimal(treeNum));
 			maps.put("capacity",NumberUtil.accurateToTwoDecimal(stationDao.findCapacity(stationId)) );
 		}
 		

@@ -185,11 +185,33 @@ public class StationController {
 				List<Station> stationAll = stationDao.findAllStation();
 				stationByUser = stationService.stationByAll(stationAll);
 			}
-		
-
 
 		return ResultVOUtil.success(stationByUser);
 	}
+	
+	/**
+	 * ios主键
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/majorKey", method = { RequestMethod.POST, RequestMethod.GET })
+	public Object majorKey( Station station, Long userId) {
+		Map<String, Object> majorKeyByUser = new HashMap<>();
+		
+			if (userId!=null) {
+				List<Station> stations = stationDao.findByUserId(userId);
+				if (stations!=null&&stations.size()>0) {
+					majorKeyByUser = stationService.majorKeyByUserId(stations);
+				} else {
+					majorKeyByUser = stationService.majorKeyByAll();
+				}
+			}else {
+				majorKeyByUser = stationService.majorKeyByAll();
+			}
+
+		return ResultVOUtil.success(majorKeyByUser);
+	}
+	
+	
 
 
 	/**
