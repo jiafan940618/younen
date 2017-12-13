@@ -299,7 +299,7 @@ public class KFTpayService {
 			Recharge recharge = new Recharge();
 			recharge.setWalletId(rechargeVo.getWalletId());
 			recharge.setMoney(rechargeVo.getMoney().doubleValue()*0.01);
-			recharge.setRechargeCode(rechargeVo.getRechargeCode());
+			recharge.setTradeNo(rechargeVo.getRechargeCode());
 			recharge.setPayWay(rechargeVo.getPayWay());
 			recharge.setUserId(rechargeVo.getUserId());
 			//recharge.setDel(0);
@@ -310,7 +310,7 @@ public class KFTpayService {
 			if(result.getStatus()==1){
 				
 			
-            	recharge.setRechargeCode(rechargeVo.getRechargeCode());
+				recharge.setTradeNo(rechargeVo.getRechargeCode());
             	recharge.setStatus(0);
             	
             	rechargeService.updateRecharge(recharge);

@@ -189,7 +189,7 @@ public class RechargeController {
 				                	logger.info("-- --- ---- -- --- - - - - - - - - --金额为： "+amount);
 				                	
 				                	Recharge recharge = new Recharge();
-				                	recharge.setRechargeCode(orderNo);
+				                	recharge.setTradeNo(orderNo);
 				                	recharge.setStatus(0);
 				                	
 				                	rechargeService.updateRecharge(recharge);
@@ -328,7 +328,7 @@ public class RechargeController {
 				if(verify_sign){
 					
 					Recharge recharge = new Recharge();
-                	recharge.setRechargeCode(orderNo);
+					recharge.setTradeNo(orderNo);
                 	recharge.setStatus(0);
                 	
                 	rechargeService.updateRecharge(recharge);

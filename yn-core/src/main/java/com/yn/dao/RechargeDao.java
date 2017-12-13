@@ -23,14 +23,14 @@ public interface RechargeDao extends JpaRepository<Recharge, Long>, JpaSpecifica
 	
 	@Transactional
 	@Modifying
-	@Query("update Recharge set status =:#{#recharge.status},del = 0 where rechargeCode = :#{#recharge.rechargeCode}")
+	@Query("update Recharge set status =:#{#recharge.status},del = 0 where tradeNo = :#{#recharge.rechargeCode}")
 	void updateRecharge(@Param("recharge") Recharge recharge);
 	
 	@Query(value="SELECT w.`id`,w.`money` w_money,r.`money` r_money "+
-		"FROM recharge r LEFT JOIN wallet w ON w.id = r.`wallet_id` WHERE r.`recharge_code` = :#{#recharge.rechargeCode} AND r.del = 0",nativeQuery=true)
+		"FROM recharge r LEFT JOIN wallet w ON w.id = r.`wallet_id` WHERE r.`trade_no` = :#{#recharge.rechargeCode} AND r.del = 0",nativeQuery=true)
 		Object findRecharge(@Param("recharge") Recharge recharge);
 	
-	@Query("SELECT r from   Recharge r where r.rechargeCode = :orderNo and r.del = 0")
+	@Query("SELECT r from   Recharge r where r.tradeNo = :orderNo and r.del = 0")
 	Recharge findByRecode(@Param("orderNo") String orderNo);
 	
 }

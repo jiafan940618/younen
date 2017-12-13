@@ -98,7 +98,7 @@ public class TransactionRecordService {
 	    		transactionRecord.setType(1);
 	    		transactionRecord.setStatus(recharge.getStatus());
 	    		transactionRecord.setUserId(recharge.getUserId());
-	    		transactionRecord.setOrderNo(recharge.getRechargeCode());
+	    		transactionRecord.setOrderNo(recharge.getTradeNo());
 	    	}else if(object instanceof BillWithdrawals){
 	    		BillWithdrawals billWithdrawals = (BillWithdrawals)object;
 	    	

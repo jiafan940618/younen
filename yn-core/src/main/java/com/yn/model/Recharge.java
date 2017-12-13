@@ -13,7 +13,7 @@ public class Recharge  extends IDomain implements Serializable {
 	/** [状态 0:成功 1:失败]*/
 	private Integer status;
 	/** 订单编号*/
-	private String rechargeCode;
+	private String tradeNo;
 	/** [支付方式]{2:微信,3:支付宝,4:银联,5:快付通}*/
 	private Integer payWay;
 	
@@ -70,10 +70,13 @@ public class Recharge  extends IDomain implements Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public String getRechargeCode() {
-		return rechargeCode;
+
+	public String getTradeNo() {
+		return tradeNo;
 	}
-	public void setRechargeCode(String rechargeCode) {
-		this.rechargeCode = rechargeCode;
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
+	
 }
