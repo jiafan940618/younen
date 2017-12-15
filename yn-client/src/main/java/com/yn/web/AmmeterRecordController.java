@@ -89,5 +89,21 @@ public class AmmeterRecordController {
 		map.put("pageInfo", pageInfo);
 		return ResultVOUtil.success(map);
 	}
+	
+	/**
+	 * 前端状态日报
+	 */
+	@RequestMapping(value = "/stateDailyAndroid", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public Object listCountAndroid(AmmeterRecordVo ammeterRecordVo,Integer pageIndex) {
+		AmmeterRecord ammeterRecord = new AmmeterRecord();
+		BeanCopy.copyProperties(ammeterRecordVo, ammeterRecord);
+		PageHelper.startPage(pageIndex == null ? 1 : pageIndex, 5000);
+		List<AmmeterRecord> ammeterRecords = ammeterRecordService.findByMapper(ammeterRecord);
+		PageInfo<AmmeterRecord> pageInfo = new PageInfo<>(ammeterRecords);
+		Map<String, Object> map = new HashMap<>();
+		map.put("pageInfo", pageInfo);
+		return ResultVOUtil.success(map);
+	}
  
 }

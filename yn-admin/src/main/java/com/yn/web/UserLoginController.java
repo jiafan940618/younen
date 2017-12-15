@@ -291,9 +291,9 @@ public class UserLoginController {
 	 @ResponseBody
 	    public Object someTest(UserVo userVo,HttpSession session,User user) {
 
-    			userVo.setPhone("13790662344");
-    			userVo.setCapacity(11.20);
-    			userVo.setPrice(123200.00);
+    			userVo.setPhone("13902601226");
+    			userVo.setCapacity(10.08);
+    			userVo.setPrice(110880.00);
     			userVo.setPlanId(5L);
 //    			user.setAddressText("东莞市万江区永泰街徐家尾一巷8号	");
 //    			user.setUserName("招杰伟");
