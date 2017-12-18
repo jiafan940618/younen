@@ -46,22 +46,22 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     List<Long> selectAmmeterCode(Long stationId);
 	
     @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.del=0",nativeQuery=true)
-    double sumNowKw();
+    Double sumNowKw();
     
     @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.station_id in (?1) AND s.del=0",nativeQuery=true)
-    double sumNowKwByStationIds(List<Long> stationIds);
+    Double sumNowKwByStationIds(List<Long> stationIds);
     
     @Query(value="select COALESCE(sum(s.work_total_kwh),0) from ammeter as s WHERE s.station_id in (?1) AND s.del=0",nativeQuery=true)
-    double sumWorkTotalKwhByStationIds(List<Long> stationIds);
+    Double sumWorkTotalKwhByStationIds(List<Long> stationIds);
     
     @Query(value="select COALESCE(sum(s.work_total_kwh),0) from ammeter as s WHERE  s.del=0",nativeQuery=true)
-    double sumWorkTotalKwh();
+    Double sumWorkTotalKwh();
     
     @Query(value="select COALESCE(sum(s.init_kwh),0) from ammeter as s WHERE s.station_id in (?1) AND s.del=0",nativeQuery=true)
-    double sumInitKwhByStationIds(List<Long> stationIds);
+    Double sumInitKwhByStationIds(List<Long> stationIds);
     
     @Query(value="select COALESCE(sum(s.init_kwh),0) from ammeter as s WHERE  s.del=0",nativeQuery=true)
-    double sumInitKwh();
+    Double sumInitKwh();
     
     Ammeter findByCAddr(String caddr);
     
@@ -69,23 +69,23 @@ public interface AmmeterDao extends JpaRepository<Ammeter, Long>, JpaSpecificati
     List<Long> selectAllAmmeter();
     
     @Query(value="select COALESCE(sum(s.now_kw),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
-    double nowKw(Long stationId);
+    Double nowKw(Long stationId);
     
     @Query(value="select COALESCE(sum(s.work_total_kwh),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
-    double workTotalkwh(Long stationId);
+    Double workTotalkwh(Long stationId);
     
     @Query(value="select COALESCE(sum(s.init_kwh),0) from ammeter as s WHERE s.del=0 and s.station_id=?1",nativeQuery=true)
-    double initTotalkwh(Long stationId);
+    Double initTotalkwh(Long stationId);
     
     @Query(value="select a.c_addr from ammeter as a where a.station_id in(?1) AND a.del=0",nativeQuery=true)
     List<Long> selectAmmeterCodeByStationIds(List<Long> stationIds);
     
     @Query(value="SELECT SUM(init_kwh)+SUM(work_total_kwh) FROM ammeter WHERE del=0 AND station_id "
     		+ "IN(SELECT id FROM station WHERE server_id=?1 AND del=0);",nativeQuery=true)
-    double sumKwh(Long serverId);
+    Double sumKwh(Long serverId);
     
     @Query(value="SELECT SUM(init_kwh)+SUM(work_total_kwh) FROM ammeter WHERE del=0",nativeQuery=true)
-    double sumAllKwh();
+    Double sumAllKwh();
     
 	@Query(value="select a.c_addr from ammeter as a where a.station_id=?1 AND a.del=0",nativeQuery=true)
     Long selectAmmeterByStationId(Long stationId);

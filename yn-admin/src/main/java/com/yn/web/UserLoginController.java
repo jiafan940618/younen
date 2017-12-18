@@ -119,7 +119,6 @@ public class UserLoginController {
             if (serverResult != null) {
                 objectMap.put("serverId", serverResult.getId());
             }
-            System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
         }
         
         return ResultVOUtil.success(objectMap);

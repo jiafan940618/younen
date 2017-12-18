@@ -71,8 +71,8 @@ public class HomePageController {
     @RequestMapping(value = "/tolNowKwAndTolKwh", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public Object tolNowKwAndTolKwh(Long userId) {
-        double sumNowKw = 0;
-        double sumKwh = 0;
+        Double sumNowKw = 0D;
+        Double sumKwh = 0D;
         if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) { 	
         	sumNowKw=ammeterDao.sumNowKw();
         	sumKwh=ammeterDao.sumInitKwh()+ammeterDao.sumWorkTotalKwh();
@@ -84,8 +84,8 @@ public class HomePageController {
         }
 
         Map<String, Object> map = new HashMap<>();
-        map.put("tolNowKw",NumberUtil.accurateToTwoDecimal(sumNowKw));
-        map.put("tolKwh", NumberUtil.accurateToTwoDecimal(sumKwh));
+        map.put("tolNowKw",NumberUtil.accurateToTwoDecimal(sumNowKw==null?0D:sumNowKw));
+        map.put("tolKwh", NumberUtil.accurateToTwoDecimal(sumKwh==null?0D:sumKwh));
 
         return ResultVOUtil.success(map);
     }

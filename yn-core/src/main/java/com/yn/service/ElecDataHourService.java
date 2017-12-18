@@ -489,41 +489,44 @@ public class ElecDataHourService {
 		
 		double todayKwh = 0D;
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		Date[] todaySpace = DateUtil.getTodaySpace();
-	    String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
-		if (type==1) {
-			Map<String, Object> map1 =new HashMap<>();
-			map1.put("ammeterCodes", ammeterCodes);
-			map1.put("start", todaySpace[0]);
-			map1.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			map1.put("type", 1);
-			map1.put("table", table);
-			AmPhaseRecord amPhaseRecord1 =amPhaseRecordMapper.todayKwh(map1);
-			if (amPhaseRecord1!=null) {
-				todayKwh+=amPhaseRecord1.getKwh();
-			}
-			Map<String, Object> map2 =new HashMap<>();
-			map2.put("ammeterCodes", ammeterCodes);
-			map2.put("start", todaySpace[0]);
-			map2.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			map2.put("type", 11);
-			map2.put("table", table);
-			AmPhaseRecord amPhaseRecord2 =amPhaseRecordMapper.todayKwh(map2);
-			if (amPhaseRecord2!=null) {
-				todayKwh+=amPhaseRecord2.getKwh();
-			}
-		}else if (type==2) {
-			Map<String, Object> map3 =new HashMap<>();
-			map3.put("ammeterCodes", ammeterCodes);
-			map3.put("start", todaySpace[0]);
-			map3.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			map3.put("type", 2);
-			map3.put("table", table);
-			AmPhaseRecord amPhaseRecord3 =amPhaseRecordMapper.todayKwh(map3);
-			if (amPhaseRecord3!=null) {
-				todayKwh+=amPhaseRecord3.getKwh();
+		if (!ammeterCodes.isEmpty()) {
+			Date[] todaySpace = DateUtil.getTodaySpace();
+		    String table="am_phase_record_" +new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+			if (type==1) {
+				Map<String, Object> map1 =new HashMap<>();
+				map1.put("ammeterCodes", ammeterCodes);
+				map1.put("start", todaySpace[0]);
+				map1.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+				map1.put("type", 1);
+				map1.put("table", table);
+				AmPhaseRecord amPhaseRecord1 =amPhaseRecordMapper.todayKwh(map1);
+				if (amPhaseRecord1!=null) {
+					todayKwh+=amPhaseRecord1.getKwh();
+				}
+				Map<String, Object> map2 =new HashMap<>();
+				map2.put("ammeterCodes", ammeterCodes);
+				map2.put("start", todaySpace[0]);
+				map2.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+				map2.put("type", 11);
+				map2.put("table", table);
+				AmPhaseRecord amPhaseRecord2 =amPhaseRecordMapper.todayKwh(map2);
+				if (amPhaseRecord2!=null) {
+					todayKwh+=amPhaseRecord2.getKwh();
+				}
+			}else if (type==2) {
+				Map<String, Object> map3 =new HashMap<>();
+				map3.put("ammeterCodes", ammeterCodes);
+				map3.put("start", todaySpace[0]);
+				map3.put("end", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+				map3.put("type", 2);
+				map3.put("table", table);
+				AmPhaseRecord amPhaseRecord3 =amPhaseRecordMapper.todayKwh(map3);
+				if (amPhaseRecord3!=null) {
+					todayKwh+=amPhaseRecord3.getKwh();
+				}
 			}
 		}
+		
 		return todayKwh;
 	}
 
@@ -539,11 +542,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double yesterdayKwh=0D;
-		Double yesterdayKwhD =elecDataDayDao.sumKwhByDays(df.format(yesterdaySpace[0]), 
-				df.format(yesterdaySpace[1]), type, ammeterCodes); 
-		if (yesterdayKwhD!=null) {
-			yesterdayKwh=yesterdayKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double yesterdayKwhD =elecDataDayDao.sumKwhByDays(df.format(yesterdaySpace[0]), 
+					df.format(yesterdaySpace[1]), type, ammeterCodes); 
+			if (yesterdayKwhD!=null) {
+				yesterdayKwh=yesterdayKwhD;
+			}
 		}
+		
 		return yesterdayKwh;
 	}
 	/**
@@ -558,11 +564,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double lastWeekKwh=0D;
-		Double lastWeekKwhD =elecDataDayDao.sumKwhByDays(df.format(lastWeekSpace[0]), 
-				df.format(lastWeekSpace[1]), type, ammeterCodes); 
-		if (lastWeekKwhD!=null) {
-			lastWeekKwh=lastWeekKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double lastWeekKwhD =elecDataDayDao.sumKwhByDays(df.format(lastWeekSpace[0]), 
+					df.format(lastWeekSpace[1]), type, ammeterCodes); 
+			if (lastWeekKwhD!=null) {
+				lastWeekKwh=lastWeekKwhD;
+			}
 		}
+		
 		return lastWeekKwh;
 	}
 
@@ -578,11 +587,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double thisWeekKwh=0D;
-		Double thisWeekKwhD =elecDataDayDao.sumKwhByDays(df.format(thisWeekSpace[0]), 
-				df.format(thisWeekSpace[1]), type, ammeterCodes);
-		if (thisWeekKwhD!=null) {
-			thisWeekKwh=thisWeekKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double thisWeekKwhD =elecDataDayDao.sumKwhByDays(df.format(thisWeekSpace[0]), 
+					df.format(thisWeekSpace[1]), type, ammeterCodes);
+			if (thisWeekKwhD!=null) {
+				thisWeekKwh=thisWeekKwhD;
+			}
 		}
+		
 		return thisWeekKwh;
 	}
 
@@ -599,11 +611,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double thisMonthKwh=0D;
-		Double thisMonthKwhD =elecDataDayDao.sumKwhByDays(df.format(thisMonthSpace[0]), 
-				df.format(thisMonthSpace[1]), type, ammeterCodes);
-		if (thisMonthKwhD!=null) {
-			thisMonthKwh=thisMonthKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double thisMonthKwhD =elecDataDayDao.sumKwhByDays(df.format(thisMonthSpace[0]), 
+					df.format(thisMonthSpace[1]), type, ammeterCodes);
+			if (thisMonthKwhD!=null) {
+				thisMonthKwh=thisMonthKwhD;
+			}
 		}
+		
 		return thisMonthKwh;
 	}
 
@@ -619,11 +634,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double lastMonthKwh = 0D;
-		Double lastMonthKwhD =elecDataDayDao.sumKwhByDays(df.format(lastMonthSpace[0]), 
-				df.format(lastMonthSpace[1]), type, ammeterCodes);
-		if (lastMonthKwhD!=null) {
-			lastMonthKwh=lastMonthKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double lastMonthKwhD =elecDataDayDao.sumKwhByDays(df.format(lastMonthSpace[0]), 
+					df.format(lastMonthSpace[1]), type, ammeterCodes);
+			if (lastMonthKwhD!=null) {
+				lastMonthKwh=lastMonthKwhD;
+			}
 		}
+		
 		return lastMonthKwh;
 	}
 
@@ -639,11 +657,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double thisYearKwh = 0D;
-		Double thisYearKwhD =elecDataDayDao.sumKwhByDays(df.format(thisYearSpace[0]), 
-				df.format(thisYearSpace[1]), type, ammeterCodes);
-		if (thisYearKwhD!=null) {
-			thisYearKwh=thisYearKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double thisYearKwhD =elecDataDayDao.sumKwhByDays(df.format(thisYearSpace[0]), 
+					df.format(thisYearSpace[1]), type, ammeterCodes);
+			if (thisYearKwhD!=null) {
+				thisYearKwh=thisYearKwhD;
+			}
 		}
+		
 		return thisYearKwh;
 	}
 
@@ -659,11 +680,14 @@ public class ElecDataHourService {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		double lastYearKwh = 0D;
-		Double lastYearKwhD =elecDataDayDao.sumKwhByDays(df.format(lastYearSpace[0]), 
-				df.format(lastYearSpace[1]), type, ammeterCodes);
-		if (lastYearKwhD!=null) {
-			lastYearKwh=lastYearKwhD;
+		if (!ammeterCodes.isEmpty()) {
+			Double lastYearKwhD =elecDataDayDao.sumKwhByDays(df.format(lastYearSpace[0]), 
+					df.format(lastYearSpace[1]), type, ammeterCodes);
+			if (lastYearKwhD!=null) {
+				lastYearKwh=lastYearKwhD;
+			}
 		}
+		
 		return lastYearKwh;
 	}
 

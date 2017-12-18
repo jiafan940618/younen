@@ -66,7 +66,11 @@ public class ElecDataDayController {
     public Object findAll(TemStationYearVo temStationYearVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
     	ElecDataDay temStationYear = new ElecDataDay();
         BeanCopy.copyProperties(temStationYearVo, temStationYear);
-        temStationYear.setAmmeterCode(ammeterDao.selectAmmeterByStationId(temStationYearVo.getStationId()).toString());
+        if (ammeterDao.selectAmmeterByStationId(temStationYearVo.getStationId())!=null) {
+        	 temStationYear.setAmmeterCode(ammeterDao.selectAmmeterByStationId(temStationYearVo.getStationId()).toString());
+		}else {
+			temStationYear.setAmmeterCode("");
+		}
         Page<ElecDataDay> findAll = elecDataDayService.findAll(temStationYear, pageable);
         return ResultVOUtil.success(findAll);
     }
@@ -79,8 +83,14 @@ public class ElecDataDayController {
 	public Object workUseCount(Long stationId, Integer type,String dateStr,Integer plan) {
 
 		Map<String, Object> workUseCount = new HashMap<>();
+		
+		if (ammeterDao.selectAmmeterByStationId(stationId)!=null) {
+			workUseCount = elecDataDayService.workUseCountList(stationId, type,dateStr,plan);
+		}else {
+			workUseCount.put("list", "");
+		}
 
-		workUseCount = elecDataDayService.workUseCountList(stationId, type,dateStr,plan);
+		
 
 		return ResultVOUtil.success(workUseCount);
 	}

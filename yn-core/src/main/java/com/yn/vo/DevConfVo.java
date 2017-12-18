@@ -5,8 +5,8 @@ package com.yn.vo;
  */
 public class DevConfVo {
 
-	private Long id;
-	private Integer rowId;
+	
+	private Long rowId;
 	private Integer cAddr;
 	private Integer iAddr;
 	private Long dAddr;
@@ -17,16 +17,11 @@ public class DevConfVo {
 	private String wConf;
 	
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Integer getRowId() {
+	
+	public Long getRowId() {
 		return rowId;
 	}
-	public void setRowId(Integer rowId) {
+	public void setRowId(Long rowId) {
 		this.rowId = rowId;
 	}
 	public Integer getcAddr() {

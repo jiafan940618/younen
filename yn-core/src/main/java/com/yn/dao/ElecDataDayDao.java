@@ -56,10 +56,10 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     Object[] findByYears(List<Long> ammeterCodes, Integer type, String start, String end);
     
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.type=?1 AND t.ammeter_code in (?2) AND t.del=0",nativeQuery=true)
-    double sumKwhByHistory(Integer type, List<Long> ammeterCodes);
+    Double sumKwhByHistory(Integer type, List<Long> ammeterCodes);
 
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=?3 AND t.ammeter_code in (?4) AND t.del=0",nativeQuery=true)
-    double sumKwhByDays(String start, String end, Integer type, List<Long> ammeterCodes);
+    Double sumKwhByDays(String start, String end, Integer type, List<Long> ammeterCodes);
 
     @Query(value="SELECT DATE_FORMAT(create_dtm,?2) AS create_dtm, SUM(kwh) AS kwh FROM elec_data_day as t "
     		+ "WHERE t.create_dtm is not null AND t.ammeter_code in (?1) AND t.type =?4 AND t.del=0 AND "
@@ -73,8 +73,8 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
 
 //  Set<Long> findDAddr(Long stationId, Long dAddr);
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=1 AND t.ammeter_code in (?3) AND t.del=0",nativeQuery=true)
-    double sumKwh(String start, String end, List<Long> ammeterCodes);
+    Double sumKwh(String start, String end, List<Long> ammeterCodes);
     
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=1 AND t.del=0",nativeQuery=true)
-    double sumKwhAll(String start, String end);
+    Double sumKwhAll(String start, String end);
 }
