@@ -228,16 +228,21 @@ public class UserController {
     @RequestMapping(value = "/findSomeUs")
     public Object findSomeUs(UserVo userVo,HttpSession httpSession) {
     	
-    	User newuserVo = SessionCache.instance().getUser();
+    	/*User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
-    	}
-    
+    	}*/
+
+		User newuserVo = new User();
+		newuserVo.setId(2L);
+
     	
 	    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
 	    	/** 电站信息*/
 	    List<StationVo> list = stationService.getnewstation(newuserVo.getId());
+
+
 	     
 	    	/** 个人资料*/
 	    WalletVo walletVo =  userService.findUserPrice(userVo.getId());

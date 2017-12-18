@@ -6,11 +6,18 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.yn.model.City;
+import com.yn.vo.CityVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -67,6 +74,15 @@ public class ConstructionController {
 		 constructionService.save(construction);
 		
 		 return ResultVOUtil.success();
+	}
+
+	@RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public Object findAll(ConstructionVo constructionVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+		Construction construction = new Construction();
+		BeanCopy.copyProperties(constructionVo, construction);
+		Page<Construction> findAll = constructionService.findAll(construction, pageable);
+		return ResultVOUtil.success(findAll);
 	}
 	
 	@ResponseBody
