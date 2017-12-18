@@ -119,6 +119,7 @@ public class UserLoginController {
             if (serverResult != null) {
                 objectMap.put("serverId", serverResult.getId());
             }
+
         }
         
         return ResultVOUtil.success(objectMap);
