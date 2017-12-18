@@ -30,7 +30,7 @@ import com.yn.vo.ConstructionVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller 
-@RequestMapping("/client/construction")
+@RequestMapping("/server/construction")
 public class ConstructionController {
 	//[施工类别]{0:all,1:屋顶类,2:建筑一体化,3:公共设施}
 	
@@ -62,6 +62,7 @@ public class ConstructionController {
 		 construction.setImgUrl(constructionVo.getImgUrl());
 		 construction.setType(constructionVo.getType());
 		 construction.setIdentification(0);
+		 
 		} 
 		 constructionService.save(construction);
 		

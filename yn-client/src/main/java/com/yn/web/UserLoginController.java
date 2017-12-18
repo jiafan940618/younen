@@ -206,6 +206,7 @@ public class UserLoginController {
 		selectByPhone.setPassword(MD5Util.GetMD5Code(user.getPassword()));
 		
 		userService.updatePas(selectByPhone);
+
 		selectByPhone.setPassword(null);
 		
 		return ResultVOUtil.success(selectByPhone);

@@ -150,11 +150,11 @@ public class UserLoginController {
             String result = jsonArray.toString();
 
              //前端传过来的回调函数名称
-               String callback = request.getParameter("callback");
+            String callback = request.getParameter("callback");
                //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
-               result = callback + "(" + result + ")";
+            result = callback + "(" + result + ")";
 
-               response.getWriter().write(result);
+            response.getWriter().write(result);
 
            
         } else if (!user.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))) {
@@ -164,15 +164,15 @@ public class UserLoginController {
             String result = jsonArray.toString();
 
              //前端传过来的回调函数名称
-               String callback = request.getParameter("callback");
+            String callback = request.getParameter("callback");
                //用回调函数名称包裹返回数据，这样，返回数据就作为回调函数的参数传回去了
-               result = callback + "(" + result + ")";
+            result = callback + "(" + result + ")";
 
-               response.getWriter().write(result);
-            
-           
-        }
+            response.getWriter().write(result);
 
+        }else if(user.getPassword().equals(MD5Util.GetMD5Code(userVo.getPassword()))){
+        	 
+         
         Server server = new Server();
         server.setUserId(user.getId());
 
@@ -213,7 +213,7 @@ public class UserLoginController {
            response.getWriter().write(result);
 
         logger.info("---- ---- --- --- - --- - --- ----结束");
-
+         }
     }
 
     /** 获得Token实现跨域登陆*/

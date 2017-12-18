@@ -426,6 +426,8 @@ public class ServerController {
 		server01.setQualificationsImgUrl(qualificationsImgUrl);
 		server01.setBusinessLicenseImgUrl(businessLicenseImgUrl);
 		server01.setDel(0);
+	    server01.setCompanyAssets(serverVo.getCompanyAssets());
+
 		serverService.save(server01);
 		
 		Server	NEWserver = serverService.findbylegalPersonPhone(server01.getLegalPersonPhone());
