@@ -119,7 +119,13 @@ public class UserLoginController {
             if (serverResult != null) {
                 objectMap.put("serverId", serverResult.getId());
             }
-            System.out.println("用户的id："+serverResult.getUser().getId()+",用户角色："+serverResult.getUser().getRoleId());
+            /** 默认给后台管理绑定服务商*/
+           /* if(user.getRoleId() != 4 || user.getRoleId() != 5 ){
+            	objectMap.put("serverId", 1L);
+            }*/
+            
+            
+            System.out.println("用户的id："+user.getId()+",用户角色："+user.getRoleId());
         }
         
         return ResultVOUtil.success(objectMap);
