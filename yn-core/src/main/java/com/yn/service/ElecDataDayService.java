@@ -440,12 +440,12 @@ public class ElecDataDayService {
 		String end = new SimpleDateFormat("yyyy-MM-dd").format(endStart);
 		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(day[0]);
 		Object[] elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
-		SimpleDateFormat dFormat = new SimpleDateFormat("MM");
+		SimpleDateFormat dFormat = new SimpleDateFormat("dd");
 		String nowTime = dFormat.format(endStart);
 		Integer num = Integer.parseInt(nowTime);
 		List<String> dateString=new ArrayList<>();
 		List<String> recordTimeList = new ArrayList<>();
-		for (int i = 0; i <= num; i++) {
+		for (int i = 0; i < num; i++) {
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DATE, -i);//计算30天后的时间
 			String days=new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
