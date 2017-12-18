@@ -13,11 +13,11 @@ import com.yn.model.DevConf;
 
 public interface DevConfDao extends JpaRepository<DevConf, Long>, JpaSpecificationExecutor<DevConf> {
     @Modifying
-    @Query("update DevConf set del=1,delDtm=(now()) where id = :id")
-    void delete(@Param("id") Long id);
+    @Query("update DevConf set del=1,delDtm=(now()) where rowId = :rowId")
+    void delete(@Param("rowId") Long rowId);
     
     @Transactional
     @Modifying
-    @Query("update DevConf set del=1,delDtm=(now()) where id in (:ids)")
-	void deleteBatch(@Param("ids") List<Long> ids);
+    @Query("update DevConf set del=1,delDtm=(now()) where rowId in (:rowIds)")
+	void deleteBatch(@Param("rowIds") List<Long> rowIds);
 }

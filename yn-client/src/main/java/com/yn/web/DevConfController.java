@@ -57,7 +57,7 @@ public class DevConfController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(DevConfVo devConfVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(DevConfVo devConfVo, @PageableDefault(value = 15, sort = {"rowId"}, direction = Sort.Direction.DESC) Pageable pageable) {
         DevConf devConf = new DevConf();
         BeanCopy.copyProperties(devConfVo, devConf);
         Page<DevConf> findAll = devConfService.findAll(devConf, pageable);

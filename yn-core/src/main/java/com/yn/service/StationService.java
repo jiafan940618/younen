@@ -279,11 +279,13 @@ public class StationService {
 		Double nowKw=0D;
 		Integer workTotaTm=0;
 		List<Ammeter> ammeters = ammeterDao.findByStationId(stationId);
-		for (Ammeter ammeter : ammeters) {
-			egt += ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
-			nowKw+=ammeter.getNowKw();
-			workTotaTm +=ammeter.getWorkTotalTm();	
-		}
+		if (!ammeters.isEmpty()) {
+			for (Ammeter ammeter : ammeters) {
+				egt += ammeter.getInitKwh() + ammeter.getWorkTotalKwh();
+				nowKw+=ammeter.getNowKw();
+				workTotaTm +=ammeter.getWorkTotalTm();	
+			}
+		}	
 		objectMap.put("electricityGenerationTol", NumberUtil.accurateToTwoDecimal(egt));
 		objectMap.put("nowKw", NumberUtil.accurateToTwoDecimal(nowKw));
 		objectMap.put("workTotaTm", workTotaTm);

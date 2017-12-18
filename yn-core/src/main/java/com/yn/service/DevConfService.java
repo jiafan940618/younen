@@ -18,13 +18,13 @@ public class DevConfService {
 	@Autowired
 	DevConfDao devConfDao;
 
-	public DevConf findOne(Long id) {
-		return devConfDao.findOne(id);
+	public DevConf findOne(Long rowId) {
+		return devConfDao.findOne(rowId);
 	}
 
 	public void save(DevConf devConf) {
-		if (devConf.getId() != null) {
-			DevConf one = devConfDao.findOne(devConf.getId());
+		if (devConf.getRowId() != null) {
+			DevConf one = devConfDao.findOne(devConf.getRowId());
 			try {
 				BeanCopy.beanCopy(devConf, one);
 			} catch (Exception e) {
@@ -37,12 +37,12 @@ public class DevConfService {
 		System.out.println();
 	}
 
-	public void delete(Long id) {
-		devConfDao.delete(id);
+	public void delete(Long rowId) {
+		devConfDao.delete(rowId);
 	}
 
-	public void deleteBatch(List<Long> id) {
-		devConfDao.deleteBatch(id);
+	public void deleteBatch(List<Long> rowIds) {
+		devConfDao.deleteBatch(rowIds);
 	}
 
 	public DevConf findOne(DevConf devConf) {

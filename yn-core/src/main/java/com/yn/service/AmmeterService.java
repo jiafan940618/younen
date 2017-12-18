@@ -295,12 +295,15 @@ public class AmmeterService {
      * @param stationId
      */
     public Map<String, Object> energyConservation(Long userId){ 
-    	double kwh=0D;
+    	Double kwh=0D;
     	if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {
     		 kwh=ammeterDao.sumAllKwh();
 		}else if(userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
 			Long serverId=serverDao.findByUserid(userId);
 			 kwh=ammeterDao.sumKwh(serverId);
+		}
+    	if (kwh==null) {
+    		kwh=0D;
 		}
     	Map<String, Object> objectMap = new HashMap<>();
     	

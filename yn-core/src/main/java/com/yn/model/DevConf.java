@@ -6,15 +6,18 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * 采集器
  */
 @Entity
-public class DevConf extends IDomain implements Serializable {
-
+public class DevConf  implements Serializable {
+	@Id
+    @GeneratedValue
 	@Column(columnDefinition = "int(11) comment '[rowId]'")
-	private Integer rowId;
+	private Long rowId;
 	@Column(columnDefinition = "int(11) comment '[cAddr]'")
 	private Integer cAddr;
 	@Column(columnDefinition = "int(11) comment '[iAddr]'")
@@ -33,10 +36,10 @@ public class DevConf extends IDomain implements Serializable {
 	private String wConf;
 	
 	
-	public Integer getRowId() {
+	public Long getRowId() {
 		return rowId;
 	}
-	public void setRowId(Integer rowId) {
+	public void setRowId(Long rowId) {
 		this.rowId = rowId;
 	}
 	public Integer getcAddr() {

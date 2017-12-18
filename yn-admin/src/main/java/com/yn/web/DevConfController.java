@@ -25,8 +25,8 @@ public class DevConfController {
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
-    public Object findOne(Long id) {
-        DevConf findOne = devConfService.findOne(id);
+    public Object findOne(Long rowId) {
+        DevConf findOne = devConfService.findOne(rowId);
         return ResultVOUtil.success(findOne);
     }
 
@@ -41,8 +41,8 @@ public class DevConfController {
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public Object delete(Long id) {
-        devConfService.delete(id);
+    public Object delete(Long rowId) {
+        devConfService.delete(rowId);
         return ResultVOUtil.success();
     }
 
@@ -57,7 +57,7 @@ public class DevConfController {
 
     @RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object findAll(DevConfVo devConfVo, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public Object findAll(DevConfVo devConfVo, @PageableDefault(value = 15, sort = {"rowId"}, direction = Sort.Direction.DESC) Pageable pageable) {
         DevConf devConf = new DevConf();
         BeanCopy.copyProperties(devConfVo, devConf);
         Page<DevConf> findAll = devConfService.findAll(devConf, pageable);
