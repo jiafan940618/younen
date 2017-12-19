@@ -109,6 +109,8 @@ public class InvSolarController {
     @RequestMapping(value = "/solarfindAll", method = {RequestMethod.POST, RequestMethod.GET})
     public Object solarfindAll(SolarPanelVol brandVo,@PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 		
+		
+		
 		if(brandVo.getType() == 1){
 			
 			SolarPanel solarPanel = new SolarPanel();

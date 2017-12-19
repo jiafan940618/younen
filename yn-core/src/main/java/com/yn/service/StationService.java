@@ -118,6 +118,37 @@ public class StationService {
 		return list;
 	}
 
+	public Object  findUserId(Long userId){
+
+		return stationDao.findByNewUserId(userId);
+	}
+
+    /** 分享暂时只能一个用户绑定一个电表*/
+	public Map<String,Object> findByUserId(Long userId,Subsidy sobe){
+
+	Object[] obj =(Object[]) stationDao.findByNewUserId(userId);
+
+		Map<String,Object> map = new HashMap<String,Object>();
+
+		BigDecimal capacity = (BigDecimal)obj[0];
+		BigDecimal initKwh = (BigDecimal)obj[1];
+		BigDecimal workTotalKwh = (BigDecimal)obj[2];
+		Integer id =(Integer)obj[3];
+
+		 /** 总电量*/
+		BigDecimal AllKwh = initKwh.add(workTotalKwh);
+
+		map = get25YearIncome(Long.valueOf(id));
+
+		map.put("AllKwh",AllKwh);
+
+		return map;
+	}
+
+
+
+
+
 	public void save(Station station) {
 		if (station.getId() != null) {
 			Station one = stationDao.findOne(station.getId());
@@ -406,6 +437,7 @@ public class StationService {
 		Map<String, Object> rm = new HashMap<>();
 		rm.put("list", list);
 		rm.put("tolMoneyOf25Year", totalMoneyOf25YearStr);
+		rm.put("capacity",station.getCapacity());
 		return rm;
 	}
 

@@ -63,6 +63,12 @@ public class UserController {
 	BillRefundService billRefundService;
 	@Autowired
 	BankCardService bankCardService;
+	@Autowired
+	NewsService newsService;
+	@Autowired
+	SubsidyService subsidyService;
+
+
 
 
 
@@ -619,7 +625,53 @@ public class UserController {
     	 
 		return ResultVOUtil.success(list);
     }
-    
+  //SELECT * FROM station s LEFT JOIN  ammeter a ON s.id  = a.station_id WHERE s.status <>0 AND s.del = 0 AND s.user_id = 80
+    /** 用户分享*/
+	@ResponseBody
+	@RequestMapping(value = "/share")
+	public Object share(UserVo userVo, HttpSession httpSession) {
+		User user = SessionCache.instance().getUser();
+		if(null == user){
+
+			return ResultVOUtil.error(5003, "抱歉,您未登录!");
+		}
+
+		News news = newsService.selNews();
+		
+		String privilegeCodeInit = user.getPrivilegeCodeInit();
+
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if(null != stationService.findUserId(user.getId())) {
+			Subsidy subsidy = new Subsidy();
+
+			/** 防止用户信息没有完善*/
+			/** 默认为东莞*/
+
+			if (null == user.getCityId()) {
+				subsidy.setCityId(213L);
+			} else {
+				subsidy.setCityId(user.getCityId());
+			}
+			/** 默认为居民*/
+			subsidy.setType(1);
+
+			Subsidy sobe = subsidyService.findOne(subsidy);
+
+			 map = stationService.findByUserId(user.getId(), sobe);
+		}else if(null != userVo.getStationId()){
+
+			map = stationService.get25YearIncome(userVo.getStationId());
+
+		}
+		map.put("privilegeCodeInit",privilegeCodeInit);
+
+		map.put("user",news);
+
+		return ResultVOUtil.success(map);
+	}
+
+
     
     /**
 	 * 用户退出登录

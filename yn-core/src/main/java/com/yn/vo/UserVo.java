@@ -39,14 +39,22 @@ public class UserVo extends QueryVo {
 	private Double price;
 	
 	private Integer type=1;
+
+	private Long stationId;
 	
 	
 
 	 /** ioc端备注信息*/
 	private String ipoMemo;
-	
-	
-	
+
+	public Long getStationId() {
+		return stationId;
+	}
+
+	public void setStationId(Long stationId) {
+		this.stationId = stationId;
+	}
+
 	public Integer getType() {
 		return type;
 	}

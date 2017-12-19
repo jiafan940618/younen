@@ -92,8 +92,10 @@ public class Order extends IDomain implements Serializable {
 	@Column(insertable = false, columnDefinition = "int(1) default 0 comment '[并网发电-并网状态]{0:未申请,1:已申请,2:并网完成}'")
 	private Integer gridConnectedStepA;
 
-	@Column(insertable = false, columnDefinition = "VARCHAR(2000)  COMMENT '[施工状态]'")
+	@Column(insertable = false, columnDefinition = "VARCHAR(255)  COMMENT '[施工状态]'")
 	private String constructionStatus;
+	@Column(insertable = false, columnDefinition = "VARCHAR(2000)  COMMENT '[其他材料]'")
+	private String orderText;
 
 	/**
 	 * 是否已读
@@ -159,6 +161,16 @@ public class Order extends IDomain implements Serializable {
 		this.id = id;
 		this.orderCode = orderCode;
 		this.userId = userId;
+	}
+
+	
+	
+	public String getOrderText() {
+		return orderText;
+	}
+
+	public void setOrderText(String orderText) {
+		this.orderText = orderText;
 	}
 
 	public String getIpoMemo() {

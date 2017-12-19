@@ -25,6 +25,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.yn.dao.DevideDao;
 import com.yn.model.Construction;
+import com.yn.model.Order;
 import com.yn.service.ConstructionService;
 import com.yn.service.DevideService;
 import com.yn.service.OssService;
@@ -55,25 +56,31 @@ public class ConstructionController {
 	
 	/** 后台添加首页施工类别*/
 	@ResponseBody
-    @RequestMapping(value = "/findConstruc")
+    @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET})
     public Object construction(ConstructionVo constructionVo) throws Exception {
-		 Construction construction = new  Construction();
-		 
-		if(null != constructionVo.getId()){
-			 construction.setId(constructionVo.getId());
-			 construction.setImgUrl(constructionVo.getImgUrl());
-			 construction.setType(constructionVo.getType());
-			 construction.setIdentification(0);
-		}else{
-		
-		 construction.setImgUrl(constructionVo.getImgUrl());
-		 construction.setType(constructionVo.getType());
-		 construction.setIdentification(0);
-		 
-		} 
-		 constructionService.save(construction);
-		
-		 return ResultVOUtil.success();
+
+		Construction construction = new Construction();
+
+		String[] ImgUrls =	constructionVo.getImgUrls();
+
+		if(ImgUrls.length == 0) {
+
+			BeanCopy.copyProperties(constructionVo, construction);
+			constructionService.save(construction);
+		}else {
+				
+			for (int i = 0; i < ImgUrls.length; i++) {
+				
+				String imgUrl = ImgUrls[i];
+				BeanCopy.copyProperties(constructionVo, construction);
+				construction.setImgUrl(imgUrl);
+				
+				constructionService.save(construction);
+				
+			}
+		}
+
+		 return ResultVOUtil.success(construction);
 	}
 
 	@RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -84,6 +91,19 @@ public class ConstructionController {
 		Page<Construction> findAll = constructionService.findAll(construction, pageable);
 		return ResultVOUtil.success(findAll);
 	}
+
+	@RequestMapping(value = "/findOne", method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public Object findO(ConstructionVo constructionVo) {
+		Construction construction = new Construction();
+		BeanCopy.copyProperties(constructionVo, construction);
+
+		construction =	constructionService.findOne(construction.getId());
+
+		return ResultVOUtil.success(construction);
+	}
+
+
 	
 	@ResponseBody
     @RequestMapping(value = "/getSession")

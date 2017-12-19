@@ -418,6 +418,11 @@ public class ServerController {
 		 user.setPassword(serverVo.getPassword());
 		 user.setPhone(serverVo.getPhone());
 		 user.setDel(0);
+	   /** 由于2.0版本没有该数据的添加操作，所以得给到默认值*/
+		   user.setCityId(213L);
+		   user.setCityText("东莞市");
+		   user.setProvinceId(19L);
+		   user.setProvinceText("广东省");
 		 userservice.save(user);
 		 
 		 User user2 = userservice.findByPhone(user.getPhone());
