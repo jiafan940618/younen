@@ -720,7 +720,7 @@ public class OrderController {
 		findOne.getApplyStepbimgUrl() != null && findOne.getApplyStepbimgUrl().length() > 0 ? 1 : 0);
 
 		jsonResult.put("buildIsPay", order.getBuildIsPay());
-		jsonResult.put("buildStepA", order.getBuildIsPay());
+		jsonResult.put("buildStepA", order.getBuildStepA());
 		jsonResult.put("buildStepB", order.getBuildStepB());
 		jsonResult.put("gridConnectedIsPay", order.getGridConnectedIsPay());
 		jsonResult.put("gridConnectedStepA", order.getGridConnectedStepA());
