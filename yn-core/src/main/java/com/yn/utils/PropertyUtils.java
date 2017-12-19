@@ -14,7 +14,9 @@ public class PropertyUtils {
 	
 	private static Logger logger = Logger.getLogger(PropertyUtils.class);
 
-	private static final String config = "kftconf-production.properties";
+	private static final String config = "kftconf-test.properties";
+	
+//	private static final String config = "kftconf-production.properties";
 
 	private static Map<String, String> config_map = new HashMap<String, String>();
 
