@@ -46,16 +46,17 @@ public class Ammeter extends IDomain implements Serializable {
 	@Column(insertable=false, columnDefinition = "int(1) default 0 comment '[运行状态]{0:正常,1:不正常}'")
 	private Integer status;
 	@Column(columnDefinition = "varchar(255) comment '[电表状态码]'")
-	private String statusCode;
-	
-	 @Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
-	    protected Long provinceId;
-	    @Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
-	    protected String provinceText;
-	    @Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
-	    protected Long cityId;
-	    @Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
-	    private String cityText;
+	private String statusCode;	
+	@Column(columnDefinition = "int(11) NOT NULL comment '[省id]'")
+	private Long provinceId;
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[省地址]'")
+	private String provinceText;
+	@Column(columnDefinition = "int(11) NOT NULL comment '[市id]'")
+	private Long cityId;
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[市地址]'")
+	private String cityText;
+	@Column(columnDefinition = "varchar(255) NOT NULL comment '[详细地址]'")
+	private String addressText;
 
 
     /**
@@ -114,6 +115,14 @@ public class Ammeter extends IDomain implements Serializable {
 
 	public void setCityText(String cityText) {
 		this.cityText = cityText;
+	}
+ 
+	public String getAddressText() {
+		return addressText;
+	}
+
+	public void setAddressText(String addressText) {
+		this.addressText = addressText;
 	}
 
 	public String getcAddr() {

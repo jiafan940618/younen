@@ -271,26 +271,38 @@ public class ElecDataHourService {
 		}
 		List<Map<String, Object>> todayKwh=new ArrayList<>();
 		List<Map<String, Object>> todayKwhAll=new ArrayList<>();
-		for (Long stationId : stationIds) {
-			List<Map<String, Object>> todayKwhOne=getTodayKwhByStationId(stationId, type);
-			for (Map<String, Object> map : todayKwhOne) {
-				todayKwhAll.add(map);
-			}	
-		}
 		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
 		Integer num= Integer.parseInt(dFormat.format(new Date()));
-		for (int i = 0; i < num; i++) {
-			Map<String, Object> mapOne=new HashMap<>();
-			Double kwh =0D;
-			for (Map<String, Object> map : todayKwhAll) {
-				if (i==(Integer)map.get("time")) {
-					kwh+=(Double)map.get("kwh");
-				}
+		if (stationIds.isEmpty()) {
+			for (int i = 0; i < num; i++) {
+				Map<String, Object> mapOne=new HashMap<>();
+	
+				mapOne.put("time", i);
+				mapOne.put("kwh",0.00 );
+				todayKwh.add(mapOne);
 			}
-			mapOne.put("time", i);
-			mapOne.put("kwh",NumberUtil.accurateToTwoDecimal(kwh) );
-			todayKwh.add(mapOne);
+		}else {
+			for (Long stationId : stationIds) {
+				List<Map<String, Object>> todayKwhOne=getTodayKwhByStationId(stationId, type);
+				for (Map<String, Object> map : todayKwhOne) {
+					todayKwhAll.add(map);
+				}	
+			}
+		
+			for (int i = 0; i < num; i++) {
+				Map<String, Object> mapOne=new HashMap<>();
+				Double kwh =0D;
+				for (Map<String, Object> map : todayKwhAll) {
+					if (i==(Integer)map.get("time")) {
+						kwh+=(Double)map.get("kwh");
+					}
+				}
+				mapOne.put("time", i);
+				mapOne.put("kwh",NumberUtil.accurateToTwoDecimal(kwh) );
+				todayKwh.add(mapOne);
+			}
 		}
+		
 		return todayKwh;
 	}
 
