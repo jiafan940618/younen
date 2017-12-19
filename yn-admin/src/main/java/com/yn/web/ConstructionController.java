@@ -64,8 +64,7 @@ public class ConstructionController {
 		String[] ImgUrls =	constructionVo.getImgUrls();
 
 		if(constructionVo.getImgUrls() == null) {
-		
-			
+
 			BeanCopy.copyProperties(constructionVo, construction);
 			
 			constructionService.save(construction);

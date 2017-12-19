@@ -79,8 +79,10 @@ public class HomePageController {
         } else if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))) {
         	Long serverId=serverDao.findByUserid(userId);
         	List<Long> stationIds=stationDao.findId(serverId);
-        	sumNowKw=ammeterDao.sumNowKwByStationIds(stationIds);
-            sumKwh =ammeterDao.sumInitKwhByStationIds(stationIds)+ammeterDao.sumWorkTotalKwhByStationIds(stationIds);
+        	if (!stationIds.isEmpty()) {
+				sumNowKw=ammeterDao.sumNowKwByStationIds(stationIds);
+	            sumKwh =ammeterDao.sumInitKwhByStationIds(stationIds)+ammeterDao.sumWorkTotalKwhByStationIds(stationIds);
+			}        	
         }
 
         Map<String, Object> map = new HashMap<>();
