@@ -274,7 +274,7 @@ public class ElecDataHourService {
 		SimpleDateFormat dFormat = new SimpleDateFormat("HH");
 		Integer num= Integer.parseInt(dFormat.format(new Date()));
 		if (stationIds.isEmpty()) {
-			for (int i = 0; i < num; i++) {
+			for (int i = 0; i <= num; i++) {
 				Map<String, Object> mapOne=new HashMap<>();
 	
 				mapOne.put("time", i);
@@ -289,7 +289,7 @@ public class ElecDataHourService {
 				}	
 			}
 		
-			for (int i = 0; i < num; i++) {
+			for (int i = 0; i <= num; i++) {
 				Map<String, Object> mapOne=new HashMap<>();
 				Double kwh =0D;
 				for (Map<String, Object> map : todayKwhAll) {
