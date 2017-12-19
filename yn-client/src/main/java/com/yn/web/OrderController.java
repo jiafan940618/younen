@@ -536,7 +536,7 @@ public class OrderController {
 			User user02 = userservice.findByPhone(plan.getPhone());
 			/** 添加订单*/
 			Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-					plan.getOrderCode(), null,type);
+					plan.getOrderCode(), null);
 
 			/** 取出订单号并添加*/
 			order.setOrderCode(plan.getOrderCode());
@@ -640,7 +640,7 @@ public class OrderController {
 			User user02 = userservice.findByPhone(plan.getPhone());
 			/** 添加订单*/
 			Order order = newserverPlanService.getOrder(newserverPlan, user02, allMoney, apoPrice, plan.getOrderCode(),
-					newuser.getIpoMemo(),0);
+					newuser.getIpoMemo());
 
 			/** 取出订单号并添加*/
 			order.setOrderCode(plan.getOrderCode());

@@ -552,7 +552,7 @@ public class OrderController {
 		// ** 添加订单*//*
 
 		Order order = newserverPlanService.getOrder(newserverPlan, user02, plan.getAllMoney(), apoPrice,
-				plan.getOrderCode(), null, 0);
+				plan.getOrderCode(), null);
 
 		// 取出订单号并添加
 		order.setOrderCode(plan.getOrderCode());
