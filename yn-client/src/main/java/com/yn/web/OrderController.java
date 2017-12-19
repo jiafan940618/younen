@@ -64,7 +64,6 @@ import com.yn.utils.JsonUtil;
 import com.yn.utils.PhoneFormatCheckUtils;
 import com.yn.utils.ResultData;
 import com.yn.vo.NewPlanVo;
-import com.yn.vo.NewUserVo;
 import com.yn.vo.OrderVo;
 import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
@@ -493,7 +492,20 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping(value = "/orderPrice")
 	public ResultData<Object> findOrderprice(HttpSession session) {
-		// NewUserVo newuser = (NewUserVo)session.getAttribute("newuser");
+		
+	User user = 	SessionCache.instance().getUser();
+	
+	Order newOrder = new Order();
+	
+	newOrder.setUserId(user.getId());
+
+	List<Order>	orderList = orderService.findAll(newOrder);
+	
+	if(orderList.size() != 0 ){
+		
+		return ResultVOUtil.error(777,"暂不支持购买多个订单 !");
+	}
+		
 		 Integer type = (Integer)session.getAttribute("type");
 
 		String orderCode = (String) session.getAttribute("orderCode");
@@ -586,6 +598,17 @@ public class OrderController {
 		//NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 		User newuser = SessionCache.instance().getUser();
 		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
+		Order newOrder = new Order();
+		
+		newOrder.setUserId(newuser.getId());
+		
+	List<Order>	orderList = orderService.findAll(newOrder);
+		
+		if(orderList.size() != 0 ){
+			
+			return ResultVOUtil.error(777,"暂不支持购买多个订单 !");
+		}
+		
 		String orderCode = (String) session.getAttribute("orderCode");
 
 		logger.info("---- ---- ---- ------ ----- 保存的订单号为：" + orderCode);

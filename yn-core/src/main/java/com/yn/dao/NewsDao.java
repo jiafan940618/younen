@@ -20,4 +20,9 @@ public interface NewsDao extends JpaRepository<News, Long>, JpaSpecificationExec
     @Modifying
     @Query("update News set del=1,delDtm=(now()) where id in (:ids)")
 	void deleteBatch(@Param("ids") List<Long> ids);
+
+    @Query("select n  from News n where n.del= 1 and n.type = 9 ")
+    News selNews();
+
+
 }

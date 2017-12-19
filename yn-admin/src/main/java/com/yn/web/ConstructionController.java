@@ -25,6 +25,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.yn.dao.DevideDao;
 import com.yn.model.Construction;
+import com.yn.model.Order;
 import com.yn.service.ConstructionService;
 import com.yn.service.DevideService;
 import com.yn.service.OssService;
@@ -55,25 +56,16 @@ public class ConstructionController {
 	
 	/** 后台添加首页施工类别*/
 	@ResponseBody
-    @RequestMapping(value = "/findConstruc")
+    @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET})
     public Object construction(ConstructionVo constructionVo) throws Exception {
+
 		 Construction construction = new  Construction();
-		 
-		if(null != constructionVo.getId()){
-			 construction.setId(constructionVo.getId());
-			 construction.setImgUrl(constructionVo.getImgUrl());
-			 construction.setType(constructionVo.getType());
-			 construction.setIdentification(0);
-		}else{
-		
-		 construction.setImgUrl(constructionVo.getImgUrl());
-		 construction.setType(constructionVo.getType());
-		 construction.setIdentification(0);
-		 
-		} 
+
+		 BeanCopy.copyProperties(constructionVo, construction);
+
 		 constructionService.save(construction);
 		
-		 return ResultVOUtil.success();
+		 return ResultVOUtil.success(construction);
 	}
 
 	@RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})

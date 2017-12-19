@@ -44,6 +44,11 @@ public class NewsService {
         }
     }
 
+    public News selNews(){
+
+        return  newsDao.selNews();
+    }
+
     public void delete(Long id) {
         newsDao.delete(id);
     }

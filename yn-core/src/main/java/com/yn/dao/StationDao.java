@@ -113,6 +113,10 @@ public interface StationDao extends JpaRepository<Station, Long>, JpaSpecificati
 	
 	@Query("select s.id from Station s WHERE s.del=0")
 	List<Long> findAllStationId();
+
+	@Query(value="SELECT s.capacity,a.init_kwh,a.work_total_kwh,s.id " +
+			" FROM station s LEFT JOIN  ammeter a ON s.id  = a.station_id WHERE s.status <>0 AND a.del = 0 AND s.del =0 AND s.user_id = ?1", nativeQuery = true)
+	Object findByNewUserId(Long userId);
 	
 
 }
