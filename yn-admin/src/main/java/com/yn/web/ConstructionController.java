@@ -59,12 +59,27 @@ public class ConstructionController {
     @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET})
     public Object construction(ConstructionVo constructionVo) throws Exception {
 
-		 Construction construction = new  Construction();
+		Construction construction = new Construction();
 
-		 BeanCopy.copyProperties(constructionVo, construction);
+		String[] ImgUrls =	constructionVo.getImgUrls();
 
-		 constructionService.save(construction);
-		
+		if(ImgUrls.length == 0) {
+
+			BeanCopy.copyProperties(constructionVo, construction);
+			constructionService.save(construction);
+		}else {
+				
+			for (int i = 0; i < ImgUrls.length; i++) {
+				
+				String imgUrl = ImgUrls[i];
+				BeanCopy.copyProperties(constructionVo, construction);
+				construction.setImgUrl(imgUrl);
+				
+				constructionService.save(construction);
+				
+			}
+		}
+
 		 return ResultVOUtil.success(construction);
 	}
 
@@ -76,6 +91,19 @@ public class ConstructionController {
 		Page<Construction> findAll = constructionService.findAll(construction, pageable);
 		return ResultVOUtil.success(findAll);
 	}
+
+	@RequestMapping(value = "/findOne", method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public Object findO(ConstructionVo constructionVo) {
+		Construction construction = new Construction();
+		BeanCopy.copyProperties(constructionVo, construction);
+
+		construction =	constructionService.findOne(construction.getId());
+
+		return ResultVOUtil.success(construction);
+	}
+
+
 	
 	@ResponseBody
     @RequestMapping(value = "/getSession")

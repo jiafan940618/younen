@@ -15,9 +15,18 @@ public class ConstructionVo {
 	private String videoUrl;
 	
 	private Integer identification;
-	
-	
-	
+
+	private String[] imgUrls;
+
+
+	public String[] getImgUrls() {
+		return imgUrls;
+	}
+
+	public void setImgUrls(String[] imgUrls) {
+		this.imgUrls = imgUrls;
+	}
+
 	public Long getId() {
 		return id;
 	}

@@ -507,6 +507,12 @@ public class UserLoginController {
 		
 		String privilegeCodeInit =	RandomUtil.generateOnlyNumber(); 
 		user.setPrivilegeCodeInit(privilegeCodeInit);
+
+		/** 由于2.0版本没有该数据的添加操作，所以得给到默认值*/
+		user.setCityId(213L);
+		user.setCityText("东莞市");
+		user.setProvinceId(19L);
+		user.setProvinceText("广东省");
 		
 		/** 此时添加时，会添加俩张表，wallet，user表*/
 		userService.save(user);
