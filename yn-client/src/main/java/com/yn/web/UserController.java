@@ -67,7 +67,8 @@ public class UserController {
 	NewsService newsService;
 	@Autowired
 	SubsidyService subsidyService;
-
+    @Autowired
+    WalletService WalletService;
 
 
 
@@ -234,21 +235,24 @@ public class UserController {
     @RequestMapping(value = "/findSomeUs")
     public Object findSomeUs(UserVo userVo,HttpSession httpSession) {
     	
-    	/*User newuserVo = SessionCache.instance().getUser();
+    	User newuserVo = SessionCache.instance().getUser();
     	
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
-    	}*/
+    	}
 
-		User newuserVo = new User();
-		newuserVo.setId(2L);
+//		User newuserVo = new User();
+//		newuserVo.setId(2L);
 
     	
 	    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
 	    	/** 电站信息*/
 	    List<StationVo> list = stationService.getnewstation(newuserVo.getId());
-
-
+	    
+		Double power = ammeterService.findByUserId(userVo);
+		/** 积分*/
+		Double integral=power*Double.valueOf(systemConfigService.get("integral_points"));
+		WalletService.updateIntegral(userVo, integral);
 	     
 	    	/** 个人资料*/
 	    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
@@ -259,7 +263,7 @@ public class UserController {
     
 /** ios端的个人中心*/
   @ResponseBody
-  @RequestMapping(value = "/iosFindSomeUs")
+  @RequestMapping(value = "/iosFindSomeUs",method = {RequestMethod.POST, RequestMethod.GET})
   public Object iosfindSomeUs(UserVo userVo,HttpSession httpSession) {
 	  User newuserVo = SessionCache.instance().getUser();
   	
@@ -286,14 +290,18 @@ public class UserController {
 	newmap.put("CO2_prm", df.format(power * CO2_prm));
 	 /** 植树参数*/
 	newmap.put("plant_trees_prm", df.format(power * plant_trees_prm));
-	  
+	/** 积分*/
+	Double integral=power*Double.valueOf(systemConfigService.get("integral_points"));
+	WalletService.updateIntegral(userVo, integral);
+	
   	/** 个人资料*/
    WalletVo walletVo =  userService.findUserPrice(userVo.getId());
   
    String num = transactionRecordService.FindByNum(userVo.getId())+"";
-
+   //交易记录
    newmap.put("num",num);
-   newmap.put("Integral",walletVo.getIntegral().toString() );
+   
+   newmap.put("Integral",walletVo.getIntegral().toString());
   	
   	 return ResultVOUtil.newhsuccess(walletVo, newmap);
   }

@@ -73,10 +73,10 @@ public class HomePageController {
     public Object tolNowKwAndTolKwh(Long userId) {
         Double sumNowKw = 0D;
         Double sumKwh = 0D;
-        if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) { 	
+        if (userDao.findOne(userId).getRoleId()!=Long.parseLong(systemConfigService.get("server_role_id"))) { 	
         	sumNowKw=ammeterDao.sumNowKw();
         	sumKwh=ammeterDao.sumInitKwh()+ammeterDao.sumWorkTotalKwh();
-        } else if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))) {
+        } else {
         	Long serverId=serverDao.findByUserid(userId);
         	List<Long> stationIds=stationDao.findId(serverId);
         	if (!stationIds.isEmpty()) {
@@ -190,13 +190,13 @@ public class HomePageController {
         double stationCapacity = 0;
         double orderCapacity = 0;
         long userNum = 0;
-        if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {
+        if (userDao.findOne(userId).getRoleId()!=Long.parseLong(systemConfigService.get("server_role_id"))) {
             stationNum = stationDao.count(Example.of(station));
             orderNum = orderDao.count(Example.of(order));
             stationCapacity = stationDao.sumCapacity();
             orderCapacity = orderDao.sumCapacity();
             userNum = userDao.countNum();
-        } else if(userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
+        } else {
         	Long serverId=serverDao.findByUserid(userId);
             station.setServerId(serverId);
             stationNum = stationDao.count(Example.of(station));

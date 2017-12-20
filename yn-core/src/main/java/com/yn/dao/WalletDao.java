@@ -26,8 +26,12 @@ public interface WalletDao extends JpaRepository<Wallet, Long>, JpaSpecification
 	
 	@Transactional
 	@Modifying
-	@Query("update Wallet set money=:#{#wallet.money},updateDtm=(now()) where id = :#{#wallet.id}")
+	@Query("update Wallet set money=:#{#wallet.money},updateDtm=(now()) where id = :#{#wallet.id} and del=0")
 	void updatePrice(@Param("wallet") Wallet wallet);
 	
+	@Transactional
+	@Modifying
+	@Query(value="update wallet as w set w.integral=?1,w.update_dtm=(now()) where w.user_id=?2 and w.del=0",nativeQuery=true)
+	void updateIntegral(double integral,Long userId );
 
 }

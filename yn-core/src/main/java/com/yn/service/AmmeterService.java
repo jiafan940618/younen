@@ -296,9 +296,9 @@ public class AmmeterService {
      */
     public Map<String, Object> energyConservation(Long userId){ 
     	Double kwh=0D;
-    	if (userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {
+    	if (userDao.findOne(userId).getRoleId()!=Long.parseLong(systemConfigService.get("server_role_id"))) {
     		 kwh=ammeterDao.sumAllKwh();
-		}else if(userDao.findOne(userId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
+		}else {
 			Long serverId=serverDao.findByUserid(userId);
 			 kwh=ammeterDao.sumKwh(serverId);
 		}
