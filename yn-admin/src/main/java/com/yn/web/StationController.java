@@ -113,8 +113,7 @@ public class StationController {
     public Object findAll(StationVo stationVo,Long managerId, @PageableDefault(value = 15, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         Station station = new Station();
         BeanCopy.copyProperties(stationVo, station);
-        if (userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("admin_role_id"))) {	
-		} else if(userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
+       if(userDao.findOne(managerId).getRoleId()==Long.parseLong(systemConfigService.get("server_role_id"))){
 			Long serverId=serverDao.findByUserid(managerId);
 			station.setServerId(serverId);
 		}

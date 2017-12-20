@@ -15,6 +15,7 @@ import com.yn.model.User;
 import com.yn.model.Wallet;
 import com.yn.utils.BeanCopy;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.UserVo;
 
 @Service
 public class WalletService {
@@ -95,4 +96,17 @@ public class WalletService {
 
 		return walletDao.findByUserId(userId);
 	}
+	
+	/**
+	 * 更新积分
+	 */
+	public void updateIntegral(UserVo userVo,Double integral) {
+		
+			User user=new User();
+			user.setId(userVo.getId());
+		    createWallet(user);
+		    walletDao.updateIntegral(integral, userVo.getId());
+
+	}
+	
 }
