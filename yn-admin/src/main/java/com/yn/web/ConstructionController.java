@@ -59,28 +59,35 @@ public class ConstructionController {
     @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET})
     public Object construction(ConstructionVo constructionVo) throws Exception {
 
-		Construction construction = new Construction();
-
+		Construction construction = new Construction();	
+	
 		String[] ImgUrls =	constructionVo.getImgUrls();
 
 		if(constructionVo.getImgUrls() == null) {
 
 			BeanCopy.copyProperties(constructionVo, construction);
+			
 			constructionService.save(construction);
+			
+			return ResultVOUtil.success(construction);
+			
 		}else {
 				
 			for (int i = 0; i < ImgUrls.length; i++) {
 				
 				String imgUrl = ImgUrls[i];
+			
 				BeanCopy.copyProperties(constructionVo, construction);
 				construction.setImgUrl(imgUrl);
 				
 				constructionService.save(construction);
 				
+				
 			}
+			
+			return ResultVOUtil.success("添加成功!");
 		}
 
-		 return ResultVOUtil.success(construction);
 	}
 
 	@RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})

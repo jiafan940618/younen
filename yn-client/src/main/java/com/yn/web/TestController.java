@@ -2,11 +2,15 @@ package com.yn.web;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import com.yn.model.*;
 import com.yn.service.*;
+import com.yn.session.SessionCache;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.OrderVo;
 import org.slf4j.Logger;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.yn.vo.ApolegamyVo;
 import com.yn.vo.RechargeVo;
+import com.yn.vo.UserVo;
 import com.yn.vo.re.ResultVOUtil;
 
 @Controller
@@ -54,6 +59,10 @@ public class TestController {
 	SystemConfigService  systemConfigService;
 	@Autowired
 	QualificationsService qualificationsService;
+	@Autowired
+	NewsService newsService;
+	@Autowired
+	SubsidyService subsidyService;
 
 	@Autowired
 	BillRefundService billRefundService;
@@ -81,25 +90,48 @@ public class TestController {
 	        
 	       } 
 	       
-	       @ResponseBody
-	       @RequestMapping("/test")  
-	       public Object helloJsp001(RechargeVo rechargeVo){
-	    	   
-	    	   Long userid = 7110L;
+	       /** 用户分享*/
+	   	@ResponseBody
+	   	@RequestMapping(value = "/share")
+	   	public Object share(UserVo userVo, HttpSession httpSession) {
+	   		User user = new User();
+			user.setId(80L);
 
 
-	   		User user = userservice.findOne(userid);
-
-	   		user.setFullAddressText("东莞市");
+	   		News news = newsService.selNews();
 	   		
-	   		user.setPhone("18317829893");
-	   		user.setUserName("无");
+	   		String privilegeCodeInit = user.getPrivilegeCodeInit();
 
-	   		userservice.save(user);
-	    	   
-	              return ResultVOUtil.success(null);  
-	       } 
-	         
+	   		Map<String, Object> map = new HashMap<String, Object>();
+
+	   		if(null != stationService.findUserId(user.getId())) {
+	   			Subsidy subsidy = new Subsidy();
+
+	   			/** 防止用户信息没有完善*/
+	   			/** 默认为东莞*/
+
+	   			if (null == user.getCityId()) {
+	   				subsidy.setCityId(213L);
+	   			} else {
+	   				subsidy.setCityId(user.getCityId());
+	   			}
+	   			/** 默认为居民*/
+	   			subsidy.setType(1);
+
+	   			Subsidy sobe = subsidyService.findOne(subsidy);
+
+	   			 map = stationService.findByUserId(user.getId(), sobe);
+	   		}else if(null != userVo.getStationId()){
+
+	   			map = stationService.get25YearIncome(userVo.getStationId());
+
+	   		}
+	   		map.put("privilegeCodeInit",privilegeCodeInit);
+
+	   		map.put("user",news);
+
+	   		return ResultVOUtil.success(map);
+	   	}
 	       
 	       
 	       
