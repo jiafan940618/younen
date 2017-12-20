@@ -78,8 +78,6 @@ public class PatchDataRecordJob {
 	@Autowired
 	PatchDataRecordMapper patchDataRecordMapper;
 	@Autowired
-	ElecDataHourMapper elecDataHourMapper;
-	@Autowired
 	AmPhaseRecordMapper amPhaseRecordMapper;
 	@Autowired
 	AmPhaseRecordDao amPhaseRecordDao;
@@ -90,21 +88,15 @@ public class PatchDataRecordJob {
 	@Autowired
 	StationMapper stationMapper;
 	@Autowired
-	ElecDataHourService elecDataHourService;
-	@Autowired
 	ElecDataDayService elecDataDayService;
-	@Autowired
-	ElecDataMonthService elecDataMonthService;
-	@Autowired
-	ElecDataYearService elecDataYearService;
 
 	private static PrintStream mytxt;
 	private static PrintStream out;
 
 	public PatchDataRecordJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
-			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
+//			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -135,6 +127,7 @@ public class PatchDataRecordJob {
 				if (StringUtils.isBlank(meterTime)) {
 					continue;
 				}
+				// 当天的数据入库当天的表。
 				String date4Temp = new SimpleDateFormat("yyyy_MM_dd")
 						.format(new SimpleDateFormat("yyMMddHHssmm").parse(meterTime));
 				patchDataRecord.setDate(date4Temp);
@@ -143,16 +136,16 @@ public class PatchDataRecordJob {
 				amPhaseRecord1.setDate(date4Temp);
 				amPhaseRecordMapper.createTmpTable(amPhaseRecord1);
 				String meterTimeCode = amPhaseRecord1.getMeterTime().toString();
+				// 取到当天的时间
 				String date = new SimpleDateFormat("yyyy_MM_dd")
 						.format(new SimpleDateFormat("yyMMddHHssmm").parse(meterTimeCode));
 				AmPhaseRecord key = amPhaseRecordService.selectByPrimaryKey(amPhaseRecord1);
 				if (key == null) {
+					amPhaseRecord1.setDealt(1);// 设置为已经处理
 					amPhaseRecord1.setDate(date);
 					amPhaseRecordService.saveByMapper(amPhaseRecord1);
-				} else {
-					amPhaseRecord1.setDate(date);
-					amPhaseRecordService.updateByPrimaryKey(amPhaseRecord1);
 				}
+				// 处理临时表的数据。
 				List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
 				for (Ammeter ammeter : findAll) {
 					PatchDataRecordExample ex = new PatchDataRecordExample();
@@ -164,23 +157,20 @@ public class PatchDataRecordJob {
 					criteria.andWAddrEqualTo(0);
 					List<PatchDataRecord> example = patchDataRecordMapper.selectByExample(ex);
 					for (PatchDataRecord apr : example) {
-						apr.setDealt(1); // 已经处理
-						patchDataRecordMapper.updateByPrimaryKeySelective(apr);
 						saveAmmeterRecord(ammeter, apr);
 						updateAmmeterAndStation(ammeter, apr);
+						System.out.println("处理完一条删除一条DELETE：：：.._-->>|666|<<--_..:::");
+						patchDataRecordMapper.deleteByPrimaryKey(patchDataRecord.getAmPhaseRecordId());
 					}
-					System.out.println("處理电表、每日等信息。。。");
 				}
-				System.out.println("wancheng...");
 			}
-			System.out.println("开始整理临时表中的数据。");
-			System.out.println("整理完成。");
-			System.out.println("清空临时表中的数据。");
-			 patchDataRecordMapper.truncateTable();
+//			System.out.println("开始整理临时表中的数据。");
+//			System.out.println("整理完成。");
+//			System.out.println("清空临时表中的数据。");
+//			patchDataRecordMapper.truncateTable();
 		}
 		System.setOut(out);
 		System.out.println("PatchDataRecordJob日志保存完毕。");
-
 	}
 
 	/**
@@ -202,8 +192,6 @@ public class PatchDataRecordJob {
 			e.printStackTrace();
 		}
 		ammeterRecord.setRecordDtm(DateUtil.parseString(apr.getMeterTime().toString(),DateUtil.yyMMddHHmmss));
-//		ammeterRecord.setRecordDtm(DateUtil.parseString(date,"yyyy-MM-dd"));
-//		ammeterRecord.setRecordDtm(null);
 		if (ammeter.getStation() != null) {
 			ammeterRecord.setStationId(ammeter.getStationId());
 			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
@@ -261,12 +249,15 @@ public class PatchDataRecordJob {
 				totalKw = apr.getKw();
 			}
 			apr.setdAddr(11L);
-		} else if (apr.getdAddr() == 2) {
+		} /*else if (apr.getdAddr() == 2) {
 			totalKw = apr.getKw();
+		}*/
+		if(apr.getdAddr()!=2){
+			ammeter.setNowKw(totalKw);
+			ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
+			ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
 		}
-		ammeter.setNowKw(totalKw);
-		ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
-		ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
+		
 		ammeter.setUpdateDtm(new Date());
 		ammeterMapper.updateByPrimaryKeySelective(ammeter);
 
@@ -341,8 +332,9 @@ public class PatchDataRecordJob {
 		Double kwhTol = 0d;
 
 		Long meterTime = apr.getMeterTime();
-		long lastMeterTime = getLastMeterTime(meterTime);
-		AmPhaseRecord amPhaseRecordR = new AmPhaseRecord();
+		//先检查1分钟前有没有数据，没有就去检查10分钟前的。
+		long lastMeterTime = getLastMeterTime(meterTime,-1);
+		PatchDataRecord amPhaseRecordR = new PatchDataRecord();
 		amPhaseRecordR.setcAddr(apr.getcAddr());
 		amPhaseRecordR.setdAddr(apr.getdAddr());
 		amPhaseRecordR.setdType(apr.getdType());
@@ -351,23 +343,36 @@ public class PatchDataRecordJob {
 		String date = DateUtil.formatDate(DateUtil.formatString(apr.getMeterTime().toString(), "yyMMddHHssmm"),
 				"yyyy_MM_dd");
 		amPhaseRecordR.setDate(date);
-		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
+		PatchDataRecord lastAmPhaseRecord = patchDataRecordMapper.find4Daddr(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {
 			if (lastAmPhaseRecord.getKwhTotal() >= 0.0) {
-				// 现在和前10分钟数据一致说明没发电。
+				// 现在和前1分钟数据一致说明没发电。
 				if (lastAmPhaseRecord.getKwhTotal() == apr.getKwhTotal()) {
 					return 0.00;
 				}
 				kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
 			}
+		}else{
+			lastMeterTime = getLastMeterTime(meterTime,-10);
+			amPhaseRecordR.setMeterTime(lastMeterTime);
+			lastAmPhaseRecord = patchDataRecordMapper.find4Daddr(amPhaseRecordR);
+			if(lastAmPhaseRecord!=null){
+				if (lastAmPhaseRecord.getKwhTotal() >= 0.0) {
+					// 现在和前10分钟数据一致说明没发电。
+					if (lastAmPhaseRecord.getKwhTotal() == apr.getKwhTotal()) {
+						return 0.00;
+					}
+					kwhTol = apr.getKwhTotal() - lastAmPhaseRecord.getKwhTotal(); // 10分钟内发/用电
+				}
+			}
 		}
-		System.out.println("kwhTol:::::" + kwhTol);
 		if (kwhTol < 0) {
-			System.err.println(apr.getcAddr() + "\t" + apr.getMeterTime());
 			System.out.println("kwhTol小于0");
-			// System.exit(0);
 			kwhTol = 0.0d;
+			// System.exit(0);
 		}
+		System.out.println("电表码:" + apr.getcAddr() + "\tmeterTime:" + apr.getMeterTime() + "\t用发电类型：" + apr.getdAddr()
+				+ "\tkwhTol:" + kwhTol);
 		return kwhTol;
 	}
 
@@ -375,11 +380,11 @@ public class PatchDataRecordJob {
 	 * @param meterTime
 	 * @return
 	 */
-	private long getLastMeterTime(Long meterTime) {
+	private long getLastMeterTime(Long meterTime,int time) {
 		Date meterTimeDtm = DateUtil.parseString(meterTime.toString(), DateUtil.yyMMddHHmmss);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(meterTimeDtm);
-		cal.add(Calendar.MINUTE, -10);
+		cal.add(Calendar.MINUTE, time);
 		String formatDate = DateUtil.formatDate(cal.getTime(), DateUtil.yyMMddHHmmss);
 		return Long.valueOf(formatDate);
 	}

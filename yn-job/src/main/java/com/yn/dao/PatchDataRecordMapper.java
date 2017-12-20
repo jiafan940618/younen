@@ -1,5 +1,6 @@
 package com.yn.dao;
 
+import com.yn.model.AmPhaseRecord;
 import com.yn.model.PatchDataRecord;
 import com.yn.model.PatchDataRecordExample;
 import java.util.List;
@@ -36,4 +37,5 @@ public interface PatchDataRecordMapper {
 	int truncateTable();
 	
 	PatchDataRecord find4Daddr(PatchDataRecord record);
+	
 }

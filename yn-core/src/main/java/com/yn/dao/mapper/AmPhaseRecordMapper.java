@@ -61,7 +61,7 @@ public interface AmPhaseRecordMapper {
 		
 		public List<AmPhaseRecord> findAll4DateCaddr(AmPhaseRecord amPhaseRecord);
 		
-		public List<AmPhaseRecord> selectOneBySort(AmPhaseRecord amPhaseRecord);
+		List<AmPhaseRecord> selectOneBySort(AmPhaseRecord amPhaseRecord);
 		
 		/**
 		 * 
