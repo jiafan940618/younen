@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.model.Construction;
 import com.yn.model.News;
+import com.yn.service.ConstructionService;
 import com.yn.service.NewsService;
 import com.yn.utils.BeanCopy;
 import com.yn.vo.NewsVo;
@@ -22,6 +24,9 @@ import com.yn.vo.NewsVo;
 public class NewsController {
     @Autowired
     NewsService newsService;
+    
+    @Autowired
+	ConstructionService constructionService;
 
     @RequestMapping(value = "/select", method = {RequestMethod.POST})
     @ResponseBody
@@ -38,6 +43,54 @@ public class NewsController {
         newsService.save(news);
         return ResultVOUtil.success(news);
     }
+    
+    @ResponseBody
+    @RequestMapping(value = "/ConstrSave")
+    public Object NewSave(NewsVo newsVo) {
+    	
+    	System.out.println("传的id--- -- ---- ---- ---->"+newsVo.getId());
+		System.out.println("传的imgurl--- -- ---- ---- ---->"+newsVo.getImgUrl());
+		
+		System.out.println("传的type--- -- ---- ---- ---->"+newsVo.getType());
+    	
+		Construction construction = new Construction();	
+		
+		String[] ImgUrls =	newsVo.getImgUrls();
+
+       
+        if(newsVo.getImgUrls() != null) {
+            for (int i = 0; i < ImgUrls.length; i++) {
+                System.out.println("传的length--- -- ---- ---- ---->" + ImgUrls.length);
+
+
+                String imgUrl = ImgUrls[i];
+
+                construction.setImgUrl(imgUrl);
+                construction.setType(newsVo.getType());
+                construction.setVideoUrl(newsVo.getVideoUrl());
+                construction.setIdentification(0);
+
+                constructionService.insertConstr(construction);
+
+                System.out.println("传的ImgUrls--- -- ---- ---- ---->" + imgUrl);
+            }
+        }
+		if(newsVo.getImgUrls() == null) {
+	    	
+	    	construction.setId(newsVo.getId());
+	    	construction.setImgUrl(newsVo.getImgUrl());
+	    	construction.setType(newsVo.getType());
+	    	construction.setVideoUrl(newsVo.getVideoUrl());
+	    	construction.setIdentification(0);
+	    	
+	    	constructionService.save(construction);
+		}
+
+
+        return ResultVOUtil.success(construction);
+    }
+    
+    
 
     @ResponseBody
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})

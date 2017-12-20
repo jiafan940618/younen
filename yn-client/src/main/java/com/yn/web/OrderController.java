@@ -493,19 +493,7 @@ public class OrderController {
 	@RequestMapping(value = "/orderPrice")
 	public ResultData<Object> findOrderprice(HttpSession session) {
 		
-	User user = 	SessionCache.instance().getUser();
-	
-	Order newOrder = new Order();
-	
-	newOrder.setUserId(user.getId());
-
-	List<Order>	orderList = orderService.findAll(newOrder);
-	
-	if(orderList.size() != 0 ){
-		
-		return ResultVOUtil.error(777,"暂不支持购买多个订单 !");
-	}
-		
+			
 		 Integer type = (Integer)session.getAttribute("type");
 
 		String orderCode = (String) session.getAttribute("orderCode");
@@ -598,16 +586,6 @@ public class OrderController {
 		//NewUserVo newuser = (NewUserVo) session.getAttribute("user");
 		User newuser = SessionCache.instance().getUser();
 		logger.info("传递的装机容量 ： ----- ---- ----- ----- " + capacity);
-		Order newOrder = new Order();
-		
-		newOrder.setUserId(newuser.getId());
-		
-	List<Order>	orderList = orderService.findAll(newOrder);
-		
-		if(orderList.size() != 0 ){
-			
-			return ResultVOUtil.error(777,"暂不支持购买多个订单 !");
-		}
 		
 		String orderCode = (String) session.getAttribute("orderCode");
 

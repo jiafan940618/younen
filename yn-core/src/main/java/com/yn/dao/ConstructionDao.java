@@ -34,7 +34,13 @@ public interface ConstructionDao extends JpaRepository<Construction, Long>, JpaS
 	    
 	    @Query("SELECT c FROM Construction c WHERE c.del = 0  and c.identification = 1  ORDER BY c.type  ")
 	    List<Construction> findbyident();
-	    
+
+		@Transactional
+		@Modifying
+		@Query(value = "insert  into construction (img_url,COUNT,TYPE,video_url,identification) VALUES (:#{#construction.imgUrl},:#{#construction.count},:#{#construction.type},:#{#construction.videoUrl},:#{#construction.identification})  ",nativeQuery=true)
+	    void insertConstr(@Param("construction") Construction construction);
+
+
 	
 	
 

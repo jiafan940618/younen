@@ -94,9 +94,7 @@ public class TestController {
 	   	@ResponseBody
 	   	@RequestMapping(value = "/share")
 	   	public Object share(UserVo userVo, HttpSession httpSession) {
-	   		User user = new User();
-			user.setId(80L);
-
+	   		User user = userservice.findOne(80L);
 
 	   		News news = newsService.selNews();
 	   		

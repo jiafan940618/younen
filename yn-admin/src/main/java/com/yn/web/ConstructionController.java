@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -37,7 +38,7 @@ import com.yn.utils.ResultData;
 import com.yn.vo.ConstructionVo;
 import com.yn.vo.re.ResultVOUtil;
 
-@Controller 
+@RestController
 @RequestMapping("/server/construction")
 public class ConstructionController {
 	//[施工类别]{0:all,1:屋顶类,2:建筑一体化,3:公共设施}
@@ -56,8 +57,12 @@ public class ConstructionController {
 	
 	/** 后台添加首页施工类别*/
 	@ResponseBody
-    @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/save")
     public Object construction(ConstructionVo constructionVo) throws Exception {
+
+		System.out.println("传的id--- -- ---- ---- ---->"+constructionVo.getId());
+		System.out.println("传的imgurl--- -- ---- ---- ---->"+constructionVo.getImgUrl());
+		System.out.println("传的type--- -- ---- ---- ---->"+constructionVo.getType());
 
 		Construction construction = new Construction();	
 	
@@ -80,14 +85,32 @@ public class ConstructionController {
 				BeanCopy.copyProperties(constructionVo, construction);
 				construction.setImgUrl(imgUrl);
 				
-				constructionService.save(construction);
-				
-				
+				constructionService.insertConstr(construction);
+	
 			}
 			
 			return ResultVOUtil.success("添加成功!");
 		}
 
+	}
+	
+	
+	@ResponseBody
+    @RequestMapping(value = "/newsave", method = {RequestMethod.POST, RequestMethod.GET})
+    public Object save(ConstructionVo constructionVo) throws Exception {
+
+		System.out.println("传的id--- -- ---- ---- ---->"+constructionVo.getId());
+		System.out.println("传的imgurl--- -- ---- ---- ---->"+constructionVo.getImgUrl());
+		System.out.println("传的type--- -- ---- ---- ---->"+constructionVo.getType());
+
+		Construction construction = new Construction();	
+	
+
+			BeanCopy.copyProperties(constructionVo, construction);
+			
+			constructionService.save(construction);
+			
+			return ResultVOUtil.success(construction);
 	}
 
 	@RequestMapping(value = "/findAll", method = {RequestMethod.POST, RequestMethod.GET})

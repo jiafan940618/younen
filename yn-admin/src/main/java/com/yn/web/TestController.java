@@ -57,23 +57,29 @@ public class TestController {
 
 	@Autowired
 	UserDao userDao;
+
+	@Autowired
+	ConstructionService constructionService;
    
 	
 	/** 编辑添加逆变器*/
 	@ResponseBody
     @RequestMapping(value = "/invsave")
-    public Object invsave() {
-		User user = new User();
-	List<User> list = 	userService.findAll(user);
+    public Object invsave(NewsVo newsVo) {
 
-		for (User user01: list) {
-			    System.out.println("第"+(list.size()+1)+"个");
-				String privilegeCodeInit =	RandomUtil.generateOnlyNumber();
-				user01.setPrivilegeCodeInit(privilegeCodeInit);
+		Construction construction = new Construction();
 
-				userService.save(user01);
-			
-		}
+				String imgUrl = "http://oss.u-en.cn/img/00f38aa7-c939-4077-a902-236941d1e3a4.jpg";
+
+				construction.setImgUrl(imgUrl);
+				construction.setType(newsVo.getType());
+				construction.setVideoUrl(newsVo.getVideoUrl());
+				construction.setIdentification(0);
+
+				constructionService.insertConstr(construction);
+
+				System.out.println("传的ImgUrls--- -- ---- ---- ---->" + imgUrl);
+
 
 		/** 此时添加时，会添加俩张表，wallet，user表*/
 		return ResultVOUtil.success();

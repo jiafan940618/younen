@@ -19,7 +19,16 @@ public class NewsVo extends QueryVo {
 	private String content;
 	private Integer type;
 	
+	private String[] imgUrls;
 	
+	
+	
+	public String[] getImgUrls() {
+		return imgUrls;
+	}
+	public void setImgUrls(String[] imgUrls) {
+		this.imgUrls = imgUrls;
+	}
 	public String getTitle() {
 		return title;
 	}

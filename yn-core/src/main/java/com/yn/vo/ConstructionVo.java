@@ -15,10 +15,12 @@ public class ConstructionVo {
 	private String videoUrl;
 	
 	private Integer identification;
-
+	
 	private String[] imgUrls;
 
-
+	
+	
+	
 	public String[] getImgUrls() {
 		return imgUrls;
 	}

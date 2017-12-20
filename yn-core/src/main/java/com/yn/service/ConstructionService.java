@@ -29,6 +29,11 @@ public class ConstructionService {
 		 
 		 constructionDao.delete(id);
 	 }
+
+	public void insertConstr(Construction construction){
+
+		constructionDao.insertConstr(construction);
+	}
 	 
 	public  List<Construction> findbyStruction(){
 		
