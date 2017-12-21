@@ -245,6 +245,7 @@ public class NewServerPlanService {
 	       
 	        logger.info("----------------------addressText："+order.getAddressText());
 
+	        order.setOrderText(newserverPlan.getMaterialJson());
 	        order.setCityId(user.getCityId());
 	        order.setCityText(user.getCityText());
 	        order.setLinkMan(user.getUserName());

@@ -104,7 +104,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return
      */
     public boolean fromUserLogin(String url) {
-        if ((url.indexOf("/userLogin/") > -1) || (url.indexOf("/upload/") > -1)|| (url.indexOf("/temStation/") > -1)) {
+        if ((url.indexOf("/userLogin/") > -1) || (url.indexOf("/upload/") > -1)|| (url.indexOf("/jpush/") > -1)|| (url.indexOf("/temStation/") > -1)) {
             return true;
         }
         return false;
