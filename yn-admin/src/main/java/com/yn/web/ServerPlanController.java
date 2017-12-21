@@ -91,15 +91,8 @@ public class ServerPlanController {
     @ResponseBody
     @RequestMapping(value = "/newsave", method = {RequestMethod.POST})
     public Object newsave(@RequestBody NewServerPlanVo serverPlanVo,HttpSession session) {
-    	
-    	 Long userId = SessionCache.instance().getUserId();
 
-         Server server = new Server();
-         server.setUserId(userId);
-
-     	Server serverResult = serverService.findOne(server);
-
-        logger.info("传递的serverId为：----- ---- ---- --- ---"+serverResult.getId());
+        logger.info("传递的serverId为：----- ---- ---- --- ---"+serverPlanVo.getServerId());
         logger.info("传递SolarPanel的Id为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getId());
         logger.info("传递SolarPanel的QualityAssurance为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getQualityAssurance());
         logger.info("传递SolarPanel的BoardYear为：----- ---- ---- --- ---"+serverPlanVo.getSolarPanel().getBoardYear());
@@ -107,7 +100,7 @@ public class ServerPlanController {
         logger.info("传递Inverter的Id为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getId());
         logger.info("传递Inverter的QualityAssurance为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getQualityAssurance());
         logger.info("传递Inverter的BoardYear为：----- ---- ---- --- ---"+serverPlanVo.getInverter().getBoardYear());
-
+        Server serverResult = serverService.findOne(serverPlanVo.getServerId());
     	
     	NewServerPlan serverPlan = new NewServerPlan();
 

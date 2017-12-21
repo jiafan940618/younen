@@ -25,15 +25,17 @@
 		<result column="battery_board_warranty_year" property="batteryBoardWarrantyYear" jdbcType="DOUBLE" />
 		<result column="inverter_shelf_life" property="inverterShelfLife" jdbcType="DOUBLE" />
 		<result column="inverter_warranty_year" property="inverterWarrantyYear" jdbcType="DOUBLE" />
+		<result column="conversion_efficiency" property="conversionEfficiency" jdbcType="DOUBLE" />
+
 	</resultMap>
 	
 	<insert id="insert" parameterType="com.yn.model.NewServerPlan">
 			INSERT INTO  new_server_plan 
       (server_id,batteryboard_id,inverter_id,material_json,min_purchase,unit_price,plan_img_url,plan_id,war_period,faction_id,type,plan_name,
-      battery_board_shelf_life,battery_board_warranty_year,inverter_shelf_life,inverter_warranty_year,del)
+      battery_board_shelf_life,battery_board_warranty_year,inverter_shelf_life,inverter_warranty_year,del,conversion_efficiency)
       VALUES (#{serverId},#{batteryboardId},#{inverterId},
       #{materialJson},#{minPurchase},#{unitPrice},#{planImgUrl},
-      #{planId},#{warPeriod},#{factionId},#{type},#{planName},#{batteryBoardShelfLife},#{batteryBoardWarrantyYear},#{inverterShelfLife},#{inverterWarrantyYear},#{del})
+      #{planId},#{warPeriod},#{factionId},#{type},#{planName},#{batteryBoardShelfLife},#{batteryBoardWarrantyYear},#{inverterShelfLife},#{inverterWarrantyYear},#{del},#{conversionEfficiency})
 	
 	</insert>
 	

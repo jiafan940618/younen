@@ -27,6 +27,12 @@ public class UploadController {
     @RequestMapping(value = "/upload", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Object upload(MultipartHttpServletRequest request) {
+    	
+    	String type = request.getParameter("type");
+    	
+    	System.out.println("上传的类型：--- --- "+type);
+    	
+    	
         String[] saveToOSSs = ossService.uploadFiles(request);
         return ResultVOUtil.success(saveToOSSs);
     }

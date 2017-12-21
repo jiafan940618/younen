@@ -222,6 +222,10 @@ public class ServerPlanController {
 
 		List<Object> list01 = newserverPlanService.selectServerPlan(Long.valueOf(serverVo.getServerId()));
 
+		if(list01.size() == 0){
+			return ResultVOUtil.error(777,"该服务商未添加方案!");
+		}
+
 		List<NewPlanVo> list = newserverPlanService.getnewServerPlan(list01);
 
 		List<Object> newlist = plan.getPlan(serverPlan.getServerId());

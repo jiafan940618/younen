@@ -52,7 +52,7 @@ public class OrderPlanService {
 			Object[] obj = (Object[]) list;
 			
 			String orderCode = (String)obj[0];
-			String constructionStatus = (String)obj[1];
+			String orderText = (String)obj[1];
 			String batteryBoardBrand = (String)obj[2];
 			String batteryBoardModel = (String)obj[3];
 			String inverterBrand = (String)obj[4];
@@ -63,7 +63,7 @@ public class OrderPlanService {
 			
 			
 			map.put("orderCode", orderCode);
-			map.put("constructionStatus", constructionStatus);
+			map.put("constructionStatus", orderText);
 			map.put("batteryBoard", batteryBoardBrand+" "+batteryBoardModel);
 			map.put("inverter", inverterBrand+" "+inverterModel);
 
