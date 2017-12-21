@@ -5,10 +5,12 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import com.yn.utils.DateUtil;
+import com.yn.model.Pzw;
 
 public class TestDemo {
 
@@ -53,12 +55,22 @@ public class TestDemo {
 		{
 		}
 	}
-
+	
 	public static void main(String[] args) throws ParseException {
-		String date ="2010_10_10";
-		System.err.println(DateUtil.formatDate(DateUtil.formatString(date, "yyyy_MM_dd"), "yyMMdd"));
+//		String date ="2010_10_10";
+//		System.err.println(DateUtil.formatDate(DateUtil.formatString(date, "yyyy_MM_dd"), "yyMMdd"));
 //		System.out.println(daysBetween("2016-01-01","2017-01-01"));
 //		s();
+		List<Pzw> pzws = new ArrayList<Pzw>();
+		for (int i = 0; i < 10; i++) {
+			Pzw pzw = new Pzw();
+			pzw.setAmmeterCode(TestDemo.class.hashCode()+TestDemo.class.getSimpleName());
+			pzws.add(pzw);
+		}
+		pzws.stream().filter(s->s.getAmmeterCode().contains("Test")).forEach(s->s.setAmmeterCode("1"));
+		pzws.forEach(s->{
+			System.out.println(s.getAmmeterCode());
+		});
 	}
 
 	public void test1() {

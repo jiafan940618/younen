@@ -65,18 +65,20 @@ public class AmmeterJob {
 	@Autowired
 	AmmeterMapper ammeterMapper;
 
+	private static final String DESC = " desc ";
+	private static final Integer NEED2DATA = 2;
+
 	private static PrintStream mytxt;
 	private static PrintStream out;
 
 	public AmmeterJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
-			 mytxt = new PrintStream("./AmmeterJob.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
+//			 mytxt = new PrintStream("./AmmeterJob.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-
 
 	@Scheduled(fixedDelay = 25 * 1000)
 	private void job() {
@@ -104,13 +106,13 @@ public class AmmeterJob {
 					apr.setDate(date);
 					// 保存电表记录。
 					saveAmmeterRecord(ammeter, apr);
-					// 更新电表和电站。
+					// 更新电表和每日数据。
 					updateAmmeterAndStation(ammeter, apr);
 					System.out.println("AmmeterJob--> 更新电表和电站更新成功！-->"
 							+ new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E").format(new Date()));
 					// 已经处理
 					apr.setDealt(1);
-					//由于在更新电表的时候需要传入时间参数，使用了meterState字段作为参数传入。
+					// 由于在更新电表的时候需要传入时间参数，使用了meterState字段作为参数传入。
 					apr.setMeterState(msg);
 					amPhaseRecordService.updateByPrimaryKeySelective(apr);
 				}
@@ -167,41 +169,62 @@ public class AmmeterJob {
 		if (ammeter.getWorkDtm() == null) {
 			ammeter.setWorkDtm(new Date());
 		}
-		Double kwhTol = getKwhTol(apr);
-		Double totalKw = 0d;
-		ammeter.setStatusCode(statusCode);
-		AmPhaseRecord apr1 = apr;
-		if(apr1.getdAddr()==1){
-			apr1.setdAddr(11L);
-			AmPhaseRecord theDaddr = amPhaseRecordService.findOneByMapper4Daddr(apr1);
-			if(theDaddr!=null){
-				totalKw = apr1.getKw() + theDaddr.getKw();
-			}else{
-				totalKw = apr1.getKw();
-			}
-			apr.setdAddr(1L);
-		}else if(apr1.getdAddr()==11){
-			apr1.setdAddr(1L);
-			AmPhaseRecord theDaddr = amPhaseRecordService.findOneByMapper4Daddr(apr1);
-			if(theDaddr!=null){
-				totalKw = apr1.getKw() + theDaddr.getKw();
-			}else{
-				totalKw = apr1.getKw();
-			}
-			apr.setdAddr(11L);
-		}/*else if(apr1.getdAddr()==2){
-			totalKw = apr1.getKw();
-		}*/
-		if(apr1.getdAddr()!=2){
-			System.out.println("更新电表的Kw:" + totalKw);
-			ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + 10);
-			ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
-			ammeter.setNowKw(totalKw);
+		// Double kwhTol = getKwhTol(apr);
+		// 不计算10分钟前就直接拿当天最大的两条数据做处理。
+		apr.setTable(AmmeterJob.DESC);
+		apr.setType(AmmeterJob.NEED2DATA); // 拿两条
+		List<AmPhaseRecord> allMax = amPhaseRecordService.findOneByMapperAndSort(apr);
+		AmPhaseRecord max = allMax.get(0);
+		AmPhaseRecord max4min = allMax.get(1);
+		Double ammeterTotalKw = 0d;
+		// 计算最大的两条记录相差的总发、用电量
+		if (max != null && max4min != null) {
+			ammeterTotalKw = max.getKwhTotal() - max4min.getKwhTotal();
 		}
-		ammeter.setUpdateDtm(new Date());
-		ammeterMapper.updateByPrimaryKeySelective(ammeter);
+		if (apr.getdAddr() != 2) {
+			Double totalKw = 0d;
+			ammeter.setStatusCode(statusCode);
+			AmPhaseRecord apr1 = apr;
+			// 以下是计算电表的当前功率
+			if (apr1.getdAddr() == 1) {
+				apr1.setdAddr(11L);
+				AmPhaseRecord theDaddr = amPhaseRecordService.findOneByMapper4Daddr(apr1);
+				if (theDaddr != null) {
+					totalKw = apr1.getKw() + theDaddr.getKw();
+				} else {
+					totalKw = apr1.getKw();
+				}
+				apr.setdAddr(1L);
+			} else if (apr1.getdAddr() == 11) {
+				apr1.setdAddr(1L);
+				AmPhaseRecord theDaddr = amPhaseRecordService.findOneByMapper4Daddr(apr1);
+				if (theDaddr != null) {
+					totalKw = apr1.getKw() + theDaddr.getKw();
+				} else {
+					totalKw = apr1.getKw();
+				}
+				apr.setdAddr(11L);
+			}
+			System.out.println("电表当前的功率:" + totalKw);
+			System.out.println("电表当前的发电量:" + ammeterTotalKw);
+			// 不是计算10分钟前的数据就直接赋值覆盖上一次计算的值
+			// ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + kwhTol);
+			// 不使用源表最大-最小的值：数据越+越大
+			ammeter.setWorkTotalKwh(ammeter.getWorkTotalKwh() + ammeterTotalKw);
+			ammeter.setNowKw(totalKw);
+			Long endUpdate = ammeter.getUpdateDtm().getTime();
+			Long now = new Date().getTime();
+			int time = (int) ((now - endUpdate) / 60000);
+			if (time < 1) {
+				time = 1;
+			}
+			ammeter.setWorkTotalTm(ammeter.getWorkTotalTm() + time);
+			ammeter.setUpdateDtm(new Date());
+			ammeterMapper.updateByPrimaryKeySelective(ammeter);
+		}
+
 		// 更新电站 每天 的发电/用电
-		saveTemStation(ammeter, apr, kwhTol);
+		saveTemStation(ammeter, apr, ammeterTotalKw);
 	}
 
 	/**
@@ -255,6 +278,7 @@ public class AmmeterJob {
 				temStationYear.setType(2);
 			}
 			temStationYear.setKw(apr.getKw());
+			// 不是计算10分钟前的数据就直接赋值覆盖最大-最小计算的值
 			temStationYear.setKwh(temStationYear.getKwh() + tolKwh);
 			elecDataDayService.saveByMapper(temStationYear);
 		}
@@ -265,7 +289,7 @@ public class AmmeterJob {
 	 *
 	 * @param apr
 	 */
-	private Double getKwhTol(AmPhaseRecord apr) {
+	private Double getKwhTol1(AmPhaseRecord apr) {
 		Double kwhTol = 0d;
 
 		Long meterTime = apr.getMeterTime();
@@ -277,7 +301,7 @@ public class AmmeterJob {
 		amPhaseRecordR.setwAddr(0);
 		amPhaseRecordR.setMeterTime(lastMeterTime);
 		// 半夜和凌晨不发电。
-		 String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
+		String date = DateUtil.formatDate(new Date(), "yyyy_MM_dd");
 		amPhaseRecordR.setDate(date);
 		AmPhaseRecord lastAmPhaseRecord = amPhaseRecordService.findOneByMapper(amPhaseRecordR);
 		if (lastAmPhaseRecord != null) {

@@ -1407,7 +1407,7 @@
 		<if test="wAddr != null">
 			and w_addr = 0
 		</if>
-		<if test="meterTime != null">
+	<!-- 	<if test="meterTime != null">
 			and meter_time like CONCAT('%','${meterTime}','%')
 		</if>
 		<if test="recordTime != null">
@@ -1415,8 +1415,8 @@
 		</if>
 		<if test="type != null">
 			and type like CONCAT('%','${type}','%')
-		</if>
-		order by meter_time ${sort}
+		</if> -->
+		order by meter_time ${table} limit ${type}
 	</select>
 
 	<select id="findMaxData" parameterType="com.yn.model.AmPhaseRecord"

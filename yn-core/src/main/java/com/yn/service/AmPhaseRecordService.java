@@ -110,16 +110,9 @@ public class AmPhaseRecordService {
 		return findOne;
 	}
 
-	public AmPhaseRecord findOneByMapperAndSort(AmPhaseRecord amPhaseRecord) {
-		// RowId cAddr iAddr dAddr dType wAddr MeterTime
-		amPhaseRecordMapper.createTmpTable(amPhaseRecord);
-		// AmPhaseRecord amPhaseRecord1 = new AmPhaseRecord();
+	public List<AmPhaseRecord> findOneByMapperAndSort(AmPhaseRecord amPhaseRecord) {
 		List<AmPhaseRecord> findOne = amPhaseRecordMapper.selectOneBySort(amPhaseRecord);
-		// for (AmPhaseRecord amPhaseRecord2 : findOne) {
-		// BeanUtils.copyProperties(amPhaseRecord2, amPhaseRecord1);
-		//
-		// }
-		return findOne.size() == 0 ? null : findOne.get(findOne.size() - 1);
+		return findOne;
 	}
 
 	public List<AmPhaseRecord> findAll(List<Long> list) {
