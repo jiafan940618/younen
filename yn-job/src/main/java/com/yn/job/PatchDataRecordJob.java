@@ -146,7 +146,7 @@ public class PatchDataRecordJob {
 					amPhaseRecordService.saveByMapper(amPhaseRecord1);
 				}
 				// 处理临时表的数据。
-				List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+				List<Ammeter> findAll = ammeterMapper.selectAllByMapper();
 				for (Ammeter ammeter : findAll) {
 					PatchDataRecordExample ex = new PatchDataRecordExample();
 					Criteria criteria = ex.createCriteria();

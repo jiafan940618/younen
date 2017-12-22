@@ -28,11 +28,11 @@
 		<result column="work_total_tm" property="workTotalTm" jdbcType="INTEGER" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, create_dtm, del, del_dtm, update_dtm, c_addr, d_name, d_opt, d_type,
-		i_addr,
-		init_kwh, now_kw, outfactory_dtm, sim, station_id, status, status_code, w_conf,
-		w_mask,
-		work_dtm, work_total_kwh, work_total_tm
+		id, create_dtm as createDtm, del, del_dtm as delDtm, update_dtm as updateDtm, c_addr as cAddr, d_name as dName, d_opt as dOpt, d_type as dType,
+		i_addr as iAddr,
+		init_kwh as initKwh, now_kw as nowKw, outfactory_dtm as outfactoryDtm, sim , station_id as stationId, status, status_code as statusCode, w_conf as wConf,
+		w_mask as wMask,
+		work_dtm as workDtm, work_total_kwh as workTotalKwh, work_total_tm as workTotalTm
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -309,7 +309,7 @@
 	
 	<select id="selectAllByMapper" resultType="com.yn.model.Ammeter">
 		select 
-			*
+			<include refid="Base_Column_List" />
 		from ammeter
 		where del = 0
 	</select>

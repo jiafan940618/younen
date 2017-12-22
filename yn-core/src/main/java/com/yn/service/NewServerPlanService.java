@@ -253,6 +253,7 @@ public class NewServerPlanService {
 	        	 order.setIpoMemo(IpoMemo);
 	        }
 	        
+	        
 	        order.setLinkPhone(user.getPhone());
 	        order.setPlanPrice(price);
 	        order.setServerName(server.getCompanyName());
