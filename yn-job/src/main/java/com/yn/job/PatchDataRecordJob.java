@@ -95,8 +95,8 @@ public class PatchDataRecordJob {
 
 	public PatchDataRecordJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
-			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
+//			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

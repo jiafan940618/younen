@@ -74,8 +74,8 @@ public class AmmeterJob {
 
 	public AmmeterJob() {
 		try {
-//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
-			 mytxt = new PrintStream("./AmmeterJob.txt");
+			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmmeterJob.log"), true));
+//			 mytxt = new PrintStream("./AmmeterJob.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
