@@ -73,8 +73,8 @@ public class AmPhaseRecordJob {
 
 	public AmPhaseRecordJob() {
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmPhaseRecordJob.log"),true));
-//			mytxt = new PrintStream("./AmPhaseRecordJob.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/AmPhaseRecordJob.log"),true));
+			mytxt = new PrintStream("./AmPhaseRecordJob.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

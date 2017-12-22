@@ -95,8 +95,8 @@ public class PatchDataRecordJob {
 
 	public PatchDataRecordJob() {
 		try {
-			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
-//			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
+//			mytxt = new PrintStream(new FileOutputStream(new File("/opt/ynJob/log/PatchDataRecordJobLog.log"), true));
+			mytxt = new PrintStream("./patchDataRecordJobLog.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -146,7 +146,7 @@ public class PatchDataRecordJob {
 					amPhaseRecordService.saveByMapper(amPhaseRecord1);
 				}
 				// 处理临时表的数据。
-				List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+				List<Ammeter> findAll = ammeterMapper.selectAllByMapper();
 				for (Ammeter ammeter : findAll) {
 					PatchDataRecordExample ex = new PatchDataRecordExample();
 					Criteria criteria = ex.createCriteria();

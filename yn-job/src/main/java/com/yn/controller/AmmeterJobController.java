@@ -24,6 +24,7 @@ import com.yn.model.AmmeterRecord;
 import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataHour;
+import com.yn.model.Station;
 import com.yn.service.AmPhaseRecordService;
 import com.yn.service.AmmeterRecordService;
 import com.yn.service.AmmeterService;
@@ -90,7 +91,7 @@ public class AmmeterJobController {
 				for (int i = 1; i <= days; i++) {
 					date = DateUtil.parseDate(year, month, i);
 					System.out.println("AmmeterJobController-->job::run");
-					List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+					List<Ammeter> findAll = ammeterMapper.selectAllByMapper();
 					for (Ammeter ammeter : findAll) {
 						AmPhaseRecord aprR = new AmPhaseRecord();
 						aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
@@ -117,7 +118,7 @@ public class AmmeterJobController {
 			} else {
 				date = DateUtil.parseDate(year, month, day);
 				System.out.println("AmmeterJobController-->job::run");
-				List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+				List<Ammeter> findAll = ammeterMapper.selectAllByMapper();
 				for (Ammeter ammeter : findAll) {
 					AmPhaseRecord aprR = new AmPhaseRecord();
 					aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
@@ -160,9 +161,10 @@ public class AmmeterJobController {
 		ammeterRecord.setcAddr(ammeter.getcAddr());
 		ammeterRecord.setdType(ammeter.getdType());
 		ammeterRecord.setRecordDtm(DateUtil.parseString(apr.getMeterTime().toString(), DateUtil.yyMMddHHmmss));
-		if (ammeter.getStation() != null) {
-			ammeterRecord.setStationId(ammeter.getStationId());
-			ammeterRecord.setStationCode(ammeter.getStation().getStationCode());
+		Station station = stationService.findOne(ammeter.getStationId());
+		if (station != null) {
+			ammeterRecord.setStationId(station.getId());
+			ammeterRecord.setStationCode(station.getStationCode());
 		}
 		Long dAddr = apr.getdAddr();
 		CharSequence subSequence = dAddr.toString().subSequence(0, 1);
@@ -174,6 +176,7 @@ public class AmmeterJobController {
 		ammeterRecord.setdAddr(apr.getdAddr());
 		ammeterRecord.setStatusCode(ammeter.getStatusCode());
 		ammeterRecord.setDate(date);
+		ammeterRecord.setDel(0);
 		ammeterRecordService.saveByMapper(ammeterRecord);
 	}
 

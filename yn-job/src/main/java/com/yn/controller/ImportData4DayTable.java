@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yn.dao.mapper.AmmeterMapper;
 import com.yn.model.AmPhaseRecord;
 import com.yn.model.Ammeter;
 import com.yn.model.ElecDataDay;
@@ -28,13 +29,15 @@ public class ImportData4DayTable {
 	@Autowired
 	private AmmeterService ammeterService;
 	@Autowired
+	private AmmeterMapper ammeterMapper;
+	@Autowired
 	private AmPhaseRecordService amPhaseRecordService;
 
 	@RequestMapping(value = "/doImportData/{date}", method = RequestMethod.GET)
 	public Object job(@PathVariable("date") String date) {
 		System.out.println("start");
 		ElecDataDay dataDay = new ElecDataDay();
-		List<Ammeter> findAll = ammeterService.findAll(new Ammeter());
+		List<Ammeter> findAll = ammeterMapper.selectAllByMapper();
 		findAll.forEach(ammeter -> {
 			AmPhaseRecord aprR = new AmPhaseRecord();
 			aprR.setcAddr(Integer.parseInt(ammeter.getcAddr()));
