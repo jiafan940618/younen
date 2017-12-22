@@ -18,25 +18,21 @@ public class JPushController {
     @ResponseBody
     public Object pushAll() {
 		
-		String alert="";
+		String alert="我五五开从来没有开挂之全网推送";
         jPushService.JPushAll(alert);
         return ResultVOUtil.success(alert);
     }
 	@RequestMapping(value = "/pushByAlias", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object pushByAlias() {
-		String alias2="0078449ec56c321318edc1f8e9b46820" ;   
-		String alert="我五五开从来没有开挂之不是静默推送";
-		String  alias="170976fa8a851585fb8";
+    public Object pushByAlias() {  
+		String alert="我五五开从来没有开挂之不是别名推送";
         jPushService.JPushByAlias(alert, "88");
         return ResultVOUtil.success(alert);
     }
 	@RequestMapping(value = "/pushByQuite", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Object pushByQuite() {
-		String alias2="0078449ec56c321318edc1f8e9b46820" ;   
-		String alert="我五五开从来没有开挂";
-		String  alias="170976fa8a851585fb8";
+    public Object pushByQuite() { 
+		String alert="我五五开从来没有开挂之静默推送";
         jPushService.JPushAndroidByQuite(alert, "88");
         return ResultVOUtil.success(alert);
     }

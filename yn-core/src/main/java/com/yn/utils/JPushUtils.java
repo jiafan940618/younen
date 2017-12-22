@@ -21,12 +21,12 @@ public class JPushUtils {
 	/**
 	 * 普通appKey
 	 */
-	public final static String MASTER_SECRET = "560ae484164a7a0addf40ca0";
+	public final static String MASTER_SECRET = "b6ac9258e617c0aab46133df"; 
 	
 	/**
 	 * 普通masterSecret
 	 */
-	public final static String APP_KEY = "986e0883f82f7b28814c78a2";
+	public final static String APP_KEY = "80f89dd5c49d2bd7346cc3bb";
 	
 	/**
 	 * 对所有平台推送
@@ -61,32 +61,31 @@ public class JPushUtils {
 	                                             .build())
 	                                    .build())
 	                    
-	                    .setOptions(Options.newBuilder().setApnsProduction(true).build())        
+	                    .setOptions(Options.newBuilder().setApnsProduction(false).build())        
 	                    .build();
 	        }
-	    
-	    public static PushPayload buildPushObject_memberId_alias_silenceAlert(String memberId, String title,int id,int classfyID,int type) {
-	        return PushPayload
-	                .newBuilder()
-	                .setPlatform(Platform.android_ios())
-	                .setAudience(Audience.alias(memberId))
-	                .setNotification(
-	                        Notification
-	                                .newBuilder()
-	                                .setAlert("")
-	                                .addPlatformNotification(
-	                                        IosNotification.newBuilder().setContentAvailable(true).addExtra("classfyID",classfyID)
-	                                                .build())
-	                                .build())
-	                .setMessage(
-	                        Message
-	                             .newBuilder()
-	                             .setMsgContent("")
-	                             .addExtra("classfyID",classfyID).build()
-	                        )
-	                .setOptions(Options.newBuilder().setApnsProduction(true).build())        
-	                .build();
-	    }
+//	    public static PushPayload buildPushObject_memberId_alias_silenceAlert(String alias, String alert,int id,int classfyID,int type) {
+//	        return PushPayload
+//	                .newBuilder()
+//	                .setPlatform(Platform.android_ios())
+//	                .setAudience(Audience.alias(alias))
+//	                .setNotification(
+//	                        Notification
+//	                                .newBuilder()
+//	                                .setAlert(alert)
+//	                                .addPlatformNotification(
+//	                                        IosNotification.newBuilder().setContentAvailable(true).addExtra("classfyID",classfyID)
+//	                                                .build())
+//	                                .build())
+//	                .setMessage(
+//	                        Message
+//	                             .newBuilder()
+//	                             .setMsgContent("")
+//	                             .addExtra("classfyID",classfyID).build()
+//	                        )
+//	                .setOptions(Options.newBuilder().setApnsProduction(true).build())        
+//	                .build();
+//	    }
 	  
 	  /**
 	   * 对android平台目标设备为tag的进行推送
