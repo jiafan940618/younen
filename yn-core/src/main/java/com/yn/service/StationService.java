@@ -926,5 +926,19 @@ public class StationService {
 		map.put("kw", NumberUtil.accurateToTwoDecimal(kw));		
 		return map;
 	}
+
+	/**
+	 * 
+	    * @Title: findByLinkName
+	    * @Description: TODO(输入用户名查找电站信息)
+	    * @param @param userName
+	    * @param @return    参数
+	    * @return Station    返回类型
+	    * @throws
+	 */
+	public List<Station> findByLinkName(String userName) {
+		return stationDao.findByLinkMan(userName);
+	}
+
 	
 }

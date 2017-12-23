@@ -77,4 +77,30 @@ public interface ElecDataDayDao extends JpaRepository<ElecDataDay, Long>, JpaSpe
     
     @Query(value="select COALESCE(sum(t.kwh),0) from elec_data_day as t WHERE t.record_time>=?1 AND t.record_time<=?2 AND t.type=1 AND t.del=0",nativeQuery=true)
     Double sumKwhAll(String start, String end);
+
+    /**
+     * 
+        * @Title: findByAmmeterCode
+        * @Description: TODO(根据电表码去查每日的统计信息)
+        * @param @param getcAddr
+        * @param @return    参数
+        * @return ElecDataDay    返回类型
+        * @throws
+     */
+	List<ElecDataDay> findByAmmeterCode(String cAddr);
+	
+	/**
+	 * 
+	    * @Title: findByAmmeterCodeAndDAddrAndRecordTimeBetween
+	    * @Description: TODO(顾名思义)
+	    * @param @param cAddr 电表码
+	    * @param @param dAddr 用发电类型
+	    * @param @param startTime 统计的起始时间
+	    * @param @param endTime 统计的结束时间
+	    * @param @return    参数
+	    * @return ElecDataDay    返回类型
+	    * @throws
+	 */
+	List<ElecDataDay> findByAmmeterCodeAndDAddrInAndRecordTimeBetween(String cAddr,List<Long> dAddr,String startTime,String endTime);
+	
 }

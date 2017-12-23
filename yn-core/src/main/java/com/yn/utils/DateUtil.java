@@ -5,9 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -450,7 +452,6 @@ public class DateUtil {
 		return maxDate;
 	}
 
-	
 	/**
 	 * 
 	    * @Title: getDayOfWeekByDate
@@ -473,7 +474,7 @@ public class DateUtil {
 		}
 		return dayOfweek;
 	}
-	
+
 	/**
 	 * 获取上周时间区间
 	 * 
@@ -512,60 +513,237 @@ public class DateUtil {
 		System.out.println(date[1]);
 		return date;
 	}
+
 	/**
 	 * 获取当上一小时的时间点
 	 */
 	public static Date lastHour() {
-		
+
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.HOUR, -1);
 		now.set(Calendar.MINUTE, 59);
 		now.set(Calendar.SECOND, 59);
 		return now.getTime();
 	}
-	
+
 	/**
 	 * 某一年的天数
 	 */
-   public static int whichYear(String date) {
-		int days=0;
+	public static int whichYear(String date) {
+		int days = 0;
 		if (date.equals(Calendar.getInstance().get(Calendar.YEAR))) {
-			days=Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-		}else {
-			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);  
-		    sdf.applyPattern("yyyy");  
-			 Calendar calendar = new GregorianCalendar(); 
-			 try {
+			days = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+		} else {
+			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);
+			sdf.applyPattern("yyyy");
+			Calendar calendar = new GregorianCalendar();
+			try {
 				calendar.setTime(sdf.parse(date));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-		    days = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
+			days = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
 		}
-		
+
 		return days;
-		
+
 	}
-   /**
+
+	/**
 	 * 某一月的天数
 	 */
-  public static int whichMonth(String date) {
-		int days=0;
-		if (date.equals((Calendar.getInstance().get(Calendar.YEAR)+"-"+(Calendar.getInstance().get(Calendar.MONTH)+1)).toString())) {
-			days=Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-		}else {
-			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);  
-		    sdf.applyPattern("yyyy-MM");  
-			 Calendar calendar = new GregorianCalendar(); 
-			 try {
+	public static int whichMonth(String date) {
+		int days = 0;
+		if (date.equals(
+				(Calendar.getInstance().get(Calendar.YEAR) + "-" + (Calendar.getInstance().get(Calendar.MONTH) + 1))
+						.toString())) {
+			days = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		} else {
+			SimpleDateFormat sdf = new SimpleDateFormat("", Locale.ENGLISH);
+			sdf.applyPattern("yyyy-MM");
+			Calendar calendar = new GregorianCalendar();
+			try {
 				calendar.setTime(sdf.parse(date));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-		    days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		}
-		
 		return days;
-		
 	}
+
+	/**
+	 * 
+	    * @Title: daysBetween
+	    * @Description: TODO(计算两个时间之的时差)
+	    * @param @param s 起始时间 yyyy-MM-dd
+	    * @param @param b 结束时间 yyyy-MM-dd
+	    * @param @return
+	    * @param @throws ParseException    参数
+	    * @return int    返回类型
+	    * @throws
+	 */
+	public static int daysBetween(String s, String b) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date smdate = sdf.parse(s);
+		Date bdate = sdf.parse(b);
+		smdate = sdf.parse(sdf.format(smdate));
+		bdate = sdf.parse(sdf.format(bdate));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smdate);
+		long time1 = cal.getTimeInMillis();
+		cal.setTime(bdate);
+		long time2 = cal.getTimeInMillis();
+		long between_days = (time2 - time1) / (1000 * 3600 * 24);
+		return Integer.parseInt(String.valueOf(between_days));
+	}
+
+	/**
+	 * 
+	    * @Title: getSeason
+	    * @Description: TODO(获取当前季度)
+	    * @param @return    参数
+	    * @return int    返回类型
+	    * @throws
+	 */
+	public static int getSeason() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, Calendar.NOVEMBER);
+		int month = calendar.get(Calendar.MONTH);
+		int season = (month + 1 + 4) / 4;
+		return season;
+	}
+
+	/**
+	 * （按照中国的纬度）
+			第一季度：3－5月（春季）
+			第二季度：6－8月（夏季）
+			第三季度：9－11月（秋季）
+			第四季度：12－2月（冬季）
+	    * @Title: getMonthBySeason
+	    * @Description: TODO(根据季度获取月份集合)
+	    * @param @param season
+	    * @param @return    参数
+	    * @return List<Integer>    返回类型
+	    * @throws
+	 */
+	public static List<Integer> getMonthBySeason(int season) {
+		if (season > 4) {
+			return null;
+		}
+		List<Integer> months = new LinkedList<Integer>();
+		switch (season) {
+		case 1:
+			months = Arrays.asList(3, 4, 5);
+			break;
+		case 2:
+			months = Arrays.asList(6, 7, 8);
+			break;
+		case 3:
+			months = Arrays.asList(9, 10, 11);
+			break;
+		case 4:
+			months = Arrays.asList(12, 1, 2);
+			break;
+		default:
+			break;
+		}
+		return months;
+	}
+
+	/**
+	 * （按照中国的纬度）
+			第一季度：3－5月（春季）
+			第二季度：6－8月（夏季）
+			第三季度：9－11月（秋季）
+			第四季度：12－2月（冬季）
+	    * @Title: getSeasonDate
+	    * @Description: TODO(根据季度返回月份)
+	    * @param @param date
+	    * @param @return    参数
+	    * @return Date[]    返回类型
+	    * @throws
+	 */
+	public static Date[] getSeasonDate(Date date) {
+		Date[] season = new Date[3];
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+
+		int nSeason = getSeason(date);
+		if (nSeason == 1) {// 第一季度
+			c.set(Calendar.MONTH, Calendar.MARCH);
+			season[0] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.APRIL);
+			season[1] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.MAY);
+			season[2] = c.getTime();
+		} else if (nSeason == 2) {// 第二季度
+			c.set(Calendar.MONTH, Calendar.JUNE);
+			season[0] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.JULY);
+			season[1] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.AUGUST);
+			season[2] = c.getTime();
+		} else if (nSeason == 3) {// 第三季度
+			c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+			season[0] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.OCTOBER);
+			season[1] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.NOVEMBER);
+			season[2] = c.getTime();
+		} else if (nSeason == 4) {// 第四季度
+			c.set(Calendar.MONTH, Calendar.DECEMBER);
+			season[0] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.JANUARY);
+			season[1] = c.getTime();
+			c.set(Calendar.MONTH, Calendar.FEBRUARY);
+			season[2] = c.getTime();
+		}
+		return season;
+	}
+
+	/**
+	 * 
+	    * @Title: getSeason
+	    * @Description: TODO(1 第一季度 2 第二季度 3 第三季度 4 第四季度 )
+	    * @param @param date
+	    * @param @return    参数
+	    * @return int    返回类型
+	    * @throws
+	 */
+	public static int getSeason(Date date) {
+
+		int season = 0;
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int month = c.get(Calendar.MONTH);
+		switch (month) {
+		case Calendar.JANUARY:
+		case Calendar.FEBRUARY:
+		case Calendar.MARCH:
+			season = 1;
+			break;
+		case Calendar.APRIL:
+		case Calendar.MAY:
+		case Calendar.JUNE:
+			season = 2;
+			break;
+		case Calendar.JULY:
+		case Calendar.AUGUST:
+		case Calendar.SEPTEMBER:
+			season = 3;
+			break;
+		case Calendar.OCTOBER:
+		case Calendar.NOVEMBER:
+		case Calendar.DECEMBER:
+			season = 4;
+			break;
+		default:
+			break;
+		}
+		return season;
+	}
+
 }
