@@ -127,6 +127,8 @@ public class StationService {
 	public Map<String,Object> findByUserId(Long userId,Subsidy sobe){
 
 	Object[] obj =(Object[]) stationDao.findByNewUserId(userId);
+	
+	Map<String, String> sysMap = systemConfigService.getlist();
 
 		Map<String,Object> map = new HashMap<String,Object>();
 
@@ -134,14 +136,23 @@ public class StationService {
 		BigDecimal initKwh = (BigDecimal)obj[1];
 		BigDecimal workTotalKwh = (BigDecimal)obj[2];
 		Integer id =(Integer)obj[3];
+		BigDecimal nowKw = (BigDecimal)obj[4];
+		Integer workTotalTm =(Integer)obj[5];
+		
+		
 
 		 /** 总电量*/
 		BigDecimal AllKwh = initKwh.add(workTotalKwh);
+		
+	   Double AllPrice = AllKwh.multiply(new BigDecimal(sysMap.get("watt_price"))).doubleValue();
 
-		map = get25YearIncome(Long.valueOf(id));
+		map = find25YearIncome(Long.valueOf(id));
 
 		map.put("AllKwh",AllKwh);
-
+		map.put("nowKw",nowKw);
+		map.put("workTotalTm",workTotalTm);
+		map.put("AllPrice",AllPrice);
+		
 		return map;
 	}
 
@@ -438,8 +449,175 @@ public class StationService {
 		rm.put("list", list);
 		rm.put("tolMoneyOf25Year", totalMoneyOf25YearStr);
 		rm.put("capacity",station.getCapacity());
+		
+		
+		
 		return rm;
 	}
+	
+	/** 避免发生冲突重写25年总收益*/
+	
+	public Map<String, Object> find25YearIncome(Long stationId) {
+		Station station = stationDao.findOne(stationId);
+
+		// 25年总收益
+		Double totalMoneyOf25Year = 0d;
+
+		Subsidy subsidyR = new Subsidy();
+		subsidyR.setCityId(station.getCityId());
+		subsidyR.setType(station.getType());
+		Subsidy sob = subsidyDao.findOne(Example.of(subsidyR));
+
+		Map<String, String> sysMap = systemConfigService.getlist();
+		
+		if (sob == null) {
+			throw new MyException(777, "该电站所在的城市没有模拟数据");
+		}
+
+		// 电站使用年限: 25年
+		int year = Integer.parseInt(systemConfigService.get("station_durable_years"));
+
+		// 衰减率，每年0.8%（0.008），25年共20%
+		Double dampingRate = Double.valueOf(systemConfigService.get("damping_rate")) / 100;
+
+		// 年发电量=装机容量*年日招数
+		Double yearTotalKWH = station.getCapacity() * Double.valueOf(sob.getSunCount());
+
+		// 一年国家补贴=全年发电量*国家补贴（元/度）*国家补贴年限
+		Double countrySub = Double.valueOf(systemConfigService.get("country_subsidy"));
+		Double countrySubYear = Double.valueOf(systemConfigService.get("country_subsidy_year"));
+		Double countrySubTotal = countrySub * countrySubYear * yearTotalKWH;
+		Double countrySubOneYear = countrySub * yearTotalKWH;
+
+		// 一年地方补贴=全年发电量*地方补贴（元/度）*地方补贴年限
+		Double difangSub = sob.getAreaSubsidyPrice();
+		int difangSubYear = sob.getAreaSubsidyYear();
+		Double difangSubTotal = difangSub * difangSubYear * yearTotalKWH;
+		Double difangSubOneYear = difangSub * yearTotalKWH;
+		
+		Double totalInstallCapacity = station.getCapacity();
+		
+		Double CO2Prm = Double.valueOf(sysMap.get("CO2_prm"));
+		// 每瓦多少钱
+		Double watt_price = Double.valueOf(sysMap.get("watt_price"));
+		
+		// 总造价(元) = 装机容量(KW) * 每瓦多少钱(11000)
+		Double totalprice = totalInstallCapacity * watt_price;
+		
+		// 年发电量(kw·h) = 装机容量(KW) * 地区的年日照数(小时)
+			Double yearTotalWatt = totalInstallCapacity * Double.valueOf(sob.getSunCount());
+		
+		Double sellPrice = sob.getSellPrice();
+		// 总的优能补贴(元)=年发电量*优能补贴参数（元/度）*优能补贴年限 ，说明：该地区的售电价格低于10.5元/w时没有优能补贴
+		Double unSubTotal = 0d;   //总的优能补贴
+		if (sob.getUnSubsidyPrice() != null) {
+			if (sellPrice > 10.5) {    
+				Double unSub = sob.getUnSubsidyPrice();//优能补贴参数（元/度）
+				int unSubYear = sob.getUnSubsidyYear();  //优能补贴年限
+				unSubTotal = unSub * unSubYear * yearTotalWatt;
+			}
+		}
+		// 一次性补贴(元)=装机容量*一次性补贴参数（元/kw）
+					Double initialsubsidy = 0d;   //一次性补贴(元)
+					
+					if (sob.getInitSubsidyPrice() != null) {
+						initialsubsidy = sob.getInitSubsidyPrice() * totalInstallCapacity; //装机容量
+					}
+
+					// 总补贴(元)=总的国家补贴+总的地方补贴+总的优能补贴+一次性补贴
+					Double totalSub = countrySubTotal + difangSubTotal + unSubTotal + initialsubsidy;
+
+					// 25年总节省(元)=年发电量*自用率*用电单价（元/度）*25(年)
+					Double economic25Total = yearTotalWatt * sob.getUsePrice() * (1 - sob.getSellProportion()) * 25;
+					// 25年总卖出(元)=年发电量*出售率*售电单价（元/度）*25(年)
+					Double sell25Total = yearTotalWatt * sob.getSellProportion() * sob.getSellPrice() * 25;
+					// 25年总收益 = (25年总节省电费+25年总卖出电费+总补贴) * (1-衰减率*25)
+					Double twentyYearTotalIncome = (economic25Total + sell25Total + totalSub) * (1 - (dampingRate / 100) * 25);
+					// 每年发电收益=25年总收益 / 25(年)
+					Double everyYearTotalIncome = twentyYearTotalIncome / 25;
+		
+		// 地方补贴结束前的总收益（假设地方补贴年限是5年） = 五年省下的电费+五年卖出的电费+五年国家补贴+五年地方补贴+总的优能补贴
+					Double beforeEndSubsidy = yearTotalWatt * sob.getUsePrice() * (1 - sob.getSellProportion()) * sob.getAreaSubsidyYear()
+							+ yearTotalWatt * sob.getSellProportion() * sob.getSellPrice() * sob.getAreaSubsidyYear() + difangSubTotal
+							+ unSubTotal + countrySub * yearTotalWatt * sob.getAreaSubsidyYear();
+		
+		Double incomePerMax = 0d;
+		if (beforeEndSubsidy == 0) { // 如果没有地方补贴
+			
+		} else { // 最大年收益率=(地方补贴结束前的总收益/地方补贴年限/总造价)*(1-衰减率*地方补贴年限）
+			incomePerMax = (beforeEndSubsidy / sob.getAreaSubsidyYear() / totalprice) * 100 * (1 - (dampingRate / 100) * sob.getAreaSubsidyYear());
+		}
+
+		// 最小年收益率 = (25年总收益/25(年)) / 总造价
+		Double incomePerMin = ((twentyYearTotalIncome / 25) / totalprice) * 100;
+
+		// 一年：节省电费 + 国家补贴 + 地方补贴 + 卖出电费
+		DecimalFormat df = new DecimalFormat("#.00");
+
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (int i = 1; i <= year; i++) {
+			Map<String, Object> map = new HashMap<>();
+			// 第几年
+			map.put("year", i);
+			// 国家补贴
+			if (countrySubYear >= i) {
+				map.put("countrySub", df.format(countrySubOneYear));
+				totalMoneyOf25Year += countrySubOneYear;
+			} else {
+				map.put("countrySub", 0);
+				totalMoneyOf25Year += 0;
+			}
+			// 地方补贴
+			if (difangSubYear >= i) {
+				map.put("areaSub", df.format(difangSubOneYear));
+				totalMoneyOf25Year += difangSubOneYear;
+			} else {
+				map.put("areaSub", 0);
+				totalMoneyOf25Year += 0;
+			}
+
+			if ((i - 1) == 0) {
+				// 节省电费 = 年发电量 * 本地用电价格 * 自用率
+				Double economicTotal = yearTotalKWH * sob.getUsePrice() * (1 - sob.getSellProportion());
+				// 出售电费 = 年发电量 * 售电价格 * 出售率
+				Double sellTotal = yearTotalKWH * sob.getSellPrice() * sob.getSellProportion();
+				// 年发电量 * 衰减率
+				yearTotalKWH = yearTotalKWH * (1 - dampingRate);
+
+				// 第一年不用减去衰减率
+				map.put("saveTol", df.format(economicTotal));
+				map.put("sellTol", df.format(sellTotal));
+				totalMoneyOf25Year += economicTotal;
+				totalMoneyOf25Year += sellTotal;
+			} else {
+				Double economicTotal = yearTotalKWH * sob.getUsePrice() * (1 - sob.getSellProportion());
+				Double sellTotal = yearTotalKWH * sob.getSellPrice() * sob.getSellProportion();
+				yearTotalKWH = yearTotalKWH * (1 - dampingRate);
+
+				map.put("saveTol", df.format(economicTotal));
+				map.put("sellTol", df.format(sellTotal));
+				totalMoneyOf25Year += economicTotal;
+				totalMoneyOf25Year += sellTotal;
+			}
+
+			list.add(map);
+		}
+		String totalMoneyOf25YearStr = df.format(totalMoneyOf25Year);
+
+		Map<String, Object> rm = new HashMap<>();
+		rm.put("list", list);
+		rm.put("tolMoneyOf25Year", totalMoneyOf25YearStr);
+		rm.put("capacity",station.getCapacity());
+		rm.put("incomePerMin", df.format(incomePerMin));
+		rm.put("incomePerMax", df.format(incomePerMax));
+		rm.put("CO2Num", df.format(yearTotalWatt * CO2Prm)); // 减排二氧化碳多少吨
+		rm.put("capacity", station.getCapacity()); 
+		rm.put("linkName", station.getLinkMan()); 
+		
+		
+		return rm;
+	}
+	
 
 	/**
 	 * 更改电站的通道模式

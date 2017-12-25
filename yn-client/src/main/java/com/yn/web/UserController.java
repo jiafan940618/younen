@@ -638,11 +638,13 @@ public class UserController {
 	@ResponseBody
 	@RequestMapping(value = "/share")
 	public Object share(UserVo userVo, HttpSession httpSession) {
-		User user = SessionCache.instance().getUser();
+		/*User user = SessionCache.instance().getUser();
 		if(null == user){
 
 			return ResultVOUtil.error(5003, "抱歉,您未登录!");
-		}
+		}*/
+
+		User user = userService.findOne(userVo.getId());
 
 		News news = newsService.selNews();
 		
