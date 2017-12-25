@@ -319,4 +319,11 @@ public class AmmeterService {
     	
     	return objectMap;
     }
+
+	public List<Ammeter> findByStationId(Station station) {
+		if(station!=null){
+			return ammeterDao.findByStationId(station.getId());
+		}
+		return null;
+	}
 }

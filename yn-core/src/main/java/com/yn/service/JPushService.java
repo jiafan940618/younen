@@ -17,16 +17,12 @@ public class JPushService {
 	
 	private static Logger logger = Logger.getLogger(JPushService.class);
 	
-	/**
-	 * appKey
-	 */
-	public final static String MASTER_SECRET = "560ae484164a7a0addf40ca0";
 	
-	/**
-	 * masterSecret
-	 */
-	public final static String APP_KEY = "986e0883f82f7b28814c78a2";
+	//public final static String MASTER_SECRET = "b6ac9258e617c0aab46133df";//youneng
 	
+	public final static String MASTER_SECRET = "560ae484164a7a0addf40ca0";//demo1
+	//public final static String APP_KEY = "80f89dd5c49d2bd7346cc3bb";//youneng
+	public final static String APP_KEY = "986e0883f82f7b28814c78a2";//demo1
 	/**
 	 * 对所有平台
 	 */
@@ -82,7 +78,7 @@ public class JPushService {
 		
 	}
 	/**
-	   * 对所有平台目标别名为alias的进行静默推送
+	   * 对目标别名为alias的进行静默推送
 	   */
 	
 	public void JPushAndroidByQuite(String alert,String alias) {

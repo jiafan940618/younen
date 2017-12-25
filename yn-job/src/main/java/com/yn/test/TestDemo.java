@@ -10,7 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 import com.yn.model.Pzw;
+import com.yn.utils.DateUtil;
 
 public class TestDemo {
 
@@ -28,7 +31,7 @@ public class TestDemo {
 	public static int daysBetween(String s, String b) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date smdate = sdf.parse(s);
-		Date bdate = sdf.parse(s);
+		Date bdate = sdf.parse(b);
 		smdate = sdf.parse(sdf.format(smdate));
 		bdate = sdf.parse(sdf.format(bdate));
 		Calendar cal = Calendar.getInstance();
@@ -37,7 +40,6 @@ public class TestDemo {
 		cal.setTime(bdate);
 		long time2 = cal.getTimeInMillis();
 		long between_days = (time2 - time1) / (1000 * 3600 * 24);
-
 		return Integer.parseInt(String.valueOf(between_days));
 	}
 	
@@ -57,20 +59,16 @@ public class TestDemo {
 	}
 	
 	public static void main(String[] args) throws ParseException {
-//		String date ="2010_10_10";
-//		System.err.println(DateUtil.formatDate(DateUtil.formatString(date, "yyyy_MM_dd"), "yyMMdd"));
-//		System.out.println(daysBetween("2016-01-01","2017-01-01"));
-//		s();
-		List<Pzw> pzws = new ArrayList<Pzw>();
-		for (int i = 0; i < 10; i++) {
-			Pzw pzw = new Pzw();
-			pzw.setAmmeterCode(TestDemo.class.hashCode()+TestDemo.class.getSimpleName());
-			pzws.add(pzw);
+		Date date = DateUtil.formatString("2017-12-01", "yyyy-MM-dd");
+		System.out.println(DateUtil.getSeason(date));
+		Date[] date2 = DateUtil.getSeasonDate(date);
+		for (Date date3 : date2) {
+			System.out.println(DateUtil.formatDate(date3, "MM"));
+			System.out.println(DateUtil.formatDate(date3, "yyyy"));
 		}
-		pzws.stream().filter(s->s.getAmmeterCode().contains("Test")).forEach(s->s.setAmmeterCode("1"));
-		pzws.forEach(s->{
-			System.out.println(s.getAmmeterCode());
-		});
+		List<Integer> season = DateUtil.getMonthBySeason(4);
+//		season.forEach(System.out::println);
+//		System.out.println((1+3-1)%4+1);// 上季度计算公式
 	}
 
 	public void test1() {

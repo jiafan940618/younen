@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import com.yn.dao.ElecDataYearDao;
 import com.yn.dao.StationDao;
 import com.yn.dao.mapper.ElecDataDayMapper;
 import com.yn.model.Ammeter;
+import com.yn.model.AmmeterStatusCode;
 import com.yn.model.ElecDataDay;
 import com.yn.model.ElecDataDayExample;
 import com.yn.model.ElecDataHour;
@@ -46,10 +48,12 @@ import com.yn.model.ElecDataMonth;
 import com.yn.model.ElecDataYear;
 import com.yn.model.Station;
 import com.yn.utils.BeanCopy;
+import com.yn.utils.Constant;
 import com.yn.utils.DateUtil;
 import com.yn.utils.NumberUtil;
 import com.yn.utils.ObjToMap;
 import com.yn.utils.RepositoryUtil;
+import com.yn.vo.DataStatistics;
 
 @Service
 public class ElecDataDayService {
@@ -70,6 +74,11 @@ public class ElecDataDayService {
 	StationDao stationDao;
 	@Autowired
 	SystemConfigService systemConfigService;
+
+	@Autowired
+	private StationService stationService;
+	@Autowired
+	private AmmeterService ammeterService;
 
 	public List<ElecDataDay> selectByExample(ElecDataDayExample example) {
 		return elecDataDayMapper.selectByExample(example);
@@ -371,11 +380,11 @@ public class ElecDataDayService {
 		map.put("queryEndDtm", elecDataDay.getQueryEndDtm());
 		map.put("type", elecDataDay.getType());
 		List<ElecDataDay> list = elecDataDayMapper.selectByQuery(map);
-		List<ElecDataDay> listElecDataDay=new ArrayList<>();
+		List<ElecDataDay> listElecDataDay = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
-			ElecDataDay elecDataDay2=list.get(i);
-			elecDataDay2.setId(i+1l);
-			listElecDataDay.add(elecDataDay2);	
+			ElecDataDay elecDataDay2 = list.get(i);
+			elecDataDay2.setId(i + 1l);
+			listElecDataDay.add(elecDataDay2);
 		}
 		return listElecDataDay;
 	}
@@ -385,11 +394,12 @@ public class ElecDataDayService {
 	 * @throws ParseException 
 	 * @throws NumberFormatException 
 	 */
-	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type) throws NumberFormatException, ParseException {
-     	Map<String, Object> maps = new HashMap<>();
+	public Map<String, Object> getElecDetailByStationCode(Long stationId, Integer type)
+			throws NumberFormatException, ParseException {
+		Map<String, Object> maps = new HashMap<>();
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
-		Date [] dateYesterday = DateUtil.getYesterdaySpace();
-		Date endStart=dateYesterday[1];
+		Date[] dateYesterday = DateUtil.getYesterdaySpace();
+		Date endStart = dateYesterday[1];
 		// 获取每天的发电详情
 		List<Map<String, Object>> dayInfo = dayInfo(ammeterCodes, type);
 		if (type == 1) {
@@ -399,11 +409,11 @@ public class ElecDataDayService {
 			logger.info("-------------------initTotalkwh:" + initTotalkwh);
 			double historyTotalElec = workTotalkwh + initTotalkwh;
 			maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
-		}else if (type == 2) {
-			double historyTotalElec=elecDataDayDao.sumKwhByHistory(type, ammeterCodes);
-		    maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
+		} else if (type == 2) {
+			double historyTotalElec = elecDataDayDao.sumKwhByHistory(type, ammeterCodes);
+			maps.put("historyTotalElec", NumberUtil.accurateToTwoDecimal(historyTotalElec));
 		}
-		  maps.put("dayList", dayInfo);
+		maps.put("dayList", dayInfo);
 		// 获取当每月的发电详情
 		List<Map<String, Object>> monthInfo = monthInfo(ammeterCodes, type);
 		Date[] monthSpace = DateUtil.getThisYearSpace();
@@ -435,53 +445,55 @@ public class ElecDataDayService {
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listDay = new ArrayList<>();
 		List<Map<String, Object>> listDays = new ArrayList<>();
-		Date [] day = DateUtil.getThisMonthSpace();
-		Date endStart=new Date();
+		Date[] day = DateUtil.getThisMonthSpace();
+		Date endStart = new Date();
 		String end = new SimpleDateFormat("yyyy-MM-dd").format(endStart);
-		String dayStart=new SimpleDateFormat("yyyy-MM-dd").format(day[0]);
+		String dayStart = new SimpleDateFormat("yyyy-MM-dd").format(day[0]);
 		Object[] elecDataDays = elecDataDayDao.findByDays(ammeterCodes, type, dayStart, end);
 		SimpleDateFormat dFormat = new SimpleDateFormat("dd");
 		String nowTime = dFormat.format(endStart);
 		Integer num = Integer.parseInt(nowTime);
-		List<String> dateString=new ArrayList<>();
+		List<String> dateString = new ArrayList<>();
 		List<String> recordTimeList = new ArrayList<>();
 		for (int i = 0; i < num; i++) {
 			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, -i);//计算30天后的时间
-			String days=new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+			calendar.add(Calendar.DATE, -i);// 计算30天后的时间
+			String days = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
 			dateString.add(days);
 		}
 		for (Object ElecDataDay : elecDataDays) {
-		Object[] objects = (Object[]) ElecDataDay;
-		   recordTimeList.add((String)objects[0]);
-	    }
-		for (int i = 0; i <dateString.size(); i++) {
-		if (!recordTimeList.contains(dateString.get(i))) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("time", new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
-			map.put("kwh", 0.00);
-			map.put("kw", 0.00);
-			listDays.add(map);
+			Object[] objects = (Object[]) ElecDataDay;
+			recordTimeList.add((String) objects[0]);
 		}
-	}
-		for (Object ElecDataDay : elecDataDays) {
-		Object[] objects = (Object[]) ElecDataDay;
-		Map<String, Object> map = new HashMap<>();
-		map.put("time", new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString())));
-		map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
-		map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
-		listDays.add(map);
-	}
-		for (int i = dateString.size()-1; i>=0; i--) {
-			String dateTime=String.valueOf(new SimpleDateFormat("MM'月'dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
-			for (Map<String, Object> mapObject : listDays) {
-			if (dateTime.equals(mapObject.get("time").toString()) ) {
-				listDay.add(mapObject);
+		for (int i = 0; i < dateString.size(); i++) {
+			if (!recordTimeList.contains(dateString.get(i))) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("time", new SimpleDateFormat("MM'月'dd")
+						.format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
+				map.put("kwh", 0.00);
+				map.put("kw", 0.00);
+				listDays.add(map);
 			}
 		}
-	}
-	return listDay;
-
+		for (Object ElecDataDay : elecDataDays) {
+			Object[] objects = (Object[]) ElecDataDay;
+			Map<String, Object> map = new HashMap<>();
+			map.put("time", new SimpleDateFormat("MM'月'dd")
+					.format(new SimpleDateFormat("yyyy-MM-dd").parse(objects[0].toString())));
+			map.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[1].toString())));
+			map.put("kw", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objects[2].toString())));
+			listDays.add(map);
+		}
+		for (int i = dateString.size() - 1; i >= 0; i--) {
+			String dateTime = String.valueOf(new SimpleDateFormat("MM'月'dd")
+					.format(new SimpleDateFormat("yyyy-MM-dd").parse(dateString.get(i))));
+			for (Map<String, Object> mapObject : listDays) {
+				if (dateTime.equals(mapObject.get("time").toString())) {
+					listDay.add(mapObject);
+				}
+			}
+		}
+		return listDay;
 
 	}
 
@@ -494,7 +506,7 @@ public class ElecDataDayService {
 	public List<Map<String, Object>> monthInfo(List<Long> ammeterCodes, Integer type)
 			throws NumberFormatException, ParseException {
 		List<Map<String, Object>> listMonth = new ArrayList<>();
-		Date endStart=new Date();
+		Date endStart = new Date();
 		Date[] monthSpace = DateUtil.getThisYearSpace();
 		Date monthStartTime = monthSpace[0];
 		String monthStart = new SimpleDateFormat("yyyy-MM").format(monthStartTime);
@@ -508,8 +520,9 @@ public class ElecDataDayService {
 		Object[] elecDataMonths = elecDataDayDao.findByMonths(ammeterCodes, type, monthStart, end);
 		String nowTime = dFormat.format(endStart);
 		Integer num = Integer.parseInt(nowTime);
-//		logger.info("----------------------------------多少个月:" + num);
-//		logger.info("----------------------------------月记录条数:" + elecDataMonths.length);
+		// logger.info("----------------------------------多少个月:" + num);
+		// logger.info("----------------------------------月记录条数:" +
+		// elecDataMonths.length);
 		List<Map<String, Object>> listMonths = new ArrayList<>();
 		for (Object ElecDataMonth : elecDataMonths) {
 			Object[] objects = (Object[]) ElecDataMonth;
@@ -517,8 +530,9 @@ public class ElecDataDayService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))))) {
 				recordTimeList.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
-//				logger.info("----------------------------------月份:" + Integer
-//						.parseInt(dFormat.format(new SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
+				// logger.info("----------------------------------月份:" + Integer
+				// .parseInt(dFormat.format(new
+				// SimpleDateFormat("yyyy-MM").parse(objects[0].toString()))));
 			}
 		}
 		for (int i = 1; i <= num; i++) {
@@ -561,7 +575,7 @@ public class ElecDataDayService {
 			throws NumberFormatException, ParseException {
 		Map<String, Object> maps = new HashMap<>();
 
-		//Station station = stationDao.findOne(stationId);
+		// Station station = stationDao.findOne(stationId);
 		Date startTime = ammeterDao.selectCreateDtm(stationId);
 		List<Map<String, Object>> listYear = new ArrayList<>();
 		Date endStart = new Date();
@@ -571,7 +585,8 @@ public class ElecDataDayService {
 		List<Integer> recordTimeList = new ArrayList<>();
 
 		Object[] elecDataYears = elecDataDayDao.findByYears(ammeterCodes, type, yearStart, end);
-//		logger.info("----------------------------------number:" + elecDataYears.length);
+		// logger.info("----------------------------------number:" +
+		// elecDataYears.length);
 		String nowTime = dFormat.format(endStart);
 		String initTime = dFormat.format(startTime);
 		Integer numEnd = Integer.parseInt(nowTime);
@@ -583,8 +598,9 @@ public class ElecDataDayService {
 					Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))))) {
 				recordTimeList.add(
 						Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))));
-//				logger.info("----------------------------------年份:"
-//						+ Integer.parseInt(dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()))));
+				// logger.info("----------------------------------年份:"
+				// + Integer.parseInt(dFormat.format(new
+				// SimpleDateFormat("yyyy").parse(objects[0].toString()))));
 			}
 
 		}
@@ -605,16 +621,18 @@ public class ElecDataDayService {
 				for (Object ElecDataYear : elecDataYears) {
 					Object[] objects = (Object[]) ElecDataYear;
 					String time = dFormat.format(new SimpleDateFormat("yyyy").parse(objects[0].toString()));
-//					logger.info("----------------------time:" + time);
-//					logger.info("----------------------ammeter.getCreateDtm:"
-//							+ dFormat.format(ammeter.getCreateDtm()).toString());
+					// logger.info("----------------------time:" + time);
+					// logger.info("----------------------ammeter.getCreateDtm:"
+					// + dFormat.format(ammeter.getCreateDtm()).toString());
 					if (time.equals(dFormat.format(ammeter.getCreateDtm()).toString())) {
 
 						Double yearKwh = Double.valueOf(objects[1].toString());
 						Double initKwh = ammeter.getInitKwh();
 
-//						logger.info("----------------------ammeterCode:" + ammeter.getcAddr());
-//						logger.info("-----------------------initkwh:" + ammeter.getInitKwh());
+						// logger.info("----------------------ammeterCode:" +
+						// ammeter.getcAddr());
+						// logger.info("-----------------------initkwh:" +
+						// ammeter.getInitKwh());
 						objects[1] = yearKwh + initKwh;
 						maps.put("yearTotalElec", yearKwh + initKwh);
 						eDataYears.add(objects);
@@ -654,15 +672,15 @@ public class ElecDataDayService {
 		return maps;
 	}
 
-	@Transactional(propagation=Propagation.REQUIRED)
-	public int insertData(ElecDataDay record){
+	@Transactional(propagation = Propagation.REQUIRED)
+	public int insertData(ElecDataDay record) {
 		return elecDataDayMapper.insertData(record);
 	}
-	
+
 	/**
 	 * 用户发电/用电统计图
 	 */
-	public Map<String, Object> workUseCountList(Long stationId, Integer type,String dateStr,Integer plan) {
+	public Map<String, Object> workUseCountList(Long stationId, Integer type, String dateStr, Integer plan) {
 		List<Long> ammeterCodes = ammeterDao.selectAmmeterCode(stationId);
 		String dateFormat = "";
 		if (plan == 0) {
@@ -671,7 +689,7 @@ public class ElecDataDayService {
 			dateFormat = "%Y-%m";
 		} else if (plan == 2) {
 			dateFormat = "%Y-%m-%d";
-		} 
+		}
 		List<Object[]> list = elecDataDayDao.oneKwh(ammeterCodes, dateFormat, dateStr, type);
 		Map<Object, Object> linkHashMap = new LinkedHashMap<>();
 		List<Map<Object, Object>> listsMap = new ArrayList<>();
@@ -701,8 +719,8 @@ public class ElecDataDayService {
 			linkHashMap.put(key[i], objectMap.get(key[i]));
 			listMap.put("createDtm", key[i]);
 			listMap.put("kwh", NumberUtil.accurateToTwoDecimal(Double.parseDouble(objectMap.get(key[i]).toString())));
-			double capacity=stationDao.findCapacity(stationId);
-			listMap.put("wantKwh", NumberUtil.accurateToTwoDecimal(capacity*lengthOfLight(plan,(String)key[i])));
+			double capacity = stationDao.findCapacity(stationId);
+			listMap.put("wantKwh", NumberUtil.accurateToTwoDecimal(capacity * lengthOfLight(plan, (String) key[i])));
 			listsMap.add(listMap);
 		}
 
@@ -710,24 +728,230 @@ public class ElecDataDayService {
 		map.put("list", listsMap);
 		return map;
 	}
-	
+
 	/**
 	 * 电站的日照时长
 	 */
-	public double lengthOfLight (Integer plan,String date){
-		Double lengthOfLight=0D;
-		int days=0;
-		if (plan==0) {
-			days=DateUtil.whichYear(date);
-			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"))*days;
-		}else if (plan==1) {
-			days=DateUtil.whichMonth(date);
-			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"))*days;
-		}else if (plan==2) {
-			lengthOfLight=Double.valueOf(systemConfigService.get("day_light"));
+	public double lengthOfLight(Integer plan, String date) {
+		Double lengthOfLight = 0D;
+		int days = 0;
+		if (plan == 0) {
+			days = DateUtil.whichYear(date);
+			lengthOfLight = Double.valueOf(systemConfigService.get("day_light")) * days;
+		} else if (plan == 1) {
+			days = DateUtil.whichMonth(date);
+			lengthOfLight = Double.valueOf(systemConfigService.get("day_light")) * days;
+		} else if (plan == 2) {
+			lengthOfLight = Double.valueOf(systemConfigService.get("day_light"));
 		}
-		
+
 		return lengthOfLight;
 	}
 
+	public List<ElecDataDay> findByAmmeterCode(Ammeter ammeter) {
+		if (ammeter != null && ammeter.getcAddr() != null) {
+			return elecDataDayDao.findByAmmeterCode(ammeter.getcAddr());
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	    * @Title: getStatisticsData4Quarter
+	    * @Description: TODO(额。		。。忘记是干嘛用的了。)
+	    * @param @param a
+	    * @param @param startDate
+	    * @param @param endDate
+	    * @param @return    参数
+	    * @return Double    返回类型
+	    * @throws
+	 */
+	public Double getStatisticsData4Quarter(Ammeter a, String startDate, String endDate) {
+		if(a != null && a.getcAddr() != null) {
+			System.out.println(elecDataDayDao.findByAmmeterCodeAndDAddrInAndRecordTimeBetween(a.getcAddr(),Arrays.asList(1L,11L), startDate, endDate).size());
+			return elecDataDayDao.findByAmmeterCodeAndDAddrInAndRecordTimeBetween(a.getcAddr(),Arrays.asList(1L,11L), startDate, endDate).stream().filter(ab->ab!=null).collect(()->new ArrayList<Double>(),(list,item)->list.add(item.getKwh()),(list1,list2)->list1.addAll(list2)).stream().reduce(0d,(sum,item)->sum+item);
+		}
+		return 0d;
+	}
+	
+	public DataStatistics statistics4youNengData(String startDate, String endDate, String userName, String ammeterCode)
+			throws ParseException {
+		DataStatistics dataStatistics = new DataStatistics();
+		if (ammeterCode == null) {
+			if (userName != null) {
+				return letYouFuckBoss(startDate, endDate, userName);
+			}
+			return dataStatistics;
+		} else {
+			return comeBaby(startDate, endDate, ammeterCode);
+		}
+	}
+
+	/**
+	 * 
+	    * @Title: comeBaby
+	    * @Description: TODO(根据电表码统计)
+	    * @param @param startDate
+	    * @param @param endDate
+	    * @param @param ammeterCode
+	    * @param @return
+	    * @param @throws ParseException    参数
+	    * @return DataStatistics    返回类型
+	    * @throws
+	 */
+	private DataStatistics comeBaby(String startDate, String endDate, String ammeterCode) throws ParseException {
+		DataStatistics dataStatistics = new DataStatistics();
+		Ammeter ammeter = ammeterService.findByCAddr(ammeterCode);
+		// 装机容量
+		double capacity = stationService.findOne(ammeter.getStationId()).getCapacity();
+		// 周期内实际发电量 单位：度
+		double totalKwh = getStatisticsData4Quarter(ammeter, startDate, endDate);
+		Date outfactoryDate = ammeter.getOutfactoryDtm();
+		String string = DateUtil.formatDate(outfactoryDate, "yyyy-MM-dd");
+		// 应发天数
+		int shouldWorkDays = DateUtil.daysBetween(string, endDate);
+		// 故障天数 没发电算故障
+		int faultDays = (int) elecDataDayDao.findByAmmeterCodeAndDAddrInAndRecordTimeBetween(ammeterCode,Arrays.asList(1L, 11L), startDate, endDate).stream().filter(a -> a.getKwh() == 0).count();
+		// 本季度总天数
+		int thisSeasonDays = DateUtil.daysBetween(startDate, endDate);
+		// 上季度总天数 --> 环比
+		int prevSeasonDays = 0;
+		// 系统故障天数->数据没上传、数据表丢失
+		int systemErrorDays = 0;
+		Date date = DateUtil.formatString(startDate, "yyyy-MM-dd");
+		Date[] date2 = DateUtil.getSeasonDate(date);
+		for (Date date3 : date2) {
+			Integer month = Integer.parseInt(DateUtil.formatDate(date3, "MM"));
+			Integer year = Integer.parseInt(DateUtil.formatDate(date3, "yyyy"));
+			// 计算系统数据丢失的天数
+			systemErrorDays = caluErrorDate(month, year);
+			prevSeasonDays += DateUtil.getDaysByYearMonth(year, month);
+		}
+		// 异常天数=没上传数据+没发电+系统数据丢失
+		faultDays += systemErrorDays;
+		// 等比
+		// xxx没懂，execl中没有。。
+		// 实发天数 应发天数-故障天数
+		int actualDay = shouldWorkDays - faultDays;
+		// 周期计划发电量 单位：度 装机容量*实际发电天数*3.06
+		double cycleElectricityOfPlan = capacity * actualDay * Constant.POWER_GENERATION_CALCULATION_TIME;
+		// 周期发电率 （实际/计划）*100%
+		double cycleRate = (totalKwh / cycleElectricityOfPlan) * 100;
+		// 返回。。。
+		dataStatistics.setActualDay(actualDay);
+		dataStatistics.setCapacity(capacity);
+		dataStatistics.setCycleElectricityOfPlan(Math.round(cycleElectricityOfPlan * 100) * 0.01d);
+		dataStatistics.setCycleRate(Math.round(cycleRate * 100) * 0.01d + "%");
+		dataStatistics.setFaultDays(faultDays);
+		dataStatistics.setPrevSeasonDays(prevSeasonDays);
+		dataStatistics.setShouldWorkDays(shouldWorkDays);
+		dataStatistics.setThisSeasonDays(thisSeasonDays);
+		dataStatistics.setTotalKwh(Math.round(totalKwh * 100) * 0.01d);
+		return dataStatistics;
+	}
+
+	/**
+	 * 
+	    * @Title: letYouFuckBoss
+	    * @Description: TODO(很操蛋，看注释。。根据用户名统计)
+	    * @param @param startDate
+	    * @param @param endDate
+	    * @param @param userName
+	    * @param @return
+	    * @param @throws ParseException    参数
+	    * @return DataStatistics    返回类型
+	    * @throws
+	 */
+	private DataStatistics letYouFuckBoss(String startDate, String endDate, String userName)
+			throws ParseException {
+		DataStatistics dataStatistics = new DataStatistics();
+		List<Station> stations = stationService.findByLinkName(userName);
+		// 周期内实际发电量 单位：度
+		double totalKwh = 0d;
+		// 装机容量
+		double capacity = 0d;
+		// 应发天数
+		int shouldWorkDays = 0;
+		// 故障天数 没发电算故障
+		int faultDays = 0;
+		for (Station station : stations) {
+			capacity += station.getCapacity();
+			List<Ammeter> ammeters = ammeterService.findByStationId(station);
+			for (Ammeter ammeter : ammeters) {
+				totalKwh += getStatisticsData4Quarter(ammeter, startDate, endDate);
+				Date date = ammeter.getOutfactoryDtm();
+				String string = DateUtil.formatDate(date, "yyyy-MM-dd");
+				shouldWorkDays += DateUtil.daysBetween(string, endDate);
+				faultDays = (int) elecDataDayDao.findByAmmeterCodeAndDAddrInAndRecordTimeBetween(ammeter.getcAddr(),Arrays.asList(1L, 11L), startDate, endDate).stream().filter(a -> a.getKwh() == 0).count();
+			}
+		}
+		// 本季度总天数
+		int thisSeasonDays = DateUtil.daysBetween(startDate, endDate);
+		// 上季度总天数 --> 环比
+		int prevSeasonDays = 0;
+		// 系统故障天数->数据没上传、数据表丢失
+		int systemErrorDays = 0;
+		Date date = DateUtil.formatString(startDate, "yyyy-MM-dd");
+		Date[] date2 = DateUtil.getSeasonDate(date);
+		for (Date date3 : date2) {
+			Integer month = Integer.parseInt(DateUtil.formatDate(date3, "MM"));
+			Integer year = Integer.parseInt(DateUtil.formatDate(date3, "yyyy"));
+			// 计算系统数据丢失的天数
+			systemErrorDays = caluErrorDate(month, year);
+			prevSeasonDays += DateUtil.getDaysByYearMonth(year, month);
+		}
+		// 异常天数=没上传数据+没发电+系统数据丢失
+		faultDays += systemErrorDays;
+		// 等比
+		// xxx没懂，execl中没有。。
+		// 实发天数 应发天数-故障天数
+		int actualDay = shouldWorkDays - faultDays;
+		// 周期计划发电量 单位：度 装机容量*实际发电天数*3.06
+		double cycleElectricityOfPlan = capacity * actualDay * Constant.POWER_GENERATION_CALCULATION_TIME;
+		// 周期发电率 （实际/计划）*100%
+		double cycleRate = (totalKwh / cycleElectricityOfPlan) * 100;
+		// 返回。。。
+		dataStatistics.setActualDay(actualDay);
+		dataStatistics.setCapacity(capacity);
+		dataStatistics.setCycleElectricityOfPlan(Math.round(cycleElectricityOfPlan * 100) * 0.01d);
+		dataStatistics.setCycleRate(Math.round(cycleRate * 100) * 0.01d + "%");
+		dataStatistics.setFaultDays(faultDays);
+		dataStatistics.setPrevSeasonDays(prevSeasonDays);
+		dataStatistics.setShouldWorkDays(shouldWorkDays);
+		dataStatistics.setThisSeasonDays(thisSeasonDays);
+		dataStatistics.setTotalKwh(Math.round(totalKwh * 100) * 0.01d);
+		return dataStatistics;
+	}
+
+	private int caluErrorDate(Integer month, Integer year) {
+		int systemErrorDays = 0;
+		if(year == 2016) {
+			switch (month) {
+			case 7:
+				systemErrorDays += 7;
+				break;
+			case 9:
+				systemErrorDays += 4;
+				break;
+			default:
+				break;
+			}
+		}
+		if(year == 2017) {
+			switch (month) {
+			case 1:
+				systemErrorDays += 1;
+				break;
+			case 10:
+				systemErrorDays += 3;
+				break;
+			case 11:
+				systemErrorDays += 7;
+				break;
+			default:
+				break;
+			}
+		}
+		return systemErrorDays;
+	}
 }
