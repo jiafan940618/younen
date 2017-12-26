@@ -773,7 +773,7 @@ public class ElecDataDayService {
 		}
 		return 0d;
 	}
-	
+	findByAmmeterCodeAndDAddrInAndRecordTimeBetween Between执行没用，需要检查
 	public DataStatistics statistics4youNengData(String startDate, String endDate, String userName, String ammeterCode)
 			throws ParseException {
 		DataStatistics dataStatistics = new DataStatistics();
