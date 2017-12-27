@@ -23,7 +23,7 @@ public interface SystemConfigDao extends JpaRepository<SystemConfig, Long>, JpaS
     
     SystemConfig findByPropertyKey(String propertyKey);
      //2,3,4,15,16,17,29,30,31
-    @Query("SELECT s FROM SystemConfig s WHERE s.id IN (2,3,4,15,16,17,29,30,31)")
+    @Query("SELECT s FROM SystemConfig s WHERE s.id IN (2,3,4,15,16,17,29,30,31,25)")
     List<SystemConfig> getlist();
     
     @Query("SELECT s FROM SystemConfig s WHERE s.propertyKey IN ('android_version_code','android_version_name','android_update_url','android_update_info')")

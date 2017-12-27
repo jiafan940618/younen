@@ -15,6 +15,8 @@ public class ProductionDetail extends IDomain implements Serializable {
 	@Column(columnDefinition = "text comment '[内容]'")
 	private String content;
 
+
+
 	public Integer getServerId() {
 		return serverId;
 	}
@@ -30,4 +32,6 @@ public class ProductionDetail extends IDomain implements Serializable {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	
 }

@@ -140,17 +140,21 @@ public class StationService {
 		Integer workTotalTm =(Integer)obj[5];
 		
 		
-
+	   Double sub =	Double.valueOf(sysMap.get("unlsubsidy")) + Double.valueOf(sysMap.get("country_subsidy"));
 		 /** 总电量*/
 		BigDecimal AllKwh = initKwh.add(workTotalKwh);
-		
-	   Double AllPrice = AllKwh.multiply(new BigDecimal(sysMap.get("watt_price"))).doubleValue();
 
 		map = find25YearIncome(Long.valueOf(id));
+		
+		sub = sub+ Double.valueOf(map.get("difangSub").toString());
+
+		System.out.println("总的sub为 --- ----- ："+sub);
+		
+		Double AllPrice = AllKwh.multiply(new BigDecimal(sub)).doubleValue();
 
 		map.put("AllKwh",AllKwh);
 		map.put("nowKw",nowKw);
-		map.put("workTotalTm",workTotalTm);
+		map.put("workTotalTm", df.format(workTotalTm/60));
 		map.put("AllPrice",AllPrice);
 		
 		return map;
@@ -613,7 +617,7 @@ public class StationService {
 		rm.put("CO2Num", df.format(yearTotalWatt * CO2Prm)); // 减排二氧化碳多少吨
 		rm.put("capacity", station.getCapacity()); 
 		rm.put("linkName", station.getLinkMan()); 
-		
+		rm.put("difangSub", difangSub);
 		
 		return rm;
 	}

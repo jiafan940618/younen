@@ -222,7 +222,7 @@ public class UserController {
         userVo01.setFullAddressText(userVo.getFullAddressText());
         userVo01.setId(userVo.getId());
         userVo01.setNickName(userVo.getNickName());
-        userVo01.setUserName(newuserVo.getUserName());
+        userVo01.setUserName(userVo.getUserName());
         userVo01.setPhone(userVo.getPhone());
         userVo01.setHeadImgUrl(userVo.getHeadImgUrl());
         
@@ -240,9 +240,6 @@ public class UserController {
     	if(null == newuserVo){
     		return ResultVOUtil.error(5003, "抱歉,您未登录!");
     	}
-
-//		User newuserVo = new User();
-//		newuserVo.setId(2L);
 
     	
 	    logger.info("-- --- --- --- ---- ---- ---- ---- ---- 传递的用户Id:"+userVo.getId());
@@ -644,6 +641,8 @@ public class UserController {
 			return ResultVOUtil.error(5003, "抱歉,您未登录!");
 		}*/
 
+		logger.info("id:--- ---- ---- ---- >"+userVo.getId());
+
 		User user = userService.findOne(userVo.getId());
 
 		News news = newsService.selNews();
@@ -671,12 +670,13 @@ public class UserController {
 			 map = stationService.findByUserId(user.getId(), sobe);
 		}else if(null != userVo.getStationId()){
 
-			map = stationService.get25YearIncome(userVo.getStationId());
+			map = stationService.find25YearIncome(userVo.getStationId());
 
 		}
 		map.put("privilegeCodeInit",privilegeCodeInit);
+		map.put("linkMan",user.getNickName());
 
-		map.put("user",news);
+	
 
 		return ResultVOUtil.success(map);
 	}
